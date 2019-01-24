@@ -43,4 +43,6 @@ dependencies {
     // LeanCloud 应用内搜索包
     implementation ('cn.leancloud.android:avoscloud-search:4.7.8@aar')
 
+    implementation 'com.jakewharton:butterknife:10.0.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
 }
