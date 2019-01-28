@@ -35,11 +35,5 @@ public class BrowseViewModel extends ViewModel {
                 }
             }
         });
-        /*
-        List<TopicInfo> list = new ArrayList<>();
-        list.add(new TopicInfo("Topic one", "hello world one"));
-        list.add(new TopicInfo("Topic two", "hello world two"));
-        topicInfos.setValue(list);
-        */
     }
 }
