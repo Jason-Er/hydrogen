@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -27,6 +28,7 @@ public class PublishedOpenedFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         RecyclerView rootView = (RecyclerView) inflater.inflate(R.layout.list_browse, container, false);
         rootView.setLayoutManager(new LinearLayoutManager(getContext()));
+        rootView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
         adapter = new PublishedOpenedRecyclerViewAdapter();
         rootView.setAdapter(adapter);
 
@@ -34,7 +36,7 @@ public class PublishedOpenedFragment extends Fragment {
         viewModel.topicInfos.observe(getActivity(), new Observer<List<TopicInfo>>() {
             @Override
             public void onChanged(@Nullable List<TopicInfo> topicInfos) {
-
+                adapter.setTopicInfos(topicInfos);
             }
         });
         viewModel.getTopicInfos(0);
