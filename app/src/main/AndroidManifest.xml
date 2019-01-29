@@ -21,7 +21,9 @@
         </activity>
         <activity
             android:name="com.thumbstage.hydrogen.view.sign.SignActivity"
-            android:label="SignActivity" >
+            android:label="SignActivity"
+            android:windowSoftInputMode="adjustPan"
+            >
         </activity>
 </application>
 

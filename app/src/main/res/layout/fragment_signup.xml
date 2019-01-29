@@ -31,7 +31,7 @@
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/fragment_signUp_stageName"
+            android:id="@+id/fragment_signUp_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="30dp"
@@ -39,31 +39,8 @@
             android:layout_marginRight="10dp"
             android:hint="@string/name"
             android:gravity="center"
-            android:ems="10"
-            android:inputType="phone" />
+            android:ems="10" />
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp">
-            <EditText
-                android:id="@+id/fragment_signUp_phoneNumber"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:hint="@string/phone_number"
-                android:gravity="center"
-                android:ems="10"
-                android:inputType="textPassword" />
-            <ImageButton
-                android:id="@+id/fragment_signUp_send"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_button_send"
-                android:layout_marginLeft="-24dp"
-                android:background="@android:color/transparent"/>
-        </LinearLayout>
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -102,17 +79,16 @@
                 android:inputType="textPassword" />
         </LinearLayout>
         <EditText
-            android:id="@+id/fragment_signUp_authCode"
+            android:id="@+id/fragment_signUp_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginBottom="30dp"
-            android:hint="@string/phone_authCode"
+            android:hint="@string/email"
             android:gravity="center"
             android:drawablePadding="8dp"
-            android:ems="10"
-            android:inputType="phone" />
+            android:ems="10"/>
     </LinearLayout>
 
     <Button style="@style/Widget.AppCompat.Button"

@@ -14,4 +14,9 @@
     <string name="name">name</string>
     <string name="phone_authCode">authenticate code</string>
     <string name="action_sign">sign</string>
+    <string name="attention_empty_name">attention name is empty</string>
+    <string name="attention_empty_password">password is empty</string>
+    <string name="attention_consistency_password">password not consistency</string>
+    <string name="attention_empty_email">attention email is empty</string>
+    <string name="email">email</string>
 </resources>

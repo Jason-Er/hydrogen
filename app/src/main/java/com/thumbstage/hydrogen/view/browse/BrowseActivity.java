@@ -1,10 +1,12 @@
 package com.thumbstage.hydrogen.view.browse;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -16,8 +18,16 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.avos.avoscloud.AVOSCloud;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVUser;
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.view.common.SignEvent;
 import com.thumbstage.hydrogen.view.sign.SignActivity;
+import com.thumbstage.hydrogen.viewmodel.UserViewModel;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -25,8 +35,12 @@ import butterknife.ButterKnife;
 public class BrowseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private final String TAG = "BrowseActivity";
+
     @BindView(R.id.browse_content)
     ViewPager browseContent;
+
+    UserViewModel userViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +87,8 @@ public class BrowseActivity extends AppCompatActivity
                 return false;
             }
         });
+        userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
+        EventBus.getDefault().register(this);
         browseContent.setAdapter(new BrowseFragmentPagerAdapter(getSupportFragmentManager()));
     }
 
@@ -132,6 +148,23 @@ public class BrowseActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onResponseMessageEvent(SignEvent event) {
+        switch (event.getMessage()) {
+            case "signUser":
+                Log.d(TAG,"receive signUser");
+                AVUser avUser = (AVUser) event.getData();
+                userViewModel.setAvUser(avUser);
+                break;
+        }
     }
 
 }
