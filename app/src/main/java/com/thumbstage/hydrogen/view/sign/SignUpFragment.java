@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,7 +84,23 @@ public class SignUpFragment extends Fragment {
                     EventBus.getDefault().post(event);
                     ((SignActivity) getActivity()).onSupportNavigateUp();
                 } else {
-
+                    switch (e.getCode()) {
+                        case 202: {
+                            Toast toast = Toast.makeText(getContext(), getContext().getString(R.string.attention_name_exist), Toast.LENGTH_SHORT);
+                            toast.show();
+                            }
+                            break;
+                        case 203: {
+                            Toast toast = Toast.makeText(getContext(), getContext().getString(R.string.attention_email_exist), Toast.LENGTH_SHORT);
+                            toast.show();
+                            }
+                            break;
+                        case 214: {
+                            Toast toast = Toast.makeText(getContext(), getContext().getString(R.string.attention_phone_exist), Toast.LENGTH_SHORT);
+                            toast.show();
+                            }
+                            break;
+                    }
                 }
             }
         });

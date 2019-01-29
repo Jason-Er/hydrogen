@@ -19,4 +19,7 @@
     <string name="attention_consistency_password">password not consistency</string>
     <string name="attention_empty_email">attention email is empty</string>
     <string name="email">email</string>
+    <string name="attention_name_exist">attention name exist</string>
+    <string name="attention_email_exist">attention email exist</string>
+    <string name="attention_phone_exist">attention phone number exist</string>
 </resources>
