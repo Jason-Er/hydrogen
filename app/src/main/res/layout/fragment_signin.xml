@@ -2,7 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/signIn_fragment"
+    android:id="@+id/fragment_signIn"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
@@ -10,7 +10,7 @@
     android:focusableInTouchMode="true">
 
     <ImageView
-        android:id="@+id/signIn_fragment_logo"
+        android:id="@+id/fragment_signIn_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -19,10 +19,10 @@
         app:srcCompat="@android:drawable/sym_def_app_icon" />
 
     <LinearLayout
-        android:id="@+id/signIn_fragment_blankInfo"
+        android:id="@+id/fragment_signIn_blankInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/signIn_fragment_logo"
+        android:layout_below="@id/fragment_signIn_logo"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
         android:background="@android:color/background_light"
@@ -31,7 +31,7 @@
         android:orientation="vertical">
 
         <EditText
-            android:id="@+id/signIn_fragment_phoneNumber"
+            android:id="@+id/fragment_signIn_phoneNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
@@ -46,13 +46,13 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp">
             <EditText
-                android:id="@+id/signIn_fragment_password"
+                android:id="@+id/fragment_signIn_password"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
                 android:inputType="textPassword" />
             <ImageButton
-                android:id="@+id/signIn_fragment_showPwd"
+                android:id="@+id/fragment_signIn_showPwd"
                 android:layout_marginLeft="-24dp"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -62,10 +62,10 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/signIn_fragment_signIn"
+        android:id="@+id/fragment_signIn_signIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/signIn_fragment_blankInfo"
+        android:layout_below="@id/fragment_signIn_blankInfo"
         android:layout_centerHorizontal="true"
         android:elevation="5dp"
         android:layout_marginTop="-18dp"
@@ -73,10 +73,10 @@
         android:theme="@style/PrimaryButton"/>
 
     <Button
-        android:id="@+id/signIn_fragment_signUp"
+        android:id="@+id/fragment_signIn_signUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/signIn_fragment_signIn"
+        android:layout_below="@id/fragment_signIn_signIn"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
         android:text="@string/sign_up"
@@ -87,30 +87,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/signIn_fragment_signUp"
+        android:layout_below="@id/fragment_signIn_signUp"
         android:layout_margin="10dp">
         <CheckBox
-            android:id="@+id/signIn_autoSignIn"
+            android:id="@+id/fragment_signIn_autoSignIn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Remember me" />
         <Button
-            android:id="@+id/signIn_forgotPwd"
+            android:id="@+id/fragment_signIn_forgotPwd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Forgot password"
             android:theme="@style/PrimaryFlatButton" />
     </LinearLayout>
-
-    <ImageButton
-        android:id="@+id/signIn_navigateUp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:background="@android:color/transparent"
-        app:srcCompat="@drawable/ic_button_arrowdown" />
 
     <View
         android:layout_width="1dp"

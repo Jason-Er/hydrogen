@@ -1,9 +1,9 @@
 package com.thumbstage.hydrogen.view.browse;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -17,6 +17,7 @@ import android.view.MenuItem;
 
 import com.avos.avoscloud.AVOSCloud;
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.view.sign.SignActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,6 +59,20 @@ public class BrowseActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         //
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                int menuItemId = item.getItemId();
+                switch (menuItemId) {
+                    case R.id.menu_browse_sign:
+                        Intent intent = new Intent();
+                        intent.setClass(BrowseActivity.this, SignActivity.class);
+                        startActivity(intent);
+                        break;
+                }
+                return false;
+            }
+        });
         browseContent.setAdapter(new BrowseFragmentPagerAdapter(getSupportFragmentManager()));
     }
 
@@ -74,7 +89,7 @@ public class BrowseActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.browse, menu);
         return true;
     }
 
@@ -86,10 +101,11 @@ public class BrowseActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        /*
+        if (id == R.id.menu_browse_sign) {
             return true;
         }
-
+        */
         return super.onOptionsItemSelected(item);
     }
 
