@@ -27,7 +27,9 @@ public class BrowseViewModel extends ViewModel {
                 if(avException == null) {
                     List<TopicInfo> list = new ArrayList<>();
                     for(AVObject avObject : avObjects) {
-                        list.add(new TopicInfo(avObject.getString("name"), avObject.getString("brief")));
+                        list.add(new TopicInfo(avObject.getString("name"),
+                                avObject.getString("brief"),
+                                avObject.getString("sponsor_name")));
                     }
                     topicInfos.setValue(list);
                 } else {

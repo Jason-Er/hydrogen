@@ -18,7 +18,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.avos.avoscloud.AVOSCloud;
-import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVUser;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.view.account.AccountActivity;
@@ -40,8 +39,13 @@ public class BrowseActivity extends AppCompatActivity
 
     @BindView(R.id.browse_content)
     ViewPager browseContent;
+    BrowseFragmentPagerAdapter pagerAdapter;
 
     UserViewModel userViewModel;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,17 +56,8 @@ public class BrowseActivity extends AppCompatActivity
         AVOSCloud.setDebugLogEnabled(true);
 
         ButterKnife.bind(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        fab.hide();
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -95,7 +90,30 @@ public class BrowseActivity extends AppCompatActivity
         });
         userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
         EventBus.getDefault().register(this);
-        browseContent.setAdapter(new BrowseFragmentPagerAdapter(getSupportFragmentManager()));
+        pagerAdapter = new BrowseFragmentPagerAdapter(getSupportFragmentManager());
+        browseContent.setAdapter(pagerAdapter);
+        ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if ( pagerAdapter.getItem(position) instanceof BrowseCustomize) {
+                    ((BrowseCustomize) pagerAdapter.getItem(position)).customizeToolbar(toolbar);
+                    ((BrowseCustomize) pagerAdapter.getItem(position)).customizeFab(fab);
+                } else {
+                    // default function
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        };
+        browseContent.addOnPageChangeListener(pageChangeListener);
     }
 
     @Override

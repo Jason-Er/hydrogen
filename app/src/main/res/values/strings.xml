@@ -28,4 +28,9 @@
     <string name="profile">profile</string>
     <string name="sign">sign</string>
 
+    <string name="IAttendedFragment_name">I attended topics</string>
+    <string name="IStartedFragment_name">I started topic</string>
+    <string name="PublishedClosedFragment_name">published closed topic</string>
+    <string name="PublishedOpenedFragment_name">published open topic</string>
+
 </resources>

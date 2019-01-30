@@ -4,8 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.thumbstage.hydrogen.view.browse.mine.MineClosedFragment;
-import com.thumbstage.hydrogen.view.browse.mine.MineOpenedFragment;
+import com.thumbstage.hydrogen.view.browse.mine.IAttendedFragment;
+import com.thumbstage.hydrogen.view.browse.mine.IStartedFragment;
 import com.thumbstage.hydrogen.view.browse.published.PublishedClosedFragment;
 import com.thumbstage.hydrogen.view.browse.published.PublishedOpenedFragment;
 
@@ -21,8 +21,8 @@ public class BrowseFragmentPagerAdapter extends FragmentPagerAdapter {
         fragmentList=new ArrayList<>();
         fragmentList.add(new PublishedClosedFragment());
         fragmentList.add(new PublishedOpenedFragment());
-        fragmentList.add(new MineClosedFragment());
-        fragmentList.add(new MineOpenedFragment());
+        fragmentList.add(new IAttendedFragment());
+        fragmentList.add(new IStartedFragment());
     }
 
     @Override
