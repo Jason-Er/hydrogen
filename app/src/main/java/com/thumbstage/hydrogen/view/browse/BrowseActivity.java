@@ -21,6 +21,7 @@ import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVUser;
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.view.account.AccountActivity;
 import com.thumbstage.hydrogen.view.common.SignEvent;
 import com.thumbstage.hydrogen.view.sign.SignActivity;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
@@ -80,7 +81,12 @@ public class BrowseActivity extends AppCompatActivity
                 switch (menuItemId) {
                     case R.id.menu_browse_sign:
                         Intent intent = new Intent();
-                        intent.setClass(BrowseActivity.this, SignActivity.class);
+                        AVUser currentUser = AVUser.getCurrentUser();
+                        if(currentUser != null) {
+                            intent.setClass(BrowseActivity.this, AccountActivity.class);
+                        } else {
+                            intent.setClass(BrowseActivity.this, SignActivity.class);
+                        }
                         startActivity(intent);
                         break;
                 }

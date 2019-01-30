@@ -9,6 +9,7 @@
 
     <string name="sign_up">Sign up</string>
     <string name="sign_in">Sign in</string>
+    <string name="sign_out">Sign out</string>
     <string name="phone_number">phone number</string>
     <string name="password">password</string>
     <string name="name">name</string>
@@ -23,4 +24,8 @@
     <string name="attention_email_exist">attention email exist</string>
     <string name="attention_phone_exist">attention phone number exist</string>
     <string name="wrong_name_password">name or password may wrong</string>
+
+    <string name="profile">profile</string>
+    <string name="sign">sign</string>
+
 </resources>

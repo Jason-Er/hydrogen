@@ -25,6 +25,12 @@
             android:windowSoftInputMode="adjustPan"
             >
         </activity>
+        <activity
+            android:name="com.thumbstage.hydrogen.view.account.AccountActivity"
+            android:label="AccountActivity"
+            android:windowSoftInputMode="adjustPan"
+            >
+        </activity>
 </application>
 
 </manifest>

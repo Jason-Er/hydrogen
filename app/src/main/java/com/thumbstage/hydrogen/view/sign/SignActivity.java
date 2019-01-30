@@ -23,7 +23,7 @@ public class SignActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle("Sign");
+        actionBar.setTitle(getResources().getString(R.string.sign));
 
         viewPager.setAdapter(new SignFragmentPagerAdapter(getSupportFragmentManager()));
     }
