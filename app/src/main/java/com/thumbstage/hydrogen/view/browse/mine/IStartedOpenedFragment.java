@@ -2,6 +2,7 @@ package com.thumbstage.hydrogen.view.browse.mine;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,13 +16,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.avos.avoscloud.AVUser;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.view.browse.BrowseCustomize;
 import com.thumbstage.hydrogen.view.browse.BrowseRecyclerViewAdapter;
+import com.thumbstage.hydrogen.view.create.CreateActivity;
 import com.thumbstage.hydrogen.viewmodel.BrowseViewModel;
 
 import java.util.List;
+
+import cn.leancloud.chatkit.activity.LCIMConversationActivity;
+import cn.leancloud.chatkit.utils.LCIMConstants;
 
 public class IStartedOpenedFragment extends Fragment implements BrowseCustomize {
 
@@ -61,7 +67,8 @@ public class IStartedOpenedFragment extends Fragment implements BrowseCustomize 
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent intent = new Intent(getActivity(), CreateActivity.class);
+                startActivity(intent);
             }
         });
     }

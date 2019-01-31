@@ -115,14 +115,6 @@ public class BrowseActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        // TODO: 1/31/2019 need init position according last save
-        int position = 0;
-        viewPager.setCurrentItem(position);
-    }
-
-    @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {

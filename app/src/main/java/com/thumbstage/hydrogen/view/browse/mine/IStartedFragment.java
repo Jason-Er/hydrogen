@@ -65,14 +65,6 @@ public class IStartedFragment extends Fragment implements BrowseCustomize {
         return view;
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        // TODO: 1/31/2019 need init position according last save
-        int position = 0;
-        viewPager.setCurrentItem(position);
-    }
-
     // region implement of interface BrowseCustomize
     @Override
     public void customizeToolbar(Toolbar toolbar) {

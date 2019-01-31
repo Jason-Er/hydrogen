@@ -32,5 +32,6 @@
     <string name="IStartedFragment_name">I started topic</string>
     <string name="PublishedClosedFragment_name">published closed topic</string>
     <string name="PublishedOpenedFragment_name">published open topic</string>
+    <string name="create_activity_name">create</string>
 
 </resources>
