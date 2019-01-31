@@ -15,8 +15,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.model.TopicInfo;
+import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.view.browse.BrowseCustomize;
+import com.thumbstage.hydrogen.view.browse.BrowseRecyclerViewAdapter;
 import com.thumbstage.hydrogen.viewmodel.BrowseViewModel;
 
 import java.util.List;
@@ -24,7 +25,7 @@ import java.util.List;
 public class PublishedOpenedFragment extends Fragment implements BrowseCustomize {
 
     private BrowseViewModel viewModel;
-    private PublishedOpenedRecyclerViewAdapter adapter;
+    private BrowseRecyclerViewAdapter adapter;
 
     @Nullable
     @Override
@@ -32,17 +33,17 @@ public class PublishedOpenedFragment extends Fragment implements BrowseCustomize
         RecyclerView rootView = (RecyclerView) inflater.inflate(R.layout.list_browse, container, false);
         rootView.setLayoutManager(new LinearLayoutManager(getContext()));
         rootView.addItemDecoration(new DividerItemDecoration(getContext(), LinearLayoutManager.VERTICAL));
-        adapter = new PublishedOpenedRecyclerViewAdapter();
+        adapter = new BrowseRecyclerViewAdapter();
         rootView.setAdapter(adapter);
 
         viewModel = ViewModelProviders.of(getActivity()).get(BrowseViewModel.class);
-        viewModel.topicInfos.observe(getActivity(), new Observer<List<TopicInfo>>() {
+        viewModel.getPublishedOpenedTopicInfos().observe(getActivity(), new Observer<List<Topic>>() {
             @Override
-            public void onChanged(@Nullable List<TopicInfo> topicInfos) {
-                adapter.setTopicInfos(topicInfos);
+            public void onChanged(@Nullable List<Topic> topics) {
+                adapter.setTopics(topics);
             }
         });
-        viewModel.getTopicInfos(0);
+        viewModel.getPublishedOpenedTopicInfosByPageNum(0);
 
         return rootView;
     }

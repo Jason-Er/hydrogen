@@ -4,10 +4,8 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -38,7 +36,7 @@ public class BrowseActivity extends AppCompatActivity
     private final String TAG = "BrowseActivity";
 
     @BindView(R.id.browse_content)
-    ViewPager browseContent;
+    ViewPager viewPager;
     BrowseFragmentPagerAdapter pagerAdapter;
 
     UserViewModel userViewModel;
@@ -91,7 +89,7 @@ public class BrowseActivity extends AppCompatActivity
         userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
         EventBus.getDefault().register(this);
         pagerAdapter = new BrowseFragmentPagerAdapter(getSupportFragmentManager());
-        browseContent.setAdapter(pagerAdapter);
+        viewPager.setAdapter(pagerAdapter);
         ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -113,7 +111,15 @@ public class BrowseActivity extends AppCompatActivity
 
             }
         };
-        browseContent.addOnPageChangeListener(pageChangeListener);
+        viewPager.addOnPageChangeListener(pageChangeListener);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // TODO: 1/31/2019 need init position according last save
+        int position = 0;
+        viewPager.setCurrentItem(position);
     }
 
     @Override

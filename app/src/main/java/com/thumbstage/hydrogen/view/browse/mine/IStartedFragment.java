@@ -23,9 +23,11 @@ public class IStartedFragment extends Fragment implements BrowseCustomize {
     TabLayout tabLayout;
     @BindView(R.id.fragment_istarted_viewpager)
     ViewPager viewPager;
+    IStartedFragmentPagerAdapter pagerAdapter;
     String[] titles = new String[]{"Opened","Closed"};
 
-    IStartedFragmentPagerAdapter iStartedFragmentPagerAdapter;
+    Toolbar toolbar;
+    FloatingActionButton fab;
 
     @Nullable
     @Override
@@ -37,26 +39,57 @@ public class IStartedFragment extends Fragment implements BrowseCustomize {
             tabLayout.addTab(tabLayout.newTab().setText(title));
         }
         tabLayout.setupWithViewPager(viewPager);
-        viewPager.setAdapter(new IStartedFragmentPagerAdapter(getFragmentManager()));
+        pagerAdapter = new IStartedFragmentPagerAdapter(getFragmentManager());
+        viewPager.setAdapter(pagerAdapter);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if ( pagerAdapter.getItem(position) instanceof BrowseCustomize) {
+                    ((BrowseCustomize) pagerAdapter.getItem(position)).customizeToolbar(toolbar);
+                    ((BrowseCustomize) pagerAdapter.getItem(position)).customizeFab(fab);
+                } else {
+                    // default function
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        // TODO: 1/31/2019 need init position according last save
+        int position = 0;
+        viewPager.setCurrentItem(position);
     }
 
     // region implement of interface BrowseCustomize
     @Override
     public void customizeToolbar(Toolbar toolbar) {
+        this.toolbar = toolbar;
         toolbar.setTitle(getResources().getString(R.string.IStartedFragment_name));
+        if( pagerAdapter.getItem(viewPager.getCurrentItem()) instanceof BrowseCustomize){
+            ((BrowseCustomize) pagerAdapter.getItem(viewPager.getCurrentItem())).customizeToolbar(toolbar);
+        }
     }
 
     @Override
     public void customizeFab(FloatingActionButton fab) {
-        fab.show();
-        fab.setImageResource(R.drawable.ic_button_plus);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
+        this.fab = fab;
+        fab.hide();
+        if( pagerAdapter.getItem(viewPager.getCurrentItem()) instanceof BrowseCustomize){
+            ((BrowseCustomize) pagerAdapter.getItem(viewPager.getCurrentItem())).customizeFab(fab);
+        }
     }
     // endregion
 }

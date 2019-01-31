@@ -1,4 +1,4 @@
-package com.thumbstage.hydrogen.view.browse.published;
+package com.thumbstage.hydrogen.view.browse;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
@@ -9,13 +9,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.model.TopicInfo;
+import com.thumbstage.hydrogen.model.Topic;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class PublishedOpenedItemCardView extends CardView {
-    private TopicInfo topicInfo;
+public class BrowseItemCardView extends CardView {
+    private Topic topic;
 
     @BindView(R.id.publishedOpenedItem_setting)
     ImageView setting;
@@ -24,7 +24,7 @@ public class PublishedOpenedItemCardView extends CardView {
     @BindView(R.id.publishedOpenedItem_brief)
     TextView brief;
 
-    public PublishedOpenedItemCardView(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public BrowseItemCardView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
 
@@ -34,9 +34,9 @@ public class PublishedOpenedItemCardView extends CardView {
         ButterKnife.bind(this);
     }
 
-    public void setTopicInfo(TopicInfo topicInfo) {
-        this.topicInfo = topicInfo;
-        name.setText(topicInfo.name);
-        brief.setText(topicInfo.brief);
+    public void setTopic(Topic topic) {
+        this.topic = topic;
+        name.setText(topic.name);
+        brief.setText(topic.brief);
     }
 }
