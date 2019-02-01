@@ -12,6 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.utils.PathUtils;
+import com.thumbstage.hydrogen.utils.SoftInputUtils;
 import com.thumbstage.hydrogen.view.common.ConversationBottomBarEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -19,9 +21,6 @@ import org.greenrobot.eventbus.EventBus;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import cn.leancloud.chatkit.utils.LCIMPathUtils;
-import cn.leancloud.chatkit.utils.LCIMSoftInputUtils;
-import cn.leancloud.chatkit.view.LCIMRecordButton;
 
 public class ConversationBottomBar extends LinearLayout {
 
@@ -59,7 +58,7 @@ public class ConversationBottomBar extends LinearLayout {
      * 录音按钮
      */
     @BindView(R.id.input_bar_btn_record)
-    LCIMRecordButton recordBtn;
+    ConversationRecordButton recordBtn;
 
     /**
      * action layout
@@ -96,7 +95,7 @@ public class ConversationBottomBar extends LinearLayout {
             @Override
             public void onClick(View v) {
                 moreLayout.setVisibility(View.GONE);
-                LCIMSoftInputUtils.showSoftInput(getContext(), contentEditText);
+                SoftInputUtils.showSoftInput(getContext(), contentEditText);
             }
         });
     }
@@ -110,7 +109,7 @@ public class ConversationBottomBar extends LinearLayout {
                 (GONE == moreLayout.getVisibility() || GONE == actionLayout.getVisibility());
         moreLayout.setVisibility(showActionView ? VISIBLE : GONE);
         actionLayout.setVisibility(showActionView ? VISIBLE : GONE);
-        LCIMSoftInputUtils.hideSoftInput(getContext(), contentEditText);
+        SoftInputUtils.hideSoftInput(getContext(), contentEditText);
     }
 
     @OnClick(R.id.input_bar_btn_action)
@@ -147,14 +146,14 @@ public class ConversationBottomBar extends LinearLayout {
      * 初始化录音按钮
      */
     private void initRecordBtn() {
-        recordBtn.setSavePath(LCIMPathUtils.getRecordPathByCurrentTime(getContext()));
-        recordBtn.setRecordEventListener(new LCIMRecordButton.RecordEventListener() {
+        recordBtn.setSavePath(PathUtils.getRecordPathByCurrentTime(getContext()));
+        recordBtn.setRecordEventListener(new ConversationRecordButton.RecordEventListener() {
             @Override
             public void onFinishedRecord(final String audioPath, int secs) {
                 if (secs > 0)
                     EventBus.getDefault().post(
                             new ConversationBottomBarEvent(audioPath, "voice"));
-                recordBtn.setSavePath(LCIMPathUtils.getRecordPathByCurrentTime(getContext()));
+                recordBtn.setSavePath(PathUtils.getRecordPathByCurrentTime(getContext()));
             }
 
             @Override
@@ -174,7 +173,7 @@ public class ConversationBottomBar extends LinearLayout {
         keyboardBtn.setVisibility(View.GONE);
         moreLayout.setVisibility(View.GONE);
         contentEditText.requestFocus();
-        LCIMSoftInputUtils.showSoftInput(getContext(), contentEditText);
+        SoftInputUtils.showSoftInput(getContext(), contentEditText);
     }
 
     /**
@@ -186,7 +185,7 @@ public class ConversationBottomBar extends LinearLayout {
         voiceBtn.setVisibility(GONE);
         keyboardBtn.setVisibility(VISIBLE);
         moreLayout.setVisibility(View.GONE);
-        LCIMSoftInputUtils.hideSoftInput(getContext(), contentEditText);
+        SoftInputUtils.hideSoftInput(getContext(), contentEditText);
     }
 
     /**

@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1">
 
-        <cn.leancloud.chatkit.view.LCIMRecordButton
+        <com.thumbstage.hydrogen.view.create.ConversationRecordButton
             android:id="@+id/input_bar_btn_record"
             style="@style/lcim_input_bar_record_button_style"
             android:visibility="gone"/>
