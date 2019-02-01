@@ -1,12 +1,15 @@
 package com.thumbstage.hydrogen.view.create;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.ViewGroup;
 
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.AVIMReservedMessageType;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
+import com.thumbstage.hydrogen.utils.LogUtils;
+import com.thumbstage.hydrogen.view.common.component.chatkit.LCChatKit;
 import com.thumbstage.hydrogen.view.common.component.chatkit.viewholder.LCIMChatHolderOption;
 import com.thumbstage.hydrogen.view.common.component.chatkit.viewholder.LCIMChatItemAudioHolder;
 import com.thumbstage.hydrogen.view.common.component.chatkit.viewholder.LCIMChatItemHolder;
@@ -25,6 +28,8 @@ import java.util.Set;
  * 聊天的 Adapter，此处还有可优化的地方，稍后考虑一下提取出公共的 adapter
  */
 public class ConversationRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    final String TAG ="ConRecycAdapter";
 
     private final int ITEM_LEFT = 100;
     private final int ITEM_LEFT_TEXT = 101;
@@ -87,9 +92,10 @@ public class ConversationRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
      * @param message
      */
     public void addMessage(AVIMMessage message) {
-        if (messageIdSet.add(message.getMessageId())) {
+        //if (messageIdSet.add(message.getMessageId())) {
             messageList.add(message);
-        }
+            Log.i(TAG,"add message");
+        //}
     }
 
     public void updateMessage(AVIMMessage message) {
@@ -278,7 +284,7 @@ public class ConversationRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
      * @return
      */
     protected boolean fromMe(AVIMTypedMessage msg) {
-        String selfId = AVUser.getCurrentUser().getObjectId();
+        String selfId = LCChatKit.getInstance().getCurrentUserId();
         return msg.getFrom() != null && msg.getFrom().equals(selfId);
     }
 }

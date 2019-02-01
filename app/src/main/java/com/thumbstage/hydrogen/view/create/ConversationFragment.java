@@ -147,6 +147,7 @@ public class ConversationFragment extends Fragment {
                 }
             }
         });
+
     }
 
     private void scrollToBottom() {
