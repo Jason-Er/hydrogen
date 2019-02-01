@@ -10,11 +10,14 @@ import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
 
+import butterknife.ButterKnife;
+
 public class ConversationFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_conversation, container, false);
+        ButterKnife.bind(this, view);
         return view;
     }
 }
