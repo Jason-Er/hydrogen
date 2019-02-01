@@ -21,11 +21,11 @@ import java.util.Arrays;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import cn.leancloud.chatkit.activity.LCIMConversationFragment;
 
 public class CreateActivity extends AppCompatActivity {
     final String TAG = "CreateActivity";
-    AVIMConversation localConversation;
+    // AVIMConversation localConversation;
+    ConversationFragment conversationFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -37,6 +37,8 @@ public class CreateActivity extends AppCompatActivity {
         actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle(getResources().getString(R.string.create_activity_name));
+
+        conversationFragment = (ConversationFragment) getSupportFragmentManager().findFragmentById(R.id.activity_create_fragment);
 
         AVUser currentUser = AVUser.getCurrentUser();
         AVIMClient avimClient = AVIMClient.getInstance(currentUser);
@@ -52,7 +54,8 @@ public class CreateActivity extends AppCompatActivity {
                                 Log.i(TAG, "create a conversation");
                                 // AVIMTextMessage msg = new AVIMTextMessage();
                                 // msg.setText("Hello world");
-                                localConversation = conversation;
+                                // localConversation = conversation;
+                                conversationFragment.setConversation(conversation);
                                 /*
                                 conversation.sendMessage(msg, new AVIMConversationCallback() {
                                     @Override
