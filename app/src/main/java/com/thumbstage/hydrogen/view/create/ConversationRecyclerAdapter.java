@@ -3,23 +3,22 @@ package com.thumbstage.hydrogen.view.create;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
+import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.AVIMReservedMessageType;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
+import com.thumbstage.hydrogen.view.common.component.chatkit.viewholder.LCIMChatHolderOption;
+import com.thumbstage.hydrogen.view.common.component.chatkit.viewholder.LCIMChatItemAudioHolder;
+import com.thumbstage.hydrogen.view.common.component.chatkit.viewholder.LCIMChatItemHolder;
+import com.thumbstage.hydrogen.view.common.component.chatkit.viewholder.LCIMChatItemImageHolder;
+import com.thumbstage.hydrogen.view.common.component.chatkit.viewholder.LCIMChatItemLocationHolder;
+import com.thumbstage.hydrogen.view.common.component.chatkit.viewholder.LCIMChatItemTextHolder;
+import com.thumbstage.hydrogen.view.common.component.chatkit.viewholder.LCIMCommonViewHolder;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import cn.leancloud.chatkit.LCChatKit;
-import cn.leancloud.chatkit.viewholder.LCIMChatHolderOption;
-import cn.leancloud.chatkit.viewholder.LCIMChatItemAudioHolder;
-import cn.leancloud.chatkit.viewholder.LCIMChatItemHolder;
-import cn.leancloud.chatkit.viewholder.LCIMChatItemImageHolder;
-import cn.leancloud.chatkit.viewholder.LCIMChatItemLocationHolder;
-import cn.leancloud.chatkit.viewholder.LCIMChatItemTextHolder;
-import cn.leancloud.chatkit.viewholder.LCIMCommonViewHolder;
 
 /**
  * Created by wli on 15/8/13.
@@ -279,7 +278,7 @@ public class ConversationRecyclerAdapter extends RecyclerView.Adapter<RecyclerVi
      * @return
      */
     protected boolean fromMe(AVIMTypedMessage msg) {
-        String selfId = LCChatKit.getInstance().getCurrentUserId();
+        String selfId = AVUser.getCurrentUser().getObjectId();
         return msg.getFrom() != null && msg.getFrom().equals(selfId);
     }
 }

@@ -5,26 +5,19 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 
-import com.avos.avoscloud.AVUser;
-import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
-import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
-import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
-import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.view.common.component.chatkit.LCChatKit;
 
 import java.util.Arrays;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class CreateActivity extends AppCompatActivity {
     final String TAG = "CreateActivity";
-    // AVIMConversation localConversation;
     ConversationFragment conversationFragment;
 
     @Override
@@ -40,39 +33,16 @@ public class CreateActivity extends AppCompatActivity {
 
         conversationFragment = (ConversationFragment) getSupportFragmentManager().findFragmentById(R.id.activity_create_fragment);
 
-        AVUser currentUser = AVUser.getCurrentUser();
-        AVIMClient avimClient = AVIMClient.getInstance(currentUser);
-        avimClient.open(new AVIMClientCallback() {
-            @Override
-            public void done(AVIMClient client, AVIMException e) {
-                if( e == null ) {
-                    Log.i(TAG, "can conversation");
-                    client.createConversation(Arrays.asList(""), "robot", null, new AVIMConversationCreatedCallback() {
-                        @Override
-                        public void done(AVIMConversation conversation, AVIMException e) {
-                            if( e == null ) {
-                                Log.i(TAG, "create a conversation");
-                                // AVIMTextMessage msg = new AVIMTextMessage();
-                                // msg.setText("Hello world");
-                                // localConversation = conversation;
-                                conversationFragment.setConversation(conversation);
-                                /*
-                                conversation.sendMessage(msg, new AVIMConversationCallback() {
-                                    @Override
-                                    public void done(AVIMException e) {
-                                        if(e == null) {
-                                            Log.d(TAG, "send ok!");
-                                        }
-                                    }
-                                });
-                                */
-                            }
+        LCChatKit.getInstance().getClient().createConversation(
+                Arrays.asList(""), "create", null, false, false, new AVIMConversationCreatedCallback() {
+                    @Override
+                    public void done(AVIMConversation avimConversation, AVIMException e) {
+                        if( e == null ) {
+                            Log.i(TAG, "create a conversation");
+                            conversationFragment.setConversation(avimConversation);
                         }
-                    });
-                }
-            }
-        });
-
+                    }
+                });
     }
 
     @Override

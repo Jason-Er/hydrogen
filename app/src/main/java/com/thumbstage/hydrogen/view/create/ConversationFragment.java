@@ -70,6 +70,7 @@ public class ConversationFragment extends Fragment {
     public void onResponseMessageEvent(ConversationBottomBarEvent event) {
         switch (event.getMessage()) {
             case "text":
+                sendText((String) event.getData());
                 break;
             case "voice":
                 break;

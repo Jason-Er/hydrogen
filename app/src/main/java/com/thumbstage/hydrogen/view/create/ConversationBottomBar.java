@@ -112,7 +112,7 @@ public class ConversationBottomBar extends LinearLayout {
         SoftInputUtils.hideSoftInput(getContext(), contentEditText);
     }
 
-    @OnClick(R.id.input_bar_btn_action)
+    @OnClick(R.id.input_bar_btn_send_text)
     public void sendTextBtn(View view) {
         String content = contentEditText.getText().toString();
         if (TextUtils.isEmpty(content)) {
