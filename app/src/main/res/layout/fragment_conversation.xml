@@ -16,7 +16,7 @@
             android:layout_height="match_parent"/>
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <cn.leancloud.chatkit.view.LCIMInputBottomBar
+    <com.thumbstage.hydrogen.view.create.ConversationBottomBar
         android:id="@+id/fragment_conversation_inputbottombar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

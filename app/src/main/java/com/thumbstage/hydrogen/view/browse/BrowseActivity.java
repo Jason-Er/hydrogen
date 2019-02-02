@@ -15,7 +15,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVUser;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.view.account.AccountActivity;
@@ -49,9 +48,6 @@ public class BrowseActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse);
-        AVOSCloud.initialize(this,"mz0Nlz1o64kqyukS7pyj4sRe-gzGzoHsz",
-                "o5CboiXK6ONj59aq0lMPJGS3");
-        AVOSCloud.setDebugLogEnabled(true);
 
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
@@ -127,7 +123,7 @@ public class BrowseActivity extends AppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.browse, menu);
+        getMenuInflater().inflate(R.menu.menu_browse, menu);
         return true;
     }
 
