@@ -49,11 +49,6 @@ public class BrowseActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse);
-        /*
-        AVOSCloud.initialize(this,"mz0Nlz1o64kqyukS7pyj4sRe-gzGzoHsz",
-                "o5CboiXK6ONj59aq0lMPJGS3");
-        AVOSCloud.setDebugLogEnabled(true);
-        */
 
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
