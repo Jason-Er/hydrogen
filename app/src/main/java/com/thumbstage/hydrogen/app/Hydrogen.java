@@ -3,7 +3,8 @@ package com.thumbstage.hydrogen.app;
 import android.app.Application;
 
 import com.avos.avoscloud.AVOSCloud;
-import com.thumbstage.hydrogen.view.common.component.chatkit.LCChatKit;
+
+import cn.leancloud.chatkit.LCChatKit;
 
 public class Hydrogen extends Application {
 

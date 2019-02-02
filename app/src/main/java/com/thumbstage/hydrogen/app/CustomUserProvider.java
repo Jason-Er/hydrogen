@@ -1,11 +1,11 @@
 package com.thumbstage.hydrogen.app;
 
-import com.thumbstage.hydrogen.view.common.component.chatkit.LCChatKitUser;
-import com.thumbstage.hydrogen.view.common.component.chatkit.LCChatProfileProvider;
-import com.thumbstage.hydrogen.view.common.component.chatkit.LCChatProfilesCallBack;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.leancloud.chatkit.LCChatKitUser;
+import cn.leancloud.chatkit.LCChatProfileProvider;
+import cn.leancloud.chatkit.LCChatProfilesCallBack;
 
 public class CustomUserProvider implements LCChatProfileProvider {
 

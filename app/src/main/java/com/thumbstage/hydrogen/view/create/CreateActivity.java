@@ -10,15 +10,16 @@ import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.view.common.component.chatkit.LCChatKit;
 
 import java.util.Arrays;
 
 import butterknife.ButterKnife;
+import cn.leancloud.chatkit.LCChatKit;
+import cn.leancloud.chatkit.activity.LCIMConversationFragment;
 
 public class CreateActivity extends AppCompatActivity {
     final String TAG = "CreateActivity";
-    ConversationFragment conversationFragment;
+    LCIMConversationFragment conversationFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,7 +32,7 @@ public class CreateActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle(getResources().getString(R.string.create_activity_name));
 
-        conversationFragment = (ConversationFragment) getSupportFragmentManager().findFragmentById(R.id.activity_create_fragment);
+        conversationFragment = (LCIMConversationFragment) getSupportFragmentManager().findFragmentById(R.id.activity_create_fragment);
 
         LCChatKit.getInstance().getClient().createConversation(
                 Arrays.asList(""), "create", null, false, false, new AVIMConversationCreatedCallback() {

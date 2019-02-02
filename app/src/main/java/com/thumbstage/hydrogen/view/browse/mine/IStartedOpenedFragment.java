@@ -25,11 +25,12 @@ import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.view.browse.BrowseCustomize;
 import com.thumbstage.hydrogen.view.browse.BrowseRecyclerViewAdapter;
-import com.thumbstage.hydrogen.view.common.component.chatkit.LCChatKit;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
 import com.thumbstage.hydrogen.viewmodel.BrowseViewModel;
 
 import java.util.List;
+
+import cn.leancloud.chatkit.LCChatKit;
 
 
 public class IStartedOpenedFragment extends Fragment implements BrowseCustomize {
