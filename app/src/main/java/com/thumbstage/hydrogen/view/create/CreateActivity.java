@@ -9,8 +9,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
+import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.utils.ClassDBUtil;
@@ -39,17 +42,36 @@ public class CreateActivity extends AppCompatActivity {
 
         conversationFragment = (LCIMConversationFragment) getSupportFragmentManager().findFragmentById(R.id.activity_create_fragment);
 
-        LCChatKit.getInstance().getClient().createConversation(
-                Arrays.asList(""), "start", null, false, false, new AVIMConversationCreatedCallback() {
-                    @Override
-                    public void done(AVIMConversation avimConversation, AVIMException e) {
-                        if( e == null ) {
-                            Log.i(TAG, "create a conversation");
-                            conversation = avimConversation;
-                            conversationFragment.setConversation(avimConversation);
+        if( LCChatKit.getInstance().getClient() == null ) {
+            LCChatKit.getInstance().open(AVUser.getCurrentUser().getObjectId(), new AVIMClientCallback() {
+                @Override
+                public void done(AVIMClient client, AVIMException e) {
+                    LCChatKit.getInstance().getClient().createConversation(
+                            Arrays.asList(""), "start", null, false, false, new AVIMConversationCreatedCallback() {
+                                @Override
+                                public void done(AVIMConversation avimConversation, AVIMException e) {
+                                    if (e == null) {
+                                        Log.i(TAG, "create a conversation");
+                                        conversation = avimConversation;
+                                        conversationFragment.setConversation(avimConversation);
+                                    }
+                                }
+                            });
+                }
+            });
+        } else {
+            LCChatKit.getInstance().getClient().createConversation(
+                    Arrays.asList(""), "start", null, false, false, new AVIMConversationCreatedCallback() {
+                        @Override
+                        public void done(AVIMConversation avimConversation, AVIMException e) {
+                            if (e == null) {
+                                Log.i(TAG, "create a conversation");
+                                conversation = avimConversation;
+                                conversationFragment.setConversation(avimConversation);
+                            }
                         }
-                    }
-                });
+                    });
+        }
     }
 
     @Override

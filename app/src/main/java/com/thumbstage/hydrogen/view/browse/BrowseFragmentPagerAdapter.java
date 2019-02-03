@@ -2,7 +2,7 @@ package com.thumbstage.hydrogen.view.browse;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.thumbstage.hydrogen.view.browse.mine.IAttendedFragment;
 import com.thumbstage.hydrogen.view.browse.mine.IStartedFragment;
@@ -12,7 +12,7 @@ import com.thumbstage.hydrogen.view.browse.published.PublishedOpenedFragment;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BrowseFragmentPagerAdapter extends FragmentPagerAdapter {
+public class BrowseFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     List<Fragment> fragmentList;
 

@@ -1,14 +1,13 @@
 package com.thumbstage.hydrogen.view.browse.published;
 
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.view.browse.BrowseCustomize;
 
-import cn.leancloud.chatkit.activity.LCIMConversationListFragment;
-
-public class PublishedClosedFragment extends LCIMConversationListFragment implements BrowseCustomize {
+public class PublishedClosedFragment extends Fragment implements BrowseCustomize {
 
     // region implement of interface BrowseCustomize
     @Override

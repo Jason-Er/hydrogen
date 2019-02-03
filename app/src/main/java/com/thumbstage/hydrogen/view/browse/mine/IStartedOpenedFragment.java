@@ -1,25 +1,71 @@
 package com.thumbstage.hydrogen.view.browse.mine;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Toast;
+import android.view.ViewGroup;
 
-import com.avos.avoscloud.AVUser;
-import com.avos.avoscloud.im.v2.AVIMClient;
-import com.avos.avoscloud.im.v2.AVIMException;
-import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
+import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.view.browse.BrowseCustomize;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
+import com.thumbstage.hydrogen.viewmodel.BrowseViewModel;
+
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import cn.leancloud.chatkit.adapter.LCIMCommonListAdapter;
+import cn.leancloud.chatkit.view.LCIMDividerItemDecoration;
+import cn.leancloud.chatkit.viewholder.LCIMConversationItemHolder;
 
 
-import cn.leancloud.chatkit.LCChatKit;
-import cn.leancloud.chatkit.activity.LCIMConversationListFragment;
+public class IStartedOpenedFragment extends Fragment implements BrowseCustomize {
 
+    @BindView(R.id.fragment_conversation_srl_pullrefresh)
+    SwipeRefreshLayout refreshLayout;
+    @BindView(R.id.fragment_conversation_srl_view)
+    RecyclerView recyclerView;
 
-public class IStartedOpenedFragment extends LCIMConversationListFragment implements BrowseCustomize {
+    BrowseViewModel viewModel;
+
+    LCIMCommonListAdapter<AVIMConversation> itemAdapter;
+    LinearLayoutManager layoutManager;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.lcim_conversation_list_fragment, container, false);
+        ButterKnife.bind(this, view);
+
+        refreshLayout.setEnabled(false);
+        layoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.addItemDecoration(new LCIMDividerItemDecoration(getActivity()));
+        itemAdapter = new LCIMCommonListAdapter<AVIMConversation>(LCIMConversationItemHolder.class);
+        recyclerView.setAdapter(itemAdapter);
+
+        viewModel = ViewModelProviders.of(getActivity()).get(BrowseViewModel.class);
+        viewModel.getIStartedOpened().observe(getActivity(), new Observer<List<AVIMConversation>>() {
+            @Override
+            public void onChanged(@Nullable List<AVIMConversation> conversations) {
+                itemAdapter.setDataList(conversations);
+                itemAdapter.notifyDataSetChanged();
+            }
+        });
+        viewModel.getIStartedOpenedByPageNum(0);
+
+        return view;
+    }
 
     // region implement of interface BrowseCustomize
     @Override
@@ -34,18 +80,8 @@ public class IStartedOpenedFragment extends LCIMConversationListFragment impleme
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String currentUserId = AVUser.getCurrentUser().getObjectId();
-                LCChatKit.getInstance().open( currentUserId, new AVIMClientCallback() {
-                    @Override
-                    public void done(AVIMClient avimClient, AVIMException e) {
-                        if (null == e) {
-                            Intent intent = new Intent(getActivity(), CreateActivity.class);
-                            startActivity(intent);
-                        } else {
-                            Toast.makeText(getActivity(), e.toString(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+                Intent intent = new Intent(getActivity(), CreateActivity.class);
+                startActivity(intent);
             }
         });
     }
