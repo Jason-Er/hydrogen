@@ -10,9 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.view.browse.IAdapterFunction;
 import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
 
-public class IAttendedFragment extends Fragment implements IBrowseCustomize {
+public class IAttendedFragment extends Fragment implements IBrowseCustomize, IAdapterFunction {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -29,6 +30,13 @@ public class IAttendedFragment extends Fragment implements IBrowseCustomize {
     @Override
     public void customizeFab(FloatingActionButton fab) {
         fab.hide();
+    }
+    // endregion
+
+    // region implement of interface IAdapterFunction
+    @Override
+    public long getItemId() {
+        return 2;
     }
     // endregion
 }

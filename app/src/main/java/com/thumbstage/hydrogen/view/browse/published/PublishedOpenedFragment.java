@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.view.browse.IAdapterFunction;
 import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
 import com.thumbstage.hydrogen.viewmodel.BrowseViewModel;
 
@@ -28,11 +30,11 @@ import cn.leancloud.chatkit.adapter.LCIMCommonListAdapter;
 import cn.leancloud.chatkit.view.LCIMDividerItemDecoration;
 import cn.leancloud.chatkit.viewholder.LCIMConversationItemHolder;
 
-public class PublishedOpenedFragment extends Fragment implements IBrowseCustomize {
+public class PublishedOpenedFragment extends Fragment implements IBrowseCustomize, IAdapterFunction {
 
-    @BindView(R.id.fragment_conversation_srl_pullrefresh)
+    @BindView(R.id.fragment_publishedopened_pullrefresh)
     SwipeRefreshLayout refreshLayout;
-    @BindView(R.id.fragment_conversation_srl_view)
+    @BindView(R.id.fragment_publishedopened_recycler)
     RecyclerView recyclerView;
 
     BrowseViewModel viewModel;
@@ -43,13 +45,13 @@ public class PublishedOpenedFragment extends Fragment implements IBrowseCustomiz
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.lcim_conversation_list_fragment, container, false);
+        View view = inflater.inflate(R.layout.fragment_publishedopened, container, false);
         ButterKnife.bind(this, view);
 
         refreshLayout.setEnabled(false);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.addItemDecoration(new LCIMDividerItemDecoration(getActivity()));
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
         itemAdapter = new LCIMCommonListAdapter<AVIMConversation>(LCIMConversationItemHolder.class);
         recyclerView.setAdapter(itemAdapter);
 
@@ -75,6 +77,13 @@ public class PublishedOpenedFragment extends Fragment implements IBrowseCustomiz
     @Override
     public void customizeFab(FloatingActionButton fab) {
         fab.hide();
+    }
+    // endregion
+
+    // region implement of interface IAdapterFunction
+    @Override
+    public long getItemId() {
+        return 1;
     }
     // endregion
 }
