@@ -14,6 +14,7 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.LogInCallback;
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.app.User;
 import com.thumbstage.hydrogen.view.common.SignEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -56,6 +57,7 @@ public class SignInFragment extends Fragment {
                 if( e == null ) {
                     SignEvent event = new SignEvent(user, "signUser");
                     EventBus.getDefault().post(event);
+                    User.getInstance().setAvUser(user);
                     ((SignActivity) getActivity()).onSupportNavigateUp();
                 } else {
                     Toast toast = Toast.makeText(getContext(), getContext().getString(R.string.wrong_name_password), Toast.LENGTH_SHORT);

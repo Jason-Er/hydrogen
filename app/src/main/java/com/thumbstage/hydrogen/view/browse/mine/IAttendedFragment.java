@@ -10,9 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.view.browse.BrowseCustomize;
+import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
 
-public class IAttendedFragment extends Fragment implements BrowseCustomize {
+public class IAttendedFragment extends Fragment implements IBrowseCustomize {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -20,7 +20,7 @@ public class IAttendedFragment extends Fragment implements BrowseCustomize {
         return rootView;
     }
 
-    // region implement of interface BrowseCustomize
+    // region implement of interface IBrowseCustomize
     @Override
     public void customizeToolbar(Toolbar toolbar) {
         toolbar.setTitle(getResources().getString(R.string.IAttendedFragment_name));

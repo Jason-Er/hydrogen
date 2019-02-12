@@ -17,6 +17,7 @@ import android.view.MenuItem;
 
 import com.avos.avoscloud.AVUser;
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.app.User;
 import com.thumbstage.hydrogen.view.account.AccountActivity;
 import com.thumbstage.hydrogen.view.common.SignEvent;
 import com.thumbstage.hydrogen.view.sign.SignActivity;
@@ -94,9 +95,9 @@ public class BrowseActivity extends AppCompatActivity
 
             @Override
             public void onPageSelected(int position) {
-                if ( pagerAdapter.getItem(position) instanceof BrowseCustomize) {
-                    ((BrowseCustomize) pagerAdapter.getItem(position)).customizeToolbar(toolbar);
-                    ((BrowseCustomize) pagerAdapter.getItem(position)).customizeFab(fab);
+                if ( pagerAdapter.getItem(position) instanceof IBrowseCustomize) {
+                    ((IBrowseCustomize) pagerAdapter.getItem(position)).customizeToolbar(toolbar);
+                    ((IBrowseCustomize) pagerAdapter.getItem(position)).customizeFab(fab);
                 } else {
                     // default function
                 }
@@ -118,6 +119,12 @@ public class BrowseActivity extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        User.getInstance().customize(pagerAdapter);
     }
 
     @Override

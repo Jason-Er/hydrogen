@@ -46,16 +46,20 @@ public class BrowseViewModel extends ViewModel {
                         convIdList.add(conversationId);
                     }
                     if( LCChatKit.getInstance().getClient() == null ) {
-                        LCChatKit.getInstance().open(AVUser.getCurrentUser().getObjectId(), new AVIMClientCallback() {
-                            @Override
-                            public void done(AVIMClient client, AVIMException e) {
-                                List<AVIMConversation> conversationList = new ArrayList<>();
-                                for (String convId : convIdList) {
-                                    conversationList.add( LCChatKit.getInstance().getClient().getConversation(convId) );
+                        if(AVUser.getCurrentUser() != null) {
+                            LCChatKit.getInstance().open(AVUser.getCurrentUser().getObjectId(), new AVIMClientCallback() {
+                                @Override
+                                public void done(AVIMClient client, AVIMException e) {
+                                    List<AVIMConversation> conversationList = new ArrayList<>();
+                                    for (String convId : convIdList) {
+                                        conversationList.add(LCChatKit.getInstance().getClient().getConversation(convId));
+                                    }
+                                    publishedOpened.setValue(conversationList);
                                 }
-                                publishedOpened.setValue(conversationList);
-                            }
-                        });
+                            });
+                        } else {
+                            publishedOpened.setValue(null);
+                        }
                     } else {
                         List<AVIMConversation> conversationList = new ArrayList<>();
                         for (String convId : convIdList) {

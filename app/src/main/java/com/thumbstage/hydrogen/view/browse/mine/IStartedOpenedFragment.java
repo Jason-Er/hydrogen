@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.view.browse.BrowseCustomize;
+import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
 import com.thumbstage.hydrogen.viewmodel.BrowseViewModel;
 
@@ -30,7 +30,7 @@ import cn.leancloud.chatkit.view.LCIMDividerItemDecoration;
 import cn.leancloud.chatkit.viewholder.LCIMConversationItemHolder;
 
 
-public class IStartedOpenedFragment extends Fragment implements BrowseCustomize {
+public class IStartedOpenedFragment extends Fragment implements IBrowseCustomize {
 
     @BindView(R.id.fragment_conversation_srl_pullrefresh)
     SwipeRefreshLayout refreshLayout;
@@ -67,7 +67,7 @@ public class IStartedOpenedFragment extends Fragment implements BrowseCustomize 
         return view;
     }
 
-    // region implement of interface BrowseCustomize
+    // region implement of interface IBrowseCustomize
     @Override
     public void customizeToolbar(Toolbar toolbar) {
 

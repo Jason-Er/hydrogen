@@ -14,15 +14,10 @@ import java.util.List;
 
 public class BrowseFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
-    List<Fragment> fragmentList;
+    private List<Fragment> fragmentList = null;
 
     public BrowseFragmentPagerAdapter(FragmentManager fm) {
         super(fm);
-        fragmentList=new ArrayList<>();
-        fragmentList.add(new PublishedClosedFragment());
-        fragmentList.add(new PublishedOpenedFragment());
-        fragmentList.add(new IAttendedFragment());
-        fragmentList.add(new IStartedFragment());
     }
 
     @Override
@@ -32,6 +27,11 @@ public class BrowseFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return fragmentList.size();
+        return fragmentList == null ? 0 : fragmentList.size();
+    }
+
+    public void setFragmentList(List<Fragment> fragmentList) {
+        this.fragmentList = fragmentList;
+        notifyDataSetChanged();
     }
 }
