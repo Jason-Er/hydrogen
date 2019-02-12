@@ -35,5 +35,6 @@
     <string name="create_activity_name">create</string>
     <string name="action_ok">OK</string>
     <string name="action_publish">publish</string>
+    <string name="item_topic_setting">topic setting</string>
 
 </resources>

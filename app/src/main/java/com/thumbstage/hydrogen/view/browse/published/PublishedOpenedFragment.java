@@ -18,6 +18,8 @@ import android.view.ViewGroup;
 
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.model.Topic;
+import com.thumbstage.hydrogen.view.browse.BrowseRecyclerViewAdapter;
 import com.thumbstage.hydrogen.view.browse.IAdapterFunction;
 import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
 import com.thumbstage.hydrogen.viewmodel.BrowseViewModel;
@@ -39,7 +41,7 @@ public class PublishedOpenedFragment extends Fragment implements IBrowseCustomiz
 
     BrowseViewModel viewModel;
 
-    LCIMCommonListAdapter<AVIMConversation> itemAdapter;
+    BrowseRecyclerViewAdapter recyclerViewAdapter;
     LinearLayoutManager layoutManager;
 
     @Nullable
@@ -52,15 +54,14 @@ public class PublishedOpenedFragment extends Fragment implements IBrowseCustomiz
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
-        itemAdapter = new LCIMCommonListAdapter<AVIMConversation>(LCIMConversationItemHolder.class);
-        recyclerView.setAdapter(itemAdapter);
+        recyclerViewAdapter = new BrowseRecyclerViewAdapter();
+        recyclerView.setAdapter(recyclerViewAdapter);
 
         viewModel = ViewModelProviders.of(getActivity()).get(BrowseViewModel.class);
-        viewModel.getPublishedOpened().observe(getActivity(), new Observer<List<AVIMConversation>>() {
+        viewModel.getPublishedOpened().observe(getActivity(), new Observer<List<Topic>>() {
             @Override
-            public void onChanged(@Nullable List<AVIMConversation> conversations) {
-                itemAdapter.setDataList(conversations);
-                itemAdapter.notifyDataSetChanged();
+            public void onChanged(@Nullable List<Topic> topics) {
+                recyclerViewAdapter.setTopics(topics);
             }
         });
         viewModel.getPublishedOpenedByPageNum(0);
