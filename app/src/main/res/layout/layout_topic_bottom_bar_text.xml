@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1">
 
-        <com.thumbstage.hydrogen.view.create.ConversationRecordButton
+        <com.thumbstage.hydrogen.view.create.fragment.VoiceRecordButton
             android:id="@+id/input_bar_btn_record"
             style="@style/lcim_input_bar_record_button_style"
             android:visibility="gone"/>

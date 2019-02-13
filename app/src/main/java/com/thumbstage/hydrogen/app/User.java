@@ -60,25 +60,16 @@ public class User implements IPagerAdapterCustomize {
 
     public void setAvUser(AVUser avUser) {
         this.avUser = avUser;
-        Set<Privilege> privileges = null;
-        if(avUser == null) {
-            privileges = new LinkedHashSet<Privilege>() {
-                {
-                    add(Privilege.BROWSE_PUBLISHEDCLOSED);
-                    add(Privilege.BROWSE_PUBLISHEDOPENED);
-                    add(Privilege.BROWSE_IATTENDED);
-                }
-            };
-        } else {
+        Set<Privilege> privileges = new LinkedHashSet<Privilege>() {
+            {
+                add(Privilege.BROWSE_PUBLISHEDCLOSED);
+            }
+        };
+        if( avUser != null ) {
             // TODO: 2/12/2019 needing fetch privileges of this user
-            privileges = new LinkedHashSet<Privilege>() {
-                {
-                    add(Privilege.BROWSE_PUBLISHEDCLOSED);
-                    add(Privilege.BROWSE_PUBLISHEDOPENED);
-                    add(Privilege.BROWSE_ISTARTED);
-                    add(Privilege.BROWSE_IATTENDED);
-                }
-            };
+            privileges.add(Privilege.BROWSE_PUBLISHEDOPENED);
+            privileges.add(Privilege.BROWSE_ISTARTED);
+            privileges.add(Privilege.BROWSE_IATTENDED);
         }
         updateUserPrivileges(privileges);
     }
