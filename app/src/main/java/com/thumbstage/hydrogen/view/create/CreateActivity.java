@@ -13,6 +13,7 @@ import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.app.User;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.view.create.fragment.TopicFragment;
 
@@ -41,10 +42,10 @@ public class CreateActivity extends AppCompatActivity {
 
         Topic topic = getIntent().getParcelableExtra("Topic");
         if( topic != null ) { // use this topic
-            conversation = LCChatKit.getInstance().getClient().getConversation(topic.getConversation_id());
+            conversation = User.getInstance().getClient().getConversation(topic.getConversation_id());
             topicFragment.setConversation(conversation);
         } else { // create one
-            LCChatKit.getInstance().getClient().createConversation(
+            User.getInstance().getClient().createConversation(
                     Arrays.asList(""), "start", null, false, false, new AVIMConversationCreatedCallback() {
                         @Override
                         public void done(AVIMConversation avimConversation, AVIMException e) {

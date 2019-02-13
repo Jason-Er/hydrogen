@@ -1,8 +1,10 @@
 package com.thumbstage.hydrogen.app;
 
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 
 import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.im.v2.AVIMClient;
 import com.thumbstage.hydrogen.view.browse.BrowseFragmentPagerAdapter;
 import com.thumbstage.hydrogen.view.browse.mine.IAttendedFragment;
 import com.thumbstage.hydrogen.view.browse.mine.IStartedFragment;
@@ -80,4 +82,19 @@ public class User implements IPagerAdapterCustomize {
             privilegeSet.add(pr);
         }
     }
+
+    public AVIMClient getClient() {
+        if (!TextUtils.isEmpty(avUser.getObjectId()) && avUser != null) {
+            return AVIMClient.getInstance(avUser.getObjectId());
+        }
+        return null;
+    }
+
+    public String getCurrentUserId() {
+        if(avUser != null) {
+            return avUser.getObjectId();
+        }
+        return null;
+    }
+
 }

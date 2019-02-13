@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.AVIMReservedMessageType;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
+import com.thumbstage.hydrogen.app.User;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -279,7 +280,7 @@ public class TopicRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
      * @return
      */
     protected boolean fromMe(AVIMTypedMessage msg) {
-        String selfId = LCChatKit.getInstance().getCurrentUserId();
+        String selfId = User.getInstance().getCurrentUserId();
         return msg.getFrom() != null && msg.getFrom().equals(selfId);
     }
 }
