@@ -12,12 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.view.browse.IAdapterFunction;
 import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class IStartedFragment extends Fragment implements IBrowseCustomize {
+public class IStartedFragment extends Fragment implements IBrowseCustomize, IAdapterFunction {
 
     @BindView(R.id.fragment_istarted_tablayout)
     TabLayout tabLayout;
@@ -82,6 +83,13 @@ public class IStartedFragment extends Fragment implements IBrowseCustomize {
         if( pagerAdapter.getItem(viewPager.getCurrentItem()) instanceof IBrowseCustomize){
             ((IBrowseCustomize) pagerAdapter.getItem(viewPager.getCurrentItem())).customizeFab(fab);
         }
+    }
+    // endregion
+
+    // region implement of interface IAdapterFunction
+    @Override
+    public long getItemId() {
+        return 3;
     }
     // endregion
 }
