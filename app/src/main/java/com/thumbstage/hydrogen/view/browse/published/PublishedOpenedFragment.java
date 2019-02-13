@@ -16,10 +16,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Topic;
-import com.thumbstage.hydrogen.view.browse.BrowseRecyclerViewAdapter;
 import com.thumbstage.hydrogen.view.browse.IAdapterFunction;
 import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
 import com.thumbstage.hydrogen.viewmodel.BrowseViewModel;
@@ -28,9 +26,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import cn.leancloud.chatkit.adapter.LCIMCommonListAdapter;
-import cn.leancloud.chatkit.view.LCIMDividerItemDecoration;
-import cn.leancloud.chatkit.viewholder.LCIMConversationItemHolder;
 
 public class PublishedOpenedFragment extends Fragment implements IBrowseCustomize, IAdapterFunction {
 
@@ -41,7 +36,7 @@ public class PublishedOpenedFragment extends Fragment implements IBrowseCustomiz
 
     BrowseViewModel viewModel;
 
-    BrowseRecyclerViewAdapter recyclerViewAdapter;
+    PublishedOpenedRecyclerAdapter recyclerViewAdapter;
     LinearLayoutManager layoutManager;
 
     @Nullable
@@ -54,7 +49,7 @@ public class PublishedOpenedFragment extends Fragment implements IBrowseCustomiz
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
-        recyclerViewAdapter = new BrowseRecyclerViewAdapter();
+        recyclerViewAdapter = new PublishedOpenedRecyclerAdapter();
         recyclerView.setAdapter(recyclerViewAdapter);
 
         viewModel = ViewModelProviders.of(getActivity()).get(BrowseViewModel.class);
