@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Topic;
 
@@ -39,6 +40,7 @@ public class BrowseItemCardView extends CardView {
         this.topic = topic;
         name.setText(topic.getName());
         brief.setText(topic.getBrief());
+        Glide.with(getContext()).load(topic.getSetting_url()).into(setting);
     }
 
 }

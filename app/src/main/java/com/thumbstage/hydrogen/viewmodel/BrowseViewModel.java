@@ -46,15 +46,17 @@ public class BrowseViewModel extends ViewModel {
                 if(avException == null) {
                     for(AVObject avObject: avObjects) {
                         Log.i("BrowseViewModel", "OK");
-                        // AVFile avFile = avObject.getAVFile("setting");
+                        AVFile avFile = avObject.getAVFile("setting");
                         String name = (String) avObject.get("name");
                         String brief = (String) avObject.get("brief");
                         AVObject conversation = avObject.getAVObject("conversation");
                         String conversation_id = conversation.getObjectId();
+                        String setting_url = avFile.getUrl();
                         Topic topic = Topic.Builder()
                                 .setBrief(brief)
                                 .setConversation_id(conversation_id)
-                                .setName(name);
+                                .setName(name)
+                                .setSetting_url(setting_url);
                         topics.add(topic);
                     }
                     publishedOpened.setValue(topics);
