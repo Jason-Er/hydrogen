@@ -35,6 +35,7 @@ import com.thumbstage.hydrogen.utils.NotificationUtils;
 import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.view.common.ConversationBottomBarEvent;
 import com.thumbstage.hydrogen.view.common.ICallBack;
+import com.thumbstage.hydrogen.view.create.ICreateActivityFunction;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -47,7 +48,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class TopicFragment extends Fragment {
+public class TopicFragment extends Fragment implements ICreateActivityFunction {
 
     final String TAG = "TopicFragment";
 
@@ -56,6 +57,19 @@ public class TopicFragment extends Fragment {
     @BindView(R.id.fragment_topic_pullrefresh)
     SwipeRefreshLayout refreshLayout;
 
+    enum roleType {
+        CREATE, ATTEND, CONTINUE
+    }
+
+    Map<roleType, RoleBase> roleMap = new HashMap<roleType, RoleBase>(){
+        {
+            put(roleType.CREATE, new RoleCreateTopic());
+            put(roleType.ATTEND, new RoleAttendTopic());
+            put(roleType.CONTINUE, new RoleContinueTopic());
+        }
+    };
+
+    RoleBase currentRole = null;
     AVIMConversation imConversation;
     LinearLayoutManager layoutManager;
     TopicRecyclerAdapter itemAdapter;
@@ -85,49 +99,10 @@ public class TopicFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onResponseMessageEvent(final ConversationBottomBarEvent event) {
-        if(imConversation == null) {
-            createConversation(new ICallBack() {
-                @Override
-                public void doAfter() {
-                    addTopicDialogue(imConversation.getConversationId(), topic.getDialogue());
-                    handleEvent(event);
-                }
-            });
-        } else {
-            handleEvent(event);
-        }
+        currentRole.handleBootomBarEvent(event);
     }
 
-    private void handleEvent(ConversationBottomBarEvent event) {
-        switch (event.getMessage()) {
-            case "text":
-                sendText((String) event.getData());
-                break;
-            case "voice":
-
-                break;
-        }
-    }
-
-    protected void createConversation(final ICallBack iCallBack) {
-        User.getInstance().getClient().createConversation(topic.getMembers(), topic.getName(), null, new AVIMConversationCreatedCallback() {
-            @Override
-            public void done(AVIMConversation conversation, AVIMException e) {
-                if(e == null) {
-                    imConversation = conversation;
-                    iCallBack.doAfter();
-                }
-            }
-        });
-    }
-
-    protected void addTopicDialogue(String conversationId, List<Line> dialogue) {
-        List<Map> data = DataConvertUtil.convert2AVObject(dialogue);
-        AVObject conversation = AVObject.createWithoutData("_Conversation", conversationId);
-        conversation.addAllUnique("dialogue", data);
-        conversation.saveInBackground();
-    }
-
+    /*
     protected void addOneLine(String conversationId, Line line) {
         Map data = DataConvertUtil.convert2AVObject(line);
         AVObject conversation = AVObject.createWithoutData("_Conversation", conversationId);
@@ -136,6 +111,7 @@ public class TopicFragment extends Fragment {
     }
 
     public void setConversation(final AVIMConversation conversation) {
+
             imConversation = conversation;
         if( conversation != null ) { // IM state
             refreshLayout.setEnabled(true);
@@ -179,44 +155,10 @@ public class TopicFragment extends Fragment {
         });
     }
 
-    protected void sendText(String content) {
-        AVIMTextMessage message = new AVIMTextMessage();
-        message.setText(content);
-        Map<String, Object> attributes = new HashMap<String, Object>();
-        attributes.put("type", LineType.LT_DIALOGUE.name());
-        message.setAttrs(attributes);
-        sendMessage(message);
-    }
-
-    public void sendMessage(AVIMMessage message) {
-        sendMessage(message, true);
-    }
-
-    public void sendMessage(AVIMMessage message, boolean addToList) {
-        if (addToList) {
-            itemAdapter.addMessage(message);
-        }
-        itemAdapter.notifyDataSetChanged();
-        scrollToBottom();
-        if( imConversation != null) {
-            AVIMMessageOption option = new AVIMMessageOption();
-            option.setReceipt(true);
-            imConversation.sendMessage(message, option, new AVIMConversationCallback() {
-                @Override
-                public void done(AVIMException e) {
-                    itemAdapter.notifyDataSetChanged();
-                    if (null != e) {
-                        LogUtils.logException(e);
-                    }
-                }
-            });
-            addOneLine(imConversation.getConversationId(), DataConvertUtil.convert2Line(message));
-        }
-    }
-
     private void scrollToBottom() {
         layoutManager.scrollToPositionWithOffset(itemAdapter.getItemCount() - 1, 0);
     }
+
 
     private boolean filterException(Exception e) {
         if (null != e) {
@@ -231,32 +173,45 @@ public class TopicFragment extends Fragment {
             imConversation.read();
         }
     }
-
-    /*
-    public List<String> getDialogue() {
-        return dialogue;
-    }
     */
 
-    public void setTopic(Topic topic) {
-        this.topic = topic;
-        imConversation = null;
-        for(Line line : topic.getDialogue()) {
-            AVIMTypedMessage m;
-            if( StringUtil.isUrl(line.getWhat()) ) { // default is Audio
-                AVFile file = new AVFile("music", line.getWhat(), null);
-                m = new AVIMAudioMessage(file);
-            } else { // is text
-                m = new AVIMTextMessage();
-                ((AVIMTextMessage)m).setText(line.getWhat());
-            }
-            m.setFrom(line.getWho());
-            m.setTimestamp(line.getWhen().getTime());
-            sendMessage(m);
-        }
+    public void attendTopic(Topic topic) {
+        currentRole = roleMap.get(roleType.ATTEND);
+        currentRole.setImConversation(imConversation)
+                .setItemAdapter(itemAdapter)
+                .setLayoutManager(layoutManager);
+        currentRole.setTopic(topic);
     }
 
     public void createTopic() {
-
+        currentRole = roleMap.get(roleType.CREATE);
+        currentRole.setTopic(topic)
+                .setImConversation(imConversation)
+                .setItemAdapter(itemAdapter)
+                .setLayoutManager(layoutManager);
     }
+
+    public void continueTopic(final AVIMConversation conversation) {
+        currentRole = roleMap.get(roleType.CONTINUE);
+        currentRole.setTopic(topic)
+                .setImConversation(imConversation)
+                .setItemAdapter(itemAdapter)
+                .setLayoutManager(layoutManager);
+    }
+
+    // region implements interface ICreateActivityFunction
+    @Override
+    public void onActionOK() {
+        if( currentRole instanceof ICreateActivityFunction ) {
+            ((ICreateActivityFunction) currentRole).onActionOK();
+        }
+    }
+
+    @Override
+    public void onActionPublish() {
+        if( currentRole instanceof ICreateActivityFunction ) {
+            ((ICreateActivityFunction) currentRole).onActionPublish();
+        }
+    }
+    // endregion
 }
