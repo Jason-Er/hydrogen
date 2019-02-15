@@ -1,7 +1,8 @@
 package com.thumbstage.hydrogen.utils;
 
 import com.avos.avoscloud.im.v2.AVIMMessage;
-import com.avos.avoscloud.im.v2.AVIMTypedMessage;
+import com.avos.avoscloud.im.v2.messages.AVIMAudioMessage;
+import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.LineType;
 
@@ -35,8 +36,19 @@ public class DataConvertUtil {
         return map;
     }
 
-    public static Line convert2Line(AVIMTypedMessage message) {
-        Line line = new Line(message.getFrom(), new Date(message.getTimestamp()), message.getContent(), LineType.valueOf("LT_DIALOGUE"));
+    public static Line convert2Line(AVIMMessage message) {
+        String who = message.getFrom();
+        Date when = new Date(message.getTimestamp());
+        String what = null;
+        LineType type = LineType.LT_DIALOGUE;
+        if(message instanceof AVIMTextMessage) {
+            what = ((AVIMTextMessage) message).getText();
+            type = LineType.valueOf((String) ((AVIMTextMessage) message).getAttrs().get("type"));
+        } else if(message instanceof AVIMAudioMessage) {
+            what = (String) ((AVIMAudioMessage) message).getAttrs().get("what");
+            type = LineType.valueOf((String) ((AVIMAudioMessage) message).getAttrs().get("type"));
+        }
+        Line line = new Line(who, when, what, type);
         return line;
     }
 }

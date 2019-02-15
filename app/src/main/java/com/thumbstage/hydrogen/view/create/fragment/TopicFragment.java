@@ -27,6 +27,7 @@ import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.app.User;
 import com.thumbstage.hydrogen.model.Line;
+import com.thumbstage.hydrogen.model.LineType;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.utils.DataConvertUtil;
 import com.thumbstage.hydrogen.utils.LogUtils;
@@ -39,6 +40,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -180,6 +182,9 @@ public class TopicFragment extends Fragment {
     protected void sendText(String content) {
         AVIMTextMessage message = new AVIMTextMessage();
         message.setText(content);
+        Map<String, Object> attributes = new HashMap<String, Object>();
+        attributes.put("type", LineType.LT_DIALOGUE.name());
+        message.setAttrs(attributes);
         sendMessage(message);
     }
 
@@ -205,7 +210,7 @@ public class TopicFragment extends Fragment {
                     }
                 }
             });
-            addOneLine(imConversation.getConversationId(), DataConvertUtil.convert2Line((AVIMTypedMessage) message));
+            addOneLine(imConversation.getConversationId(), DataConvertUtil.convert2Line(message));
         }
     }
 
