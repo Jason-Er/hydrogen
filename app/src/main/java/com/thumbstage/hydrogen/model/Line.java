@@ -49,4 +49,23 @@ public class Line implements Parcelable {
         dest.writeString(lineType.name());
         dest.writeLong(when.getTime());
     }
+
+
+    // region getter
+    public String getWho() {
+        return who;
+    }
+
+    public Date getWhen() {
+        return when;
+    }
+
+    public String getWhat() {
+        return what;
+    }
+
+    public LineType getLineType() {
+        return lineType;
+    }
+    // endregion
 }

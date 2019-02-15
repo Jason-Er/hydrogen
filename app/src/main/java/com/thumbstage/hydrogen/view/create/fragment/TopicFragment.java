@@ -12,16 +12,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.AVIMMessageOption;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMMessagesQueryCallback;
+import com.avos.avoscloud.im.v2.messages.AVIMAudioMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.model.Line;
+import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.utils.LogUtils;
 import com.thumbstage.hydrogen.utils.NotificationUtils;
+import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.view.common.ConversationBottomBarEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -45,6 +50,7 @@ public class TopicFragment extends Fragment {
     LinearLayoutManager layoutManager;
     TopicRecyclerAdapter itemAdapter;
     List<String> dialogue;
+    Topic topic;
 
     @Nullable
     @Override
@@ -178,5 +184,23 @@ public class TopicFragment extends Fragment {
 
     public List<String> getDialogue() {
         return dialogue;
+    }
+
+    public void setTopic(Topic topic) {
+        this.topic = topic;
+        imConversation = null;
+        for(Line line : topic.getDialogue()) {
+            if( StringUtil.isUrl(line.getWhat()) ) { // default is Audio
+                AVFile file = new AVFile("music", line.getWhat(), null);
+                AVIMAudioMessage m = new AVIMAudioMessage(file);
+                sendMessage(m);
+            } else { // is text
+                sendText(line.getWhat());
+            }
+        }
+    }
+
+    public void createTopic() {
+
     }
 }

@@ -31,7 +31,6 @@ import butterknife.ButterKnife;
 public class CreateActivity extends AppCompatActivity {
     final String TAG = "CreateActivity";
     TopicFragment topicFragment;
-    AVIMConversation conversation;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,6 +47,7 @@ public class CreateActivity extends AppCompatActivity {
 
         final Topic topic = getIntent().getParcelableExtra("Topic");
         if( topic != null ) { // use this topic
+            topicFragment.setTopic(topic);
             /*
             final AVIMClient starter = AVIMClient.getInstance(topic.getStarted_by());
             AVIMConversation conv = starter.getConversation(topic.getConversation_id());
@@ -86,6 +86,8 @@ public class CreateActivity extends AppCompatActivity {
             topicFragment.setConversation(conversation);
             */
         } else { // create one
+            topicFragment.createTopic();
+            /*
             User.getInstance().getClient().createConversation(
                     Arrays.asList(""), "start", null, false, false, new AVIMConversationCreatedCallback() {
                         @Override
@@ -97,6 +99,7 @@ public class CreateActivity extends AppCompatActivity {
                             }
                         }
                     });
+                    */
         }
     }
 
