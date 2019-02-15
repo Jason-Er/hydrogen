@@ -15,6 +15,7 @@ public class Topic implements Parcelable {
     String setting_url;
     String started_by;
     List<Line> dialogue;
+    List<String> members;
 
     public Topic() {}
 
@@ -24,6 +25,7 @@ public class Topic implements Parcelable {
         sponsor_name = in.readString();
         setting_url = in.readString();
         started_by = in.readString();
+        members = in.createStringArrayList();
         dialogue = new ArrayList<>();
         in.readList(dialogue, Line.class.getClassLoader());
     }
@@ -40,6 +42,7 @@ public class Topic implements Parcelable {
         dest.writeString(sponsor_name);
         dest.writeString(setting_url);
         dest.writeString(started_by);
+        dest.writeStringList(members);
         dest.writeList(dialogue);
     }
 
@@ -90,6 +93,11 @@ public class Topic implements Parcelable {
         return this;
     }
 
+    public Topic setMembers(List<String> members) {
+        this.members = members;
+        return this;
+    }
+
     // endregion
 
     // region getter
@@ -111,6 +119,10 @@ public class Topic implements Parcelable {
 
     public String getStarted_by() {
         return started_by;
+    }
+
+    public List<String> getMembers() {
+        return members;
     }
 
     public List<Line> getDialogue() {

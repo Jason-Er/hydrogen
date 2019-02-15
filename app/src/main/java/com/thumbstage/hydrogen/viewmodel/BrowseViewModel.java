@@ -43,6 +43,7 @@ public class BrowseViewModel extends ViewModel {
         avQuery.include("name");
         avQuery.include("brief");
         avQuery.include("dialogue");
+        avQuery.include("members");
         avQuery.orderByAscending("createdAt");
         avQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
@@ -55,6 +56,7 @@ public class BrowseViewModel extends ViewModel {
                         String name = (String) avObject.get("name");
                         String brief = (String) avObject.get("brief");
                         List<Map> datalist = avObject.getList("dialogue");
+                        List<String> members = avObject.getList("members");
                         List<Line> dialogue = new ArrayList<>();
                         for(Map map: datalist) {
                             dialogue.add(new com.thumbstage.hydrogen.model.Line(
@@ -69,6 +71,7 @@ public class BrowseViewModel extends ViewModel {
                                 .setBrief(brief)
                                 .setName(name)
                                 .setDialogue(dialogue)
+                                .setMembers(members)
                                 .setStarted_by(started_by.getObjectId())
                                 .setSetting_url(setting_url);
                         topics.add(topic);

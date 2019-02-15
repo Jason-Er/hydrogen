@@ -48,58 +48,8 @@ public class CreateActivity extends AppCompatActivity {
         final Topic topic = getIntent().getParcelableExtra("Topic");
         if( topic != null ) { // use this topic
             topicFragment.setTopic(topic);
-            /*
-            final AVIMClient starter = AVIMClient.getInstance(topic.getStarted_by());
-            AVIMConversation conv = starter.getConversation(topic.getConversation_id());
-            conv.queryMessages(new AVIMMessagesQueryCallback() {
-                @Override
-                public void done(final List<AVIMMessage> messages, AVIMException e) {
-                    if (e == null) {
-                        Log.d(TAG,"get messages size()" + messages.size());
-                        User.getInstance().getClient().createConversation(
-                                Arrays.asList(topic.getStarted_by()), "attend", null, false, false, new AVIMConversationCreatedCallback() {
-                                    @Override
-                                    public void done(AVIMConversation avimConversation, AVIMException e) {
-                                        if (e == null) {
-                                            Log.i(TAG, "create a conversation");
-                                            conversation = avimConversation;
-                                            AVIMConversation starter_conv = starter.getConversation(avimConversation.getConversationId());
-                                            for(AVIMMessage message: messages) {
-                                                starter_conv.sendMessage(message, new AVIMConversationCallback() {
-                                                    @Override
-                                                    public void done(AVIMException e) {
-
-                                                    }
-                                                });
-                                            }
-                                            topicFragment.setConversation(avimConversation);
-                                        }
-                                    }
-                                });
-
-
-                    }
-                }
-
-            });
-            conversation = User.getInstance().getClient().getConversation(topic.getConversation_id());
-            topicFragment.setConversation(conversation);
-            */
         } else { // create one
             topicFragment.createTopic();
-            /*
-            User.getInstance().getClient().createConversation(
-                    Arrays.asList(""), "start", null, false, false, new AVIMConversationCreatedCallback() {
-                        @Override
-                        public void done(AVIMConversation avimConversation, AVIMException e) {
-                            if (e == null) {
-                                Log.i(TAG, "create a conversation");
-                                conversation = avimConversation;
-                                topicFragment.setConversation(avimConversation);
-                            }
-                        }
-                    });
-                    */
         }
     }
 
@@ -121,12 +71,12 @@ public class CreateActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_ok:
                 Log.i(TAG, "action_ok");
-                ClassDBUtil.createTopic("IStartedOpened", AVUser.getCurrentUser(), topicFragment.getDialogue());
+                // ClassDBUtil.createTopic("IStartedOpened", AVUser.getCurrentUser(), topicFragment.getDialogue());
                 navigateUp();
                 break;
             case R.id.action_publish:
                 Log.i(TAG, "action_publish");
-                ClassDBUtil.createTopic("PublishedOpened", AVUser.getCurrentUser(), topicFragment.getDialogue());
+                // ClassDBUtil.createTopic("PublishedOpened", AVUser.getCurrentUser(), topicFragment.getDialogue());
                 navigateUp();
                 break;
         }

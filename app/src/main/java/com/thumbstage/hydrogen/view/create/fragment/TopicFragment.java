@@ -17,11 +17,13 @@ import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.AVIMMessageOption;
+import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMMessagesQueryCallback;
 import com.avos.avoscloud.im.v2.messages.AVIMAudioMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.app.User;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.utils.LogUtils;
@@ -49,7 +51,6 @@ public class TopicFragment extends Fragment {
     AVIMConversation imConversation;
     LinearLayoutManager layoutManager;
     TopicRecyclerAdapter itemAdapter;
-    List<String> dialogue;
     Topic topic;
 
     @Nullable
@@ -58,7 +59,6 @@ public class TopicFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_topic, container, false);
         ButterKnife.bind(this, view);
 
-        dialogue = new ArrayList<>();
         refreshLayout.setEnabled(false);
         itemAdapter = new TopicRecyclerAdapter();
         layoutManager = new LinearLayoutManager( getActivity() );
@@ -77,6 +77,10 @@ public class TopicFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onResponseMessageEvent(ConversationBottomBarEvent event) {
+        if(imConversation == null) {
+            createConversation();
+            addEarlierContent();
+        }
         switch (event.getMessage()) {
             case "text":
                 sendText((String) event.getData());
@@ -85,6 +89,14 @@ public class TopicFragment extends Fragment {
 
                 break;
         }
+    }
+
+    protected void createConversation() {
+        // User.getInstance().getClient().createConversation();
+    }
+
+    protected void addEarlierContent() {
+
     }
 
     public void setConversation(final AVIMConversation conversation) {
@@ -161,7 +173,7 @@ public class TopicFragment extends Fragment {
             });
         }
         // TODO: 2/14/2019 voice can be different from string
-        dialogue.add(message.getContent());
+        // dialogue.add(message.getContent());
     }
 
     private void scrollToBottom() {
@@ -182,21 +194,27 @@ public class TopicFragment extends Fragment {
         }
     }
 
+    /*
     public List<String> getDialogue() {
         return dialogue;
     }
+    */
 
     public void setTopic(Topic topic) {
         this.topic = topic;
         imConversation = null;
         for(Line line : topic.getDialogue()) {
+            AVIMTypedMessage m;
             if( StringUtil.isUrl(line.getWhat()) ) { // default is Audio
                 AVFile file = new AVFile("music", line.getWhat(), null);
-                AVIMAudioMessage m = new AVIMAudioMessage(file);
-                sendMessage(m);
+                m = new AVIMAudioMessage(file);
             } else { // is text
-                sendText(line.getWhat());
+                m = new AVIMTextMessage();
+                ((AVIMTextMessage)m).setText(line.getWhat());
             }
+            m.setFrom(line.getWho());
+            m.setTimestamp(line.getWhen().getTime());
+            sendMessage(m);
         }
     }
 

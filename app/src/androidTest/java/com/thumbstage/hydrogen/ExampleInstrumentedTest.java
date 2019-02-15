@@ -156,6 +156,7 @@ public class ExampleInstrumentedTest {
                         String name = (String) avObject.get("name");
                         String brief = (String) avObject.get("brief");
                         List<Map> dialogue_av = avObject.getList("dialogue");
+                        List<String> members = avObject.getList("members");
                         List<com.thumbstage.hydrogen.model.Line> dialouge = new ArrayList<>();
                         for(Map map: dialogue_av) {
                             Date date = AVUtils.dateFromString((String)map.get("when"));
@@ -170,6 +171,7 @@ public class ExampleInstrumentedTest {
                         Topic topic = Topic.Builder()
                                 .setBrief(brief)
                                 .setName(name)
+                                .setMembers(members)
                                 .setDialogue(dialouge)
                                 .setStarted_by(started_by.getObjectId())
                                 .setSetting_url(setting_url);
