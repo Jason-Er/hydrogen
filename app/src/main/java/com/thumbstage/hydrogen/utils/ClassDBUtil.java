@@ -5,6 +5,8 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 
+import java.util.List;
+
 public class ClassDBUtil {
 
     private static AVACL generateDefaultACL() {
@@ -14,10 +16,10 @@ public class ClassDBUtil {
         return acl;
     };
 
-    public static void saveConversationRecord(String className, AVIMConversation conversation){
+    public static void createTopic(String className, AVUser startedBy, List<String> dialogue) {
         AVObject iStartedOpened = new AVObject( className );
-        iStartedOpened.put("started_by", conversation.getCreator());
-        iStartedOpened.put("conversation", AVObject.createWithoutData("_Conversation", conversation.getConversationId()));
+        iStartedOpened.put("started_by", startedBy.getObjectId());
+        iStartedOpened.put("dialogue", dialogue);
         iStartedOpened.setACL(generateDefaultACL());
         iStartedOpened.saveInBackground();
     };

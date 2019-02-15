@@ -44,6 +44,7 @@ public class TopicRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     // 时间间隔最小为十分钟
     private final static long TIME_INTERVAL = 1000 * 60 * 3;
     private boolean isShowUserName = true;
+
     protected List<AVIMMessage> messageList = new ArrayList<AVIMMessage>();
     private Set<String> messageIdSet = new HashSet<>();
 

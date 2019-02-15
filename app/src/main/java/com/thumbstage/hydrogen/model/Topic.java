@@ -3,14 +3,18 @@ package com.thumbstage.hydrogen.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 public class Topic implements Parcelable {
 
     String name;
     String brief;
     String sponsor_name;
     String setting_url;
-    String conversation_id;
     String started_by;
+    List<Line> dialogue;
 
     public Topic() {}
 
@@ -19,8 +23,24 @@ public class Topic implements Parcelable {
         brief = in.readString();
         sponsor_name = in.readString();
         setting_url = in.readString();
-        conversation_id = in.readString();
         started_by = in.readString();
+        dialogue = new ArrayList<>();
+        in.readList(dialogue, Line.class.getClassLoader());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(brief);
+        dest.writeString(sponsor_name);
+        dest.writeString(setting_url);
+        dest.writeString(started_by);
+        dest.writeList(dialogue);
     }
 
     public static final Creator<Topic> CREATOR = new Creator<Topic>() {
@@ -34,21 +54,6 @@ public class Topic implements Parcelable {
             return new Topic[size];
         }
     };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
-        dest.writeString(brief);
-        dest.writeString(sponsor_name);
-        dest.writeString(setting_url);
-        dest.writeString(conversation_id);
-        dest.writeString(started_by);
-    }
 
     public static Topic Builder() {
         return new Topic();
@@ -75,15 +80,16 @@ public class Topic implements Parcelable {
         return this;
     }
 
-    public Topic setConversation_id(String conversation_id) {
-        this.conversation_id = conversation_id;
-        return this;
-    }
-
     public Topic setStarted_by(String started_by) {
         this.started_by = started_by;
         return this;
     }
+
+    public Topic setDialogue(List<Line> dialogue) {
+        this.dialogue = dialogue;
+        return this;
+    }
+
     // endregion
 
     // region getter
@@ -103,12 +109,12 @@ public class Topic implements Parcelable {
         return setting_url;
     }
 
-    public String getConversation_id() {
-        return conversation_id;
-    }
-
     public String getStarted_by() {
         return started_by;
+    }
+
+    public List<Line> getDialogue() {
+        return dialogue;
     }
     // endregion
 }

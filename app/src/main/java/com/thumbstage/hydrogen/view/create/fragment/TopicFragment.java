@@ -28,6 +28,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -43,6 +44,7 @@ public class TopicFragment extends Fragment {
     AVIMConversation imConversation;
     LinearLayoutManager layoutManager;
     TopicRecyclerAdapter itemAdapter;
+    List<String> dialogue;
 
     @Nullable
     @Override
@@ -50,6 +52,7 @@ public class TopicFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_topic, container, false);
         ButterKnife.bind(this, view);
 
+        dialogue = new ArrayList<>();
         refreshLayout.setEnabled(false);
         itemAdapter = new TopicRecyclerAdapter();
         layoutManager = new LinearLayoutManager( getActivity() );
@@ -73,33 +76,36 @@ public class TopicFragment extends Fragment {
                 sendText((String) event.getData());
                 break;
             case "voice":
+
                 break;
         }
     }
 
     public void setConversation(final AVIMConversation conversation) {
-        imConversation = conversation;
-        refreshLayout.setEnabled(true);
-        fetchMessages();
-        imConversation.read();
-        NotificationUtils.addTag(conversation.getConversationId());
-        if (!conversation.isTransient()) {
-            if (conversation.getMembers().size() == 0) {
-                conversation.fetchInfoInBackground(new AVIMConversationCallback() {
-                    @Override
-                    public void done(AVIMException e) {
-                        if (null != e) {
-                            LogUtils.logException(e);
-                            Toast.makeText(getContext(), "encounter network error, please try later.", Toast.LENGTH_SHORT);
+            imConversation = conversation;
+        if( conversation != null ) { // IM state
+            refreshLayout.setEnabled(true);
+            fetchMessages();
+            imConversation.read();
+            NotificationUtils.addTag(conversation.getConversationId());
+            if (!conversation.isTransient()) {
+                if (conversation.getMembers().size() == 0) {
+                    conversation.fetchInfoInBackground(new AVIMConversationCallback() {
+                        @Override
+                        public void done(AVIMException e) {
+                            if (null != e) {
+                                LogUtils.logException(e);
+                                Toast.makeText(getContext(), "encounter network error, please try later.", Toast.LENGTH_SHORT);
+                            }
+                            itemAdapter.showUserName(conversation.getMembers().size() > 2);
                         }
-                        itemAdapter.showUserName(conversation.getMembers().size() > 2);
-                    }
-                });
+                    });
+                } else {
+                    itemAdapter.showUserName(conversation.getMembers().size() > 2);
+                }
             } else {
-                itemAdapter.showUserName(conversation.getMembers().size() > 2);
+                itemAdapter.showUserName(true);
             }
-        } else {
-            itemAdapter.showUserName(true);
         }
     }
 
@@ -135,19 +141,21 @@ public class TopicFragment extends Fragment {
         }
         itemAdapter.notifyDataSetChanged();
         scrollToBottom();
-
-        AVIMMessageOption option = new AVIMMessageOption();
-        option.setReceipt(true);
-        imConversation.sendMessage(message, option, new AVIMConversationCallback() {
-            @Override
-            public void done(AVIMException e) {
-                itemAdapter.notifyDataSetChanged();
-                if (null != e) {
-                    LogUtils.logException(e);
+        if( imConversation != null) {
+            AVIMMessageOption option = new AVIMMessageOption();
+            option.setReceipt(true);
+            imConversation.sendMessage(message, option, new AVIMConversationCallback() {
+                @Override
+                public void done(AVIMException e) {
+                    itemAdapter.notifyDataSetChanged();
+                    if (null != e) {
+                        LogUtils.logException(e);
+                    }
                 }
-            }
-        });
-
+            });
+        }
+        // TODO: 2/14/2019 voice can be different from string
+        dialogue.add(message.getContent());
     }
 
     private void scrollToBottom() {
@@ -166,5 +174,9 @@ public class TopicFragment extends Fragment {
         if (imConversation.getUnreadMessagesCount() > 0) {
             imConversation.read();
         }
+    }
+
+    public List<String> getDialogue() {
+        return dialogue;
     }
 }

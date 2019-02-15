@@ -9,15 +9,19 @@ import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.AVUtils;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
+import com.thumbstage.hydrogen.model.Line;
+import com.thumbstage.hydrogen.model.LineType;
 import com.thumbstage.hydrogen.model.Topic;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import cn.leancloud.chatkit.LCChatKit;
 
@@ -38,6 +42,7 @@ public class BrowseViewModel extends ViewModel {
         avQuery.include("setting");
         avQuery.include("name");
         avQuery.include("brief");
+        avQuery.include("dialogue");
         avQuery.orderByAscending("createdAt");
         avQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
@@ -49,13 +54,22 @@ public class BrowseViewModel extends ViewModel {
                         AVFile avFile = avObject.getAVFile("setting");
                         String name = (String) avObject.get("name");
                         String brief = (String) avObject.get("brief");
-                        AVObject conversation = avObject.getAVObject("conversation");
-                        String conversation_id = conversation.getObjectId();
+                        List<Map> datalist = avObject.getList("dialogue");
+                        List<Line> dialogue = new ArrayList<>();
+                        for(Map map: datalist) {
+                            dialogue.add(new com.thumbstage.hydrogen.model.Line(
+                                    (String) map.get("who"),
+                                    AVUtils.dateFromString((String)map.get("when")),
+                                    (String) map.get("what"),
+                                    (LineType.valueOf((String) map.get("type"))) ));
+                        }
+                        AVObject started_by = avObject.getAVObject("started_by");
                         String setting_url = avFile.getUrl();
                         Topic topic = Topic.Builder()
                                 .setBrief(brief)
-                                .setConversation_id(conversation_id)
                                 .setName(name)
+                                .setDialogue(dialogue)
+                                .setStarted_by(started_by.getObjectId())
                                 .setSetting_url(setting_url);
                         topics.add(topic);
                     }
