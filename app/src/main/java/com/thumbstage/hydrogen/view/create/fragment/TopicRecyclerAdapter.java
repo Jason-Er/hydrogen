@@ -66,6 +66,9 @@ public class TopicRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
             }
         }
     }
+    public List<AVIMMessage> getMessageList() {
+        return messageList;
+    }
 
     /**
      * 添加多条消息记录

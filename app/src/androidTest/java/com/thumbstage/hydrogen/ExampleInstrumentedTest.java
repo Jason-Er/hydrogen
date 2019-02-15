@@ -14,6 +14,14 @@ import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.AVUtils;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.SaveCallback;
+import com.avos.avoscloud.im.v2.AVIMClient;
+import com.avos.avoscloud.im.v2.AVIMConversation;
+import com.avos.avoscloud.im.v2.AVIMException;
+import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
+import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
+import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
+import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
+import com.thumbstage.hydrogen.app.User;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.LineType;
 import com.thumbstage.hydrogen.model.Topic;
@@ -26,6 +34,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -185,6 +194,35 @@ public class ExampleInstrumentedTest {
         sleep(5);
     }
 
+    @Test
+    public void testConversation() {
+        AVIMClient someone = AVIMClient.getInstance("5c63b5f344d90419c1acd242");
+        someone.open(new AVIMClientCallback() {
+            @Override
+            public void done(AVIMClient client, AVIMException e) {
+                if(e == null) {
+                    client.createConversation(Arrays.asList("Jerry"), "testConversation", null, new AVIMConversationCreatedCallback() {
+                        @Override
+                        public void done(AVIMConversation conversation, AVIMException e) {
+                            if(e == null) {
+                                AVIMTextMessage msg = new AVIMTextMessage();
+                                msg.setFrom("5c500df444d904004dc13f71");
+                                msg.setText("耗子，起床！");
+                                conversation.sendMessage(msg, new AVIMConversationCallback() {
+                                    @Override
+                                    public void done(AVIMException e) {
+
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+        });
+        sleep(5);
+    }
+
     private void sleep(int seconds) {
         try {
             TimeUnit.SECONDS.sleep(seconds);
@@ -192,4 +230,6 @@ public class ExampleInstrumentedTest {
             e.printStackTrace();
         }
     }
+
+
 }

@@ -13,12 +13,14 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.avos.avoscloud.AVFile;
+import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.AVIMMessageOption;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
+import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMMessagesQueryCallback;
 import com.avos.avoscloud.im.v2.messages.AVIMAudioMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
@@ -26,22 +28,26 @@ import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.app.User;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.Topic;
+import com.thumbstage.hydrogen.utils.DataConvertUtil;
 import com.thumbstage.hydrogen.utils.LogUtils;
 import com.thumbstage.hydrogen.utils.NotificationUtils;
 import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.view.common.ConversationBottomBarEvent;
+import com.thumbstage.hydrogen.view.common.ICallBack;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class TopicFragment extends Fragment {
+
+    final String TAG = "TopicFragment";
 
     @BindView(R.id.fragment_chat_rv_chat)
     RecyclerView recyclerView;
@@ -78,8 +84,12 @@ public class TopicFragment extends Fragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onResponseMessageEvent(ConversationBottomBarEvent event) {
         if(imConversation == null) {
-            createConversation();
-            addEarlierContent();
+            createConversation(new ICallBack() {
+                @Override
+                public void doAfter() {
+                    addTopicDialogue();
+                }
+            });
         }
         switch (event.getMessage()) {
             case "text":
@@ -91,12 +101,23 @@ public class TopicFragment extends Fragment {
         }
     }
 
-    protected void createConversation() {
-        // User.getInstance().getClient().createConversation();
+    protected void createConversation(final ICallBack iCallBack) {
+        User.getInstance().getClient().createConversation(topic.getMembers(), topic.getName(), null, new AVIMConversationCreatedCallback() {
+            @Override
+            public void done(AVIMConversation conversation, AVIMException e) {
+                if(e == null) {
+                    imConversation = conversation;
+                    iCallBack.doAfter();
+                }
+            }
+        });
     }
 
-    protected void addEarlierContent() {
-
+    protected void addTopicDialogue() {
+        List<Map> dialogue = DataConvertUtil.convert2AVObject(topic.getDialogue());
+        AVObject conversation = AVObject.createWithoutData("_Conversation", imConversation.getConversationId());
+        conversation.addAllUnique("dialogue", dialogue);
+        conversation.saveInBackground();
     }
 
     public void setConversation(final AVIMConversation conversation) {
