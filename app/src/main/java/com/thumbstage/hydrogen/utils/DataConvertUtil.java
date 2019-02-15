@@ -1,8 +1,12 @@
 package com.thumbstage.hydrogen.utils;
 
+import com.avos.avoscloud.im.v2.AVIMMessage;
+import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 import com.thumbstage.hydrogen.model.Line;
+import com.thumbstage.hydrogen.model.LineType;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,5 +33,10 @@ public class DataConvertUtil {
         map.put("what", line.getWhat());
         map.put("type", line.getLineType().name());
         return map;
+    }
+
+    public static Line convert2Line(AVIMTypedMessage message) {
+        Line line = new Line(message.getFrom(), new Date(message.getTimestamp()), message.getContent(), LineType.valueOf("LT_DIALOGUE"));
+        return line;
     }
 }

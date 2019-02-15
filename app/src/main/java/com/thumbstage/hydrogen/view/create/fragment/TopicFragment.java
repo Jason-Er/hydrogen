@@ -82,15 +82,21 @@ public class TopicFragment extends Fragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onResponseMessageEvent(ConversationBottomBarEvent event) {
+    public void onResponseMessageEvent(final ConversationBottomBarEvent event) {
         if(imConversation == null) {
             createConversation(new ICallBack() {
                 @Override
                 public void doAfter() {
-                    addTopicDialogue();
+                    addTopicDialogue(imConversation.getConversationId(), topic.getDialogue());
+                    handleEvent(event);
                 }
             });
+        } else {
+            handleEvent(event);
         }
+    }
+
+    private void handleEvent(ConversationBottomBarEvent event) {
         switch (event.getMessage()) {
             case "text":
                 sendText((String) event.getData());
@@ -113,10 +119,17 @@ public class TopicFragment extends Fragment {
         });
     }
 
-    protected void addTopicDialogue() {
-        List<Map> dialogue = DataConvertUtil.convert2AVObject(topic.getDialogue());
-        AVObject conversation = AVObject.createWithoutData("_Conversation", imConversation.getConversationId());
-        conversation.addAllUnique("dialogue", dialogue);
+    protected void addTopicDialogue(String conversationId, List<Line> dialogue) {
+        List<Map> data = DataConvertUtil.convert2AVObject(dialogue);
+        AVObject conversation = AVObject.createWithoutData("_Conversation", conversationId);
+        conversation.addAllUnique("dialogue", data);
+        conversation.saveInBackground();
+    }
+
+    protected void addOneLine(String conversationId, Line line) {
+        Map data = DataConvertUtil.convert2AVObject(line);
+        AVObject conversation = AVObject.createWithoutData("_Conversation", conversationId);
+        conversation.addUnique("dialogue", data);
         conversation.saveInBackground();
     }
 
@@ -192,9 +205,8 @@ public class TopicFragment extends Fragment {
                     }
                 }
             });
+            addOneLine(imConversation.getConversationId(), DataConvertUtil.convert2Line((AVIMTypedMessage) message));
         }
-        // TODO: 2/14/2019 voice can be different from string
-        // dialogue.add(message.getContent());
     }
 
     private void scrollToBottom() {
