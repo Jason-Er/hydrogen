@@ -21,24 +21,19 @@ import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
-import com.thumbstage.hydrogen.app.User;
-import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.LineType;
 import com.thumbstage.hydrogen.model.Topic;
+import com.thumbstage.hydrogen.utils.LCDBUtil;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -183,7 +178,7 @@ public class ExampleInstrumentedTest {
                                 .setMembers(members)
                                 .setDialogue(dialouge)
                                 .setStarted_by(started_by.getObjectId())
-                                .setSetting_url(setting_url);
+                                .setSetting_id(setting_url);
                         topics.add(topic);
                     }
                 } else {
@@ -223,6 +218,16 @@ public class ExampleInstrumentedTest {
         sleep(5);
     }
 
+    @Test
+    public void testSaveIStartedOpenedTopic() {
+        Topic topic = new Topic();
+        topic.setName("testSaveIStartedOpenedTopic");
+        topic.setSetting_id("5c629287303f390047c13726");
+        topic.setStarted_by(AVUser.getCurrentUser().getObjectId());
+        topic.getMembers().add(AVUser.getCurrentUser().getObjectId());
+        LCDBUtil.saveIStartedOpenedTopic(topic);
+        sleep(5);
+    }
     private void sleep(int seconds) {
         try {
             TimeUnit.SECONDS.sleep(seconds);

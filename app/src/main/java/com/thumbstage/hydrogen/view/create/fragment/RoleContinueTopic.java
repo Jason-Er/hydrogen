@@ -4,7 +4,7 @@ import com.thumbstage.hydrogen.view.common.ConversationBottomBarEvent;
 
 public class RoleContinueTopic extends RoleBase {
     @Override
-    public void handleBootomBarEvent(ConversationBottomBarEvent event) {
+    public void handleBottomBarEvent(ConversationBottomBarEvent event) {
 
     }
 }

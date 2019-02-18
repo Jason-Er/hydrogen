@@ -73,7 +73,7 @@ public class BrowseViewModel extends ViewModel {
                                 .setDialogue(dialogue)
                                 .setMembers(members)
                                 .setStarted_by(started_by.getObjectId())
-                                .setSetting_url(setting_url);
+                                .setSetting_id(setting_url);
                         topics.add(topic);
                     }
                     publishedOpened.setValue(topics);

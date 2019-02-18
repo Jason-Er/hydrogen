@@ -7,34 +7,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import com.avos.avoscloud.AVFile;
-import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.im.v2.AVIMConversation;
-import com.avos.avoscloud.im.v2.AVIMException;
-import com.avos.avoscloud.im.v2.AVIMMessage;
-import com.avos.avoscloud.im.v2.AVIMMessageOption;
-import com.avos.avoscloud.im.v2.AVIMTypedMessage;
-import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
-import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
-import com.avos.avoscloud.im.v2.callback.AVIMMessagesQueryCallback;
-import com.avos.avoscloud.im.v2.messages.AVIMAudioMessage;
-import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.app.User;
-import com.thumbstage.hydrogen.model.Line;
-import com.thumbstage.hydrogen.model.LineType;
 import com.thumbstage.hydrogen.model.Topic;
-import com.thumbstage.hydrogen.utils.DataConvertUtil;
-import com.thumbstage.hydrogen.utils.LogUtils;
-import com.thumbstage.hydrogen.utils.NotificationUtils;
-import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.view.common.ConversationBottomBarEvent;
-import com.thumbstage.hydrogen.view.common.ICallBack;
 import com.thumbstage.hydrogen.view.create.ICreateActivityFunction;
 
 import org.greenrobot.eventbus.EventBus;
@@ -42,7 +23,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
@@ -73,7 +53,6 @@ public class TopicFragment extends Fragment implements ICreateActivityFunction {
     AVIMConversation imConversation;
     LinearLayoutManager layoutManager;
     TopicRecyclerAdapter itemAdapter;
-    Topic topic;
 
     @Nullable
     @Override
@@ -99,81 +78,8 @@ public class TopicFragment extends Fragment implements ICreateActivityFunction {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onResponseMessageEvent(final ConversationBottomBarEvent event) {
-        currentRole.handleBootomBarEvent(event);
+        currentRole.handleBottomBarEvent(event);
     }
-
-    /*
-    protected void addOneLine(String conversationId, Line line) {
-        Map data = DataConvertUtil.convert2AVObject(line);
-        AVObject conversation = AVObject.createWithoutData("_Conversation", conversationId);
-        conversation.addUnique("dialogue", data);
-        conversation.saveInBackground();
-    }
-
-    public void setConversation(final AVIMConversation conversation) {
-
-            imConversation = conversation;
-        if( conversation != null ) { // IM state
-            refreshLayout.setEnabled(true);
-            fetchMessages();
-            imConversation.read();
-            NotificationUtils.addTag(conversation.getConversationId());
-            if (!conversation.isTransient()) {
-                if (conversation.getMembers().size() == 0) {
-                    conversation.fetchInfoInBackground(new AVIMConversationCallback() {
-                        @Override
-                        public void done(AVIMException e) {
-                            if (null != e) {
-                                LogUtils.logException(e);
-                                Toast.makeText(getContext(), "encounter network error, please try later.", Toast.LENGTH_SHORT);
-                            }
-                            itemAdapter.showUserName(conversation.getMembers().size() > 2);
-                        }
-                    });
-                } else {
-                    itemAdapter.showUserName(conversation.getMembers().size() > 2);
-                }
-            } else {
-                itemAdapter.showUserName(true);
-            }
-        }
-    }
-
-    private void fetchMessages() {
-        imConversation.queryMessages(new AVIMMessagesQueryCallback() {
-            @Override
-            public void done(List<AVIMMessage> messageList, AVIMException e) {
-                if (filterException(e)) {
-                    itemAdapter.setMessageList(messageList);
-                    itemAdapter.setDeliveredAndReadMark(imConversation.getLastDeliveredAt(),
-                            imConversation.getLastReadAt());
-                    itemAdapter.notifyDataSetChanged();
-                    scrollToBottom();
-                    clearUnreadConut();
-                }
-            }
-        });
-    }
-
-    private void scrollToBottom() {
-        layoutManager.scrollToPositionWithOffset(itemAdapter.getItemCount() - 1, 0);
-    }
-
-
-    private boolean filterException(Exception e) {
-        if (null != e) {
-            LogUtils.logException(e);
-            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-        return (null == e);
-    }
-
-    private void clearUnreadConut() {
-        if (imConversation.getUnreadMessagesCount() > 0) {
-            imConversation.read();
-        }
-    }
-    */
 
     public void attendTopic(Topic topic) {
         currentRole = roleMap.get(roleType.ATTEND);
@@ -185,16 +91,14 @@ public class TopicFragment extends Fragment implements ICreateActivityFunction {
 
     public void createTopic() {
         currentRole = roleMap.get(roleType.CREATE);
-        currentRole.setTopic(topic)
-                .setImConversation(imConversation)
+        currentRole.setImConversation(imConversation)
                 .setItemAdapter(itemAdapter)
                 .setLayoutManager(layoutManager);
     }
 
     public void continueTopic(final AVIMConversation conversation) {
         currentRole = roleMap.get(roleType.CONTINUE);
-        currentRole.setTopic(topic)
-                .setImConversation(imConversation)
+        currentRole.setImConversation(imConversation)
                 .setItemAdapter(itemAdapter)
                 .setLayoutManager(layoutManager);
     }
@@ -202,6 +106,7 @@ public class TopicFragment extends Fragment implements ICreateActivityFunction {
     // region implements interface ICreateActivityFunction
     @Override
     public void onActionOK() {
+        Log.i(TAG, "onActionOK");
         if( currentRole instanceof ICreateActivityFunction ) {
             ((ICreateActivityFunction) currentRole).onActionOK();
         }

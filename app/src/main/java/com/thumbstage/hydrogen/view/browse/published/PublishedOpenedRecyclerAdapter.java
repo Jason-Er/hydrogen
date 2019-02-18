@@ -51,7 +51,7 @@ public class PublishedOpenedRecyclerAdapter extends RecyclerView.Adapter {
             this.topic = topic;
             name.setText(topic.getName());
             brief.setText(topic.getBrief());
-            Glide.with(setting.getContext()).load(topic.getSetting_url()).into(setting);
+            Glide.with(setting.getContext()).load(topic.getSetting_id()).into(setting);
         }
 
     }

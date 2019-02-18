@@ -4,31 +4,25 @@ import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
-import com.avos.avoscloud.im.v2.AVIMMessage;
-import com.avos.avoscloud.im.v2.AVIMMessageOption;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
-import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avos.avoscloud.im.v2.messages.AVIMAudioMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.thumbstage.hydrogen.app.User;
 import com.thumbstage.hydrogen.model.Line;
-import com.thumbstage.hydrogen.model.LineType;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.utils.DataConvertUtil;
-import com.thumbstage.hydrogen.utils.LogUtils;
 import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.view.common.ConversationBottomBarEvent;
 import com.thumbstage.hydrogen.view.common.ICallBack;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class RoleAttendTopic extends RoleBase {
 
     @Override
-    public void handleBootomBarEvent(final ConversationBottomBarEvent event) {
+    public void handleBottomBarEvent(final ConversationBottomBarEvent event) {
         if(imConversation == null) {
             createConversation(topic, new ICallBack() {
                 @Override
@@ -91,41 +85,5 @@ public class RoleAttendTopic extends RoleBase {
                 break;
         }
     }
-
-    protected void sendText(String content) {
-        AVIMTextMessage message = new AVIMTextMessage();
-        message.setText(content);
-        Map<String, Object> attributes = new HashMap<String, Object>();
-        attributes.put("type", LineType.LT_DIALOGUE.name());
-        message.setAttrs(attributes);
-        sendMessage(message);
-    }
-
-    public void sendMessage(AVIMMessage message) {
-        sendMessage(message, true);
-    }
-
-    public void sendMessage(AVIMMessage message, boolean addToList) {
-        if (addToList) {
-            itemAdapter.addMessage(message);
-        }
-        itemAdapter.notifyDataSetChanged();
-        scrollToBottom();
-        if( imConversation != null) {
-            AVIMMessageOption option = new AVIMMessageOption();
-            option.setReceipt(true);
-            imConversation.sendMessage(message, option, new AVIMConversationCallback() {
-                @Override
-                public void done(AVIMException e) {
-                    itemAdapter.notifyDataSetChanged();
-                    if (null != e) {
-                        LogUtils.logException(e);
-                    }
-                }
-            });
-            addOneLine(imConversation.getConversationId(), DataConvertUtil.convert2Line(message));
-        }
-    }
-
 
 }

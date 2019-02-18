@@ -5,25 +5,29 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class Topic implements Parcelable {
 
     String name;
     String brief;
-    String sponsor_name;
-    String setting_url;
+    String setting_id; // save in _File object ID
     String started_by;
     List<Line> dialogue;
     List<String> members;
 
-    public Topic() {}
+    public Topic() {
+        name = "";
+        brief = "";
+        setting_id = "5c629287303f390047c13726"; // default setting file id
+        started_by = "";
+        dialogue = new ArrayList<>();
+        members = new ArrayList<>();
+    }
 
     protected Topic(Parcel in) {
         name = in.readString();
         brief = in.readString();
-        sponsor_name = in.readString();
-        setting_url = in.readString();
+        setting_id = in.readString();
         started_by = in.readString();
         members = in.createStringArrayList();
         dialogue = new ArrayList<>();
@@ -39,8 +43,7 @@ public class Topic implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeString(brief);
-        dest.writeString(sponsor_name);
-        dest.writeString(setting_url);
+        dest.writeString(setting_id);
         dest.writeString(started_by);
         dest.writeStringList(members);
         dest.writeList(dialogue);
@@ -73,13 +76,8 @@ public class Topic implements Parcelable {
         return this;
     }
 
-    public Topic setSponsor_name(String sponsor_name) {
-        this.sponsor_name = sponsor_name;
-        return this;
-    }
-
-    public Topic setSetting_url(String setting_url) {
-        this.setting_url = setting_url;
+    public Topic setSetting_id(String setting_id) {
+        this.setting_id = setting_id;
         return this;
     }
 
@@ -109,12 +107,8 @@ public class Topic implements Parcelable {
         return brief;
     }
 
-    public String getSponsor_name() {
-        return sponsor_name;
-    }
-
-    public String getSetting_url() {
-        return setting_url;
+    public String getSetting_id() {
+        return setting_id;
     }
 
     public String getStarted_by() {
