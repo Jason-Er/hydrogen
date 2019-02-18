@@ -29,9 +29,9 @@ import butterknife.ButterKnife;
 
 public class PublishedOpenedFragment extends Fragment implements IBrowseCustomize, IAdapterFunction {
 
-    @BindView(R.id.fragment_publishedopened_pullrefresh)
+    @BindView(R.id.fragment_recycler_common_pullrefresh)
     SwipeRefreshLayout refreshLayout;
-    @BindView(R.id.fragment_publishedopened_recycler)
+    @BindView(R.id.fragment_recycler_common_recycler)
     RecyclerView recyclerView;
 
     BrowseViewModel viewModel;
@@ -42,7 +42,7 @@ public class PublishedOpenedFragment extends Fragment implements IBrowseCustomiz
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_publishedopened, container, false);
+        View view = inflater.inflate(R.layout.fragment_recycler_common, container, false);
         ButterKnife.bind(this, view);
 
         refreshLayout.setEnabled(false);
@@ -56,7 +56,7 @@ public class PublishedOpenedFragment extends Fragment implements IBrowseCustomiz
         viewModel.getPublishedOpened().observe(getActivity(), new Observer<List<Topic>>() {
             @Override
             public void onChanged(@Nullable List<Topic> topics) {
-                recyclerViewAdapter.setTopics(topics);
+                recyclerViewAdapter.setItems(topics);
             }
         });
         viewModel.getPublishedOpenedByPageNum(0);
