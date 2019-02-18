@@ -51,10 +51,11 @@ public class LCDBUtil {
 
     public static void savePublishedOpenedTopic(Topic topic) {
         AVObject publishedOpened = new AVObject("PublishedOpened");
-        publishedOpened.put("started_by", AVUser.getCurrentUser().getObjectId());
+        publishedOpened.put("started_by", AVUser.getCurrentUser());
         publishedOpened.put("name", topic.getName());
         publishedOpened.put("brief", topic.getBrief());
-        publishedOpened.put("setting", topic.getSetting_id());
+        AVObject avObject = AVObject.createWithoutData("_File", topic.getSetting_id());
+        publishedOpened.put("setting", avObject);
         publishedOpened.put("members", topic.getMembers());
         List<Map> list = DataConvertUtil.convert2AVObject(topic.getDialogue());
         publishedOpened.put("dialogue", list);
