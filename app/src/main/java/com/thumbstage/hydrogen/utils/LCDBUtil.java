@@ -1,19 +1,14 @@
 package com.thumbstage.hydrogen.utils;
 
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.avos.avoscloud.AVACL;
 import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.SaveCallback;
-import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.Topic;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -27,7 +22,7 @@ public class LCDBUtil {
         acl.setPublicReadAccess(true);
         acl.setWriteAccess(AVUser.getCurrentUser(), true);
         return acl;
-    };
+    }
 
     public static void saveIStartedOpenedTopic(Topic topic) {
         AVObject iStartedOpened = new AVObject("IStartedOpened");
@@ -47,7 +42,7 @@ public class LCDBUtil {
                 Log.i(TAG, "saveIStartedOpenedTopic ok");
             }
         });
-    };
+    }
 
     public static void savePublishedOpenedTopic(Topic topic) {
         AVObject publishedOpened = new AVObject("PublishedOpened");
@@ -68,9 +63,5 @@ public class LCDBUtil {
         });
 
     }
-
-
-
-
 
 }

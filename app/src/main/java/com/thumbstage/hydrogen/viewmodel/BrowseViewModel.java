@@ -18,6 +18,7 @@ import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.LineType;
 import com.thumbstage.hydrogen.model.Topic;
+import com.thumbstage.hydrogen.utils.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,9 +60,9 @@ public class BrowseViewModel extends ViewModel {
                         List<String> members = avObject.getList("members");
                         List<Line> dialogue = new ArrayList<>();
                         for(Map map: datalist) {
-                            dialogue.add(new com.thumbstage.hydrogen.model.Line(
+                            dialogue.add(new Line(
                                     (String) map.get("who"),
-                                    AVUtils.dateFromString((String)map.get("when")),
+                                    StringUtil.string2Date((String) map.get("when")),
                                     (String) map.get("what"),
                                     (LineType.valueOf((String) map.get("type"))) ));
                         }
