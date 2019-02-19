@@ -58,16 +58,18 @@ public class RoleCreateTopic extends RoleBase implements ICreateActivityFunction
     @Override
     public void onActionOK() {
         Log.i(TAG, "onActionOK");
-        topic.getMembers().clear();
-        topic.getMembers().add(AVUser.getCurrentUser().getObjectId());
+        if( topic.getMembers().size() == 0 ) {
+            topic.getMembers().add(AVUser.getCurrentUser().getObjectId());
+        }
         LCDBUtil.saveIStartedOpenedTopic(topic);
     }
 
     @Override
     public void onActionPublish() {
         Log.i(TAG, "onActionPublish");
-        topic.getMembers().clear();
-        topic.getMembers().add(AVUser.getCurrentUser().getObjectId());
+        if( topic.getMembers().size() == 0 ) {
+            topic.getMembers().add(AVUser.getCurrentUser().getObjectId());
+        }
         LCDBUtil.savePublishedOpenedTopic(topic);
     }
     // endregion

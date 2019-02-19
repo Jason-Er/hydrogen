@@ -36,7 +36,7 @@ public class PublishedOpenedFragment extends Fragment implements IBrowseCustomiz
 
     BrowseViewModel viewModel;
 
-    PublishedOpenedRecyclerAdapter recyclerViewAdapter;
+    PublishedOpenedAdapter recyclerViewAdapter;
     LinearLayoutManager layoutManager;
 
     @Nullable
@@ -49,7 +49,7 @@ public class PublishedOpenedFragment extends Fragment implements IBrowseCustomiz
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
-        recyclerViewAdapter = new PublishedOpenedRecyclerAdapter();
+        recyclerViewAdapter = new PublishedOpenedAdapter();
         recyclerView.setAdapter(recyclerViewAdapter);
 
         viewModel = ViewModelProviders.of(getActivity()).get(BrowseViewModel.class);

@@ -90,4 +90,8 @@ public abstract class RoleBase implements ITopicFragmentFunction{
         conversation.addUnique("dialogue", data);
         conversation.saveInBackground();
     }
+
+    public void clearTopic() {
+        topic = new Topic();
+    }
 }

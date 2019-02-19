@@ -40,11 +40,7 @@ public class BrowseViewModel extends ViewModel {
 
     public void getPublishedOpenedByPageNum(int pageNum) {
         AVQuery<AVObject> avQuery = new AVQuery<>("PublishedOpened");
-        avQuery.include("setting");
-        avQuery.include("name");
-        avQuery.include("brief");
-        avQuery.include("dialogue");
-        avQuery.include("members");
+        avQuery.include("topic");
         avQuery.orderByAscending("createdAt");
         avQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
@@ -53,29 +49,34 @@ public class BrowseViewModel extends ViewModel {
                 if(avException == null) {
                     for(AVObject avObject: avObjects) {
                         Log.i("BrowseViewModel", "OK");
-                        AVFile avFile = avObject.getAVFile("setting");
-                        String name = (String) avObject.get("name");
-                        String brief = (String) avObject.get("brief");
-                        List<Map> datalist = avObject.getList("dialogue");
-                        List<String> members = avObject.getList("members");
-                        List<Line> dialogue = new ArrayList<>();
-                        for(Map map: datalist) {
-                            dialogue.add(new Line(
-                                    (String) map.get("who"),
-                                    StringUtil.string2Date((String) map.get("when")),
-                                    (String) map.get("what"),
-                                    (LineType.valueOf((String) map.get("type"))) ));
+                        AVObject avTopic = avObject.getAVObject("topic");
+                        if(avTopic != null) {
+                            AVFile avFile = avTopic.getAVFile("setting");
+                            String name = (String) avTopic.get("name");
+                            String brief = (String) avTopic.get("brief");
+                            List<Map> datalist = avTopic.getList("dialogue");
+                            List<String> members = avTopic.getList("members");
+                            List<Line> dialogue = new ArrayList<>();
+                            for (Map map : datalist) {
+                                if( map.size() != 0 ) {
+                                    dialogue.add(new Line(
+                                            (String) map.get("who"),
+                                            StringUtil.string2Date((String) map.get("when")),
+                                            (String) map.get("what"),
+                                            (LineType.valueOf((String) map.get("type")))));
+                                }
+                            }
+                            AVObject started_by = avTopic.getAVObject("started_by");
+                            String setting_url = avFile.getUrl();
+                            Topic topic = Topic.Builder()
+                                    .setBrief(brief)
+                                    .setName(name)
+                                    .setDialogue(dialogue)
+                                    .setMembers(members)
+                                    .setStarted_by(started_by.getObjectId())
+                                    .setSetting_id(setting_url);
+                            topics.add(topic);
                         }
-                        AVObject started_by = avObject.getAVObject("started_by");
-                        String setting_url = avFile.getUrl();
-                        Topic topic = Topic.Builder()
-                                .setBrief(brief)
-                                .setName(name)
-                                .setDialogue(dialogue)
-                                .setMembers(members)
-                                .setStarted_by(started_by.getObjectId())
-                                .setSetting_id(setting_url);
-                        topics.add(topic);
                     }
                     publishedOpened.setValue(topics);
                 } else {

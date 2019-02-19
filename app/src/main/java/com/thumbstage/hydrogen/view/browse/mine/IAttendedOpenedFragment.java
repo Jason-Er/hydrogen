@@ -26,7 +26,7 @@ public class IAttendedOpenedFragment extends Fragment {
 
     BrowseViewModel viewModel;
 
-    // PublishedOpenedRecyclerAdapter recyclerViewAdapter;
+    // PublishedOpenedAdapter recyclerViewAdapter;
     LinearLayoutManager layoutManager;
 
 

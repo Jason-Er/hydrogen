@@ -238,6 +238,38 @@ public class ExampleInstrumentedTest {
     }
 
     @Test
+    public void testCreateIStartedOpened() {
+        AVObject topic = AVObject.createWithoutData("Topic", "5c6b6969a91c9300548c51a4");
+        AVObject conv = AVObject.createWithoutData("_Conversation", "5c6a43478d6d81004e2798c9");
+        AVObject record = new AVObject("IStartedOpened");
+        record.put("topic",topic);
+        record.put("conversation", conv);
+        record.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                Log.d("testCreateIStartedOpened","success!");
+            }
+        });
+        sleep(5);
+    }
+
+    @Test
+    public void testCreatePublishedOpened() {
+        AVObject topic = AVObject.createWithoutData("Topic", "5c6b6969a91c9300548c51a4");
+        AVObject conv = AVObject.createWithoutData("_Conversation", "5c6a43478d6d81004e2798c9");
+        AVObject record = new AVObject("PublishedOpened");
+        record.put("topic",topic);
+        record.put("conversation", conv);
+        record.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                Log.d("testCreatePublishedOpened","success!");
+            }
+        });
+        sleep(5);
+    }
+
+    @Test
     public void testCreateTopic() {
         final String userId = "5c500dbc303f394f8283eadc";
         Topic topic = new Topic();
@@ -245,9 +277,11 @@ public class ExampleInstrumentedTest {
         topic.setStarted_by(userId);
         topic.setSetting_id("5c629287303f390047c13726");
         topic.setDialogue(null);
+        topic.setDerive_from("5c6b6969a91c9300548c51a4");
         topic.setMembers(new ArrayList<String>(){{add(userId);}});
         topic.setBrief("for creating basic structure");
         AVObject object = AVObject.createWithoutData("_File",topic.getSetting_id());
+        AVObject derive = AVObject.createWithoutData("Topic",topic.getDerive_from());
         AVObject record = new AVObject("Topic");
         record.put("name",topic.getName());
         record.put("started_by", AVUser.getCurrentUser());
@@ -255,6 +289,7 @@ public class ExampleInstrumentedTest {
         record.put("members", topic.getMembers());
         record.put("brief", topic.getBrief());
         record.put("setting", object);
+        record.put("derive_from", derive);
         record.saveInBackground(new SaveCallback() {
             @Override
             public void done(AVException e) {

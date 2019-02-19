@@ -12,6 +12,7 @@ public class Topic implements Parcelable {
     String brief;
     String setting_id; // save in _File object ID
     String started_by;
+    String derive_from; // topic id
     List<Line> dialogue;
     List<String> members;
 
@@ -20,6 +21,7 @@ public class Topic implements Parcelable {
         brief = "";
         setting_id = "5c629287303f390047c13726"; // default setting file id
         started_by = "";
+        derive_from = "";
         dialogue = new ArrayList<>();
         members = new ArrayList<>();
     }
@@ -29,6 +31,7 @@ public class Topic implements Parcelable {
         brief = in.readString();
         setting_id = in.readString();
         started_by = in.readString();
+        derive_from = in.readString();
         members = in.createStringArrayList();
         dialogue = new ArrayList<>();
         in.readList(dialogue, Line.class.getClassLoader());
@@ -45,6 +48,7 @@ public class Topic implements Parcelable {
         dest.writeString(brief);
         dest.writeString(setting_id);
         dest.writeString(started_by);
+        dest.writeString(derive_from);
         dest.writeStringList(members);
         dest.writeList(dialogue);
     }
@@ -96,7 +100,11 @@ public class Topic implements Parcelable {
         return this;
     }
 
-    // endregion
+    public Topic setDerive_from(String derive_from) {
+        this.derive_from = derive_from;
+        return this;
+    }
+// endregion
 
     // region getter
     public String getName() {
@@ -121,6 +129,10 @@ public class Topic implements Parcelable {
 
     public List<Line> getDialogue() {
         return dialogue;
+    }
+
+    public String getDerive_from() {
+        return derive_from;
     }
     // endregion
 }
