@@ -21,6 +21,7 @@ import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
+import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.LineType;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.utils.LCDBUtil;
@@ -234,6 +235,33 @@ public class ExampleInstrumentedTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void testCreateTopic() {
+        final String userId = "5c500dbc303f394f8283eadc";
+        Topic topic = new Topic();
+        topic.setName("hello world");
+        topic.setStarted_by(userId);
+        topic.setSetting_id("5c629287303f390047c13726");
+        topic.setDialogue(null);
+        topic.setMembers(new ArrayList<String>(){{add(userId);}});
+        topic.setBrief("for creating basic structure");
+        AVObject object = AVObject.createWithoutData("_File",topic.getSetting_id());
+        AVObject record = new AVObject("Topic");
+        record.put("name",topic.getName());
+        record.put("started_by", AVUser.getCurrentUser());
+        record.put("dialogue", Arrays.asList(""));
+        record.put("members", topic.getMembers());
+        record.put("brief", topic.getBrief());
+        record.put("setting", object);
+        record.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                Log.d("testCreateTopic","success!");
+            }
+        });
+        sleep(5);
     }
 
 
