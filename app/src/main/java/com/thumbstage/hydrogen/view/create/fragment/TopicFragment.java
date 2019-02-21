@@ -82,8 +82,8 @@ public class TopicFragment extends Fragment implements ICreateActivityFunction {
         currentRole = roleMap.get(CreateActivity.TopicHandleType.ATTEND);
         currentRole.setImConversation(imConversation)
                 .setItemAdapter(itemAdapter)
-                .setLayoutManager(layoutManager);
-        currentRole.setTopic(topic);
+                .setLayoutManager(layoutManager)
+                .setTopic(topic);
     }
 
     public void createTopic() {
@@ -93,11 +93,12 @@ public class TopicFragment extends Fragment implements ICreateActivityFunction {
                 .setLayoutManager(layoutManager);
     }
 
-    public void continueTopic(final AVIMConversation conversation) {
+    public void continueTopic(Topic topic, AVIMConversation conversation) {
         currentRole = roleMap.get(CreateActivity.TopicHandleType.CONTINUE);
-        currentRole.setImConversation(imConversation)
+        currentRole.setImConversation(conversation)
                 .setItemAdapter(itemAdapter)
-                .setLayoutManager(layoutManager);
+                .setLayoutManager(layoutManager)
+                .setTopic(topic);
     }
 
     // region implements interface ICreateActivityFunction

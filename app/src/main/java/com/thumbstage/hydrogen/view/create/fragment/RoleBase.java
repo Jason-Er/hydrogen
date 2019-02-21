@@ -3,12 +3,15 @@ package com.thumbstage.hydrogen.view.create.fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 
+import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.AVIMMessageOption;
+import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
+import com.avos.avoscloud.im.v2.messages.AVIMAudioMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.thumbstage.hydrogen.data.LCRepository;
 import com.thumbstage.hydrogen.model.Line;
@@ -16,6 +19,7 @@ import com.thumbstage.hydrogen.model.LineType;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.utils.DataConvertUtil;
 import com.thumbstage.hydrogen.utils.LogUtils;
+import com.thumbstage.hydrogen.utils.StringUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -95,6 +99,22 @@ public abstract class RoleBase implements ITopicFragmentFunction{
 
     protected void scrollToBottom() {
         layoutManager.scrollToPositionWithOffset(itemAdapter.getItemCount() - 1, 0);
+    }
+
+    protected void appendTopicDialogue(Topic topic) {
+        for(Line line : topic.getDialogue()) {
+            AVIMTypedMessage m;
+            if( StringUtil.isUrl(line.getWhat()) ) { // default is Audio
+                AVFile file = new AVFile("music", line.getWhat(), null);
+                m = new AVIMAudioMessage(file);
+            } else { // is text
+                m = new AVIMTextMessage();
+                ((AVIMTextMessage)m).setText(line.getWhat());
+            }
+            m.setFrom(line.getWho());
+            m.setTimestamp(line.getWhen().getTime());
+            addToList(m);
+        }
     }
 
     public void clearTopic() {

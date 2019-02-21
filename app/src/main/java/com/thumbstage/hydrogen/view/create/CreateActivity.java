@@ -50,7 +50,8 @@ public class CreateActivity extends AppCompatActivity {
                 topicFragment.attendTopic(topicEx.getTopic());
                 break;
             case CONTINUE:
-                topicFragment.continueTopic(UserGlobal.getInstance().getConversation(topicEx.getPipe().getId()));
+                topicFragment.continueTopic(topicEx.getTopic(),
+                        UserGlobal.getInstance().getConversation(topicEx.getPipe().getId()));
                 break;
         }
     }
