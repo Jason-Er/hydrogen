@@ -10,6 +10,7 @@ import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
@@ -54,7 +55,7 @@ public class LCRepository {
                     @Override
                     public void callback(String conversationID) {
                         Log.i(TAG, "saveIStartedOpenedTopic topicID:"+topicID+" conversationID:"+conversationID);
-                        AVObject avTopic = AVObject.createWithoutData("Topic", topicID);
+                        AVObject avTopic = AVObject.createWithoutData(Topic.class.getSimpleName(), topicID);
                         AVObject avConversation = AVObject.createWithoutData("_Conversation", conversationID);
                         avConversation.put("topic", avTopic);
                         avConversation.saveInBackground();
@@ -79,7 +80,7 @@ public class LCRepository {
             @Override
             public void callback(final String objectID) {
                 Log.i(TAG, "savePublishedOpenedTopic id:"+objectID);
-                AVObject avTopic = AVObject.createWithoutData("Topic", objectID);
+                AVObject avTopic = AVObject.createWithoutData(Topic.class.getSimpleName(), objectID);
                 AVObject record = new AVObject("PublishedOpened");
                 record.put("topic", avTopic);
                 record.saveInBackground(new SaveCallback() {
@@ -102,7 +103,7 @@ public class LCRepository {
                     @Override
                     public void callback(String conversationID) {
                         Log.i(TAG, "saveIStartedOpenedTopic topicID:"+topicID+" conversationID:"+conversationID);
-                        AVObject avTopic = AVObject.createWithoutData("Topic", topicID);
+                        AVObject avTopic = AVObject.createWithoutData(Topic.class.getSimpleName(), topicID);
                         AVObject avConversation = AVObject.createWithoutData("_Conversation", conversationID);
                         avConversation.put("topic", avTopic);
                         avConversation.saveInBackground();
@@ -149,12 +150,12 @@ public class LCRepository {
     }
 
     public static void saveTopic(Topic topic, final ICallBack iCallBack) {
-        final AVObject record = new AVObject("Topic");
+        final AVObject record = new AVObject(Topic.class.getSimpleName());
         record.put("name", topic.getName());
         record.put("brief", topic.getBrief());
         record.put("started_by", AVUser.getCurrentUser());
         if( !TextUtils.isEmpty( topic.getDerive_from() ) ) {
-            AVObject avDeriveFrom = AVObject.createWithoutData("Topic", topic.getDerive_from());
+            AVObject avDeriveFrom = AVObject.createWithoutData(Topic.class.getSimpleName(), topic.getDerive_from());
             record.put("derive_from", avDeriveFrom);
         }
         if(topic.getSetting() != null) {
@@ -256,6 +257,32 @@ public class LCRepository {
                 }
             }
         });
+    }
+
+    public static void addTopicOneLine(final String conversationID, final Line line, final ICallBack callBack) {
+        AVQuery<AVObject> avQuery = new AVQuery<>("_Conversation");
+        avQuery.getInBackground(conversationID, new GetCallback<AVObject>() {
+            @Override
+            public void done(AVObject avObject, AVException e) {
+                if( e == null ) {
+                    AVObject avTopic = avObject.getAVObject("topic");
+                    Map data = DataConvertUtil.convert2AVObject(line);
+                    final AVObject topic = AVObject.createWithoutData(Topic.class.getSimpleName(), avTopic.getObjectId());
+                    topic.addUnique("dialogue", data);
+                    topic.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(AVException e) {
+                            if(e == null) {
+                                callBack.callback(topic.getObjectId());
+                            }
+                        }
+                    });
+                } else {
+                    e.printStackTrace();
+                }
+            }
+        });
+
     }
 
 }

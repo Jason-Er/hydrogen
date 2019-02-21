@@ -1,6 +1,7 @@
 package com.thumbstage.hydrogen.view.create.fragment;
 
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.im.v2.AVIMConversation;
@@ -9,6 +10,7 @@ import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.AVIMMessageOption;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
+import com.thumbstage.hydrogen.data.LCRepository;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.LineType;
 import com.thumbstage.hydrogen.model.Topic;
@@ -20,6 +22,7 @@ import java.util.Map;
 
 public abstract class RoleBase implements ITopicFragmentFunction{
 
+    final String TAG = "RoleBase";
     AVIMConversation imConversation;
     Topic topic = new Topic();
     TopicRecyclerAdapter itemAdapter;
@@ -80,19 +83,18 @@ public abstract class RoleBase implements ITopicFragmentFunction{
                     }
                 }
             });
-            addOneLine(imConversation.getConversationId(), DataConvertUtil.convert2Line(message));
+            LCRepository.addTopicOneLine(imConversation.getConversationId(),
+                    DataConvertUtil.convert2Line(message), new LCRepository.ICallBack() {
+                @Override
+                public void callback(String objectID) {
+                    Log.i(TAG, "addTopicOneLine ok");
+                }
+            });
         }
     }
 
     protected void scrollToBottom() {
         layoutManager.scrollToPositionWithOffset(itemAdapter.getItemCount() - 1, 0);
-    }
-
-    protected void addOneLine(String conversationId, Line line) {
-        Map data = DataConvertUtil.convert2AVObject(line);
-        AVObject conversation = AVObject.createWithoutData("_Conversation", conversationId);
-        conversation.addUnique("dialogue", data);
-        conversation.saveInBackground();
     }
 
     public void clearTopic() {

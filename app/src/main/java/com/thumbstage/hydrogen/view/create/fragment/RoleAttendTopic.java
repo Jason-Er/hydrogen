@@ -59,4 +59,6 @@ public class RoleAttendTopic extends RoleBase {
         }
     }
 
+
+
 }

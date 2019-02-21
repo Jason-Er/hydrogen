@@ -238,7 +238,7 @@ public class ExampleInstrumentedTest {
 
     @Test
     public void testCreateIStartedOpened() {
-        AVObject topic = AVObject.createWithoutData("Topic", "5c6b6969a91c9300548c51a4");
+        AVObject topic = AVObject.createWithoutData(Topic.class.getSimpleName(), "5c6b6969a91c9300548c51a4");
         AVObject conv = AVObject.createWithoutData("_Conversation", "5c6a43478d6d81004e2798c9");
         AVObject record = new AVObject("IStartedOpened");
         record.put("topic",topic);
@@ -254,7 +254,7 @@ public class ExampleInstrumentedTest {
 
     @Test
     public void testCreatePublishedOpened() {
-        AVObject topic = AVObject.createWithoutData("Topic", "5c6b6969a91c9300548c51a4");
+        AVObject topic = AVObject.createWithoutData(Topic.class.getSimpleName(), "5c6b6969a91c9300548c51a4");
         AVObject conv = AVObject.createWithoutData("_Conversation", "5c6a43478d6d81004e2798c9");
         AVObject record = new AVObject("PublishedOpened");
         record.put("topic",topic);
@@ -297,8 +297,8 @@ public class ExampleInstrumentedTest {
         topic.setMembers(new ArrayList<String>(){{add(userId);}});
         topic.setBrief("for creating basic structure");
         AVObject object = AVObject.createWithoutData("_File",topic.getSetting_id());
-        AVObject derive = AVObject.createWithoutData("Topic",topic.getDerive_from());
-        AVObject record = new AVObject("Topic");
+        AVObject derive = AVObject.createWithoutData(Topic.class.getSimpleName(),topic.getDerive_from());
+        AVObject record = new AVObject(Topic.class.getSimpleName());
         record.put("name",topic.getName());
         record.put("started_by", AVUser.getCurrentUser());
         record.put("dialogue", Arrays.asList(""));
