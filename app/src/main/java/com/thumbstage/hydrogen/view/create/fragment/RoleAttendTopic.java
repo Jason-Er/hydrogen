@@ -5,9 +5,9 @@ import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMAudioMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.thumbstage.hydrogen.app.UserGlobal;
+import com.thumbstage.hydrogen.data.LCRepository;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.Topic;
-import com.thumbstage.hydrogen.utils.LCDBUtil;
 import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.view.common.ConversationBottomBarEvent;
 
@@ -16,7 +16,7 @@ public class RoleAttendTopic extends RoleBase {
     @Override
     public void handleBottomBarEvent(final ConversationBottomBarEvent event) {
         if(imConversation == null) {
-            LCDBUtil.copyPublishedOpenedTopic(topic, new LCDBUtil.ICallBack() {
+            LCRepository.copyPublishedOpenedTopic(topic, new LCRepository.ICallBack() {
                 @Override
                 public void callback(String objectID) {
                     imConversation = UserGlobal.getInstance().getConversation(objectID);

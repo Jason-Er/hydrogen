@@ -1,27 +1,39 @@
-package com.thumbstage.hydrogen.utils;
+package com.thumbstage.hydrogen.data;
 
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.avos.avoscloud.AVACL;
 import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
+import com.thumbstage.hydrogen.model.Line;
+import com.thumbstage.hydrogen.model.LineType;
+import com.thumbstage.hydrogen.model.Pipe;
+import com.thumbstage.hydrogen.model.Setting;
 import com.thumbstage.hydrogen.model.Topic;
+import com.thumbstage.hydrogen.model.TopicEx;
+import com.thumbstage.hydrogen.model.User;
+import com.thumbstage.hydrogen.utils.DataConvertUtil;
+import com.thumbstage.hydrogen.utils.StringUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 
-public class LCDBUtil {
+public class LCRepository {
 
-    final static String TAG = "LCDBUtil";
+    final static String TAG = "LCRepository";
 
     private static AVACL generateDefaultACL() {
         AVACL acl = new AVACL();
@@ -111,10 +123,6 @@ public class LCDBUtil {
         });
     }
 
-    public static void getConversation(String conversationID) {
-
-    }
-
     public static void createConversation(final Topic topic, final ICallBack iCallBack) {
         AVIMClient client = AVIMClient.getInstance(AVUser.getCurrentUser().getObjectId());
         client.open(new AVIMClientCallback() {
@@ -172,6 +180,82 @@ public class LCDBUtil {
     public static void copyTopic(Topic topic, final ICallBack iCallBack) {
         topic.setDerive_from(topic.getId());
         saveTopic(topic, iCallBack);
+    }
+
+    public interface ITopicExCallBack {
+        void callback(List<TopicEx> topicExList);
+    }
+
+    public enum TopicExType {
+        PUBLISHED_OPENED("PublishedOpened"), ISTARTED_OPENED("IStartedOpened"), IATTENDED_OPENED("IAttendedOpened");
+        final String title;
+        TopicExType(String title) {
+            this.title = title;
+        }
+    }
+
+    public static void getTopicEx(TopicExType type, int pageNum, final ITopicExCallBack callBack) {
+        AVQuery<AVObject> avQuery = new AVQuery<>(type.title);
+        avQuery.include("topic");
+        avQuery.orderByAscending("createdAt");
+        avQuery.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> avObjects, AVException avException) {
+                List<TopicEx> topicExes = new ArrayList<>();
+                if(avException == null) {
+                    for(AVObject avObject: avObjects) {
+                        Log.i("BrowseViewModel", "OK");
+                        AVObject avTopic = avObject.getAVObject("topic");
+                        if(avTopic != null) {
+                            AVFile avFile = avTopic.getAVFile("setting");
+                            String id = avTopic.getObjectId();
+                            String name = (String) avTopic.get("name");
+                            String brief = (String) avTopic.get("brief");
+                            List<Map> datalist = avTopic.getList("dialogue");
+                            List<String> members = avTopic.getList("members");
+                            List<Line> dialogue = new ArrayList<>();
+                            for (Map map : datalist) {
+                                if( map.size() != 0 ) {
+                                    dialogue.add(new Line(
+                                            (String) map.get("who"),
+                                            StringUtil.string2Date((String) map.get("when")),
+                                            (String) map.get("what"),
+                                            (LineType.valueOf((String) map.get("type")))));
+                                }
+                            }
+                            AVObject avPipe = avObject.getAVObject("conversation");
+                            AVObject avStartedBy = avTopic.getAVObject("started_by");
+                            User user = new User(avStartedBy.getObjectId(), (String) avStartedBy.get("name"), (String) avStartedBy.get("avatar"));
+                            Setting setting;
+                            if(avFile != null) {
+                                setting = new Setting(avFile.getObjectId(), avFile.getUrl());
+                            } else {
+                                setting = null;
+                            }
+                            Topic topic = Topic.Builder()
+                                    .setId(id)
+                                    .setBrief(brief)
+                                    .setName(name)
+                                    .setDialogue(dialogue)
+                                    .setMembers(members)
+                                    .setStarted_by(user)
+                                    .setSetting(setting);
+                            Pipe pipe;
+                            if( avPipe != null ) {
+                                pipe = new Pipe(avPipe.getObjectId());
+                            } else {
+                                pipe = null;
+                            }
+                            TopicEx topicEx = new TopicEx(topic, pipe);
+                            topicExes.add(topicEx);
+                        }
+                    }
+                    callBack.callback(topicExes);
+                } else {
+                    avException.printStackTrace();
+                }
+            }
+        });
     }
 
 }

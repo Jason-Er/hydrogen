@@ -21,10 +21,9 @@ import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
-import com.thumbstage.hydrogen.model.Line;
+import com.thumbstage.hydrogen.data.LCRepository;
 import com.thumbstage.hydrogen.model.LineType;
 import com.thumbstage.hydrogen.model.Topic;
-import com.thumbstage.hydrogen.utils.LCDBUtil;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -226,7 +225,7 @@ public class ExampleInstrumentedTest {
         topic.setSetting_id("5c629287303f390047c13726");
         topic.setStarted_by(AVUser.getCurrentUser().getObjectId());
         topic.getMembers().add(AVUser.getCurrentUser().getObjectId());
-        LCDBUtil.saveIStartedOpenedTopic(topic);
+        LCRepository.saveIStartedOpenedTopic(topic);
         sleep(5);
     }
     private void sleep(int seconds) {
@@ -277,7 +276,7 @@ public class ExampleInstrumentedTest {
         topic.setSetting_id("5c629287303f390047c13726");
         topic.setStarted_by(AVUser.getCurrentUser().getObjectId());
         topic.getMembers().add(AVUser.getCurrentUser().getObjectId());
-        LCDBUtil.copyPublishedOpenedTopic(topic, new LCDBUtil.ICallBack() {
+        LCRepository.copyPublishedOpenedTopic(topic, new LCRepository.ICallBack() {
             @Override
             public void callback(String objectID) {
                 Log.i("testCopyPublishedOpenedTopic", "success!");

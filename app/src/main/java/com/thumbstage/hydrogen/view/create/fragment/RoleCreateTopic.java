@@ -4,10 +4,10 @@ import android.util.Log;
 
 import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.thumbstage.hydrogen.app.UserGlobal;
+import com.thumbstage.hydrogen.data.LCRepository;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.LineType;
 import com.thumbstage.hydrogen.model.Topic;
-import com.thumbstage.hydrogen.utils.LCDBUtil;
 import com.thumbstage.hydrogen.view.common.ConversationBottomBarEvent;
 import com.thumbstage.hydrogen.view.create.ICreateActivityFunction;
 
@@ -61,7 +61,7 @@ public class RoleCreateTopic extends RoleBase implements ICreateActivityFunction
         if( topic.getMembers().size() == 0 ) {
             topic.getMembers().add(UserGlobal.getInstance().getCurrentUserId());
         }
-        LCDBUtil.saveIStartedOpenedTopic(topic);
+        LCRepository.saveIStartedOpenedTopic(topic);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class RoleCreateTopic extends RoleBase implements ICreateActivityFunction
         if( topic.getMembers().size() == 0 ) {
             topic.getMembers().add(UserGlobal.getInstance().getCurrentUserId());
         }
-        LCDBUtil.savePublishedOpenedTopic(topic, new LCDBUtil.ICallBack() {
+        LCRepository.savePublishedOpenedTopic(topic, new LCRepository.ICallBack() {
             @Override
             public void callback(String objectID) {
 

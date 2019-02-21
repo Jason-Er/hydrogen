@@ -73,14 +73,12 @@ public class CreateActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_ok:
                 Log.i(TAG, "action_ok");
-                // LCDBUtil.createTopic("IStartedOpened", AVUser.getCurrentUser(), topicFragment.getDialogue());
                 topicFragment.onActionOK();
                 navigateUp();
                 break;
             case R.id.action_publish:
                 Log.i(TAG, "action_publish");
                 topicFragment.onActionPublish();
-                // LCDBUtil.createTopic("PublishedOpened", AVUser.getCurrentUser(), topicFragment.getDialogue());
                 navigateUp();
                 break;
         }

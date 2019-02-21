@@ -51,13 +51,13 @@ public class IAttendedOpenedFragment extends Fragment {
         recyclerView.setAdapter(recyclerViewAdapter);
 
         viewModel = ViewModelProviders.of(getActivity()).get(BrowseViewModel.class);
-        viewModel.getPublishedOpened().observe(getActivity(), new Observer<List<TopicEx>>() {
+        viewModel.getIAttendedOpened().observe(getActivity(), new Observer<List<TopicEx>>() {
             @Override
             public void onChanged(@Nullable List<TopicEx> topicExes) {
                 recyclerViewAdapter.setItems(topicExes);
             }
         });
-        viewModel.getPublishedOpenedByPageNum(0);
+        viewModel.getIAttendedOpenedByPageNum(0);
 
         return view;
     }
