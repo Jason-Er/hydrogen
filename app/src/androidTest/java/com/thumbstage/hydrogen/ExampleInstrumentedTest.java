@@ -270,6 +270,23 @@ public class ExampleInstrumentedTest {
     }
 
     @Test
+    public void testCopyPublishedOpenedTopic() {
+        Topic topic = new Topic();
+        topic.setId("5c6ba28a303f39004749baa1");
+        topic.setName("testCopyPublishedOpenedTopic");
+        topic.setSetting_id("5c629287303f390047c13726");
+        topic.setStarted_by(AVUser.getCurrentUser().getObjectId());
+        topic.getMembers().add(AVUser.getCurrentUser().getObjectId());
+        LCDBUtil.copyPublishedOpenedTopic(topic, new LCDBUtil.ICallBack() {
+            @Override
+            public void callback(String objectID) {
+                Log.i("testCopyPublishedOpenedTopic", "success!");
+            }
+        });
+        sleep(5);
+    }
+
+    @Test
     public void testCreateTopic() {
         final String userId = "5c500dbc303f394f8283eadc";
         Topic topic = new Topic();

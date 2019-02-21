@@ -30,7 +30,7 @@ public class LCDBUtil {
         return acl;
     }
 
-    interface ICallBack {
+    public interface ICallBack {
         void callback(String objectID);
     }
 
@@ -62,10 +62,10 @@ public class LCDBUtil {
         });
     }
 
-    public static void savePublishedOpenedTopic(Topic topic) {
+    public static void savePublishedOpenedTopic(Topic topic, final ICallBack iCallBack) {
         saveTopic(topic, new ICallBack() {
             @Override
-            public void callback(String objectID) {
+            public void callback(final String objectID) {
                 Log.i(TAG, "savePublishedOpenedTopic id:"+objectID);
                 AVObject avTopic = AVObject.createWithoutData("Topic", objectID);
                 AVObject record = new AVObject("PublishedOpened");
@@ -74,11 +74,45 @@ public class LCDBUtil {
                     @Override
                     public void done(AVException e) {
                         // TODO: 2/18/2019 need toast here
+                        iCallBack.callback(objectID);
                         Log.i(TAG, "savePublishedOpenedTopic ok");
                     }
                 });
             }
         });
+    }
+
+    public static void copyPublishedOpenedTopic(final Topic topic, final ICallBack iCallBack) {
+        copyTopic(topic, new ICallBack() {
+            @Override
+            public void callback(final String topicID) {
+                createConversation(topic, new ICallBack() {
+                    @Override
+                    public void callback(String conversationID) {
+                        Log.i(TAG, "saveIStartedOpenedTopic topicID:"+topicID+" conversationID:"+conversationID);
+                        AVObject avTopic = AVObject.createWithoutData("Topic", topicID);
+                        AVObject avConversation = AVObject.createWithoutData("_Conversation", conversationID);
+                        avConversation.put("topic", avTopic);
+                        avConversation.saveInBackground();
+                        AVObject record = new AVObject("IAttendedOpened");
+                        record.put("topic", avTopic);
+                        record.put("conversation", avConversation);
+                        record.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(AVException e) {
+                                // TODO: 2/18/2019 need toast here
+                                Log.i(TAG, "saveIStartedOpenedTopic ok");
+                            }
+                        });
+                        iCallBack.callback(conversationID);
+                    }
+                });
+            }
+        });
+    }
+
+    public static void getConversation(String conversationID) {
+
     }
 
     public static void createConversation(final Topic topic, final ICallBack iCallBack) {
@@ -123,6 +157,11 @@ public class LCDBUtil {
                 }
             }
         });
+    }
+
+    public static void copyTopic(Topic topic, final ICallBack iCallBack) {
+        topic.setDerive_from(topic.getId());
+        saveTopic(topic, iCallBack);
     }
 
 }
