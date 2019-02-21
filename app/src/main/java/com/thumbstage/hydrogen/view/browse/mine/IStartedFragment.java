@@ -36,7 +36,7 @@ public class IStartedFragment extends Fragment implements IBrowseCustomize, IAda
         ButterKnife.bind(this, view);
 
         tabLayout.setupWithViewPager(viewPager);
-        pagerAdapter = new IStartedFragmentPagerAdapter(getFragmentManager());
+        pagerAdapter = new IStartedFragmentPagerAdapter(getChildFragmentManager());
         for (String title: pagerAdapter.getTitles()) {
             tabLayout.addTab(tabLayout.newTab().setText(title));
         }
