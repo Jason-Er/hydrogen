@@ -15,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.TopicEx;
 import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
@@ -26,9 +25,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import cn.leancloud.chatkit.adapter.LCIMCommonListAdapter;
 import cn.leancloud.chatkit.view.LCIMDividerItemDecoration;
-import cn.leancloud.chatkit.viewholder.LCIMConversationItemHolder;
 
 
 public class IStartedOpenedFragment extends Fragment implements IBrowseCustomize {
@@ -40,7 +37,7 @@ public class IStartedOpenedFragment extends Fragment implements IBrowseCustomize
 
     BrowseViewModel viewModel;
 
-    LCIMCommonListAdapter<AVIMConversation> itemAdapter;
+    IStartedOpenedAdapter recyclerViewAdapter;
     LinearLayoutManager layoutManager;
 
     @Override
@@ -52,15 +49,14 @@ public class IStartedOpenedFragment extends Fragment implements IBrowseCustomize
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new LCIMDividerItemDecoration(getActivity()));
-        itemAdapter = new LCIMCommonListAdapter<AVIMConversation>(LCIMConversationItemHolder.class);
-        recyclerView.setAdapter(itemAdapter);
+        recyclerViewAdapter = new IStartedOpenedAdapter();
+        recyclerView.setAdapter(recyclerViewAdapter);
 
         viewModel = ViewModelProviders.of(getActivity()).get(BrowseViewModel.class);
         viewModel.getIStartedOpened().observe(getActivity(), new Observer<List<TopicEx>>() {
             @Override
             public void onChanged(@Nullable List<TopicEx> topicExes) {
-                // itemAdapter.setDataList(conversations);
-                // itemAdapter.notifyDataSetChanged();
+                recyclerViewAdapter.setItems(topicExes);
             }
         });
         viewModel.getIStartedOpenedByPageNum(0);

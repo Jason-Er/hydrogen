@@ -16,7 +16,7 @@ import com.thumbstage.hydrogen.view.create.CreateActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class IAttendedOpenedViewHolder extends RecyclerView.ViewHolder {
+public class IStartedOpenedViewHolder extends RecyclerView.ViewHolder {
 
     TopicEx topicEx;
 
@@ -27,7 +27,7 @@ public class IAttendedOpenedViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.item_browse_topic_brief)
     TextView brief;
 
-    public IAttendedOpenedViewHolder(@NonNull View itemView) {
+    public IStartedOpenedViewHolder(@NonNull View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         itemView.setOnClickListener(new View.OnClickListener() {
