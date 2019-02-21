@@ -9,7 +9,6 @@ import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
-import com.avos.avoscloud.AVUtils;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
@@ -17,8 +16,10 @@ import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.LineType;
+import com.thumbstage.hydrogen.model.Pipe;
 import com.thumbstage.hydrogen.model.Setting;
 import com.thumbstage.hydrogen.model.Topic;
+import com.thumbstage.hydrogen.model.TopicEx;
 import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.utils.StringUtil;
 
@@ -30,13 +31,13 @@ import cn.leancloud.chatkit.LCChatKit;
 
 public class BrowseViewModel extends ViewModel {
 
-    private final MutableLiveData<List<Topic>> publishedOpened = new MutableLiveData<>();
-    private final MutableLiveData<List<AVIMConversation>> iStartedOpened = new MutableLiveData<>();
+    private final MutableLiveData<List<TopicEx>> publishedOpened = new MutableLiveData<>();
+    private final MutableLiveData<List<TopicEx>> iStartedOpened = new MutableLiveData<>();
 
-    public MutableLiveData<List<Topic>> getPublishedOpened() {
+    public MutableLiveData<List<TopicEx>> getPublishedOpened() {
         return publishedOpened;
     }
-    public MutableLiveData<List<AVIMConversation>> getIStartedOpened() {
+    public MutableLiveData<List<TopicEx>> getIStartedOpened() {
         return iStartedOpened;
     }
 
@@ -47,7 +48,7 @@ public class BrowseViewModel extends ViewModel {
         avQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> avObjects, AVException avException) {
-                List<Topic> topics = new ArrayList<>();
+                List<TopicEx> topicExes = new ArrayList<>();
                 if(avException == null) {
                     for(AVObject avObject: avObjects) {
                         Log.i("BrowseViewModel", "OK");
@@ -69,6 +70,7 @@ public class BrowseViewModel extends ViewModel {
                                             (LineType.valueOf((String) map.get("type")))));
                                 }
                             }
+                            AVObject avPipe = avObject.getAVObject("conversation");
                             AVObject avStartedBy = avTopic.getAVObject("started_by");
                             User user = new User(avStartedBy.getObjectId(), (String) avStartedBy.get("name"), (String) avStartedBy.get("avatar"));
                             Setting setting = new Setting(avFile.getObjectId(), avFile.getUrl());
@@ -80,10 +82,12 @@ public class BrowseViewModel extends ViewModel {
                                     .setMembers(members)
                                     .setStarted_by(user)
                                     .setSetting(setting);
-                            topics.add(topic);
+                            Pipe pipe = new Pipe(avPipe.getObjectId());
+                            TopicEx topicEx = new TopicEx(topic, pipe);
+                            topicExes.add(topicEx);
                         }
                     }
-                    publishedOpened.setValue(topics);
+                    publishedOpened.setValue(topicExes);
                 } else {
                     avException.printStackTrace();
                 }
@@ -114,7 +118,7 @@ public class BrowseViewModel extends ViewModel {
                                 for (String convId : convIdList) {
                                     conversationList.add( LCChatKit.getInstance().getClient().getConversation(convId) );
                                 }
-                                iStartedOpened.setValue(conversationList);
+                                // iStartedOpened.setValue(conversationList);
                             }
                         });
                     } else {
@@ -122,7 +126,7 @@ public class BrowseViewModel extends ViewModel {
                         for (String convId : convIdList) {
                             conversationList.add( LCChatKit.getInstance().getClient().getConversation(convId) );
                         }
-                        iStartedOpened.setValue(conversationList);
+                        // iStartedOpened.setValue(conversationList);
                     }
                 } else {
                     avException.printStackTrace();

@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.model.TopicEx;
 import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
 import com.thumbstage.hydrogen.viewmodel.BrowseViewModel;
@@ -55,11 +56,11 @@ public class IStartedOpenedFragment extends Fragment implements IBrowseCustomize
         recyclerView.setAdapter(itemAdapter);
 
         viewModel = ViewModelProviders.of(getActivity()).get(BrowseViewModel.class);
-        viewModel.getIStartedOpened().observe(getActivity(), new Observer<List<AVIMConversation>>() {
+        viewModel.getIStartedOpened().observe(getActivity(), new Observer<List<TopicEx>>() {
             @Override
-            public void onChanged(@Nullable List<AVIMConversation> conversations) {
-                itemAdapter.setDataList(conversations);
-                itemAdapter.notifyDataSetChanged();
+            public void onChanged(@Nullable List<TopicEx> topicExes) {
+                // itemAdapter.setDataList(conversations);
+                // itemAdapter.notifyDataSetChanged();
             }
         });
         viewModel.getIStartedOpenedByPageNum(0);

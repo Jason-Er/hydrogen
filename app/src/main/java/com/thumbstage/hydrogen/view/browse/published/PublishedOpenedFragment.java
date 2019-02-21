@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Topic;
+import com.thumbstage.hydrogen.model.TopicEx;
 import com.thumbstage.hydrogen.view.browse.IAdapterFunction;
 import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
 import com.thumbstage.hydrogen.viewmodel.BrowseViewModel;
@@ -53,10 +54,10 @@ public class PublishedOpenedFragment extends Fragment implements IBrowseCustomiz
         recyclerView.setAdapter(recyclerViewAdapter);
 
         viewModel = ViewModelProviders.of(getActivity()).get(BrowseViewModel.class);
-        viewModel.getPublishedOpened().observe(getActivity(), new Observer<List<Topic>>() {
+        viewModel.getPublishedOpened().observe(getActivity(), new Observer<List<TopicEx>>() {
             @Override
-            public void onChanged(@Nullable List<Topic> topics) {
-                recyclerViewAdapter.setItems(topics);
+            public void onChanged(@Nullable List<TopicEx> topicExes) {
+                recyclerViewAdapter.setItems(topicExes);
             }
         });
         viewModel.getPublishedOpenedByPageNum(0);

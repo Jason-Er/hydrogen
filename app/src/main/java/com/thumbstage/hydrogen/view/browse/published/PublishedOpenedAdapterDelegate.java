@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Topic;
+import com.thumbstage.hydrogen.model.TopicEx;
 import com.thumbstage.hydrogen.view.browse.IAdapterDelegate;
 
 import java.util.List;
@@ -40,7 +41,7 @@ public class PublishedOpenedAdapterDelegate implements IAdapterDelegate<List> {
 
     @Override
     public void onBindViewHolder(@NonNull List items, int position, @NonNull RecyclerView.ViewHolder holder) {
-        ((PublishedOpenedViewHolder)holder).setTopic((Topic) items.get(position));
+        ((PublishedOpenedViewHolder)holder).setTopicEx((TopicEx) items.get(position));
     }
     
 }
