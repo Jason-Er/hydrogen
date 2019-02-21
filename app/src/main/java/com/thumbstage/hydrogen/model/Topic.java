@@ -8,10 +8,11 @@ import java.util.List;
 
 public class Topic implements Parcelable {
 
+    String id;
     String name;
     String brief;
-    String setting_id; // save in _File object ID
-    String started_by;
+    Setting setting;
+    User started_by;
     String derive_from; // topic id
     List<Line> dialogue;
     List<String> members;
@@ -19,20 +20,19 @@ public class Topic implements Parcelable {
     public Topic() {
         name = "";
         brief = "";
-        setting_id = "5c629287303f390047c13726"; // default setting file id
-        started_by = "";
         derive_from = "";
         dialogue = new ArrayList<>();
         members = new ArrayList<>();
     }
 
     protected Topic(Parcel in) {
+        id = in.readString();
         name = in.readString();
         brief = in.readString();
-        setting_id = in.readString();
-        started_by = in.readString();
         derive_from = in.readString();
         members = in.createStringArrayList();
+        setting = in.readParcelable(Setting.class.getClassLoader());
+        started_by = in.readParcelable(User.class.getClassLoader());
         dialogue = new ArrayList<>();
         in.readList(dialogue, Line.class.getClassLoader());
     }
@@ -44,12 +44,13 @@ public class Topic implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
         dest.writeString(name);
         dest.writeString(brief);
-        dest.writeString(setting_id);
-        dest.writeString(started_by);
         dest.writeString(derive_from);
         dest.writeStringList(members);
+        dest.writeParcelable(setting, 0);
+        dest.writeParcelable(started_by, 0);
         dest.writeList(dialogue);
     }
 
@@ -70,6 +71,11 @@ public class Topic implements Parcelable {
     }
 
     // region setter
+    public Topic setId(String id) {
+        this.id = id;
+        return this;
+    }
+
     public Topic setName(String name) {
         this.name = name;
         return this;
@@ -80,12 +86,12 @@ public class Topic implements Parcelable {
         return this;
     }
 
-    public Topic setSetting_id(String setting_id) {
-        this.setting_id = setting_id;
+    public Topic setSetting(Setting setting) {
+        this.setting = setting;
         return this;
     }
 
-    public Topic setStarted_by(String started_by) {
+    public Topic setStarted_by(User started_by) {
         this.started_by = started_by;
         return this;
     }
@@ -104,9 +110,14 @@ public class Topic implements Parcelable {
         this.derive_from = derive_from;
         return this;
     }
-// endregion
+    // endregion
 
     // region getter
+
+    public String getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
@@ -115,11 +126,11 @@ public class Topic implements Parcelable {
         return brief;
     }
 
-    public String getSetting_id() {
-        return setting_id;
+    public Setting getSetting() {
+        return setting;
     }
 
-    public String getStarted_by() {
+    public User getStarted_by() {
         return started_by;
     }
 

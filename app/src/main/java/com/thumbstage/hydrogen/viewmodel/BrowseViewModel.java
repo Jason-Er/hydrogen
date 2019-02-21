@@ -17,7 +17,9 @@ import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.LineType;
+import com.thumbstage.hydrogen.model.Setting;
 import com.thumbstage.hydrogen.model.Topic;
+import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.utils.StringUtil;
 
 import java.util.ArrayList;
@@ -52,6 +54,7 @@ public class BrowseViewModel extends ViewModel {
                         AVObject avTopic = avObject.getAVObject("topic");
                         if(avTopic != null) {
                             AVFile avFile = avTopic.getAVFile("setting");
+                            String id = avTopic.getObjectId();
                             String name = (String) avTopic.get("name");
                             String brief = (String) avTopic.get("brief");
                             List<Map> datalist = avTopic.getList("dialogue");
@@ -66,15 +69,17 @@ public class BrowseViewModel extends ViewModel {
                                             (LineType.valueOf((String) map.get("type")))));
                                 }
                             }
-                            AVObject started_by = avTopic.getAVObject("started_by");
-                            String setting_url = avFile.getUrl();
+                            AVObject avStartedBy = avTopic.getAVObject("started_by");
+                            User user = new User(avStartedBy.getObjectId(), (String) avStartedBy.get("name"), (String) avStartedBy.get("avatar"));
+                            Setting setting = new Setting(avFile.getObjectId(), avFile.getUrl());
                             Topic topic = Topic.Builder()
+                                    .setId(id)
                                     .setBrief(brief)
                                     .setName(name)
                                     .setDialogue(dialogue)
                                     .setMembers(members)
-                                    .setStarted_by(started_by.getObjectId())
-                                    .setSetting_id(setting_url);
+                                    .setStarted_by(user)
+                                    .setSetting(setting);
                             topics.add(topic);
                         }
                     }

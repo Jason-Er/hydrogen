@@ -2,8 +2,8 @@ package com.thumbstage.hydrogen.view.create.fragment;
 
 import android.util.Log;
 
-import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.im.v2.AVIMMessage;
+import com.thumbstage.hydrogen.app.UserManager;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.LineType;
 import com.thumbstage.hydrogen.model.Topic;
@@ -39,7 +39,7 @@ public class RoleCreateTopic extends RoleBase implements ICreateActivityFunction
     }
 
     protected void addDialogue(String dialouge, LineType type) {
-        topic.getDialogue().add(new Line(AVUser.getCurrentUser().getObjectId(),
+        topic.getDialogue().add(new Line(UserManager.getInstance().getCurrentUserId(),
                 new Date(),
                 dialouge,
                 type));
@@ -47,7 +47,7 @@ public class RoleCreateTopic extends RoleBase implements ICreateActivityFunction
 
     protected void sendMessage(AVIMMessage message, boolean addToList) {
         if (addToList) {
-            message.setFrom(AVUser.getCurrentUser().getObjectId());
+            message.setFrom(UserManager.getInstance().getCurrentUserId());
             itemAdapter.addMessage(message);
         }
         itemAdapter.notifyDataSetChanged();
@@ -59,7 +59,7 @@ public class RoleCreateTopic extends RoleBase implements ICreateActivityFunction
     public void onActionOK() {
         Log.i(TAG, "onActionOK");
         if( topic.getMembers().size() == 0 ) {
-            topic.getMembers().add(AVUser.getCurrentUser().getObjectId());
+            topic.getMembers().add(UserManager.getInstance().getCurrentUserId());
         }
         LCDBUtil.saveIStartedOpenedTopic(topic);
     }
@@ -68,9 +68,14 @@ public class RoleCreateTopic extends RoleBase implements ICreateActivityFunction
     public void onActionPublish() {
         Log.i(TAG, "onActionPublish");
         if( topic.getMembers().size() == 0 ) {
-            topic.getMembers().add(AVUser.getCurrentUser().getObjectId());
+            topic.getMembers().add(UserManager.getInstance().getCurrentUserId());
         }
-        LCDBUtil.savePublishedOpenedTopic(topic);
+        LCDBUtil.savePublishedOpenedTopic(topic, new LCDBUtil.ICallBack() {
+            @Override
+            public void callback(String objectID) {
+
+            }
+        });
     }
     // endregion
 }

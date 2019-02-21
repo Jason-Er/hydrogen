@@ -101,7 +101,7 @@ public class LCDBUtil {
                             @Override
                             public void done(AVException e) {
                                 // TODO: 2/18/2019 need toast here
-                                Log.i(TAG, "saveIStartedOpenedTopic ok");
+                                Log.i(TAG, "copyPublishedOpenedTopic ok");
                             }
                         });
                         iCallBack.callback(conversationID);
@@ -121,14 +121,20 @@ public class LCDBUtil {
             @Override
             public void done(AVIMClient client, AVIMException e) {
                 if(e == null) {
+                    Log.i(TAG, "client open ok");
                     client.createConversation(topic.getMembers(), topic.getName(), null, new AVIMConversationCreatedCallback() {
                         @Override
                         public void done(AVIMConversation conversation, AVIMException e) {
                             if(e == null) {
+                                Log.i(TAG, "createConversation ok");
                                 iCallBack.callback(conversation.getConversationId());
+                            } else {
+                                e.printStackTrace();
                             }
                         }
                     });
+                } else {
+                    e.printStackTrace();
                 }
             }
         });
@@ -143,7 +149,7 @@ public class LCDBUtil {
             AVObject avDeriveFrom = AVObject.createWithoutData("Topic", topic.getDerive_from());
             record.put("derive_from", avDeriveFrom);
         }
-        AVObject avObject = AVObject.createWithoutData("_File", topic.getSetting_id());
+        AVObject avObject = AVObject.createWithoutData("_File", topic.getSetting().getId());
         record.put("setting", avObject);
         record.put("members", topic.getMembers());
         List<Map> list = DataConvertUtil.convert2AVObject(topic.getDialogue());
@@ -151,9 +157,11 @@ public class LCDBUtil {
         record.saveInBackground(new SaveCallback() {
             @Override
             public void done(AVException e) {
-                Log.i(TAG, "saveTopic ok");
                 if(e == null) {
+                    Log.i(TAG, "saveTopic ok");
                     iCallBack.callback(record.getObjectId());
+                } else {
+                    e.printStackTrace();
                 }
             }
         });

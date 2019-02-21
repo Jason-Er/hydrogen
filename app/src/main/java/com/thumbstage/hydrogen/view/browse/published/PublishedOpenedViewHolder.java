@@ -43,7 +43,7 @@ public class PublishedOpenedViewHolder extends RecyclerView.ViewHolder {
         this.topic = topic;
         name.setText(topic.getName());
         brief.setText(topic.getBrief());
-        Glide.with(setting.getContext()).load(topic.getSetting_id()).into(setting);
+        Glide.with(setting.getContext()).load(topic.getSetting().getUrl()).into(setting);
     }
 
 }

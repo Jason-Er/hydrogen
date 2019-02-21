@@ -58,6 +58,10 @@ public abstract class RoleBase implements ITopicFragmentFunction{
         sendMessage(message, true);
     }
 
+    protected void addToList(AVIMMessage message) {
+        itemAdapter.addMessage(message);
+    }
+
     protected void sendMessage(AVIMMessage message, boolean addToList) {
         if (addToList) {
             itemAdapter.addMessage(message);

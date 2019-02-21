@@ -7,14 +7,13 @@ import android.view.ViewGroup;
 import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.AVIMReservedMessageType;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
-import com.thumbstage.hydrogen.app.User;
+import com.thumbstage.hydrogen.app.UserManager;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import cn.leancloud.chatkit.LCChatKit;
 import cn.leancloud.chatkit.viewholder.LCIMChatHolderOption;
 import cn.leancloud.chatkit.viewholder.LCIMChatItemAudioHolder;
 import cn.leancloud.chatkit.viewholder.LCIMChatItemHolder;
@@ -284,7 +283,7 @@ public class TopicRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
      * @return
      */
     protected boolean fromMe(AVIMTypedMessage msg) {
-        String selfId = User.getInstance().getCurrentUserId();
+        String selfId = UserManager.getInstance().getCurrentUserId();
         return msg.getFrom() != null && msg.getFrom().equals(selfId);
     }
 }

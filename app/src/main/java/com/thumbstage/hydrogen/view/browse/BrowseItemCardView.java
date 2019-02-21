@@ -39,7 +39,7 @@ public class BrowseItemCardView extends CardView {
         this.topic = topic;
         name.setText(topic.getName());
         brief.setText(topic.getBrief());
-        Glide.with(getContext()).load(topic.getSetting_id()).into(setting);
+        Glide.with(getContext()).load(topic.getSetting().getUrl()).into(setting);
     }
 
 }

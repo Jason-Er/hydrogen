@@ -5,6 +5,7 @@ import android.text.TextUtils;
 
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.im.v2.AVIMClient;
+import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.thumbstage.hydrogen.view.browse.BrowseFragmentPagerAdapter;
 import com.thumbstage.hydrogen.view.browse.mine.IAttendedFragment;
 import com.thumbstage.hydrogen.view.browse.mine.IStartedFragment;
@@ -19,14 +20,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class User implements IPagerAdapterCustomize {
+public class UserManager implements IPagerAdapterCustomize {
 
     private AVUser avUser;
     private final Map<String, Fragment> fragmentMap;
     private final Set<Privilege> privilegeSet;
 
-    private volatile static User user = null;
-    private User() {
+    private volatile static UserManager userManager = null;
+    private UserManager() {
         privilegeSet = new LinkedHashSet<>();
         fragmentMap = new HashMap<String, Fragment>() {
             {
@@ -49,15 +50,15 @@ public class User implements IPagerAdapterCustomize {
         adapter.setFragmentList(fragmentList);
     }
 
-    public static User getInstance() {
-        if (user == null) {
-            synchronized (User.class) {
-                if (user == null) {
-                    user = new User();
+    public static UserManager getInstance() {
+        if (userManager == null) {
+            synchronized (UserManager.class) {
+                if (userManager == null) {
+                    userManager = new UserManager();
                 }
             }
         }
-        return user;
+        return userManager;
     }
 
     public void setAvUser(AVUser avUser) {
@@ -68,7 +69,7 @@ public class User implements IPagerAdapterCustomize {
             }
         };
         if( avUser != null ) {
-            // TODO: 2/12/2019 needing fetch privileges of this user
+            // TODO: 2/12/2019 needing fetch privileges of this userManager
             privileges.add(Privilege.BROWSE_PUBLISHEDOPENED);
             privileges.add(Privilege.BROWSE_ISTARTED);
             privileges.add(Privilege.BROWSE_IATTENDED);
@@ -95,6 +96,10 @@ public class User implements IPagerAdapterCustomize {
             return avUser.getObjectId();
         }
         return null;
+    }
+
+    public AVIMConversation getConversation(String conversationId) {
+        return getClient().getConversation(conversationId);
     }
 
 }
