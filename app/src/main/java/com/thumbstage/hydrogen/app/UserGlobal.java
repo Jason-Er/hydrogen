@@ -20,14 +20,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class UserManager implements IPagerAdapterCustomize {
+public class UserGlobal implements IPagerAdapterCustomize {
 
     private AVUser avUser;
     private final Map<String, Fragment> fragmentMap;
     private final Set<Privilege> privilegeSet;
 
-    private volatile static UserManager userManager = null;
-    private UserManager() {
+    private volatile static UserGlobal userGlobal = null;
+    private UserGlobal() {
         privilegeSet = new LinkedHashSet<>();
         fragmentMap = new HashMap<String, Fragment>() {
             {
@@ -50,15 +50,15 @@ public class UserManager implements IPagerAdapterCustomize {
         adapter.setFragmentList(fragmentList);
     }
 
-    public static UserManager getInstance() {
-        if (userManager == null) {
-            synchronized (UserManager.class) {
-                if (userManager == null) {
-                    userManager = new UserManager();
+    public static UserGlobal getInstance() {
+        if (userGlobal == null) {
+            synchronized (UserGlobal.class) {
+                if (userGlobal == null) {
+                    userGlobal = new UserGlobal();
                 }
             }
         }
-        return userManager;
+        return userGlobal;
     }
 
     public void setAvUser(AVUser avUser) {
@@ -69,7 +69,7 @@ public class UserManager implements IPagerAdapterCustomize {
             }
         };
         if( avUser != null ) {
-            // TODO: 2/12/2019 needing fetch privileges of this userManager
+            // TODO: 2/12/2019 needing fetch privileges of this userGlobal
             privileges.add(Privilege.BROWSE_PUBLISHEDOPENED);
             privileges.add(Privilege.BROWSE_ISTARTED);
             privileges.add(Privilege.BROWSE_IATTENDED);

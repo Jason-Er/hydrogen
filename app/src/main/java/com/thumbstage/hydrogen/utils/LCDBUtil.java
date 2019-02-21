@@ -149,8 +149,10 @@ public class LCDBUtil {
             AVObject avDeriveFrom = AVObject.createWithoutData("Topic", topic.getDerive_from());
             record.put("derive_from", avDeriveFrom);
         }
-        AVObject avObject = AVObject.createWithoutData("_File", topic.getSetting().getId());
-        record.put("setting", avObject);
+        if(topic.getSetting() != null) {
+            AVObject avObject = AVObject.createWithoutData("_File", topic.getSetting().getId());
+            record.put("setting", avObject);
+        }
         record.put("members", topic.getMembers());
         List<Map> list = DataConvertUtil.convert2AVObject(topic.getDialogue());
         record.put("dialogue", list);

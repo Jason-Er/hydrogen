@@ -10,7 +10,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.model.Topic;
+import com.thumbstage.hydrogen.app.UserGlobal;
+import com.thumbstage.hydrogen.model.TopicEx;
 import com.thumbstage.hydrogen.view.create.fragment.TopicFragment;
 
 import butterknife.ButterKnife;
@@ -18,6 +19,10 @@ import butterknife.ButterKnife;
 public class CreateActivity extends AppCompatActivity {
     final String TAG = "CreateActivity";
     TopicFragment topicFragment;
+
+    public enum TopicHandleType {
+        CREATE, ATTEND, CONTINUE
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,11 +37,21 @@ public class CreateActivity extends AppCompatActivity {
 
         topicFragment = (TopicFragment) getSupportFragmentManager().findFragmentById(R.id.activity_create_fragment);
 
-        final Topic topic = getIntent().getParcelableExtra("Topic");
-        if( topic != null ) { // use this topic
-            topicFragment.attendTopic(topic);
-        } else { // create one
-            topicFragment.createTopic();
+        TopicEx topicEx = getIntent().getParcelableExtra(TopicEx.class.getSimpleName());
+        String handleType = getIntent().getStringExtra(TopicHandleType.class.getSimpleName());
+        if( handleType == null) {
+            throw new IllegalArgumentException("No TopicHandleType found!");
+        }
+        switch (TopicHandleType.valueOf(handleType)) {
+            case CREATE:
+                topicFragment.createTopic();
+                break;
+            case ATTEND:
+                topicFragment.attendTopic(topicEx.getTopic());
+                break;
+            case CONTINUE:
+                topicFragment.continueTopic(UserGlobal.getInstance().getConversation(topicEx.getPipe().getId()));
+                break;
         }
     }
 

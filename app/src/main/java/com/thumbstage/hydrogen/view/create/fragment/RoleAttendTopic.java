@@ -4,7 +4,7 @@ import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMAudioMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
-import com.thumbstage.hydrogen.app.UserManager;
+import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.utils.LCDBUtil;
@@ -19,7 +19,7 @@ public class RoleAttendTopic extends RoleBase {
             LCDBUtil.copyPublishedOpenedTopic(topic, new LCDBUtil.ICallBack() {
                 @Override
                 public void callback(String objectID) {
-                    imConversation = UserManager.getInstance().getConversation(objectID);
+                    imConversation = UserGlobal.getInstance().getConversation(objectID);
                     handleEvent(event);
                 }
             });

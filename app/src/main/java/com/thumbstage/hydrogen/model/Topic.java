@@ -49,8 +49,8 @@ public class Topic implements Parcelable {
         dest.writeString(brief);
         dest.writeString(derive_from);
         dest.writeStringList(members);
-        dest.writeParcelable(setting, 0);
-        dest.writeParcelable(started_by, 0);
+        dest.writeParcelable(setting, flags);
+        dest.writeParcelable(started_by, flags);
         dest.writeList(dialogue);
     }
 

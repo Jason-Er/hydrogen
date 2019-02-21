@@ -17,7 +17,7 @@ import android.view.MenuItem;
 
 import com.avos.avoscloud.AVUser;
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.app.UserManager;
+import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.view.account.AccountActivity;
 import com.thumbstage.hydrogen.view.common.SignEvent;
 import com.thumbstage.hydrogen.view.sign.SignActivity;
@@ -124,7 +124,7 @@ public class BrowseActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        UserManager.getInstance().customize(pagerAdapter);
+        UserGlobal.getInstance().customize(pagerAdapter);
     }
 
     @Override

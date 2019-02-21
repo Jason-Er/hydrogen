@@ -16,6 +16,7 @@ import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.view.common.ConversationBottomBarEvent;
+import com.thumbstage.hydrogen.view.create.CreateActivity;
 import com.thumbstage.hydrogen.view.create.ICreateActivityFunction;
 
 import org.greenrobot.eventbus.EventBus;
@@ -37,15 +38,11 @@ public class TopicFragment extends Fragment implements ICreateActivityFunction {
     @BindView(R.id.fragment_topic_pullrefresh)
     SwipeRefreshLayout refreshLayout;
 
-    enum roleType {
-        CREATE, ATTEND, CONTINUE
-    }
-
-    Map<roleType, RoleBase> roleMap = new HashMap<roleType, RoleBase>(){
+    Map<CreateActivity.TopicHandleType, RoleBase> roleMap = new HashMap<CreateActivity.TopicHandleType, RoleBase>(){
         {
-            put(roleType.CREATE, new RoleCreateTopic());
-            put(roleType.ATTEND, new RoleAttendTopic());
-            put(roleType.CONTINUE, new RoleContinueTopic());
+            put(CreateActivity.TopicHandleType.CREATE, new RoleCreateTopic());
+            put(CreateActivity.TopicHandleType.ATTEND, new RoleAttendTopic());
+            put(CreateActivity.TopicHandleType.CONTINUE, new RoleContinueTopic());
         }
     };
 
@@ -82,7 +79,7 @@ public class TopicFragment extends Fragment implements ICreateActivityFunction {
     }
 
     public void attendTopic(Topic topic) {
-        currentRole = roleMap.get(roleType.ATTEND);
+        currentRole = roleMap.get(CreateActivity.TopicHandleType.ATTEND);
         currentRole.setImConversation(imConversation)
                 .setItemAdapter(itemAdapter)
                 .setLayoutManager(layoutManager);
@@ -90,14 +87,14 @@ public class TopicFragment extends Fragment implements ICreateActivityFunction {
     }
 
     public void createTopic() {
-        currentRole = roleMap.get(roleType.CREATE);
+        currentRole = roleMap.get(CreateActivity.TopicHandleType.CREATE);
         currentRole.setImConversation(imConversation)
                 .setItemAdapter(itemAdapter)
                 .setLayoutManager(layoutManager);
     }
 
     public void continueTopic(final AVIMConversation conversation) {
-        currentRole = roleMap.get(roleType.CONTINUE);
+        currentRole = roleMap.get(CreateActivity.TopicHandleType.CONTINUE);
         currentRole.setImConversation(imConversation)
                 .setItemAdapter(itemAdapter)
                 .setLayoutManager(layoutManager);

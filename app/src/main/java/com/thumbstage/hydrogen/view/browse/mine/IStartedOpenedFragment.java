@@ -82,6 +82,8 @@ public class IStartedOpenedFragment extends Fragment implements IBrowseCustomize
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), CreateActivity.class);
+                intent.putExtra(CreateActivity.TopicHandleType.class.getSimpleName(),
+                        CreateActivity.TopicHandleType.CREATE.name());
                 startActivity(intent);
             }
         });

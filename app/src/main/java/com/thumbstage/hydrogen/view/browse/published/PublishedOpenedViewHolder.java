@@ -34,7 +34,9 @@ public class PublishedOpenedViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), CreateActivity.class);
-                intent.putExtra("Topic", topicEx.getTopic());
+                intent.putExtra(TopicEx.class.getSimpleName(), topicEx);
+                intent.putExtra(CreateActivity.TopicHandleType.class.getSimpleName(),
+                        CreateActivity.TopicHandleType.ATTEND.name());
                 v.getContext().startActivity(intent);
             }
         });

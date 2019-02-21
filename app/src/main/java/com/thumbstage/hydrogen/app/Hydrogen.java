@@ -22,6 +22,6 @@ public class Hydrogen extends Application {
         AVOSCloud.initialize(this, APP_ID, APP_KEY);
         AVOSCloud.setDebugLogEnabled(true);
         */
-        UserManager.getInstance().setAvUser(AVUser.getCurrentUser());
+        UserGlobal.getInstance().setAvUser(AVUser.getCurrentUser());
     }
 }
