@@ -28,7 +28,7 @@ public class IAttendedOpenedAdapterDelegate implements IAdapterDelegate<List> {
 
     @Override
     public boolean isForViewType(@NonNull List items, int position) {
-        return items.get(position) instanceof Topic;
+        return items.get(position) instanceof TopicEx;
     }
 
     @NonNull

@@ -82,7 +82,12 @@ public class BrowseViewModel extends ViewModel {
                                     .setMembers(members)
                                     .setStarted_by(user)
                                     .setSetting(setting);
-                            Pipe pipe = new Pipe(avPipe.getObjectId());
+                            Pipe pipe;
+                            if( avPipe != null ) {
+                                pipe = new Pipe(avPipe.getObjectId());
+                            } else {
+                                pipe = null;
+                            }
                             TopicEx topicEx = new TopicEx(topic, pipe);
                             topicExes.add(topicEx);
                         }
