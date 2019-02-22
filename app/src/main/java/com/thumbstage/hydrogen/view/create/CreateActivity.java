@@ -9,25 +9,21 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.avos.avoscloud.AVUser;
-import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
-import com.avos.avoscloud.im.v2.AVIMException;
-import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
-import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.utils.ClassDBUtil;
-
-import java.util.Arrays;
+import com.thumbstage.hydrogen.app.UserGlobal;
+import com.thumbstage.hydrogen.model.TopicEx;
+import com.thumbstage.hydrogen.view.create.fragment.TopicFragment;
 
 import butterknife.ButterKnife;
-import cn.leancloud.chatkit.LCChatKit;
-import cn.leancloud.chatkit.activity.LCIMConversationFragment;
 
 public class CreateActivity extends AppCompatActivity {
     final String TAG = "CreateActivity";
-    LCIMConversationFragment conversationFragment;
-    AVIMConversation conversation;
+    TopicFragment topicFragment;
+
+    public enum TopicHandleType {
+        CREATE, ATTEND, CONTINUE
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,37 +36,28 @@ public class CreateActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle(getResources().getString(R.string.create_activity_name));
 
-        conversationFragment = (LCIMConversationFragment) getSupportFragmentManager().findFragmentById(R.id.activity_create_fragment);
+        topicFragment = (TopicFragment) getSupportFragmentManager().findFragmentById(R.id.activity_create_fragment);
 
-        if( LCChatKit.getInstance().getClient() == null ) {
-            LCChatKit.getInstance().open(AVUser.getCurrentUser().getObjectId(), new AVIMClientCallback() {
-                @Override
-                public void done(AVIMClient client, AVIMException e) {
-                    LCChatKit.getInstance().getClient().createConversation(
-                            Arrays.asList(""), "start", null, false, false, new AVIMConversationCreatedCallback() {
-                                @Override
-                                public void done(AVIMConversation avimConversation, AVIMException e) {
-                                    if (e == null) {
-                                        Log.i(TAG, "create a conversation");
-                                        conversation = avimConversation;
-                                        conversationFragment.setConversation(avimConversation);
-                                    }
-                                }
-                            });
-                }
-            });
-        } else {
-            LCChatKit.getInstance().getClient().createConversation(
-                    Arrays.asList(""), "start", null, false, false, new AVIMConversationCreatedCallback() {
-                        @Override
-                        public void done(AVIMConversation avimConversation, AVIMException e) {
-                            if (e == null) {
-                                Log.i(TAG, "create a conversation");
-                                conversation = avimConversation;
-                                conversationFragment.setConversation(avimConversation);
-                            }
-                        }
-                    });
+        final TopicEx topicEx = getIntent().getParcelableExtra(TopicEx.class.getSimpleName());
+        String handleType = getIntent().getStringExtra(TopicHandleType.class.getSimpleName());
+        if( handleType == null) {
+            throw new IllegalArgumentException("No TopicHandleType found!");
+        }
+        switch (TopicHandleType.valueOf(handleType)) {
+            case CREATE:
+                topicFragment.createTopic();
+                break;
+            case ATTEND:
+                topicFragment.attendTopic(topicEx.getTopic());
+                break;
+            case CONTINUE:
+                UserGlobal.getInstance().getConversation(topicEx.getPipe().getId(), new UserGlobal.ICallBack() {
+                    @Override
+                    public void callBack(AVIMConversation conv) {
+                        topicFragment.continueTopic(topicEx.getTopic(), conv);
+                    }
+                });
+                break;
         }
     }
 
@@ -92,12 +79,12 @@ public class CreateActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_ok:
                 Log.i(TAG, "action_ok");
-                ClassDBUtil.saveConversationRecord("IStartedOpened", conversation);
+                topicFragment.onActionOK();
                 navigateUp();
                 break;
             case R.id.action_publish:
                 Log.i(TAG, "action_publish");
-                ClassDBUtil.saveConversationRecord("PublishedOpened", conversation);
+                topicFragment.onActionPublish();
                 navigateUp();
                 break;
         }

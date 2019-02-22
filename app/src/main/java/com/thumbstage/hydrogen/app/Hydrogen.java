@@ -1,8 +1,12 @@
 package com.thumbstage.hydrogen.app;
 
 import android.app.Application;
+import android.util.Log;
 
-import com.avos.avoscloud.AVOSCloud;
+import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.im.v2.AVIMClient;
+import com.avos.avoscloud.im.v2.AVIMException;
+import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 
 import cn.leancloud.chatkit.LCChatKit;
 
@@ -17,10 +21,10 @@ public class Hydrogen extends Application {
 
         LCChatKit.getInstance().setProfileProvider(CustomUserProvider.getInstance());
         LCChatKit.getInstance().init(getApplicationContext(), APP_ID, APP_KEY);
-
         /*
         AVOSCloud.initialize(this, APP_ID, APP_KEY);
         AVOSCloud.setDebugLogEnabled(true);
         */
+        UserGlobal.getInstance().setAvUser(AVUser.getCurrentUser());
     }
 }

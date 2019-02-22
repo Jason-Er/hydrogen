@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Topic;
 
@@ -15,13 +16,13 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class BrowseItemCardView extends CardView {
-    private Topic topic;
+    protected Topic topic;
 
-    @BindView(R.id.publishedOpenedItem_setting)
+    @BindView(R.id.item_browse_topic_setting)
     ImageView setting;
-    @BindView(R.id.publishedOpenedItem_name)
+    @BindView(R.id.item_browse_topic_name)
     TextView name;
-    @BindView(R.id.publishedOpenedItem_brief)
+    @BindView(R.id.item_browse_topic_brief)
     TextView brief;
 
     public BrowseItemCardView(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -36,7 +37,9 @@ public class BrowseItemCardView extends CardView {
 
     public void setTopic(Topic topic) {
         this.topic = topic;
-        name.setText(topic.name);
-        brief.setText(topic.brief);
+        name.setText(topic.getName());
+        brief.setText(topic.getBrief());
+        Glide.with(getContext()).load(topic.getSetting().getUrl()).into(setting);
     }
+
 }

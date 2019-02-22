@@ -12,19 +12,19 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.view.browse.BrowseCustomize;
+import com.thumbstage.hydrogen.view.browse.IAdapterFunction;
+import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class IStartedFragment extends Fragment implements BrowseCustomize {
+public class IStartedFragment extends Fragment implements IBrowseCustomize, IAdapterFunction {
 
     @BindView(R.id.fragment_istarted_tablayout)
     TabLayout tabLayout;
     @BindView(R.id.fragment_istarted_viewpager)
     ViewPager viewPager;
     IStartedFragmentPagerAdapter pagerAdapter;
-    String[] titles = new String[]{"Opened","Closed"};
 
     Toolbar toolbar;
     FloatingActionButton fab;
@@ -35,11 +35,11 @@ public class IStartedFragment extends Fragment implements BrowseCustomize {
         View view = inflater.inflate(R.layout.fragment_istarted, container, false);
         ButterKnife.bind(this, view);
 
-        for (String title: titles) {
+        tabLayout.setupWithViewPager(viewPager);
+        pagerAdapter = new IStartedFragmentPagerAdapter(getChildFragmentManager());
+        for (String title: pagerAdapter.getTitles()) {
             tabLayout.addTab(tabLayout.newTab().setText(title));
         }
-        tabLayout.setupWithViewPager(viewPager);
-        pagerAdapter = new IStartedFragmentPagerAdapter(getFragmentManager());
         viewPager.setAdapter(pagerAdapter);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -49,9 +49,9 @@ public class IStartedFragment extends Fragment implements BrowseCustomize {
 
             @Override
             public void onPageSelected(int position) {
-                if ( pagerAdapter.getItem(position) instanceof BrowseCustomize) {
-                    ((BrowseCustomize) pagerAdapter.getItem(position)).customizeToolbar(toolbar);
-                    ((BrowseCustomize) pagerAdapter.getItem(position)).customizeFab(fab);
+                if ( pagerAdapter.getItem(position) instanceof IBrowseCustomize) {
+                    ((IBrowseCustomize) pagerAdapter.getItem(position)).customizeToolbar(toolbar);
+                    ((IBrowseCustomize) pagerAdapter.getItem(position)).customizeFab(fab);
                 } else {
                     // default function
                 }
@@ -65,13 +65,13 @@ public class IStartedFragment extends Fragment implements BrowseCustomize {
         return view;
     }
 
-    // region implement of interface BrowseCustomize
+    // region implement of interface IBrowseCustomize
     @Override
     public void customizeToolbar(Toolbar toolbar) {
         this.toolbar = toolbar;
         toolbar.setTitle(getResources().getString(R.string.IStartedFragment_name));
-        if( pagerAdapter.getItem(viewPager.getCurrentItem()) instanceof BrowseCustomize){
-            ((BrowseCustomize) pagerAdapter.getItem(viewPager.getCurrentItem())).customizeToolbar(toolbar);
+        if( pagerAdapter.getItem(viewPager.getCurrentItem()) instanceof IBrowseCustomize){
+            ((IBrowseCustomize) pagerAdapter.getItem(viewPager.getCurrentItem())).customizeToolbar(toolbar);
         }
     }
 
@@ -79,9 +79,16 @@ public class IStartedFragment extends Fragment implements BrowseCustomize {
     public void customizeFab(FloatingActionButton fab) {
         this.fab = fab;
         fab.hide();
-        if( pagerAdapter.getItem(viewPager.getCurrentItem()) instanceof BrowseCustomize){
-            ((BrowseCustomize) pagerAdapter.getItem(viewPager.getCurrentItem())).customizeFab(fab);
+        if( pagerAdapter.getItem(viewPager.getCurrentItem()) instanceof IBrowseCustomize){
+            ((IBrowseCustomize) pagerAdapter.getItem(viewPager.getCurrentItem())).customizeFab(fab);
         }
+    }
+    // endregion
+
+    // region implement of interface IAdapterFunction
+    @Override
+    public long getItemId() {
+        return 3;
     }
     // endregion
 }

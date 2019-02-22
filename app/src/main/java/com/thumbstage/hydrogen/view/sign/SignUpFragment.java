@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,7 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.SignUpCallback;
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.view.common.SignEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -81,6 +81,7 @@ public class SignUpFragment extends Fragment {
                 if( e == null ) {
                     SignEvent event = new SignEvent(user, "signUser");
                     EventBus.getDefault().post(event);
+                    UserGlobal.getInstance().setAvUser(AVUser.getCurrentUser());
                     ((SignActivity) getActivity()).onSupportNavigateUp();
                 } else {
                     switch (e.getCode()) {

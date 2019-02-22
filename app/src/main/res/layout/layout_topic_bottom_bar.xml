@@ -29,7 +29,7 @@
                 android:background="@drawable/lcim_bottom_bar_action_button_bg"/>
         </LinearLayout>
 
-        <include layout="@layout/layout_conversation_bottom_bar_text"/>
+        <include layout="@layout/layout_topic_bottom_bar_text"/>
     </LinearLayout>
 
     <include layout="@layout/lcim_bottom_bar_more_layout"/>

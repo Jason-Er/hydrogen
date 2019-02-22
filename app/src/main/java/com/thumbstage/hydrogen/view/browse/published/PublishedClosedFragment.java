@@ -5,11 +5,12 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.view.browse.BrowseCustomize;
+import com.thumbstage.hydrogen.view.browse.IAdapterFunction;
+import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
 
-public class PublishedClosedFragment extends Fragment implements BrowseCustomize {
+public class PublishedClosedFragment extends Fragment implements IBrowseCustomize, IAdapterFunction {
 
-    // region implement of interface BrowseCustomize
+    // region implement of interface IBrowseCustomize
     @Override
     public void customizeToolbar(Toolbar toolbar) {
         toolbar.setTitle(getResources().getString(R.string.PublishedClosedFragment_name));
@@ -20,4 +21,12 @@ public class PublishedClosedFragment extends Fragment implements BrowseCustomize
         fab.hide();
     }
     // endregion
+
+    // region implement of interface IAdapterFunction
+    @Override
+    public long getItemId() {
+        return 0;
+    }
+    // endregion
+
 }

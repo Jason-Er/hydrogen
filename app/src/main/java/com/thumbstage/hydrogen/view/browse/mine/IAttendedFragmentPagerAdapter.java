@@ -8,15 +8,16 @@ import android.support.v4.app.FragmentPagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class IStartedFragmentPagerAdapter extends FragmentPagerAdapter {
+public class IAttendedFragmentPagerAdapter extends FragmentPagerAdapter {
 
     List<Fragment> fragmentList;
     String[] titles = new String[]{"Opened","Closed"};
-    public IStartedFragmentPagerAdapter(FragmentManager fm) {
+
+    public IAttendedFragmentPagerAdapter(FragmentManager fm) {
         super(fm);
         fragmentList=new ArrayList<>();
-        fragmentList.add(new IStartedOpenedFragment());
-        fragmentList.add(new IStartedClosedFragment());
+        fragmentList.add(new IAttendedOpenedFragment());
+        fragmentList.add(new IAttendedClosedFragment());
     }
 
     public String[] getTitles() {
