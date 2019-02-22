@@ -3,24 +3,55 @@ package com.thumbstage.hydrogen.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Topic implements Parcelable {
 
+    String id;
     String name;
     String brief;
-    String sponsor_name;
-    String setting_url;
-    String conversation_id;
-    String started_by;
+    Setting setting;
+    User started_by;
+    String derive_from; // topic id
+    List<Line> dialogue;
+    List<String> members;
 
-    public Topic() {}
+    public Topic() {
+        name = "";
+        brief = "";
+        derive_from = "";
+        dialogue = new ArrayList<>();
+        members = new ArrayList<>();
+    }
 
     protected Topic(Parcel in) {
+        id = in.readString();
         name = in.readString();
         brief = in.readString();
-        sponsor_name = in.readString();
-        setting_url = in.readString();
-        conversation_id = in.readString();
-        started_by = in.readString();
+        derive_from = in.readString();
+        members = in.createStringArrayList();
+        setting = in.readParcelable(Setting.class.getClassLoader());
+        started_by = in.readParcelable(User.class.getClassLoader());
+        dialogue = new ArrayList<>();
+        in.readList(dialogue, Line.class.getClassLoader());
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(name);
+        dest.writeString(brief);
+        dest.writeString(derive_from);
+        dest.writeStringList(members);
+        dest.writeParcelable(setting, flags);
+        dest.writeParcelable(started_by, flags);
+        dest.writeList(dialogue);
     }
 
     public static final Creator<Topic> CREATOR = new Creator<Topic>() {
@@ -35,26 +66,16 @@ public class Topic implements Parcelable {
         }
     };
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(name);
-        dest.writeString(brief);
-        dest.writeString(sponsor_name);
-        dest.writeString(setting_url);
-        dest.writeString(conversation_id);
-        dest.writeString(started_by);
-    }
-
     public static Topic Builder() {
         return new Topic();
     }
 
     // region setter
+    public Topic setId(String id) {
+        this.id = id;
+        return this;
+    }
+
     public Topic setName(String name) {
         this.name = name;
         return this;
@@ -65,28 +86,38 @@ public class Topic implements Parcelable {
         return this;
     }
 
-    public Topic setSponsor_name(String sponsor_name) {
-        this.sponsor_name = sponsor_name;
+    public Topic setSetting(Setting setting) {
+        this.setting = setting;
         return this;
     }
 
-    public Topic setSetting_url(String setting_url) {
-        this.setting_url = setting_url;
-        return this;
-    }
-
-    public Topic setConversation_id(String conversation_id) {
-        this.conversation_id = conversation_id;
-        return this;
-    }
-
-    public Topic setStarted_by(String started_by) {
+    public Topic setStarted_by(User started_by) {
         this.started_by = started_by;
+        return this;
+    }
+
+    public Topic setDialogue(List<Line> dialogue) {
+        this.dialogue = dialogue;
+        return this;
+    }
+
+    public Topic setMembers(List<String> members) {
+        this.members = members;
+        return this;
+    }
+
+    public Topic setDerive_from(String derive_from) {
+        this.derive_from = derive_from;
         return this;
     }
     // endregion
 
     // region getter
+
+    public String getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
@@ -95,20 +126,24 @@ public class Topic implements Parcelable {
         return brief;
     }
 
-    public String getSponsor_name() {
-        return sponsor_name;
+    public Setting getSetting() {
+        return setting;
     }
 
-    public String getSetting_url() {
-        return setting_url;
-    }
-
-    public String getConversation_id() {
-        return conversation_id;
-    }
-
-    public String getStarted_by() {
+    public User getStarted_by() {
         return started_by;
+    }
+
+    public List<String> getMembers() {
+        return members;
+    }
+
+    public List<Line> getDialogue() {
+        return dialogue;
+    }
+
+    public String getDerive_from() {
+        return derive_from;
     }
     // endregion
 }

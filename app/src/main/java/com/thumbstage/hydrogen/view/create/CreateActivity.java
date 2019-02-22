@@ -10,22 +10,20 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.avos.avoscloud.im.v2.AVIMConversation;
-import com.avos.avoscloud.im.v2.AVIMException;
-import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.app.User;
-import com.thumbstage.hydrogen.model.Topic;
+import com.thumbstage.hydrogen.app.UserGlobal;
+import com.thumbstage.hydrogen.model.TopicEx;
 import com.thumbstage.hydrogen.view.create.fragment.TopicFragment;
 
-import java.util.Arrays;
-
 import butterknife.ButterKnife;
-import cn.leancloud.chatkit.LCChatKit;
 
 public class CreateActivity extends AppCompatActivity {
     final String TAG = "CreateActivity";
     TopicFragment topicFragment;
-    AVIMConversation conversation;
+
+    public enum TopicHandleType {
+        CREATE, ATTEND, CONTINUE
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -40,22 +38,26 @@ public class CreateActivity extends AppCompatActivity {
 
         topicFragment = (TopicFragment) getSupportFragmentManager().findFragmentById(R.id.activity_create_fragment);
 
-        Topic topic = getIntent().getParcelableExtra("Topic");
-        if( topic != null ) { // use this topic
-            conversation = User.getInstance().getClient().getConversation(topic.getConversation_id());
-            topicFragment.setConversation(conversation);
-        } else { // create one
-            User.getInstance().getClient().createConversation(
-                    Arrays.asList(""), "start", null, false, false, new AVIMConversationCreatedCallback() {
-                        @Override
-                        public void done(AVIMConversation avimConversation, AVIMException e) {
-                            if (e == null) {
-                                Log.i(TAG, "create a conversation");
-                                conversation = avimConversation;
-                                topicFragment.setConversation(avimConversation);
-                            }
-                        }
-                    });
+        final TopicEx topicEx = getIntent().getParcelableExtra(TopicEx.class.getSimpleName());
+        String handleType = getIntent().getStringExtra(TopicHandleType.class.getSimpleName());
+        if( handleType == null) {
+            throw new IllegalArgumentException("No TopicHandleType found!");
+        }
+        switch (TopicHandleType.valueOf(handleType)) {
+            case CREATE:
+                topicFragment.createTopic();
+                break;
+            case ATTEND:
+                topicFragment.attendTopic(topicEx.getTopic());
+                break;
+            case CONTINUE:
+                UserGlobal.getInstance().getConversation(topicEx.getPipe().getId(), new UserGlobal.ICallBack() {
+                    @Override
+                    public void callBack(AVIMConversation conv) {
+                        topicFragment.continueTopic(topicEx.getTopic(), conv);
+                    }
+                });
+                break;
         }
     }
 
@@ -77,12 +79,12 @@ public class CreateActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_ok:
                 Log.i(TAG, "action_ok");
-                // ClassDBUtil.saveConversationRecord("IStartedOpened", conversation);
+                topicFragment.onActionOK();
                 navigateUp();
                 break;
             case R.id.action_publish:
                 Log.i(TAG, "action_publish");
-                // ClassDBUtil.saveConversationRecord("PublishedOpened", conversation);
+                topicFragment.onActionPublish();
                 navigateUp();
                 break;
         }

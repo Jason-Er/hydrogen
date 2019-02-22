@@ -25,7 +25,6 @@ public class IStartedFragment extends Fragment implements IBrowseCustomize, IAda
     @BindView(R.id.fragment_istarted_viewpager)
     ViewPager viewPager;
     IStartedFragmentPagerAdapter pagerAdapter;
-    String[] titles = new String[]{"Opened","Closed"};
 
     Toolbar toolbar;
     FloatingActionButton fab;
@@ -36,11 +35,11 @@ public class IStartedFragment extends Fragment implements IBrowseCustomize, IAda
         View view = inflater.inflate(R.layout.fragment_istarted, container, false);
         ButterKnife.bind(this, view);
 
-        for (String title: titles) {
+        tabLayout.setupWithViewPager(viewPager);
+        pagerAdapter = new IStartedFragmentPagerAdapter(getChildFragmentManager());
+        for (String title: pagerAdapter.getTitles()) {
             tabLayout.addTab(tabLayout.newTab().setText(title));
         }
-        tabLayout.setupWithViewPager(viewPager);
-        pagerAdapter = new IStartedFragmentPagerAdapter(getFragmentManager());
         viewPager.setAdapter(pagerAdapter);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override

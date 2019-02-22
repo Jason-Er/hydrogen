@@ -7,14 +7,13 @@ import android.view.ViewGroup;
 import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.AVIMReservedMessageType;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
-import com.thumbstage.hydrogen.app.User;
+import com.thumbstage.hydrogen.app.UserGlobal;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import cn.leancloud.chatkit.LCChatKit;
 import cn.leancloud.chatkit.viewholder.LCIMChatHolderOption;
 import cn.leancloud.chatkit.viewholder.LCIMChatItemAudioHolder;
 import cn.leancloud.chatkit.viewholder.LCIMChatItemHolder;
@@ -44,6 +43,7 @@ public class TopicRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
     // 时间间隔最小为十分钟
     private final static long TIME_INTERVAL = 1000 * 60 * 3;
     private boolean isShowUserName = true;
+
     protected List<AVIMMessage> messageList = new ArrayList<AVIMMessage>();
     private Set<String> messageIdSet = new HashSet<>();
 
@@ -64,6 +64,9 @@ public class TopicRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
                 }
             }
         }
+    }
+    public List<AVIMMessage> getMessageList() {
+        return messageList;
     }
 
     /**
@@ -280,7 +283,7 @@ public class TopicRecyclerAdapter extends RecyclerView.Adapter<RecyclerView.View
      * @return
      */
     protected boolean fromMe(AVIMTypedMessage msg) {
-        String selfId = User.getInstance().getCurrentUserId();
+        String selfId = UserGlobal.getInstance().getCurrentUserId();
         return msg.getFrom() != null && msg.getFrom().equals(selfId);
     }
 }
