@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.model.TopicEx;
@@ -37,7 +38,7 @@ public class CreateActivity extends AppCompatActivity {
 
         topicFragment = (TopicFragment) getSupportFragmentManager().findFragmentById(R.id.activity_create_fragment);
 
-        TopicEx topicEx = getIntent().getParcelableExtra(TopicEx.class.getSimpleName());
+        final TopicEx topicEx = getIntent().getParcelableExtra(TopicEx.class.getSimpleName());
         String handleType = getIntent().getStringExtra(TopicHandleType.class.getSimpleName());
         if( handleType == null) {
             throw new IllegalArgumentException("No TopicHandleType found!");
@@ -50,8 +51,12 @@ public class CreateActivity extends AppCompatActivity {
                 topicFragment.attendTopic(topicEx.getTopic());
                 break;
             case CONTINUE:
-                topicFragment.continueTopic(topicEx.getTopic(),
-                        UserGlobal.getInstance().getConversation(topicEx.getPipe().getId()));
+                UserGlobal.getInstance().getConversation(topicEx.getPipe().getId(), new UserGlobal.ICallBack() {
+                    @Override
+                    public void callBack(AVIMConversation conv) {
+                        topicFragment.continueTopic(topicEx.getTopic(), conv);
+                    }
+                });
                 break;
         }
     }

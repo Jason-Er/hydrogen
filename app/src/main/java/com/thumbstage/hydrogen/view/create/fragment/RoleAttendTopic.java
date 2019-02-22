@@ -1,5 +1,6 @@
 package com.thumbstage.hydrogen.view.create.fragment;
 
+import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.data.LCRepository;
 import com.thumbstage.hydrogen.model.Topic;
@@ -13,8 +14,13 @@ public class RoleAttendTopic extends RoleBase {
             LCRepository.copyPublishedOpenedTopic(topic, new LCRepository.ICallBack() {
                 @Override
                 public void callback(String objectID) {
-                    imConversation = UserGlobal.getInstance().getConversation(objectID);
-                    handleEvent(event);
+                    UserGlobal.getInstance().getConversation(objectID, new UserGlobal.ICallBack() {
+                        @Override
+                        public void callBack(AVIMConversation conv) {
+                            imConversation = conv;
+                            handleEvent(event);
+                        }
+                    });
                 }
             });
         } else {
