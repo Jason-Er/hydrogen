@@ -69,7 +69,7 @@ public abstract class RoleBase implements ITopicFragmentFunction{
         itemAdapter.addMessage(message);
     }
 
-    protected void sendMessage(AVIMMessage message, boolean addToList) {
+    protected void sendMessage(final AVIMMessage message, boolean addToList) {
         if (addToList) {
             itemAdapter.addMessage(message);
         }
@@ -84,16 +84,18 @@ public abstract class RoleBase implements ITopicFragmentFunction{
                     itemAdapter.notifyDataSetChanged();
                     if (null != e) {
                         LogUtils.logException(e);
+                    } else {
+                        LCRepository.addTopicOneLine(imConversation.getConversationId(),
+                                DataConvertUtil.convert2Line(message), new LCRepository.ICallBack() {
+                                    @Override
+                                    public void callback(String objectID) {
+                                        Log.i(TAG, "addTopicOneLine ok");
+                                    }
+                                });
                     }
                 }
             });
-            LCRepository.addTopicOneLine(imConversation.getConversationId(),
-                    DataConvertUtil.convert2Line(message), new LCRepository.ICallBack() {
-                @Override
-                public void callback(String objectID) {
-                    Log.i(TAG, "addTopicOneLine ok");
-                }
-            });
+
         }
     }
 
