@@ -21,6 +21,8 @@ import com.thumbstage.hydrogen.utils.DataConvertUtil;
 import com.thumbstage.hydrogen.utils.LogUtils;
 import com.thumbstage.hydrogen.utils.StringUtil;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -92,6 +94,9 @@ public abstract class RoleBase implements ITopicFragmentFunction{
                                         Log.i(TAG, "addTopicOneLine ok");
                                     }
                                 });
+                        // TODO: 2/22/2019 must to synchronous loca
+                        // topic.getDialogue().add(new Line()); // local topic add line
+                        // EventBus.getDefault().post(new );
                     }
                 }
             });
