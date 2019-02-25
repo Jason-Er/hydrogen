@@ -15,7 +15,7 @@ import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.SignUpCallback;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.app.UserGlobal;
-import com.thumbstage.hydrogen.view.common.SignEvent;
+import com.thumbstage.hydrogen.event.SignEvent;
 
 import org.greenrobot.eventbus.EventBus;
 

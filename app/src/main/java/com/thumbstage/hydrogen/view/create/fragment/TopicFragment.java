@@ -15,7 +15,7 @@ import android.view.ViewGroup;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Topic;
-import com.thumbstage.hydrogen.view.common.ConversationBottomBarEvent;
+import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
 import com.thumbstage.hydrogen.view.create.ICreateActivityFunction;
 

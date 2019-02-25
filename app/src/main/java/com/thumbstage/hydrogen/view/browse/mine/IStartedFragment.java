@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.app.Privilege;
 import com.thumbstage.hydrogen.view.browse.IAdapterFunction;
 import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
 
@@ -88,7 +89,7 @@ public class IStartedFragment extends Fragment implements IBrowseCustomize, IAda
     // region implement of interface IAdapterFunction
     @Override
     public long getItemId() {
-        return 3;
+        return Privilege.BROWSE_ISTARTED.ordinal();
     }
     // endregion
 }

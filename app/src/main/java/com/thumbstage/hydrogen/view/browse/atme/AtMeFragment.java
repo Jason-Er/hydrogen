@@ -1,4 +1,4 @@
-package com.thumbstage.hydrogen.view.browse.published;
+package com.thumbstage.hydrogen.view.browse.atme;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -28,7 +28,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class PublishedOpenedFragment extends Fragment implements IBrowseCustomize, IAdapterFunction {
+public class AtMeFragment extends Fragment implements IBrowseCustomize, IAdapterFunction {
 
     @BindView(R.id.fragment_recycler_common_pullrefresh)
     SwipeRefreshLayout refreshLayout;
@@ -37,7 +37,7 @@ public class PublishedOpenedFragment extends Fragment implements IBrowseCustomiz
 
     BrowseViewModel viewModel;
 
-    PublishedOpenedAdapter recyclerViewAdapter;
+    AtMeAdapter recyclerViewAdapter;
     LinearLayoutManager layoutManager;
 
     @Nullable
@@ -50,7 +50,7 @@ public class PublishedOpenedFragment extends Fragment implements IBrowseCustomiz
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
-        recyclerViewAdapter = new PublishedOpenedAdapter();
+        recyclerViewAdapter = new AtMeAdapter();
         recyclerView.setAdapter(recyclerViewAdapter);
 
         viewModel = ViewModelProviders.of(getActivity()).get(BrowseViewModel.class);
@@ -61,14 +61,13 @@ public class PublishedOpenedFragment extends Fragment implements IBrowseCustomiz
             }
         });
         viewModel.getPublishedOpenedByPageNum(0);
-
-        return view;
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     // region implement of interface IBrowseCustomize
     @Override
     public void customizeToolbar(Toolbar toolbar) {
-        toolbar.setTitle(getResources().getString(R.string.PublishedOpenedFragment_name));
+        toolbar.setTitle(getResources().getString(R.string.AtMeFragment_name));
     }
 
     @Override
@@ -80,7 +79,7 @@ public class PublishedOpenedFragment extends Fragment implements IBrowseCustomiz
     // region implement of interface IAdapterFunction
     @Override
     public long getItemId() {
-        return Privilege.BROWSE_PUBLISHEDOPENED.ordinal();
+        return Privilege.BROWSE_AT_ME.ordinal();
     }
     // endregion
 }

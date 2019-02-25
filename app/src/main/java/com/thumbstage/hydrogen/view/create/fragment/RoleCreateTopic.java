@@ -8,7 +8,7 @@ import com.thumbstage.hydrogen.data.LCRepository;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.LineType;
 import com.thumbstage.hydrogen.model.Topic;
-import com.thumbstage.hydrogen.view.common.ConversationBottomBarEvent;
+import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
 import com.thumbstage.hydrogen.view.create.ICreateActivityFunction;
 
 import java.util.Date;

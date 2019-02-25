@@ -4,7 +4,7 @@ import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.data.LCRepository;
 import com.thumbstage.hydrogen.model.Topic;
-import com.thumbstage.hydrogen.view.common.ConversationBottomBarEvent;
+import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
 
 public class RoleAttendTopic extends RoleBase {
 

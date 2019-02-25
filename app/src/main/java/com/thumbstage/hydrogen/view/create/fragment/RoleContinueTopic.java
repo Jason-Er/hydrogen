@@ -1,7 +1,7 @@
 package com.thumbstage.hydrogen.view.create.fragment;
 
 import com.thumbstage.hydrogen.model.Topic;
-import com.thumbstage.hydrogen.view.common.ConversationBottomBarEvent;
+import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
 
 public class RoleContinueTopic extends RoleBase {
 

@@ -14,7 +14,7 @@ import android.widget.Toast;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.utils.PathUtils;
 import com.thumbstage.hydrogen.utils.SoftInputUtils;
-import com.thumbstage.hydrogen.view.common.ConversationBottomBarEvent;
+import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
 
 import org.greenrobot.eventbus.EventBus;
 

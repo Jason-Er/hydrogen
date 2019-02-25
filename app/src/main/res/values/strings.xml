@@ -36,5 +36,6 @@
     <string name="action_ok">OK</string>
     <string name="action_publish">publish</string>
     <string name="item_topic_setting">topic setting</string>
+    <string name="AtMeFragment_name">who @ me</string>
 
 </resources>
