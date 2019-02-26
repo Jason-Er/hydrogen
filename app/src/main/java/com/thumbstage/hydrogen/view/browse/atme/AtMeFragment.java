@@ -19,6 +19,7 @@ import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.app.Privilege;
+import com.thumbstage.hydrogen.model.Pipe;
 import com.thumbstage.hydrogen.model.TopicEx;
 import com.thumbstage.hydrogen.view.browse.IAdapterFunction;
 import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
@@ -57,10 +58,10 @@ public class AtMeFragment extends Fragment implements IBrowseCustomize, IAdapter
         recyclerView.setAdapter(recyclerViewAdapter);
 
         viewModel = ViewModelProviders.of(getActivity()).get(BrowseViewModel.class);
-        viewModel.getAtMe().observe(getActivity(), new Observer<List<TopicEx>>() {
+        viewModel.getAtMe().observe(getActivity(), new Observer<List<Pipe>>() {
             @Override
-            public void onChanged(@Nullable List<TopicEx> topicExes) {
-                recyclerViewAdapter.setItems(topicExes);
+            public void onChanged(@Nullable List<Pipe> pipes) {
+                recyclerViewAdapter.setItems(pipes);
             }
         });
         viewModel.getPublishedOpenedByPageNum(0);

@@ -19,7 +19,7 @@ import butterknife.ButterKnife;
 
 public class AtMeViewHolder extends RecyclerView.ViewHolder {
 
-    TopicEx topicEx;
+    Pipe pipe;
 
     @BindView(R.id.item_browse_topic_setting)
     ImageView setting;
@@ -45,8 +45,8 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    public void setTopicEx(TopicEx topicEx) {
-        this.topicEx = topicEx;
+    public void setPipe(Pipe pipe) {
+        this.pipe = pipe;
         /*
         Topic topic = topicEx.getTopic();
         name.setText(topic.getName());

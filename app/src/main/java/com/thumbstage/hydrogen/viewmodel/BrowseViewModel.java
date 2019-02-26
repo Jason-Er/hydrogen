@@ -7,10 +7,12 @@ import android.util.Log;
 
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
+import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.data.LCRepository;
 import com.thumbstage.hydrogen.im.IIMCallBack;
 import com.thumbstage.hydrogen.im.IMConversationHandler;
 import com.thumbstage.hydrogen.im.IMMessageHandler;
+import com.thumbstage.hydrogen.model.Pipe;
 import com.thumbstage.hydrogen.model.TopicEx;
 
 import java.util.ArrayList;
@@ -22,7 +24,7 @@ import cn.leancloud.chatkit.cache.LCIMConversationItemCache;
 public class BrowseViewModel extends ViewModel {
 
     final String TAG = "BrowseViewModel";
-    private final MutableLiveData<List<TopicEx>> atMe = new MutableLiveData<>();
+    private final MutableLiveData<List<Pipe>> atMe = new MutableLiveData<>();
     private final MutableLiveData<List<TopicEx>> publishedOpened = new MutableLiveData<>();
     private final MutableLiveData<List<TopicEx>> iStartedOpened = new MutableLiveData<>();
     private final MutableLiveData<List<TopicEx>> iAttendedOpened = new MutableLiveData<>();
@@ -36,7 +38,7 @@ public class BrowseViewModel extends ViewModel {
     public MutableLiveData<List<TopicEx>> getIAttendedOpened() {
         return iAttendedOpened;
     }
-    public MutableLiveData<List<TopicEx>> getAtMe() {
+    public MutableLiveData<List<Pipe>> getAtMe() {
         return atMe;
     }
 
@@ -87,10 +89,13 @@ public class BrowseViewModel extends ViewModel {
 
     private void updateConversationList() {
         List<String> convIdList = LCIMConversationItemCache.getInstance().getSortedConversationList();
-        List<AVIMConversation> conversationList = new ArrayList<>();
+        List<Pipe> pipeList = new ArrayList<>();
+        // List<AVIMConversation> conversationList = new ArrayList<>();
         for (String convId : convIdList) {
-            conversationList.add(LCChatKit.getInstance().getClient().getConversation(convId));
+            pipeList.add(new Pipe(convId));
+            // conversationList.add(UserGlobal.getInstance().getClient().getConversation(convId));
         }
+        atMe.setValue(pipeList);
     }
 
 }
