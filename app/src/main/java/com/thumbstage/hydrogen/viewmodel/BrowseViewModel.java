@@ -69,6 +69,10 @@ public class BrowseViewModel extends ViewModel {
         });
     }
 
+    public void getAtMeByPageNum(int pageNum) {
+        updateConversationList();
+    }
+
     public void setListenIMCallBack(IMMessageHandler imMessageHandler) {
         imMessageHandler.setCallback(new IIMCallBack() {
             @Override

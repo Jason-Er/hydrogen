@@ -64,7 +64,7 @@ public class AtMeFragment extends Fragment implements IBrowseCustomize, IAdapter
                 recyclerViewAdapter.setItems(pipes);
             }
         });
-        viewModel.getPublishedOpenedByPageNum(0);
+        viewModel.getAtMeByPageNum(0);
         return view;
     }
 

@@ -34,7 +34,7 @@ public class AtMeAdapterDelegate implements IAdapterDelegate<List> {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_browse, parent, false);
+                .inflate(R.layout.item_pipe_atme, parent, false);
         return new AtMeViewHolder(view);
     }
 
