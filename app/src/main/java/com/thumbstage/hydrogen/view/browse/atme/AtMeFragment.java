@@ -12,6 +12,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class AtMeFragment extends Fragment implements IBrowseCustomize, IAdapterFunction {
+
+    final String TAG = "AtMeFragment";
 
     @BindView(R.id.fragment_recycler_common_pullrefresh)
     SwipeRefreshLayout refreshLayout;
@@ -54,14 +57,14 @@ public class AtMeFragment extends Fragment implements IBrowseCustomize, IAdapter
         recyclerView.setAdapter(recyclerViewAdapter);
 
         viewModel = ViewModelProviders.of(getActivity()).get(BrowseViewModel.class);
-        viewModel.getPublishedOpened().observe(getActivity(), new Observer<List<TopicEx>>() {
+        viewModel.getAtMe().observe(getActivity(), new Observer<List<TopicEx>>() {
             @Override
             public void onChanged(@Nullable List<TopicEx> topicExes) {
                 recyclerViewAdapter.setItems(topicExes);
             }
         });
         viewModel.getPublishedOpenedByPageNum(0);
-        return super.onCreateView(inflater, container, savedInstanceState);
+        return view;
     }
 
     // region implement of interface IBrowseCustomize
@@ -82,4 +85,5 @@ public class AtMeFragment extends Fragment implements IBrowseCustomize, IAdapter
         return Privilege.BROWSE_AT_ME.ordinal();
     }
     // endregion
+
 }

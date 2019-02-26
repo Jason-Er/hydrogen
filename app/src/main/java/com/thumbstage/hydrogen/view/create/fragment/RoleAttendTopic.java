@@ -14,13 +14,9 @@ public class RoleAttendTopic extends RoleBase {
             LCRepository.copyPublishedOpenedTopic(topic, new LCRepository.ICallBack() {
                 @Override
                 public void callback(String objectID) {
-                    UserGlobal.getInstance().getConversation(objectID, new UserGlobal.ICallBack() {
-                        @Override
-                        public void callBack(AVIMConversation conv) {
-                            imConversation = conv;
-                            handleEvent(event);
-                        }
-                    });
+                    AVIMConversation conv = UserGlobal.getInstance().getConversation(objectID);
+                    imConversation = conv;
+                    handleEvent(event);
                 }
             });
         } else {

@@ -51,12 +51,8 @@ public class CreateActivity extends AppCompatActivity {
                 topicFragment.attendTopic(topicEx.getTopic());
                 break;
             case CONTINUE:
-                UserGlobal.getInstance().getConversation(topicEx.getPipe().getId(), new UserGlobal.ICallBack() {
-                    @Override
-                    public void callBack(AVIMConversation conv) {
-                        topicFragment.continueTopic(topicEx.getTopic(), conv);
-                    }
-                });
+                AVIMConversation conv = UserGlobal.getInstance().getConversation(topicEx.getPipe().getId());
+                topicFragment.continueTopic(topicEx.getTopic(), conv);
                 break;
         }
     }

@@ -1,28 +1,24 @@
 package com.thumbstage.hydrogen.im;
 
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 
-import com.avos.avoscloud.AVCallback;
-import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 import com.avos.avoscloud.im.v2.AVIMTypedMessageHandler;
-import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.event.IMIMTypeMessageEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
 import cn.leancloud.chatkit.cache.LCIMConversationItemCache;
-import cn.leancloud.chatkit.cache.LCIMProfileCache;
 import cn.leancloud.chatkit.utils.LCIMNotificationUtils;
 
 public class IMMessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> {
     final String TAG = "IMMessageHandler";
     private Context context;
+    IIMCallBack callback;
 
     public IMMessageHandler(Context context) {
         this.context = context;
@@ -30,6 +26,7 @@ public class IMMessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> 
 
     @Override
     public void onMessage(AVIMTypedMessage message, AVIMConversation conversation, AVIMClient client) {
+        Log.i(TAG, "callBack");
         if (message == null || message.getMessageId() == null) {
             Log.d(TAG, "may be SDK Bug, message or message id is null");
             return;
@@ -48,6 +45,9 @@ public class IMMessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> 
                 LCIMConversationItemCache.getInstance().insertConversation(message.getConversationId());
                 if (!message.getFrom().equals(client.getClientId())) {
                     sendEvent(message, conversation);
+                    if(callback != null) {
+                        callback.callBack();
+                    }
                 }
             }
         }
@@ -59,10 +59,11 @@ public class IMMessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> 
     }
 
     private void sendEvent(AVIMTypedMessage message, AVIMConversation conversation) {
+        Log.i(TAG, "sendEvent");
         IMIMTypeMessageEvent event = new IMIMTypeMessageEvent();
         event.message = message;
         event.conversation = conversation;
-        EventBus.getDefault().post(event);
+        // EventBus.getDefault().post(event);
     }
 
     private void sendNotification(final AVIMTypedMessage message, final AVIMConversation conversation) {
@@ -84,5 +85,9 @@ public class IMMessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> 
             });
             */
         }
+    }
+
+    public void setCallback(IIMCallBack callback) {
+        this.callback = callback;
     }
 }
