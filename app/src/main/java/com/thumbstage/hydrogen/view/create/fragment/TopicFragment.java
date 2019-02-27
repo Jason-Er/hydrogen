@@ -12,8 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.model.Pipe;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
@@ -47,7 +47,6 @@ public class TopicFragment extends Fragment implements ICreateActivityFunction {
     };
 
     RoleBase currentRole = null;
-    AVIMConversation imConversation;
     LinearLayoutManager layoutManager;
     TopicRecyclerAdapter itemAdapter;
 
@@ -80,24 +79,22 @@ public class TopicFragment extends Fragment implements ICreateActivityFunction {
 
     public void attendTopic(Topic topic) {
         currentRole = roleMap.get(CreateActivity.TopicHandleType.ATTEND);
-        currentRole.setImConversation(imConversation)
-                .setItemAdapter(itemAdapter)
+        currentRole.setItemAdapter(itemAdapter)
                 .setLayoutManager(layoutManager)
                 .setTopic(topic);
     }
 
     public void createTopic() {
         currentRole = roleMap.get(CreateActivity.TopicHandleType.CREATE);
-        currentRole.setImConversation(imConversation)
-                .setItemAdapter(itemAdapter)
+        currentRole.setItemAdapter(itemAdapter)
                 .setLayoutManager(layoutManager);
     }
 
-    public void continueTopic(Topic topic, AVIMConversation conversation) {
+    public void continueTopic(Topic topic, Pipe pipe) {
         currentRole = roleMap.get(CreateActivity.TopicHandleType.CONTINUE);
-        currentRole.setImConversation(conversation)
-                .setItemAdapter(itemAdapter)
+        currentRole.setItemAdapter(itemAdapter)
                 .setLayoutManager(layoutManager)
+                .setPipe(pipe)
                 .setTopic(topic);
     }
 

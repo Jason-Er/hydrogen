@@ -14,6 +14,7 @@ public class RoleContinueTopic extends RoleBase {
         switch (event.getMessage()) {
             case "text":
                 sendText((String) event.getData());
+
                 break;
             case "voice":
 
@@ -24,7 +25,11 @@ public class RoleContinueTopic extends RoleBase {
     @Override
     public RoleBase setTopic(Topic topic) {
         this.topic = topic;
-        appendTopicDialogue(topic);
+        if(topic != null) {
+            appendTopicDialogue(topic);
+        } else {
+
+        }
         return this;
     }
 }

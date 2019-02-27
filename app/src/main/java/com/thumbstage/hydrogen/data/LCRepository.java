@@ -1,5 +1,6 @@
 package com.thumbstage.hydrogen.data;
 
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -45,6 +46,10 @@ public class LCRepository {
 
     public interface ICallBack {
         void callback(String objectID);
+    }
+
+    public interface IReturnTopic {
+        void callback(Topic topic);
     }
 
     public static void saveIStartedOpenedTopic(final Topic topic) {
@@ -259,9 +264,49 @@ public class LCRepository {
         });
     }
 
-    public static void addTopicOneLine(final String conversationID, final Line line, final ICallBack callBack) {
+    private static Topic getTopic(AVObject avTopic) {
+        if(avTopic != null) {
+            AVFile avFile = avTopic.getAVFile("setting");
+            String id = avTopic.getObjectId();
+            String name = (String) avTopic.get("name");
+            String brief = (String) avTopic.get("brief");
+            List<Map> datalist = avTopic.getList("dialogue");
+            List<String> members = avTopic.getList("members");
+            List<Line> dialogue = new ArrayList<>();
+            for (Map map : datalist) {
+                if (map.size() != 0) {
+                    dialogue.add(new Line(
+                            (String) map.get("who"),
+                            StringUtil.string2Date((String) map.get("when")),
+                            (String) map.get("what"),
+                            (LineType.valueOf((String) map.get("type")))));
+                }
+            }
+            AVObject avStartedBy = avTopic.getAVObject("started_by");
+            User user = new User(avStartedBy.getObjectId(), (String) avStartedBy.get("name"), (String) avStartedBy.get("avatar"));
+            Setting setting;
+            if (avFile != null) {
+                setting = new Setting(avFile.getObjectId(), avFile.getUrl());
+            } else {
+                setting = null;
+            }
+            Topic topic = Topic.Builder()
+                    .setId(id)
+                    .setBrief(brief)
+                    .setName(name)
+                    .setDialogue(dialogue)
+                    .setMembers(members)
+                    .setStarted_by(user)
+                    .setSetting(setting);
+            return topic;
+        } else {
+            return null;
+        }
+    }
+
+    public static void addTopicOneLine(final Pipe pipe, final Line line, final ICallBack callBack) {
         AVQuery<AVObject> avQuery = new AVQuery<>("_Conversation");
-        avQuery.getInBackground(conversationID, new GetCallback<AVObject>() {
+        avQuery.getInBackground(pipe.getId(), new GetCallback<AVObject>() {
             @Override
             public void done(AVObject avObject, AVException e) {
                 if( e == null ) {
@@ -283,6 +328,23 @@ public class LCRepository {
             }
         });
 
+    }
+
+    public static void getTopic(Pipe pipe, @NonNull final IReturnTopic returnTopic) {
+        AVQuery<AVObject> avQuery = new AVQuery<>("_Conversation");
+        avQuery.include("topic");
+        avQuery.getInBackground(pipe.getId(), new GetCallback<AVObject>() {
+            @Override
+            public void done(AVObject avObject, AVException e) {
+                if( e == null ) {
+                    AVObject avTopic = avObject.getAVObject("topic");
+                    Topic topic = getTopic(avTopic);
+                    returnTopic.callback(topic);
+                } else {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
 }

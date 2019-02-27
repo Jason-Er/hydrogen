@@ -9,9 +9,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.model.TopicEx;
 import com.thumbstage.hydrogen.view.create.fragment.TopicFragment;
 
@@ -51,8 +49,7 @@ public class CreateActivity extends AppCompatActivity {
                 topicFragment.attendTopic(topicEx.getTopic());
                 break;
             case CONTINUE:
-                AVIMConversation conv = UserGlobal.getInstance().getConversation(topicEx.getPipe().getId());
-                topicFragment.continueTopic(topicEx.getTopic(), conv);
+                topicFragment.continueTopic(topicEx.getTopic(), topicEx.getPipe());
                 break;
         }
     }

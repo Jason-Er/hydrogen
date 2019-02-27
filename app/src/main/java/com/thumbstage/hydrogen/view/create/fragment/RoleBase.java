@@ -4,7 +4,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 
 import com.avos.avoscloud.AVFile;
-import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.AVIMMessage;
@@ -13,15 +12,15 @@ import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.messages.AVIMAudioMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
+import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.data.LCRepository;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.LineType;
+import com.thumbstage.hydrogen.model.Pipe;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.utils.DataConvertUtil;
 import com.thumbstage.hydrogen.utils.LogUtils;
 import com.thumbstage.hydrogen.utils.StringUtil;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,13 +28,13 @@ import java.util.Map;
 public abstract class RoleBase implements ITopicFragmentFunction{
 
     final String TAG = "RoleBase";
-    AVIMConversation imConversation;
     Topic topic = new Topic();
+    Pipe pipe = new Pipe(null);
     TopicRecyclerAdapter itemAdapter;
     LinearLayoutManager layoutManager;
 
-    public RoleBase setImConversation(AVIMConversation imConversation) {
-        this.imConversation = imConversation;
+    public RoleBase setPipe(Pipe pipe) {
+        this.pipe = pipe;
         return this;
     }
 
@@ -52,6 +51,10 @@ public abstract class RoleBase implements ITopicFragmentFunction{
     public RoleBase setLayoutManager(LinearLayoutManager layoutManager) {
         this.layoutManager = layoutManager;
         return this;
+    }
+
+    protected void sendLine(Line line) {
+
     }
 
     protected void sendText(String content) {
@@ -77,9 +80,10 @@ public abstract class RoleBase implements ITopicFragmentFunction{
         }
         itemAdapter.notifyDataSetChanged();
         scrollToBottom();
-        if( imConversation != null) {
+        if( pipe != null) {
             AVIMMessageOption option = new AVIMMessageOption();
             option.setReceipt(true);
+            final AVIMConversation imConversation = UserGlobal.getInstance().getConversation(pipe.getId());
             imConversation.sendMessage(message, option, new AVIMConversationCallback() {
                 @Override
                 public void done(AVIMException e) {
@@ -87,7 +91,7 @@ public abstract class RoleBase implements ITopicFragmentFunction{
                     if (null != e) {
                         LogUtils.logException(e);
                     } else {
-                        LCRepository.addTopicOneLine(imConversation.getConversationId(),
+                        LCRepository.addTopicOneLine(pipe,
                                 DataConvertUtil.convert2Line(message), new LCRepository.ICallBack() {
                                     @Override
                                     public void callback(String objectID) {

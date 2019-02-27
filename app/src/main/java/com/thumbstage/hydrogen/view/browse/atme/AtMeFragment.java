@@ -71,7 +71,9 @@ public class AtMeFragment extends Fragment implements IBrowseCustomize, IAdapter
     // region implement of interface IBrowseCustomize
     @Override
     public void customizeToolbar(Toolbar toolbar) {
-        toolbar.setTitle(getResources().getString(R.string.AtMeFragment_name));
+        if(isAdded()) {
+            toolbar.setTitle(getResources().getString(R.string.AtMeFragment_name));
+        }
     }
 
     @Override
