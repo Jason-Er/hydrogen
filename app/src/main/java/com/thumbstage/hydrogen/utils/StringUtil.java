@@ -10,7 +10,7 @@ import java.util.Date;
 public class StringUtil {
 
     static DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-
+    static DateFormat topicFormat = new SimpleDateFormat("MM-dd HH:mm");
     public static boolean isUrl(String url) {
         return URLUtil.isValidUrl(url);
     }
@@ -28,4 +28,6 @@ public class StringUtil {
     public static String date2String(Date date) {
         return dateformat.format(date);
     }
+
+    public static String date2String4Show(Date date) { return topicFormat.format(date); }
 }

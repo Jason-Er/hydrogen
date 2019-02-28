@@ -18,6 +18,10 @@ import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
 import com.thumbstage.hydrogen.view.create.ICreateActivityFunction;
+import com.thumbstage.hydrogen.view.create.cases.CaseAttendTopic;
+import com.thumbstage.hydrogen.view.create.cases.CaseBase;
+import com.thumbstage.hydrogen.view.create.cases.CaseContinueTopic;
+import com.thumbstage.hydrogen.view.create.cases.CaseCreateTopic;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -38,17 +42,17 @@ public class TopicFragment extends Fragment implements ICreateActivityFunction {
     @BindView(R.id.fragment_topic_pullrefresh)
     SwipeRefreshLayout refreshLayout;
 
-    Map<CreateActivity.TopicHandleType, RoleBase> roleMap = new HashMap<CreateActivity.TopicHandleType, RoleBase>(){
+    Map<CreateActivity.TopicHandleType, CaseBase> roleMap = new HashMap<CreateActivity.TopicHandleType, CaseBase>(){
         {
-            put(CreateActivity.TopicHandleType.CREATE, new RoleCreateTopic());
-            put(CreateActivity.TopicHandleType.ATTEND, new RoleAttendTopic());
-            put(CreateActivity.TopicHandleType.CONTINUE, new RoleContinueTopic());
+            put(CreateActivity.TopicHandleType.CREATE, new CaseCreateTopic());
+            put(CreateActivity.TopicHandleType.ATTEND, new CaseAttendTopic());
+            put(CreateActivity.TopicHandleType.CONTINUE, new CaseContinueTopic());
         }
     };
 
-    RoleBase currentRole = null;
+    CaseBase currentRole = null;
     LinearLayoutManager layoutManager;
-    TopicRecyclerAdapter itemAdapter;
+    TopicAdapter topicAdapter;
 
     @Nullable
     @Override
@@ -57,10 +61,10 @@ public class TopicFragment extends Fragment implements ICreateActivityFunction {
         ButterKnife.bind(this, view);
 
         refreshLayout.setEnabled(false);
-        itemAdapter = new TopicRecyclerAdapter();
+        topicAdapter = new TopicAdapter();
         layoutManager = new LinearLayoutManager( getActivity() );
         recyclerView.setLayoutManager( layoutManager );
-        recyclerView.setAdapter( itemAdapter );
+        recyclerView.setAdapter(topicAdapter);
 
         EventBus.getDefault().register(this);
         return view;
@@ -79,20 +83,21 @@ public class TopicFragment extends Fragment implements ICreateActivityFunction {
 
     public void attendTopic(Topic topic) {
         currentRole = roleMap.get(CreateActivity.TopicHandleType.ATTEND);
-        currentRole.setItemAdapter(itemAdapter)
+        currentRole.setTopicAdapter(topicAdapter)
                 .setLayoutManager(layoutManager)
                 .setTopic(topic);
     }
 
     public void createTopic() {
         currentRole = roleMap.get(CreateActivity.TopicHandleType.CREATE);
-        currentRole.setItemAdapter(itemAdapter)
-                .setLayoutManager(layoutManager);
+        currentRole.setTopicAdapter(topicAdapter)
+                .setLayoutManager(layoutManager)
+                .setTopic(null);
     }
 
     public void continueTopic(Topic topic, Pipe pipe) {
         currentRole = roleMap.get(CreateActivity.TopicHandleType.CONTINUE);
-        currentRole.setItemAdapter(itemAdapter)
+        currentRole.setTopicAdapter(topicAdapter)
                 .setLayoutManager(layoutManager)
                 .setPipe(pipe)
                 .setTopic(topic);

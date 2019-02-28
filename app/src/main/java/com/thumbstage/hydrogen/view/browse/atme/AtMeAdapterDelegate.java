@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Pipe;
-import com.thumbstage.hydrogen.view.browse.IAdapterDelegate;
+import com.thumbstage.hydrogen.view.common.IAdapterDelegate;
 
 import java.util.List;
 

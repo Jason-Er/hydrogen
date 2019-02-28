@@ -16,8 +16,12 @@ import com.avos.avoscloud.SaveCallback;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
+import com.avos.avoscloud.im.v2.AVIMMessageOption;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
+import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
+import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
+import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.LineType;
 import com.thumbstage.hydrogen.model.Pipe;
@@ -29,6 +33,7 @@ import com.thumbstage.hydrogen.utils.DataConvertUtil;
 import com.thumbstage.hydrogen.utils.StringUtil;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -50,6 +55,14 @@ public class LCRepository {
 
     public interface IReturnTopic {
         void callback(Topic topic);
+    }
+
+    public interface IReturnPipe {
+        void callback(Pipe pipe);
+    }
+
+    public interface IReturnBool {
+        void callback(Boolean isOK);
     }
 
     public static void saveIStartedOpenedTopic(final Topic topic) {
@@ -100,7 +113,7 @@ public class LCRepository {
         });
     }
 
-    public static void copyPublishedOpenedTopic(final Topic topic, final ICallBack iCallBack) {
+    public static void copyPublishedOpenedTopic(final Topic topic, final IReturnPipe iCallBack) {
         copyTopic(topic, new ICallBack() {
             @Override
             public void callback(final String topicID) {
@@ -122,7 +135,7 @@ public class LCRepository {
                                 Log.i(TAG, "copyPublishedOpenedTopic ok");
                             }
                         });
-                        iCallBack.callback(conversationID);
+                        iCallBack.callback(new Pipe(conversationID));
                     }
                 });
             }
@@ -304,7 +317,7 @@ public class LCRepository {
         }
     }
 
-    public static void addTopicOneLine(final Pipe pipe, final Line line, final ICallBack callBack) {
+    public static void addTopicOneLine(final Pipe pipe, final Line line, final IReturnBool callBack) {
         AVQuery<AVObject> avQuery = new AVQuery<>("_Conversation");
         avQuery.getInBackground(pipe.getId(), new GetCallback<AVObject>() {
             @Override
@@ -318,7 +331,7 @@ public class LCRepository {
                         @Override
                         public void done(AVException e) {
                             if(e == null) {
-                                callBack.callback(topic.getObjectId());
+                                callBack.callback(true);
                             }
                         }
                     });
@@ -345,6 +358,38 @@ public class LCRepository {
                 }
             }
         });
+    }
+
+    public static User getUser(String userID) {
+        // TODO: 2/28/2019 return dummy user
+        User user = new User(userID, "text", "http://demo.sc.chinaz.com/Files/pic/icons/6124/3dvs.png");
+        return user;
+    }
+
+    public static void sendLine(final Pipe pipe, final Line line, final IReturnBool icallback) {
+        AVIMConversation conversation = UserGlobal.getInstance().getConversation(pipe.getId());
+        if( !StringUtil.isUrl(line.getWhat()) ) { // must be a text
+            AVIMTextMessage message = new AVIMTextMessage();
+            message.setText(line.getWhat());
+            Map<String, Object> attributes = new HashMap<>();
+            attributes.put("type", line.getLineType().name());
+            message.setAttrs(attributes);
+
+            AVIMMessageOption option = new AVIMMessageOption();
+            option.setReceipt(true);
+
+            conversation.sendMessage(message, new AVIMConversationCallback() {
+                @Override
+                public void done(AVIMException e) {
+                    if( e == null ) {
+                        addTopicOneLine(pipe, line, icallback); // TODO: 2/28/2019 may this function add to server
+                    } else {
+                        icallback.callback(false);
+                    }
+                }
+            });
+        }
+
     }
 
 }
