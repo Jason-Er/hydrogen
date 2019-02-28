@@ -1,5 +1,6 @@
 package com.thumbstage.hydrogen.view.create.cases;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 
@@ -25,9 +26,13 @@ public abstract class CaseBase implements ITopicFragmentFunction {
         return this;
     }
 
-    public CaseBase setTopic(Topic topic) {
+    public CaseBase setTopic(@NonNull Topic topic) {
         this.topic = topic;
-        addLines2Adapter(topic.getDialogue());
+        if( topic != null ) {
+            addLines2Adapter(topic.getDialogue());
+        } else {
+            addLines2Adapter(this.topic.getDialogue());
+        }
         return this;
     }
 

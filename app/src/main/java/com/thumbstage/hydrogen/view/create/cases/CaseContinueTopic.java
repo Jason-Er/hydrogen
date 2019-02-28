@@ -1,7 +1,6 @@
 package com.thumbstage.hydrogen.view.create.cases;
 
 import com.thumbstage.hydrogen.model.Line;
-import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
 
 public class CaseContinueTopic extends CaseBase {
@@ -22,14 +21,4 @@ public class CaseContinueTopic extends CaseBase {
         }
     }
 
-    @Override
-    public CaseBase setTopic(Topic topic) {
-        this.topic = topic;
-        if(topic != null) {
-            addLines2Adapter(topic.getDialogue());
-        } else {
-
-        }
-        return this;
-    }
 }

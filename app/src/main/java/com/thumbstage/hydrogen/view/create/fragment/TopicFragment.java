@@ -91,7 +91,8 @@ public class TopicFragment extends Fragment implements ICreateActivityFunction {
     public void createTopic() {
         currentRole = roleMap.get(CreateActivity.TopicHandleType.CREATE);
         currentRole.setTopicAdapter(topicAdapter)
-                .setLayoutManager(layoutManager);
+                .setLayoutManager(layoutManager)
+                .setTopic(null);
     }
 
     public void continueTopic(Topic topic, Pipe pipe) {
