@@ -1,6 +1,6 @@
 package com.thumbstage.hydrogen.view.browse.mine;
 
-import com.thumbstage.hydrogen.view.browse.ListDelegationAdapter;
+import com.thumbstage.hydrogen.view.common.ListDelegationAdapter;
 
 public class IStartedOpenedAdapter extends ListDelegationAdapter {
 

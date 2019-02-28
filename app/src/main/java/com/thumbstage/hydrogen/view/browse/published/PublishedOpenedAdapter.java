@@ -1,6 +1,6 @@
 package com.thumbstage.hydrogen.view.browse.published;
 
-import com.thumbstage.hydrogen.view.browse.ListDelegationAdapter;
+import com.thumbstage.hydrogen.view.common.ListDelegationAdapter;
 
 public class PublishedOpenedAdapter extends ListDelegationAdapter {
 

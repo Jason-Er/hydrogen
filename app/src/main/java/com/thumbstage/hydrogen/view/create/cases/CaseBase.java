@@ -1,62 +1,66 @@
-package com.thumbstage.hydrogen.view.create.fragment;
+package com.thumbstage.hydrogen.view.create.cases;
 
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 
-import com.avos.avoscloud.AVFile;
-import com.avos.avoscloud.im.v2.AVIMConversation;
-import com.avos.avoscloud.im.v2.AVIMException;
-import com.avos.avoscloud.im.v2.AVIMMessage;
-import com.avos.avoscloud.im.v2.AVIMMessageOption;
-import com.avos.avoscloud.im.v2.AVIMTypedMessage;
-import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
-import com.avos.avoscloud.im.v2.messages.AVIMAudioMessage;
-import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
-import com.thumbstage.hydrogen.app.UserGlobal;
-import com.thumbstage.hydrogen.data.LCRepository;
 import com.thumbstage.hydrogen.model.Line;
-import com.thumbstage.hydrogen.model.LineType;
 import com.thumbstage.hydrogen.model.Pipe;
 import com.thumbstage.hydrogen.model.Topic;
-import com.thumbstage.hydrogen.utils.DataConvertUtil;
-import com.thumbstage.hydrogen.utils.LogUtils;
-import com.thumbstage.hydrogen.utils.StringUtil;
+import com.thumbstage.hydrogen.view.create.fragment.ITopicFragmentFunction;
+import com.thumbstage.hydrogen.view.create.fragment.TopicAdapter;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
-public abstract class RoleBase implements ITopicFragmentFunction{
+public abstract class CaseBase implements ITopicFragmentFunction {
 
-    final String TAG = "RoleBase";
+    final String TAG = "CaseBase";
     Topic topic = new Topic();
     Pipe pipe = new Pipe(null);
-    TopicRecyclerAdapter itemAdapter;
+    TopicAdapter topicAdapter;
     LinearLayoutManager layoutManager;
 
-    public RoleBase setPipe(Pipe pipe) {
+    public CaseBase setPipe(Pipe pipe) {
         this.pipe = pipe;
         return this;
     }
 
-    public RoleBase setTopic(Topic topic) {
+    public CaseBase setTopic(Topic topic) {
         this.topic = topic;
         return this;
     }
 
-    public RoleBase setItemAdapter(TopicRecyclerAdapter itemAdapter) {
-        this.itemAdapter = itemAdapter;
+    public CaseBase setTopicAdapter(TopicAdapter topicAdapter) {
+        this.topicAdapter = topicAdapter;
         return this;
     }
 
-    public RoleBase setLayoutManager(LinearLayoutManager layoutManager) {
+    public CaseBase setLayoutManager(LinearLayoutManager layoutManager) {
         this.layoutManager = layoutManager;
         return this;
     }
 
-    protected void sendLine(Line line) {
+    protected void addLine(Line line) {
+        addLine2Pipe(line);
+        addLine2Adapter(line);
+    }
+
+    protected void addLine2Pipe(Line line) {
 
     }
 
+    protected void addLine2Adapter(Line line) {
+        topicAdapter.addItems(line);
+        addLine2Topic(line);
+    }
+
+    protected void addLines2Adapter(List<Line> lines) {
+
+    }
+
+    private void addLine2Topic(Line line) {
+        topic.getDialogue().add(line);
+    }
+
+    /*
     protected void sendText(String content) {
         AVIMTextMessage message = new AVIMTextMessage();
         message.setText(content);
@@ -71,14 +75,14 @@ public abstract class RoleBase implements ITopicFragmentFunction{
     }
 
     protected void addToList(AVIMMessage message) {
-        itemAdapter.addMessage(message);
+        topicAdapter.addMessage(message);
     }
 
     protected void sendMessage(final AVIMMessage message, boolean addToList) {
         if (addToList) {
-            itemAdapter.addMessage(message);
+            topicAdapter.addMessage(message);
         }
-        itemAdapter.notifyDataSetChanged();
+        topicAdapter.notifyDataSetChanged();
         scrollToBottom();
         if( pipe != null) {
             AVIMMessageOption option = new AVIMMessageOption();
@@ -87,7 +91,7 @@ public abstract class RoleBase implements ITopicFragmentFunction{
             imConversation.sendMessage(message, option, new AVIMConversationCallback() {
                 @Override
                 public void done(AVIMException e) {
-                    itemAdapter.notifyDataSetChanged();
+                    topicAdapter.notifyDataSetChanged();
                     if (null != e) {
                         LogUtils.logException(e);
                     } else {
@@ -107,11 +111,13 @@ public abstract class RoleBase implements ITopicFragmentFunction{
 
         }
     }
+    */
 
     protected void scrollToBottom() {
-        layoutManager.scrollToPositionWithOffset(itemAdapter.getItemCount() - 1, 0);
+        layoutManager.scrollToPositionWithOffset(topicAdapter.getItemCount() - 1, 0);
     }
 
+    /*
     protected void appendTopicDialogue(Topic topic) {
         for(Line line : topic.getDialogue()) {
             AVIMTypedMessage m;
@@ -131,4 +137,5 @@ public abstract class RoleBase implements ITopicFragmentFunction{
     public void clearTopic() {
         topic = new Topic();
     }
+    */
 }

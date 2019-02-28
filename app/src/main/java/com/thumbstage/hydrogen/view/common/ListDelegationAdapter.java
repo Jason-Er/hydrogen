@@ -1,14 +1,17 @@
-package com.thumbstage.hydrogen.view.browse;
+package com.thumbstage.hydrogen.view.common;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.ViewGroup;
 
+import com.thumbstage.hydrogen.view.browse.AdapterDelegatesManager;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListDelegationAdapter extends RecyclerView.Adapter {
 
-    List items;
+    List items = new ArrayList();
     protected AdapterDelegatesManager delegatesManager = new AdapterDelegatesManager();
 
     @NonNull
@@ -35,5 +38,10 @@ public class ListDelegationAdapter extends RecyclerView.Adapter {
     public void setItems(List items) {
         this.items = items;
         notifyDataSetChanged();
+    }
+
+    public void addItems(Object object) {
+        items.add(object);
+        notifyItemChanged(items.size()-1);
     }
 }

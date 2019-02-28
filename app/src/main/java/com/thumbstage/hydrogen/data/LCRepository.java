@@ -347,4 +347,10 @@ public class LCRepository {
         });
     }
 
+    public static User getUser(String userID) {
+        // TODO: 2/28/2019 return dummy user
+        User user = new User(userID, "text", "http://demo.sc.chinaz.com/Files/pic/icons/6124/3dvs.png");
+        return user;
+    }
+
 }

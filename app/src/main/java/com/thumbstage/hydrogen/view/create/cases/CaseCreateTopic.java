@@ -1,8 +1,7 @@
-package com.thumbstage.hydrogen.view.create.fragment;
+package com.thumbstage.hydrogen.view.create.cases;
 
 import android.util.Log;
 
-import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.data.LCRepository;
 import com.thumbstage.hydrogen.model.Line;
@@ -11,13 +10,11 @@ import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
 import com.thumbstage.hydrogen.view.create.ICreateActivityFunction;
 
-import java.util.Date;
+public class CaseCreateTopic extends CaseBase implements ICreateActivityFunction {
 
-public class RoleCreateTopic extends RoleBase implements ICreateActivityFunction {
+    final String TAG = "CaseCreateTopic";
 
-    final String TAG = "RoleCreateTopic";
-
-    public RoleCreateTopic() {
+    public CaseCreateTopic() {
         Topic topic = new Topic();
     }
 
@@ -29,29 +26,12 @@ public class RoleCreateTopic extends RoleBase implements ICreateActivityFunction
     protected void handleEvent(ConversationBottomBarEvent event) {
         switch (event.getMessage()) {
             case "text":
-                sendText((String) event.getData());
-                addDialogue((String) event.getData(), LineType.LT_DIALOGUE);
+                addLine2Adapter((Line) event.getData());
                 break;
             case "voice":
 
                 break;
         }
-    }
-
-    protected void addDialogue(String dialouge, LineType type) {
-        topic.getDialogue().add(new Line(UserGlobal.getInstance().getCurrentUserId(),
-                new Date(),
-                dialouge,
-                type));
-    }
-
-    protected void sendMessage(AVIMMessage message, boolean addToList) {
-        if (addToList) {
-            message.setFrom(UserGlobal.getInstance().getCurrentUserId());
-            itemAdapter.addMessage(message);
-        }
-        itemAdapter.notifyDataSetChanged();
-        scrollToBottom();
     }
 
     // region implements interface ICreateActivityFunction

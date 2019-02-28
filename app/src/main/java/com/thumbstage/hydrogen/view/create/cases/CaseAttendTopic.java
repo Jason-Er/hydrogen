@@ -1,10 +1,11 @@
-package com.thumbstage.hydrogen.view.create.fragment;
+package com.thumbstage.hydrogen.view.create.cases;
 
 import com.thumbstage.hydrogen.data.LCRepository;
+import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
 
-public class RoleAttendTopic extends RoleBase {
+public class CaseAttendTopic extends CaseBase {
 
     @Override
     public void handleBottomBarEvent(final ConversationBottomBarEvent event) {
@@ -24,17 +25,16 @@ public class RoleAttendTopic extends RoleBase {
     }
 
     @Override
-    public RoleBase setTopic(Topic topic) {
+    public CaseBase setTopic(Topic topic) {
         this.topic = topic;
         pipe = null;
-        appendTopicDialogue(topic);
         return this;
     }
 
     protected void handleEvent(ConversationBottomBarEvent event) {
         switch (event.getMessage()) {
             case "text":
-                sendText((String) event.getData());
+                addLine((Line) event.getData());
                 break;
             case "voice":
 

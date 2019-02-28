@@ -5,6 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
+import com.thumbstage.hydrogen.view.common.IAdapterDelegate;
+
 public class AdapterDelegatesManager<T> {
 
     private SparseArray<IAdapterDelegate> delegates = new SparseArray<>();

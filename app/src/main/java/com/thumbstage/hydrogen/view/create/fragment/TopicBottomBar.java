@@ -12,11 +12,16 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.app.UserGlobal;
+import com.thumbstage.hydrogen.model.Line;
+import com.thumbstage.hydrogen.model.LineType;
 import com.thumbstage.hydrogen.utils.PathUtils;
 import com.thumbstage.hydrogen.utils.SoftInputUtils;
 import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -105,8 +110,9 @@ public class TopicBottomBar extends LinearLayout {
             }
         }, MIN_INTERVAL_SEND_MESSAGE);
 
+        Line line = new Line(UserGlobal.getInstance().getCurrentUserId(), new Date(), content, LineType.LT_DIALOGUE);
         EventBus.getDefault().post(
-                new ConversationBottomBarEvent(content, "text"));
+                new ConversationBottomBarEvent(line, "text"));
     }
 
     @OnClick(R.id.input_bar_btn_keyboard)
