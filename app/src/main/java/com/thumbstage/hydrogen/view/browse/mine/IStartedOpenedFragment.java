@@ -2,6 +2,7 @@ package com.thumbstage.hydrogen.view.browse.mine;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -85,4 +86,5 @@ public class IStartedOpenedFragment extends Fragment implements IBrowseCustomize
         });
     }
     // endregion
+
 }

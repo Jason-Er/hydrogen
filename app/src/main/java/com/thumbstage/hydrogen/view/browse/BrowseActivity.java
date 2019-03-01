@@ -21,6 +21,7 @@ import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.im.IMService;
 import com.thumbstage.hydrogen.view.account.AccountActivity;
 import com.thumbstage.hydrogen.event.SignEvent;
+import com.thumbstage.hydrogen.view.common.Navigation;
 import com.thumbstage.hydrogen.view.sign.SignActivity;
 import com.thumbstage.hydrogen.viewmodel.BrowseViewModel;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
@@ -73,6 +74,8 @@ public class BrowseActivity extends AppCompatActivity
                 int menuItemId = item.getItemId();
                 switch (menuItemId) {
                     case R.id.menu_browse_sign:
+                        Navigation.sign(BrowseActivity.this);
+                        /*
                         Intent intent = new Intent();
                         AVUser currentUser = AVUser.getCurrentUser();
                         if(currentUser != null) {
@@ -81,6 +84,7 @@ public class BrowseActivity extends AppCompatActivity
                             intent.setClass(BrowseActivity.this, SignActivity.class);
                         }
                         startActivity(intent);
+                        */
                         break;
                 }
                 return false;

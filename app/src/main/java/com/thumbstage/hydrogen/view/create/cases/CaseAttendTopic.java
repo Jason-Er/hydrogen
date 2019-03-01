@@ -1,5 +1,6 @@
 package com.thumbstage.hydrogen.view.create.cases;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -9,6 +10,7 @@ import com.thumbstage.hydrogen.data.LCRepository;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.Pipe;
 import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
+import com.thumbstage.hydrogen.view.common.Navigation;
 import com.thumbstage.hydrogen.view.create.ICreateCustomize;
 import com.thumbstage.hydrogen.view.create.ICreateMenuItemFunction;
 
@@ -47,8 +49,8 @@ public class CaseAttendTopic extends CaseBase implements ICreateMenuItemFunction
 
     // region implements interface ICreateMenuItemFunction
     @Override
-    public void sign() {
-
+    public void sign(Context context) {
+        Navigation.sign(context);
     }
 
     @Override
