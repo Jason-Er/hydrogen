@@ -1,6 +1,5 @@
 package com.thumbstage.hydrogen.app;
 
-import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -8,62 +7,28 @@ import com.avos.avoscloud.AVCallback;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVUser;
-import com.avos.avoscloud.AVUtils;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
-import com.thumbstage.hydrogen.view.browse.BrowseFragmentPagerAdapter;
-import com.thumbstage.hydrogen.view.browse.mine.IAttendedFragment;
-import com.thumbstage.hydrogen.view.browse.mine.IStartedFragment;
-import com.thumbstage.hydrogen.view.browse.IPagerAdapterCustomize;
-import com.thumbstage.hydrogen.view.browse.published.PublishedClosedFragment;
-import com.thumbstage.hydrogen.view.browse.published.PublishedOpenedFragment;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import cn.leancloud.chatkit.cache.LCIMConversationItemCache;
 import cn.leancloud.chatkit.cache.LCIMProfileCache;
 
-public class UserGlobal implements IPagerAdapterCustomize {
+public class UserGlobal {
 
     final static String TAG = "UserGlobal";
     private AVUser avUser;
-    private final Map<String, Fragment> fragmentMap;
+
     private final Set<Privilege> privilegeSet;
 
     private volatile static UserGlobal userGlobal = null;
 
-    public interface ICallBack {
-        void callBack(AVIMConversation conv);
-    }
-
     private UserGlobal() {
         privilegeSet = new LinkedHashSet<>();
-        fragmentMap = new HashMap<String, Fragment>() {
-            {
-                put(Privilege.BROWSE_PUBLISHEDCLOSED.name(), new PublishedClosedFragment());
-                put(Privilege.BROWSE_PUBLISHEDOPENED.name(), new PublishedOpenedFragment());
-                put(Privilege.BROWSE_ISTARTED.name(), new IStartedFragment());
-                put(Privilege.BROWSE_IATTENDED.name(), new IAttendedFragment());
-            }
-        };
-    }
-
-    @Override
-    public void customize(BrowseFragmentPagerAdapter adapter) {
-        List<Fragment> fragmentList = new ArrayList<>();
-        for(Privilege pr : privilegeSet) {
-            if(fragmentMap.containsKey(pr.name())) {
-                fragmentList.add(fragmentMap.get(pr.name()));
-            }
-        }
-        adapter.setFragmentList(fragmentList);
     }
 
     public static UserGlobal getInstance() {
@@ -87,10 +52,28 @@ public class UserGlobal implements IPagerAdapterCustomize {
         if( avUser != null ) {
             // TODO: 2/12/2019 needing fetch privileges of this userGlobal
             privileges.add(Privilege.BROWSE_PUBLISHEDOPENED);
+            privileges.add(Privilege.BROWSE_AT_ME);
             privileges.add(Privilege.BROWSE_ISTARTED);
             privileges.add(Privilege.BROWSE_IATTENDED);
+            //
+            userConnect(avUser);
         }
         updateUserPrivileges(privileges);
+    }
+
+    public void userConnect(final AVUser avUser) {
+        AVIMClient client = AVIMClient.getInstance(avUser);
+        client.open(new AVIMClientCallback() {
+            @Override
+            public void done(AVIMClient client, AVIMException e) {
+                if(e == null) {
+                    Log.i(TAG, "userConnect ok");
+                } else {
+                    // TODO: 2/25/2019 show some message for user that he cannot use IM
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     public void updateUserPrivileges(Set<Privilege> privileges) {
@@ -107,6 +90,10 @@ public class UserGlobal implements IPagerAdapterCustomize {
         return null;
     }
 
+    public Set<Privilege> getPrivilegeSet() {
+        return privilegeSet;
+    }
+
     public String getCurrentUserId() {
         if(avUser != null) {
             return avUser.getObjectId();
@@ -114,17 +101,15 @@ public class UserGlobal implements IPagerAdapterCustomize {
         return null;
     }
 
-    public void getConversation(final String conversationId, final ICallBack callBack) {
-        getClient().open(new AVIMClientCallback() {
-            @Override
-            public void done(AVIMClient client, AVIMException e) {
-                if(e == null) {
-                    callBack.callBack(getClient().getConversation(conversationId));
-                } else {
-                    e.printStackTrace();
-                }
-            }
-        });
+    public AVIMConversation getConversation(final String conversationId) {
+        return getClient().getConversation(conversationId);
+    }
+
+    public void signOut() {
+        AVUser.logOut();
+        getClient().close(null);
+        setAvUser(AVUser.getCurrentUser());
+        // LCIMConversationItemCache.getInstance().cleanup();
     }
 
 }

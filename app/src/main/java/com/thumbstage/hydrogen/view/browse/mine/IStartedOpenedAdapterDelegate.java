@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.TopicEx;
-import com.thumbstage.hydrogen.view.browse.IAdapterDelegate;
+import com.thumbstage.hydrogen.view.common.IAdapterDelegate;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ public class IStartedOpenedAdapterDelegate implements IAdapterDelegate<List> {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_browse, parent, false);
+                .inflate(R.layout.item_topic_browse, parent, false);
         return new IStartedOpenedViewHolder(view);
     }
 

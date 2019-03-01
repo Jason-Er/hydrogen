@@ -1,4 +1,4 @@
-package com.thumbstage.hydrogen.view.common;
+package com.thumbstage.hydrogen.event;
 
 public class BaseEvent {
 

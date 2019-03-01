@@ -44,8 +44,7 @@ public class AccountActivity extends AppCompatActivity {
 
     @OnClick(R.id.activity_account_signOut)
     public void signOut(View view) {
-        AVUser.logOut();
-        UserGlobal.getInstance().setAvUser(AVUser.getCurrentUser());
+        UserGlobal.getInstance().signOut();
         onSupportNavigateUp();
     }
 

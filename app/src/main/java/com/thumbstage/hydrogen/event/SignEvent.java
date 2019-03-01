@@ -1,4 +1,6 @@
-package com.thumbstage.hydrogen.view.common;
+package com.thumbstage.hydrogen.event;
+
+import com.thumbstage.hydrogen.event.BaseEvent;
 
 public class SignEvent extends BaseEvent {
     public SignEvent(String message) {

@@ -9,15 +9,23 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.model.Pipe;
 import com.thumbstage.hydrogen.model.Topic;
-import com.thumbstage.hydrogen.view.common.ConversationBottomBarEvent;
+import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
-import com.thumbstage.hydrogen.view.create.ICreateActivityFunction;
+import com.thumbstage.hydrogen.view.create.ICreateCustomize;
+import com.thumbstage.hydrogen.view.create.ICreateMenuItemFunction;
+import com.thumbstage.hydrogen.view.create.cases.CaseAttendTopic;
+import com.thumbstage.hydrogen.view.create.cases.CaseBase;
+import com.thumbstage.hydrogen.view.create.cases.CaseContinueTopic;
+import com.thumbstage.hydrogen.view.create.cases.CaseCreateTopicItem;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -29,7 +37,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class TopicFragment extends Fragment implements ICreateActivityFunction {
+public class TopicFragment extends Fragment {
 
     final String TAG = "TopicFragment";
 
@@ -38,18 +46,17 @@ public class TopicFragment extends Fragment implements ICreateActivityFunction {
     @BindView(R.id.fragment_topic_pullrefresh)
     SwipeRefreshLayout refreshLayout;
 
-    Map<CreateActivity.TopicHandleType, RoleBase> roleMap = new HashMap<CreateActivity.TopicHandleType, RoleBase>(){
+    Map<CreateActivity.TopicHandleType, CaseBase> roleMap = new HashMap<CreateActivity.TopicHandleType, CaseBase>(){
         {
-            put(CreateActivity.TopicHandleType.CREATE, new RoleCreateTopic());
-            put(CreateActivity.TopicHandleType.ATTEND, new RoleAttendTopic());
-            put(CreateActivity.TopicHandleType.CONTINUE, new RoleContinueTopic());
+            put(CreateActivity.TopicHandleType.CREATE, new CaseCreateTopicItem());
+            put(CreateActivity.TopicHandleType.ATTEND, new CaseAttendTopic());
+            put(CreateActivity.TopicHandleType.CONTINUE, new CaseContinueTopic());
         }
     };
 
-    RoleBase currentRole = null;
-    AVIMConversation imConversation;
+    CaseBase currentRole = null;
     LinearLayoutManager layoutManager;
-    TopicRecyclerAdapter itemAdapter;
+    TopicAdapter topicAdapter;
 
     @Nullable
     @Override
@@ -58,12 +65,13 @@ public class TopicFragment extends Fragment implements ICreateActivityFunction {
         ButterKnife.bind(this, view);
 
         refreshLayout.setEnabled(false);
-        itemAdapter = new TopicRecyclerAdapter();
+        topicAdapter = new TopicAdapter();
         layoutManager = new LinearLayoutManager( getActivity() );
         recyclerView.setLayoutManager( layoutManager );
-        recyclerView.setAdapter( itemAdapter );
+        recyclerView.setAdapter(topicAdapter);
 
         EventBus.getDefault().register(this);
+        setHasOptionsMenu(true);
         return view;
     }
 
@@ -80,41 +88,64 @@ public class TopicFragment extends Fragment implements ICreateActivityFunction {
 
     public void attendTopic(Topic topic) {
         currentRole = roleMap.get(CreateActivity.TopicHandleType.ATTEND);
-        currentRole.setImConversation(imConversation)
-                .setItemAdapter(itemAdapter)
+        currentRole.setTopicAdapter(topicAdapter)
                 .setLayoutManager(layoutManager)
                 .setTopic(topic);
     }
 
     public void createTopic() {
         currentRole = roleMap.get(CreateActivity.TopicHandleType.CREATE);
-        currentRole.setImConversation(imConversation)
-                .setItemAdapter(itemAdapter)
-                .setLayoutManager(layoutManager);
+        currentRole.setTopicAdapter(topicAdapter)
+                .setLayoutManager(layoutManager)
+                .setTopic(null);
     }
 
-    public void continueTopic(Topic topic, AVIMConversation conversation) {
+    public void continueTopic(Topic topic, Pipe pipe) {
         currentRole = roleMap.get(CreateActivity.TopicHandleType.CONTINUE);
-        currentRole.setImConversation(conversation)
-                .setItemAdapter(itemAdapter)
+        currentRole.setTopicAdapter(topicAdapter)
                 .setLayoutManager(layoutManager)
+                .setPipe(pipe)
                 .setTopic(topic);
     }
 
-    // region implements interface ICreateActivityFunction
     @Override
-    public void onActionOK() {
-        Log.i(TAG, "onActionOK");
-        if( currentRole instanceof ICreateActivityFunction ) {
-            ((ICreateActivityFunction) currentRole).onActionOK();
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if( currentRole instanceof ICreateCustomize) {
+            ((ICreateCustomize) currentRole).createOptionsMenu(menu, inflater);
         }
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
-    public void onActionPublish() {
-        if( currentRole instanceof ICreateActivityFunction ) {
-            ((ICreateActivityFunction) currentRole).onActionPublish();
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_create_sign:
+                Log.i(TAG, "menu_create_sign");
+                if( currentRole instanceof ICreateMenuItemFunction) {
+                    ((ICreateMenuItemFunction) currentRole).sign(getContext());
+                }
+                break;
+            case R.id.menu_create_setting:
+                Log.i(TAG, "menu_create_setting");
+                if( currentRole instanceof ICreateMenuItemFunction) {
+                    ((ICreateMenuItemFunction) currentRole).settings();
+                }
+                break;
+            case R.id.menu_create_start:
+                Log.i(TAG, "menu_create_start");
+                if( currentRole instanceof ICreateMenuItemFunction) {
+                    ((ICreateMenuItemFunction) currentRole).startTopic();
+                }
+                ((CreateActivity)getActivity()).navigateUp();
+                break;
+            case R.id.menu_create_publish:
+                Log.i(TAG, "menu_create_publish");
+                if( currentRole instanceof ICreateMenuItemFunction) {
+                    ((ICreateMenuItemFunction) currentRole).publishTopic();
+                }
+                ((CreateActivity)getActivity()).navigateUp();
+                break;
         }
+        return super.onOptionsItemSelected(item);
     }
-    // endregion
 }

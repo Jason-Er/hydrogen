@@ -9,9 +9,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.model.TopicEx;
 import com.thumbstage.hydrogen.view.create.fragment.TopicFragment;
 
@@ -51,12 +49,7 @@ public class CreateActivity extends AppCompatActivity {
                 topicFragment.attendTopic(topicEx.getTopic());
                 break;
             case CONTINUE:
-                UserGlobal.getInstance().getConversation(topicEx.getPipe().getId(), new UserGlobal.ICallBack() {
-                    @Override
-                    public void callBack(AVIMConversation conv) {
-                        topicFragment.continueTopic(topicEx.getTopic(), conv);
-                    }
-                });
+                topicFragment.continueTopic(topicEx.getTopic(), topicEx.getPipe());
                 break;
         }
     }
@@ -67,6 +60,7 @@ public class CreateActivity extends AppCompatActivity {
         return super.onSupportNavigateUp();
     }
 
+    /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -79,19 +73,20 @@ public class CreateActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_ok:
                 Log.i(TAG, "action_ok");
-                topicFragment.onActionOK();
+                topicFragment.startTopic();
                 navigateUp();
                 break;
             case R.id.action_publish:
                 Log.i(TAG, "action_publish");
-                topicFragment.onActionPublish();
+                topicFragment.publishTopic();
                 navigateUp();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
+    */
 
-    void navigateUp() {
+    public void navigateUp() {
         finish();
         super.onSupportNavigateUp();
     }

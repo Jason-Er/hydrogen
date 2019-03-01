@@ -18,9 +18,12 @@ import android.view.MenuItem;
 import com.avos.avoscloud.AVUser;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.app.UserGlobal;
+import com.thumbstage.hydrogen.im.IMService;
 import com.thumbstage.hydrogen.view.account.AccountActivity;
-import com.thumbstage.hydrogen.view.common.SignEvent;
+import com.thumbstage.hydrogen.event.SignEvent;
+import com.thumbstage.hydrogen.view.common.Navigation;
 import com.thumbstage.hydrogen.view.sign.SignActivity;
+import com.thumbstage.hydrogen.viewmodel.BrowseViewModel;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
 
 import org.greenrobot.eventbus.EventBus;
@@ -40,6 +43,7 @@ public class BrowseActivity extends AppCompatActivity
     BrowseFragmentPagerAdapter pagerAdapter;
 
     UserViewModel userViewModel;
+    BrowseViewModel browseViewModel;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.fab)
@@ -70,6 +74,8 @@ public class BrowseActivity extends AppCompatActivity
                 int menuItemId = item.getItemId();
                 switch (menuItemId) {
                     case R.id.menu_browse_sign:
+                        Navigation.sign(BrowseActivity.this);
+                        /*
                         Intent intent = new Intent();
                         AVUser currentUser = AVUser.getCurrentUser();
                         if(currentUser != null) {
@@ -78,12 +84,16 @@ public class BrowseActivity extends AppCompatActivity
                             intent.setClass(BrowseActivity.this, SignActivity.class);
                         }
                         startActivity(intent);
+                        */
                         break;
                 }
                 return false;
             }
         });
         userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
+        browseViewModel = ViewModelProviders.of(this).get(BrowseViewModel.class);
+        browseViewModel.setListenIMCallBack(IMService.getInstance().getImMessageHandler());
+        browseViewModel.setListenIMCallBack(IMService.getInstance().getImConversationHandler());
         EventBus.getDefault().register(this);
         pagerAdapter = new BrowseFragmentPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
@@ -124,7 +134,7 @@ public class BrowseActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        UserGlobal.getInstance().customize(pagerAdapter);
+        pagerAdapter.updateFragmentsBy(UserGlobal.getInstance().getPrivilegeSet());
     }
 
     @Override

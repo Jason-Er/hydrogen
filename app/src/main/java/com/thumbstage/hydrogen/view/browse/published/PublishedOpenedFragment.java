@@ -17,7 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.model.Topic;
+import com.thumbstage.hydrogen.app.Privilege;
 import com.thumbstage.hydrogen.model.TopicEx;
 import com.thumbstage.hydrogen.view.browse.IAdapterFunction;
 import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
@@ -68,7 +68,9 @@ public class PublishedOpenedFragment extends Fragment implements IBrowseCustomiz
     // region implement of interface IBrowseCustomize
     @Override
     public void customizeToolbar(Toolbar toolbar) {
-        toolbar.setTitle(getResources().getString(R.string.PublishedOpenedFragment_name));
+        if( isAdded() ) {
+            toolbar.setTitle(getResources().getString(R.string.PublishedOpenedFragment_name));
+        }
     }
 
     @Override
@@ -80,7 +82,7 @@ public class PublishedOpenedFragment extends Fragment implements IBrowseCustomiz
     // region implement of interface IAdapterFunction
     @Override
     public long getItemId() {
-        return 1;
+        return Privilege.BROWSE_PUBLISHEDOPENED.ordinal();
     }
     // endregion
 }
