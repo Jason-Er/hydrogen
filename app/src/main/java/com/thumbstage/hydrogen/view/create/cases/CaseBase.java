@@ -27,8 +27,8 @@ public abstract class CaseBase implements ITopicFragmentFunction {
     }
 
     public CaseBase setTopic(@NonNull Topic topic) {
-        this.topic = topic;
         if( topic != null ) {
+            this.topic = topic;
             addLines2Adapter(topic.getDialogue());
         } else {
             addLines2Adapter(this.topic.getDialogue());

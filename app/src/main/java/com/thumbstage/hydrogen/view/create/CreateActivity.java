@@ -60,6 +60,7 @@ public class CreateActivity extends AppCompatActivity {
         return super.onSupportNavigateUp();
     }
 
+    /*
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -72,19 +73,20 @@ public class CreateActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_ok:
                 Log.i(TAG, "action_ok");
-                topicFragment.onActionOK();
+                topicFragment.startTopic();
                 navigateUp();
                 break;
             case R.id.action_publish:
                 Log.i(TAG, "action_publish");
-                topicFragment.onActionPublish();
+                topicFragment.publishTopic();
                 navigateUp();
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
+    */
 
-    void navigateUp() {
+    public void navigateUp() {
         finish();
         super.onSupportNavigateUp();
     }

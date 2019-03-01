@@ -5,12 +5,22 @@
     tools:context="com.example.actionbartest.MainActivity" >
 
     <item
-        android:id="@+id/action_ok"
+        android:id="@+id/menu_create_sign"
+        android:icon="@drawable/ic_menu_sign"
+        android:title="@string/action_sign"
+        app:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_create_setting"
+        android:icon="@drawable/ic_menu_settings"
+        android:title="@string/action_settings"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_create_start"
         android:icon="@drawable/ic_menu_okay"
         android:title="@string/action_ok"
-        app:showAsAction="always" />
+        app:showAsAction="never" />
     <item
-        android:id="@+id/action_publish"
+        android:id="@+id/menu_create_publish"
         android:icon="@drawable/ic_menu_publish"
         app:showAsAction="never"
         android:title="@string/action_publish"/>

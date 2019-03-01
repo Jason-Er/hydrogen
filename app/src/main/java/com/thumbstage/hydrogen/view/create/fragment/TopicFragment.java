@@ -9,6 +9,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -17,11 +20,12 @@ import com.thumbstage.hydrogen.model.Pipe;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
-import com.thumbstage.hydrogen.view.create.ICreateActivityFunction;
+import com.thumbstage.hydrogen.view.create.ICreateCustomize;
+import com.thumbstage.hydrogen.view.create.ICreateMenuItemFunction;
 import com.thumbstage.hydrogen.view.create.cases.CaseAttendTopic;
 import com.thumbstage.hydrogen.view.create.cases.CaseBase;
 import com.thumbstage.hydrogen.view.create.cases.CaseContinueTopic;
-import com.thumbstage.hydrogen.view.create.cases.CaseCreateTopic;
+import com.thumbstage.hydrogen.view.create.cases.CaseCreateTopicItem;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -33,7 +37,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class TopicFragment extends Fragment implements ICreateActivityFunction {
+public class TopicFragment extends Fragment {
 
     final String TAG = "TopicFragment";
 
@@ -44,7 +48,7 @@ public class TopicFragment extends Fragment implements ICreateActivityFunction {
 
     Map<CreateActivity.TopicHandleType, CaseBase> roleMap = new HashMap<CreateActivity.TopicHandleType, CaseBase>(){
         {
-            put(CreateActivity.TopicHandleType.CREATE, new CaseCreateTopic());
+            put(CreateActivity.TopicHandleType.CREATE, new CaseCreateTopicItem());
             put(CreateActivity.TopicHandleType.ATTEND, new CaseAttendTopic());
             put(CreateActivity.TopicHandleType.CONTINUE, new CaseContinueTopic());
         }
@@ -67,6 +71,7 @@ public class TopicFragment extends Fragment implements ICreateActivityFunction {
         recyclerView.setAdapter(topicAdapter);
 
         EventBus.getDefault().register(this);
+        setHasOptionsMenu(true);
         return view;
     }
 
@@ -103,20 +108,44 @@ public class TopicFragment extends Fragment implements ICreateActivityFunction {
                 .setTopic(topic);
     }
 
-    // region implements interface ICreateActivityFunction
     @Override
-    public void onActionOK() {
-        Log.i(TAG, "onActionOK");
-        if( currentRole instanceof ICreateActivityFunction ) {
-            ((ICreateActivityFunction) currentRole).onActionOK();
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        if( currentRole instanceof ICreateCustomize) {
+            ((ICreateCustomize) currentRole).createOptionsMenu(menu, inflater);
         }
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
-    public void onActionPublish() {
-        if( currentRole instanceof ICreateActivityFunction ) {
-            ((ICreateActivityFunction) currentRole).onActionPublish();
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_create_sign:
+                Log.i(TAG, "menu_create_sign");
+                if( currentRole instanceof ICreateMenuItemFunction) {
+                    ((ICreateMenuItemFunction) currentRole).sign();
+                }
+                break;
+            case R.id.menu_create_setting:
+                Log.i(TAG, "menu_create_setting");
+                if( currentRole instanceof ICreateMenuItemFunction) {
+                    ((ICreateMenuItemFunction) currentRole).settings();
+                }
+                break;
+            case R.id.menu_create_start:
+                Log.i(TAG, "menu_create_start");
+                if( currentRole instanceof ICreateMenuItemFunction) {
+                    ((ICreateMenuItemFunction) currentRole).startTopic();
+                }
+                ((CreateActivity)getActivity()).navigateUp();
+                break;
+            case R.id.menu_create_publish:
+                Log.i(TAG, "menu_create_publish");
+                if( currentRole instanceof ICreateMenuItemFunction) {
+                    ((ICreateMenuItemFunction) currentRole).publishTopic();
+                }
+                ((CreateActivity)getActivity()).navigateUp();
+                break;
         }
+        return super.onOptionsItemSelected(item);
     }
-    // endregion
 }

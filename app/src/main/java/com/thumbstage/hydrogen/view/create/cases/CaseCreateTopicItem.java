@@ -1,16 +1,20 @@
 package com.thumbstage.hydrogen.view.create.cases;
 
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 
+import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.data.LCRepository;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
-import com.thumbstage.hydrogen.view.create.ICreateActivityFunction;
+import com.thumbstage.hydrogen.view.create.ICreateCustomize;
+import com.thumbstage.hydrogen.view.create.ICreateMenuItemFunction;
 
-public class CaseCreateTopic extends CaseBase implements ICreateActivityFunction {
+public class CaseCreateTopicItem extends CaseBase implements ICreateMenuItemFunction, ICreateCustomize {
 
-    final String TAG = "CaseCreateTopic";
+    final String TAG = "CaseCreateTopicItem";
 
     @Override
     public void handleBottomBarEvent(ConversationBottomBarEvent event) {
@@ -28,10 +32,25 @@ public class CaseCreateTopic extends CaseBase implements ICreateActivityFunction
         }
     }
 
-    // region implements interface ICreateActivityFunction
     @Override
-    public void onActionOK() {
-        Log.i(TAG, "onActionOK");
+    public void createOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_case_create, menu);
+    }
+
+    // region implements interface ICreateMenuItemFunction
+    @Override
+    public void sign() {
+
+    }
+
+    @Override
+    public void settings() {
+
+    }
+
+    @Override
+    public void startTopic() {
+        Log.i(TAG, "startTopic");
         if( topic.getMembers().size() == 0 ) {
             topic.getMembers().add(UserGlobal.getInstance().getCurrentUserId());
         }
@@ -39,8 +58,8 @@ public class CaseCreateTopic extends CaseBase implements ICreateActivityFunction
     }
 
     @Override
-    public void onActionPublish() {
-        Log.i(TAG, "onActionPublish");
+    public void publishTopic() {
+        Log.i(TAG, "publishTopic");
         if( topic.getMembers().size() == 0 ) {
             topic.getMembers().add(UserGlobal.getInstance().getCurrentUserId());
         }

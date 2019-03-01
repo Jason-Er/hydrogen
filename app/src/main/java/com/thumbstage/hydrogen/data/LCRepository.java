@@ -368,6 +368,7 @@ public class LCRepository {
                     Topic topic = getTopic(avTopic);
                     returnTopic.callback(topic);
                 } else {
+                    // TODO: 3/1/2019 toast something wrong
                     e.printStackTrace();
                 }
             }
