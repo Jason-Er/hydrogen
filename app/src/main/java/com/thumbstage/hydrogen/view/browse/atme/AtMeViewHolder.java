@@ -1,50 +1,36 @@
 package com.thumbstage.hydrogen.view.browse.atme;
 
-import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.avos.avoscloud.AVCallback;
-import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.im.v2.AVIMChatRoom;
-import com.avos.avoscloud.im.v2.AVIMConversation;
-import com.avos.avoscloud.im.v2.AVIMMessage;
-import com.avos.avoscloud.im.v2.AVIMReservedMessageType;
-import com.avos.avoscloud.im.v2.AVIMServiceConversation;
-import com.avos.avoscloud.im.v2.AVIMTemporaryConversation;
-import com.avos.avoscloud.im.v2.AVIMTypedMessage;
-import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.app.UserGlobal;
+import com.thumbstage.hydrogen.data.LCRepository;
+import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.Pipe;
+import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.model.TopicEx;
-import com.thumbstage.hydrogen.utils.LogUtils;
-import com.thumbstage.hydrogen.utils.PipeUtils;
+import com.thumbstage.hydrogen.model.User;
+import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import cn.leancloud.chatkit.LCChatMessageInterface;
 
 public class AtMeViewHolder extends RecyclerView.ViewHolder {
 
     Pipe pipe;
 
     @BindView(R.id.item_pipe_atme_iv_avatar)
-    ImageView avatarView;
+    ImageView avatar;
     @BindView(R.id.item_pipe_atme_tv_name)
-    TextView nameView;
+    TextView name;
     @BindView(R.id.item_pipe_atme_tv_message)
-    TextView messageView;
+    TextView message;
     @BindView(R.id.item_pipe_atme_tv_type)
     TextView typeView;
     @BindView(R.id.item_pipe_atme_tv_time)
@@ -57,20 +43,44 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                TopicEx topicEx = new TopicEx(null, pipe);
-                Intent intent = new Intent(v.getContext(), CreateActivity.class);
-                intent.putExtra(TopicEx.class.getSimpleName(), topicEx);
-                intent.putExtra(CreateActivity.TopicHandleType.class.getSimpleName(),
-                        CreateActivity.TopicHandleType.CONTINUE.name());
-                v.getContext().startActivity(intent);
-
+            public void onClick(final View v) {
+                LCRepository.getTopic(pipe, new LCRepository.IReturnTopic() {
+                    @Override
+                    public void callback(Topic topic) {
+                        TopicEx topicEx = new TopicEx(topic, pipe);
+                        Intent intent = new Intent(v.getContext(), CreateActivity.class);
+                        intent.putExtra(TopicEx.class.getSimpleName(), topicEx);
+                        intent.putExtra(CreateActivity.TopicHandleType.class.getSimpleName(),
+                                CreateActivity.TopicHandleType.CONTINUE.name());
+                        v.getContext().startActivity(intent);
+                    }
+                });
             }
         });
     }
 
     public void setPipe(Pipe pipe) {
         this.pipe = pipe;
+        LCRepository.getLastLineUser(pipe, new LCRepository.IReturnUser() {
+            @Override
+            public void callback(User user) {
+                if(user != null) {
+                    Glide.with(itemView.getContext()).load(user.getAvatar())
+                            .placeholder(R.drawable.ic_item_account).into(avatar);
+                    name.setText(user.getName());
+                }
+            }
+        });
+        LCRepository.getLastLine(pipe, new LCRepository.IReturnLine() {
+            @Override
+            public void callback(Line line) {
+                if(line != null) {
+                    message.setText(line.getWhat());
+                    timeView.setText(StringUtil.date2String4Show(line.getWhen()));
+                }
+            }
+        });
+        /*
         AVIMConversation conversation = UserGlobal.getInstance().getConversation(pipe.getId());
 
         updateName(conversation);
@@ -78,12 +88,14 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
         updateType(conversation);
         updateUnreadCount(conversation);
         updateLastMessage(conversation.getLastMessage());
+        */
     }
 
+    /*
     private void updateIcon(AVIMConversation conversation) {
         if (null != conversation) {
             if (conversation.isTransient() || conversation.getMembers().size() > 2) {
-                avatarView.setImageResource(R.drawable.ic_item_account_multiple);
+                avatar.setImageResource(R.drawable.ic_item_account_multiple);
             } else {
                 PipeUtils.getConversationPeerIcon(conversation, new AVCallback<String>() {
                     @Override
@@ -93,9 +105,9 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
                         }
                         if (!TextUtils.isEmpty(s)) {
                             Glide.with(itemView.getContext()).load(s)
-                                    .placeholder(R.drawable.ic_item_account).into(avatarView);
+                                    .placeholder(R.drawable.ic_item_account).into(avatar);
                         } else {
-                            avatarView.setImageResource(R.drawable.ic_item_account);
+                            avatar.setImageResource(R.drawable.ic_item_account);
                         }
                     }
                 });
@@ -128,7 +140,7 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
                 if (null != e) {
                     LogUtils.logException(e);
                 } else {
-                    nameView.setText(s);
+                    name.setText(s);
                 }
             }
         });
@@ -139,7 +151,7 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
             Date date = new Date(message.getTimestamp());
             SimpleDateFormat format = new SimpleDateFormat("MM-dd HH:mm");
             timeView.setText(format.format(date));
-            messageView.setText(getMessageeShorthand(messageView.getContext(), message));
+            this.message.setText(getMessageeShorthand(this.message.getContext(), message));
         }
     }
 
@@ -171,5 +183,5 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
             return message.getContent();
         }
     }
-
+    */
 }

@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.avos.avoscloud.AVACL;
+import com.avos.avoscloud.AVCallback;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
@@ -16,6 +17,7 @@ import com.avos.avoscloud.SaveCallback;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
+import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.AVIMMessageOption;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
@@ -33,9 +35,13 @@ import com.thumbstage.hydrogen.utils.DataConvertUtil;
 import com.thumbstage.hydrogen.utils.StringUtil;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import cn.leancloud.chatkit.LCChatKitUser;
+import cn.leancloud.chatkit.cache.LCIMProfileCache;
 
 
 public class LCRepository {
@@ -53,6 +59,14 @@ public class LCRepository {
         void callback(String objectID);
     }
 
+    public interface IReturnBool {
+        void callback(Boolean isOK);
+    }
+
+    public interface IReturnLine {
+        void callback(Line line);
+    }
+
     public interface IReturnTopic {
         void callback(Topic topic);
     }
@@ -61,8 +75,8 @@ public class LCRepository {
         void callback(Pipe pipe);
     }
 
-    public interface IReturnBool {
-        void callback(Boolean isOK);
+    public interface IReturnUser {
+        void callback(User user);
     }
 
     public static void saveIStartedOpenedTopic(final Topic topic) {
@@ -296,7 +310,7 @@ public class LCRepository {
                 }
             }
             AVObject avStartedBy = avTopic.getAVObject("started_by");
-            User user = new User(avStartedBy.getObjectId(), (String) avStartedBy.get("name"), (String) avStartedBy.get("avatar"));
+            User user = new User(avStartedBy.getObjectId(), (String) avStartedBy.get("username"), (String) avStartedBy.get("avatar"));
             Setting setting;
             if (avFile != null) {
                 setting = new Setting(avFile.getObjectId(), avFile.getUrl());
@@ -360,10 +374,17 @@ public class LCRepository {
         });
     }
 
-    public static User getUser(String userID) {
-        // TODO: 2/28/2019 return dummy user
-        User user = new User(userID, "text", "http://demo.sc.chinaz.com/Files/pic/icons/6124/3dvs.png");
-        return user;
+    public static void getUser(String userID, final IReturnUser iReturnUser) {
+        AVObject userObject = AVObject.createWithoutData("_User", userID);
+        userObject.fetchInBackground(new GetCallback<AVObject>() {
+            @Override
+            public void done(AVObject avObject, AVException e) {
+                if(e == null) {
+                    User user = new User(avObject.getObjectId(), (String) avObject.get("username"), (String) avObject.get("avatar"));
+                    iReturnUser.callback(user);
+                }
+            }
+        });
     }
 
     public static void sendLine(final Pipe pipe, final Line line, final IReturnBool icallback) {
@@ -388,6 +409,52 @@ public class LCRepository {
                     }
                 }
             });
+        }
+    }
+
+    private static Line message2Line(AVIMMessage message) {
+        Line line = null;
+        if(message instanceof AVIMTextMessage) {
+            LineType type = LineType.LT_DIALOGUE;
+            if(((AVIMTextMessage) message).getAttrs() != null && !TextUtils.isEmpty((String) ((AVIMTextMessage) message).getAttrs().get("type"))) {
+                type = LineType.valueOf((String) ((AVIMTextMessage) message).getAttrs().get("type"));
+            }
+            line = new Line(message.getFrom(), new Date(message.getTimestamp()), ((AVIMTextMessage) message).getText(), type);
+        }
+        return line;
+    }
+
+    public static void getLastLineUser(Pipe pipe, final IReturnUser iReturnUser) {
+        AVIMConversation conversation = UserGlobal.getInstance().getConversation(pipe.getId());
+        if(conversation != null) {
+            AVIMMessage message = conversation.getLastMessage();
+            if(message != null) {
+                getUser(message.getFrom(), new IReturnUser() {
+                    @Override
+                    public void callback(User user) {
+                        iReturnUser.callback(user);
+                    }
+                });
+            } else {
+                iReturnUser.callback(null);
+            }
+        } else {
+            iReturnUser.callback(null);
+        }
+
+    }
+
+    public static void getLastLine(Pipe pipe, final IReturnLine iReturnLine) {
+        AVIMConversation conversation = UserGlobal.getInstance().getConversation(pipe.getId());
+        if(conversation != null) {
+            AVIMMessage message = conversation.getLastMessage();
+            if(message != null) {
+                iReturnLine.callback(message2Line(message));
+            } else {
+                iReturnLine.callback(null);
+            }
+        } else {
+            iReturnLine.callback(null);
         }
 
     }

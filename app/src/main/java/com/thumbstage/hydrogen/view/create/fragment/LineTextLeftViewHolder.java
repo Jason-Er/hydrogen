@@ -35,9 +35,13 @@ public class LineTextLeftViewHolder extends RecyclerView.ViewHolder {
 
     public void setLine(@NonNull Line line) {
         this.line = line;
-        User user = LCRepository.getUser(line.getWho());
-        Glide.with(itemView.getContext()).load(user.getAvatar())
-                .placeholder(R.drawable.ic_item_account).into(avatar);
+        LCRepository.getUser(line.getWho(), new LCRepository.IReturnUser() {
+            @Override
+            public void callback(User user) {
+                Glide.with(itemView.getContext()).load(user.getAvatar())
+                        .placeholder(R.drawable.ic_item_account).into(avatar);
+            }
+        });
         content.setText(line.getWhat());
         time.setText(StringUtil.date2String4Show(line.getWhen()));
     }
