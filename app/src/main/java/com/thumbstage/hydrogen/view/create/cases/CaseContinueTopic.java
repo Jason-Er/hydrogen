@@ -41,7 +41,7 @@ public class CaseContinueTopic extends CaseBase implements ICreateMenuItemFuncti
     }
 
     @Override
-    public void settings() {
+    public void settings(Context context) {
 
     }
 
