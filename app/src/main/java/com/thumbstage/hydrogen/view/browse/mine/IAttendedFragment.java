@@ -1,5 +1,6 @@
 package com.thumbstage.hydrogen.view.browse.mine;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;

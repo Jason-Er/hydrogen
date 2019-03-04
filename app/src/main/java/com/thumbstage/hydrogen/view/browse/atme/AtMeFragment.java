@@ -1,5 +1,6 @@
 package com.thumbstage.hydrogen.view.browse.atme;
 
+import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
@@ -71,9 +72,7 @@ public class AtMeFragment extends Fragment implements IBrowseCustomize, IAdapter
     // region implement of interface IBrowseCustomize
     @Override
     public void customizeToolbar(Toolbar toolbar) {
-        if(isAdded()) {
-            toolbar.setTitle(getResources().getString(R.string.AtMeFragment_name));
-        }
+        toolbar.setTitle(toolbar.getContext().getResources().getString(R.string.AtMeFragment_name));
     }
 
     @Override

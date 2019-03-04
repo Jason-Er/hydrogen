@@ -1,5 +1,6 @@
 package com.thumbstage.hydrogen.view.browse.published;
 
+import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
@@ -68,13 +69,11 @@ public class PublishedOpenedFragment extends Fragment implements IBrowseCustomiz
     // region implement of interface IBrowseCustomize
     @Override
     public void customizeToolbar(Toolbar toolbar) {
-        if( isAdded() ) {
-            toolbar.setTitle(getResources().getString(R.string.PublishedOpenedFragment_name));
-        }
+        toolbar.setTitle(toolbar.getContext().getResources().getString(R.string.PublishedOpenedFragment_name));
     }
 
     @Override
-    public void customizeFab(FloatingActionButton fab) {
+    public void customizeFab( FloatingActionButton fab) {
         fab.hide();
     }
     // endregion

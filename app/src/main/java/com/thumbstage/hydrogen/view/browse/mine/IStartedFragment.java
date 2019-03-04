@@ -92,4 +92,5 @@ public class IStartedFragment extends Fragment implements IBrowseCustomize, IAda
         return Privilege.BROWSE_ISTARTED.ordinal();
     }
     // endregion
+
 }
