@@ -1,6 +1,8 @@
 package com.thumbstage.hydrogen.view.create;
 
 import android.app.Dialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,13 +14,15 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.linchaolong.android.imagepicker.ImagePicker;
+import com.linchaolong.android.imagepicker.cropper.CropImage;
+import com.linchaolong.android.imagepicker.cropper.CropImageView;
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.event.TopicSettingEvent;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.utils.DensityUtil;
-
-import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,14 +36,17 @@ public class TopicSettingDialog extends DialogFragment {
     EditText brief;
     @BindView(R.id.dialog_topic_setting_setting)
     EditText setting;
+    @BindView(R.id.dialog_topic_setting_pic)
+    ImageView settingPic;
 
     Topic topic;
+    ImagePicker imagePicker;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View contentView = inflater.inflate(R.layout.dialog_topic_setting, container);
-        ButterKnife.bind(contentView);
+        ButterKnife.bind(this, contentView);
 
         /*
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) contentView.getLayoutParams();
@@ -51,6 +58,11 @@ public class TopicSettingDialog extends DialogFragment {
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         getDialog().getWindow().setGravity(Gravity.BOTTOM);
         getDialog().getWindow().setWindowAnimations(R.style.BottomDialog_Animation);
+
+        imagePicker = new ImagePicker();
+        imagePicker.setTitle("setting");
+        imagePicker.setCropImage(true);
+
         return contentView;
     }
 
@@ -100,6 +112,18 @@ public class TopicSettingDialog extends DialogFragment {
     }
     */
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        imagePicker.onActivityResult(this, requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        imagePicker.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
+    }
+
     public void setTopic(Topic topic) {
         this.topic = topic;
     }
@@ -113,8 +137,30 @@ public class TopicSettingDialog extends DialogFragment {
 
     @OnClick(R.id.dialog_topic_setting_select)
     public void onSelectPic(View view) {
-        dismiss();
-        EventBus.getDefault().post(new TopicSettingEvent("select"));
+        imagePicker.startGallery(this, new ImagePicker.Callback() {
+            @Override
+            public void onPickImage(Uri imageUri) {
+
+            }
+
+            @Override
+            public void onCropImage(Uri imageUri) {
+                setting.setText(imageUri.toString());
+                Glide.with(getContext()).load(imageUri).into(settingPic);
+            }
+
+            @Override
+            public void cropConfig(CropImage.ActivityBuilder builder) {
+                builder.setMultiTouchEnabled(false)
+                        .setCropShape(CropImageView.CropShape.RECTANGLE)
+                        .setRequestedSize(960, 540)
+                        .setAspectRatio(16, 9);
+            }
+            @Override
+            public void onPermissionDenied(int requestCode, String[] permissions,
+                                                     int[] grantResults) {
+            }
+        });
     }
 
 }

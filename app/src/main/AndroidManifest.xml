@@ -42,8 +42,11 @@
         <activity
             android:name="com.thumbstage.hydrogen.view.create.CreateActivity"
             android:label="CreateActivity"
+            android:screenOrientation="portrait"
             >
         </activity>
+        <activity android:name="com.linchaolong.android.imagepicker.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat"/>
     </application>
 
 </manifest>

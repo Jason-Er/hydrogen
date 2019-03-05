@@ -62,12 +62,7 @@ dependencies {
     // glide
     implementation "com.github.bumptech.glide:glide:$glide_version"
 
-    /*
-    def image_picker = '2.0.0'
-    // https://github.com/esafirm/android-image-picker
-    implementation "com.github.esafirm.android-image-picker:imagepicker:$image_picker"
-    */
-    def matisse_version = '0.5.1'
-    implementation "com.zhihu.android:matisse:$matisse_version"
+    def imagepicker_version = '1.5'
+    implementation "com.linchaolong.android:imagepicker:$imagepicker_version"
 }
 
