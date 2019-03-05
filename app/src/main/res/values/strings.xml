@@ -37,5 +37,9 @@
     <string name="action_publish">publish</string>
     <string name="item_topic_setting">topic setting</string>
     <string name="AtMeFragment_name">who @ me</string>
+    <string name="button_ok">OK</string>
+    <string name="dialog_topic_setting_name">Name</string>
+    <string name="dialog_topic_setting_brief">Brief</string>
+    <string name="dialog_topic_setting_setting">Setting</string>
 
 </resources>

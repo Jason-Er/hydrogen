@@ -1,24 +1,20 @@
 package com.thumbstage.hydrogen.view.create.cases;
 
-import android.app.Dialog;
 import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.data.LCRepository;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
-import com.thumbstage.hydrogen.utils.DensityUtil;
 import com.thumbstage.hydrogen.view.common.Navigation;
 import com.thumbstage.hydrogen.view.create.ICreateCustomize;
 import com.thumbstage.hydrogen.view.create.ICreateMenuItemFunction;
+import com.thumbstage.hydrogen.view.create.TopicSettingDialog;
 
 public class CaseCreateTopicItem extends CaseBase implements ICreateMenuItemFunction, ICreateCustomize {
 
@@ -52,17 +48,9 @@ public class CaseCreateTopicItem extends CaseBase implements ICreateMenuItemFunc
     }
 
     @Override
-    public void settings(Context context) {
-        Dialog bottomDialog = new Dialog(context, R.style.BottomDialog);
-        View contentView = LayoutInflater.from(context).inflate(R.layout.dialog_create_settings, null);
-        bottomDialog.setContentView(contentView);
-        ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) contentView.getLayoutParams();
-        params.width = context.getResources().getDisplayMetrics().widthPixels - DensityUtil.dp2px(context, 16f);
-        params.bottomMargin = DensityUtil.dp2px(context, 8f);
-        contentView.setLayoutParams(params);
-        bottomDialog.getWindow().setGravity(Gravity.BOTTOM);
-        bottomDialog.getWindow().setWindowAnimations(R.style.BottomDialog_Animation);
-        bottomDialog.show();
+    public void settings(Fragment fragment) {
+        TopicSettingDialog bottomDialog = new TopicSettingDialog(); //context, R.style.BottomDialog
+        bottomDialog.show(fragment.getFragmentManager(), "hello");
     }
 
     @Override

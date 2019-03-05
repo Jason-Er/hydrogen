@@ -128,7 +128,7 @@ public class TopicFragment extends Fragment {
             case R.id.menu_create_setting:
                 Log.i(TAG, "menu_create_setting");
                 if( currentRole instanceof ICreateMenuItemFunction) {
-                    ((ICreateMenuItemFunction) currentRole).settings(getContext());
+                    ((ICreateMenuItemFunction) currentRole).settings(this);
                 }
                 break;
             case R.id.menu_create_start:
