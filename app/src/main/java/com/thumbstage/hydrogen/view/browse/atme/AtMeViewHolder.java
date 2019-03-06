@@ -15,6 +15,7 @@ import com.thumbstage.hydrogen.model.Pipe;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.model.TopicEx;
 import com.thumbstage.hydrogen.model.User;
+import com.thumbstage.hydrogen.utils.GlideUtil;
 import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
 
@@ -65,8 +66,7 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void callback(User user) {
                 if(user != null) {
-                    Glide.with(itemView.getContext()).load(user.getAvatar())
-                            .placeholder(R.drawable.ic_item_account).into(avatar);
+                    GlideUtil.inject(itemView.getContext(), user.getAvatar(), avatar);
                     name.setText(user.getName());
                 }
             }

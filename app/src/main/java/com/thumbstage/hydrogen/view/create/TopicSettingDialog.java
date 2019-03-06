@@ -1,6 +1,5 @@
 package com.thumbstage.hydrogen.view.create;
 
-import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -21,8 +20,8 @@ import com.linchaolong.android.imagepicker.ImagePicker;
 import com.linchaolong.android.imagepicker.cropper.CropImage;
 import com.linchaolong.android.imagepicker.cropper.CropImageView;
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.utils.DensityUtil;
+import com.thumbstage.hydrogen.utils.GlideUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,7 +38,31 @@ public class TopicSettingDialog extends DialogFragment {
     @BindView(R.id.dialog_topic_setting_pic)
     ImageView settingPic;
 
-    Topic topic;
+    static public class LocalData {
+        String name;
+        String brief;
+        Uri imageUri;
+
+        public String getName() {
+            return name;
+        }
+
+        public String getBrief() {
+            return brief;
+        }
+
+        public Uri getImageUri() {
+            return imageUri;
+        }
+    }
+
+    public interface IOnOK {
+        void callback(LocalData localData);
+    }
+
+    IOnOK iOnOK;
+    LocalData localData = new LocalData();
+
     ImagePicker imagePicker;
 
     @Nullable
@@ -124,15 +147,18 @@ public class TopicSettingDialog extends DialogFragment {
         imagePicker.onRequestPermissionsResult(this, requestCode, permissions, grantResults);
     }
 
-    public void setTopic(Topic topic) {
-        this.topic = topic;
-    }
-
     @OnClick(R.id.dialog_topic_setting_ok)
     public void onOK(View view) {
-        topic.setName(name.getText().toString());
-        topic.setBrief(brief.getText().toString());
+        localData.name = name.getText().toString();
+        localData.brief = brief.getText().toString();
+        if(iOnOK != null) {
+            iOnOK.callback(localData);
+        }
+        dismiss();
+    }
 
+    public void setIOnOK(IOnOK iOnOK) {
+        this.iOnOK = iOnOK;
     }
 
     @OnClick(R.id.dialog_topic_setting_select)
@@ -146,7 +172,8 @@ public class TopicSettingDialog extends DialogFragment {
             @Override
             public void onCropImage(Uri imageUri) {
                 setting.setText(imageUri.toString());
-                Glide.with(getContext()).load(imageUri).into(settingPic);
+                localData.imageUri = imageUri;
+                GlideUtil.inject(getContext(), imageUri.toString(), settingPic);
             }
 
             @Override
