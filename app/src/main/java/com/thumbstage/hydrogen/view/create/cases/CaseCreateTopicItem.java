@@ -19,7 +19,7 @@ import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.data.LCRepository;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
-import com.thumbstage.hydrogen.view.common.CenterCropDrawable;
+import com.thumbstage.hydrogen.view.common.FitCenterDrawable;
 import com.thumbstage.hydrogen.view.common.Navigation;
 import com.thumbstage.hydrogen.view.create.ICreateCustomize;
 import com.thumbstage.hydrogen.view.create.ICreateMenuItemFunction;
@@ -73,7 +73,7 @@ public class CaseCreateTopicItem extends CaseBase implements ICreateMenuItemFunc
                 Glide.with(fragment.getContext()).load(imageUri).into(new SimpleTarget<Drawable>() {
                     @Override
                     public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                        fragment.getActivity().getWindow().setBackgroundDrawable(new CenterCropDrawable(resource));
+                        fragment.getActivity().getWindow().setBackgroundDrawable(new FitCenterDrawable(resource));
                     }
                 });
             }
