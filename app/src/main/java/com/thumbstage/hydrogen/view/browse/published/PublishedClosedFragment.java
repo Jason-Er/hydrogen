@@ -15,7 +15,7 @@ public class PublishedClosedFragment extends Fragment implements IBrowseCustomiz
     // region implement of interface IBrowseCustomize
     @Override
     public void customizeToolbar(Toolbar toolbar) {
-        toolbar.setTitle(getResources().getString(R.string.PublishedClosedFragment_name));
+        toolbar.setTitle(toolbar.getContext().getResources().getString(R.string.PublishedClosedFragment_name));
     }
 
     @Override

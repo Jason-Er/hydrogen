@@ -71,7 +71,7 @@ public class IAttendedFragment extends Fragment implements IBrowseCustomize, IAd
     @Override
     public void customizeToolbar(Toolbar toolbar) {
         this.toolbar = toolbar;
-        toolbar.setTitle(getResources().getString(R.string.IAttendedFragment_name));
+        toolbar.setTitle(toolbar.getContext().getResources().getString(R.string.IAttendedFragment_name));
         if( pagerAdapter.getItem(viewPager.getCurrentItem()) instanceof IBrowseCustomize){
             ((IBrowseCustomize) pagerAdapter.getItem(viewPager.getCurrentItem())).customizeToolbar(toolbar);
         }

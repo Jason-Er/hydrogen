@@ -77,14 +77,6 @@ public class CaseCreateTopicItem extends CaseBase implements ICreateMenuItemFunc
                 }
                 imageUri = localData.getImageUri();
                 Glide.with(backgroundView).load(imageUri).into(backgroundView);
-                /*
-                Glide.with(fragment.getContext()).load(imageUri).into(new SimpleTarget<Drawable>() {
-                    @Override
-                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                        fragment.getActivity().getWindow().setBackgroundDrawable(new FitCenterDrawable(resource));
-                    }
-                });
-                */
             }
         });
         bottomDialog.show(fragment.getFragmentManager(), "hello");
