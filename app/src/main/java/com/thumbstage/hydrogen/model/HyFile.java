@@ -1,9 +1,28 @@
 package com.thumbstage.hydrogen.model;
 
-public class FileBase {
+public class HyFile {
+    protected String name;
     protected String id;
     protected String url;
     protected Boolean isInCloud;
+
+    public HyFile() {
+    }
+
+    public HyFile(String name, String id, String url, Boolean isInCloud) {
+        this.name = name;
+        this.id = id;
+        this.url = url;
+        this.isInCloud = isInCloud;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 
     public String getId() {
         return id;

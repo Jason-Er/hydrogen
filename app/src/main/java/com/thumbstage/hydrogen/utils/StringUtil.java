@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -42,5 +43,13 @@ public class StringUtil {
             substring = mc.group();//截取文件名后缀名
         }
         return substring;
+    }
+
+    public static String getTimePlusRandom() {
+        Date date = new Date();
+        String str = dateformat.format(date);
+        Random random = new Random();
+        int rannum = (int) (random.nextDouble() * (99999 - 10000 + 1)) + 10000;
+        return rannum + str;
     }
 }

@@ -3,12 +3,10 @@ package com.thumbstage.hydrogen.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Setting extends FileBase implements Parcelable {
+public class Setting extends HyFile implements Parcelable {
 
     public Setting(String id, String url, Boolean isInCloud) {
-        this.id = id;
-        this.url = url;
-        this.isInCloud = isInCloud;
+        super("", id, url, isInCloud);
     }
 
     protected Setting(Parcel in) {

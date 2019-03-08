@@ -16,6 +16,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.data.LCRepository;
+import com.thumbstage.hydrogen.model.HyFile;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
 import com.thumbstage.hydrogen.model.Setting;
@@ -24,6 +25,8 @@ import com.thumbstage.hydrogen.view.common.Navigation;
 import com.thumbstage.hydrogen.view.create.ICreateCustomize;
 import com.thumbstage.hydrogen.view.create.ICreateMenuItemFunction;
 import com.thumbstage.hydrogen.view.create.TopicSettingDialog;
+
+import java.io.File;
 
 public class CaseCreateTopicItem extends CaseBase implements ICreateMenuItemFunction, ICreateCustomize {
 
@@ -69,6 +72,9 @@ public class CaseCreateTopicItem extends CaseBase implements ICreateMenuItemFunc
                 if(!TextUtils.isEmpty(localData.getBrief())) {
                     topic.setBrief(localData.getBrief());
                 }
+                if(!TextUtils.isEmpty(localData.getImageURL())) {
+                    topic.setSetting(new Setting("", localData.getImageURL(), false));
+                }
                 imageUri = localData.getImageUri();
                 Glide.with(fragment.getContext()).load(imageUri).into(new SimpleTarget<Drawable>() {
                     @Override
@@ -84,30 +90,58 @@ public class CaseCreateTopicItem extends CaseBase implements ICreateMenuItemFunc
     @Override
     public void startTopic() {
         Log.i(TAG, "startTopic");
-        LCRepository.saveFile2Cloud(imageUri, new LCRepository.IReturnSetting() {
-            @Override
-            public void callback(Setting setting) {
-                topic.setSetting(setting);
-                LCRepository.saveIStartedOpenedTopic(topic);
-            }
-        });
+        if(imageUri != null) {
+            File file = new File(imageUri.getPath());
+            LCRepository.saveFile2Cloud(file, new LCRepository.IReturnHyFile() {
+                @Override
+                public void callback(HyFile hyFile) {
+                    topic.setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
+                    LCRepository.saveIStartedOpenedTopic(topic);
+                }
+            });
+        } else {
+            LCRepository.saveResURL2Cloud(topic.getSetting().getUrl(), new LCRepository.IReturnHyFile() {
+                @Override
+                public void callback(HyFile hyFile) {
+                    topic.setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
+                    LCRepository.saveIStartedOpenedTopic(topic);
+                }
+            });
+
+        }
     }
 
     @Override
     public void publishTopic() {
         Log.i(TAG, "publishTopic");
-        LCRepository.saveFile2Cloud(imageUri, new LCRepository.IReturnSetting() {
-                    @Override
-                    public void callback(Setting setting) {
-                        topic.setSetting(setting);
-                        LCRepository.savePublishedOpenedTopic(topic, new LCRepository.ICallBack() {
-                            @Override
-                            public void callback(String objectID) {
+        if(imageUri != null) {
+            File file = new File(imageUri.getPath());
+            LCRepository.saveFile2Cloud(file, new LCRepository.IReturnHyFile() {
+                @Override
+                public void callback(HyFile hyFile) {
+                    topic.setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
+                    LCRepository.savePublishedOpenedTopic(topic, new LCRepository.ICallBack() {
+                        @Override
+                        public void callback(String objectID) {
 
-                            }
-                        });
-                    }
-                });
+                        }
+                    });
+                }
+            });
+        } else {
+            LCRepository.saveResURL2Cloud(topic.getSetting().getUrl(), new LCRepository.IReturnHyFile() {
+                @Override
+                public void callback(HyFile hyFile) {
+                    topic.setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
+                    LCRepository.savePublishedOpenedTopic(topic, new LCRepository.ICallBack() {
+                        @Override
+                        public void callback(String objectID) {
+
+                        }
+                    });
+                }
+            });
+        }
     }
     // endregion
 }

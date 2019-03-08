@@ -1,6 +1,5 @@
 package com.thumbstage.hydrogen.data;
 
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
@@ -25,6 +24,7 @@ import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.thumbstage.hydrogen.app.UserGlobal;
+import com.thumbstage.hydrogen.model.HyFile;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.LineType;
 import com.thumbstage.hydrogen.model.Pipe;
@@ -87,8 +87,8 @@ public class LCRepository {
         void callback(String url);
     }
 
-    public interface IReturnSetting {
-        void callback(Setting setting);
+    public interface IReturnHyFile {
+        void callback(HyFile hyFile);
     }
 
     public interface IReturnFile {
@@ -451,8 +451,20 @@ public class LCRepository {
 
     }
 
-    public static void saveFile2Cloud(Uri imageUri, final IReturnSetting iReturnSetting) {
-        File file = new File(imageUri.getPath());
+    public static void saveResURL2Cloud(String URL, final IReturnHyFile iReturnHyFile) {
+        final AVFile avFile = new AVFile(StringUtil.getSuffix(URL), URL, new HashMap<String, Object>() );
+        avFile.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                if(e == null) {
+                    HyFile hyFile = new HyFile(avFile.getName(), avFile.getObjectId(), avFile.getUrl(), false);
+                    iReturnHyFile.callback(hyFile);
+                }
+            }
+        });
+    }
+
+    public static void saveFile2Cloud(final File file, final IReturnHyFile iReturnHyFile) {
         final AVFile avFile;
         try {
             avFile = AVFile.withAbsoluteLocalPath(file.getName(), file.getPath());
@@ -460,12 +472,8 @@ public class LCRepository {
                 @Override
                 public void done(AVException e) {
                     if(e== null) {
-                        boolean isInCloud = false;
-                        if( !TextUtils.isEmpty(avFile.getBucket()) ) {
-                            isInCloud = true;
-                        }
-                        Setting setting = new Setting(avFile.getObjectId(), avFile.getUrl(), isInCloud);
-                        iReturnSetting.callback(setting);
+                        HyFile hyFile = new HyFile(avFile.getName(), avFile.getObjectId(), avFile.getUrl(), true);
+                        iReturnHyFile.callback(hyFile);
                     }
                 }
             });
@@ -474,9 +482,9 @@ public class LCRepository {
         }
     }
 
-    public static void getFileFromCloud(Setting setting, final IReturnFile iReturnFile) {
+    public static void getFileFromCloud(HyFile hyFile, final IReturnFile iReturnFile) {
         try {
-            final AVFile avfile = AVFile.withObjectId(setting.getId());
+            final AVFile avfile = AVFile.withObjectId(hyFile.getId());
             avfile.getDataInBackground(new GetDataCallback() {
                 @Override
                 public void done(byte[] data, AVException e) {
