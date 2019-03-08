@@ -3,18 +3,18 @@ package com.thumbstage.hydrogen.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Setting implements Parcelable {
-    String id;
-    String url;
+public class Setting extends FileBase implements Parcelable {
 
-    public Setting(String id, String url) {
+    public Setting(String id, String url, Boolean isInCloud) {
         this.id = id;
         this.url = url;
+        this.isInCloud = isInCloud;
     }
 
     protected Setting(Parcel in) {
         id = in.readString();
         url = in.readString();
+        isInCloud = in.readByte() != 0;
     }
 
     public static final Creator<Setting> CREATOR = new Creator<Setting>() {
@@ -38,23 +38,7 @@ public class Setting implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
         dest.writeString(url);
+        dest.writeByte((byte) (isInCloud? 1:0));
     }
 
-    // region getter and setter
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-    //endregion
 }

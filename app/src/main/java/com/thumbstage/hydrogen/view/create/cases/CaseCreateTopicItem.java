@@ -15,10 +15,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.data.LCRepository;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
+import com.thumbstage.hydrogen.model.Setting;
 import com.thumbstage.hydrogen.view.common.FitCenterDrawable;
 import com.thumbstage.hydrogen.view.common.Navigation;
 import com.thumbstage.hydrogen.view.create.ICreateCustomize;
@@ -84,24 +84,30 @@ public class CaseCreateTopicItem extends CaseBase implements ICreateMenuItemFunc
     @Override
     public void startTopic() {
         Log.i(TAG, "startTopic");
-        if( topic.getMembers().size() == 0 ) {
-            topic.getMembers().add(UserGlobal.getInstance().getCurrentUserId());
-        }
-        LCRepository.saveIStartedOpenedTopic(topic);
+        LCRepository.saveFile2Cloud(imageUri, new LCRepository.IReturnSetting() {
+            @Override
+            public void callback(Setting setting) {
+                topic.setSetting(setting);
+                LCRepository.saveIStartedOpenedTopic(topic);
+            }
+        });
     }
 
     @Override
     public void publishTopic() {
         Log.i(TAG, "publishTopic");
-        if( topic.getMembers().size() == 0 ) {
-            topic.getMembers().add(UserGlobal.getInstance().getCurrentUserId());
-        }
-        LCRepository.savePublishedOpenedTopic(topic, new LCRepository.ICallBack() {
-            @Override
-            public void callback(String objectID) {
+        LCRepository.saveFile2Cloud(imageUri, new LCRepository.IReturnSetting() {
+                    @Override
+                    public void callback(Setting setting) {
+                        topic.setSetting(setting);
+                        LCRepository.savePublishedOpenedTopic(topic, new LCRepository.ICallBack() {
+                            @Override
+                            public void callback(String objectID) {
 
-            }
-        });
+                            }
+                        });
+                    }
+                });
     }
     // endregion
 }
