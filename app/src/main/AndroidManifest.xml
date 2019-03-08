@@ -42,6 +42,7 @@
         <activity
             android:name="com.thumbstage.hydrogen.view.create.CreateActivity"
             android:label="CreateActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden"
             android:screenOrientation="portrait"
             >
         </activity>
