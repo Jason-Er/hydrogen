@@ -13,6 +13,7 @@ import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.AVUtils;
 import com.avos.avoscloud.FindCallback;
+import com.avos.avoscloud.GetDataCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
@@ -24,11 +25,17 @@ import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.thumbstage.hydrogen.data.LCRepository;
 import com.thumbstage.hydrogen.model.LineType;
 import com.thumbstage.hydrogen.model.Topic;
+import com.thumbstage.hydrogen.utils.StringUtil;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -46,6 +53,14 @@ import static org.junit.Assert.*;
  */
 @RunWith(AndroidJUnit4.class)
 public class ExampleInstrumentedTest {
+
+    private void sleep(int seconds) {
+        try {
+            TimeUnit.SECONDS.sleep(seconds);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Before
     public void testBefore() throws Exception {
@@ -141,6 +156,7 @@ public class ExampleInstrumentedTest {
         });
     }
 
+    /*
     @Test
     public void readBasicTopic() {
         AVQuery<AVObject> avQuery = new AVQuery<>("PublishedOpened");
@@ -228,13 +244,7 @@ public class ExampleInstrumentedTest {
         LCRepository.saveIStartedOpenedTopic(topic);
         sleep(5);
     }
-    private void sleep(int seconds) {
-        try {
-            TimeUnit.SECONDS.sleep(seconds);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
+
 
     @Test
     public void testCreateIStartedOpened() {
@@ -310,6 +320,67 @@ public class ExampleInstrumentedTest {
             @Override
             public void done(AVException e) {
                 Log.d("testCreateTopic","success!");
+            }
+        });
+        sleep(5);
+    }
+    */
+
+    @Test
+    public void testDownloadFile() {
+        final String fileID = "5c80795244d9040066d9e364";
+        try {
+            final AVFile file = AVFile.withObjectId(fileID);
+            file.getDataInBackground(new GetDataCallback() {
+                @Override
+                public void done(byte[] data, AVException e) {
+                    if(e == null) {
+                        file.getUrl();
+                        file.getName();
+                        String suf = StringUtil.getSuffix(file.getUrl());
+                        Context appContext = InstrumentationRegistry.getTargetContext();
+                        File path = appContext.getFilesDir();
+                        File outFile = new File(path, file.getName());
+                        FileOutputStream stream = null;
+                        try {
+                            stream = new FileOutputStream(outFile);
+                            stream.write(data);
+                        } catch (FileNotFoundException e1) {
+                            e1.printStackTrace();
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        } finally {
+                            try {
+                                stream.close();
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                            }
+                        }
+                        Log.i("testDownloadFile", "ok");
+                    }
+                }
+            });
+        } catch (AVException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        sleep(5);
+
+
+    }
+
+    @Test
+    public void testUploadURLFile() {
+        AVFile avFile = new AVFile("lj.jpeg", "http://img.mp.itc.cn/upload/20170315/d37c4ed719b54a64b84fa77ae4e90c5e_th.jpeg", new HashMap<String, Object>());
+        avFile.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                if(e == null) {
+                    Log.i("testUploadURLFile", "ok");
+                } else {
+                    e.printStackTrace();
+                }
             }
         });
         sleep(5);

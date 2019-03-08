@@ -1,5 +1,6 @@
 package com.thumbstage.hydrogen.view.browse.published;
 
+import android.app.Activity;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
@@ -14,7 +15,7 @@ public class PublishedClosedFragment extends Fragment implements IBrowseCustomiz
     // region implement of interface IBrowseCustomize
     @Override
     public void customizeToolbar(Toolbar toolbar) {
-        toolbar.setTitle(getResources().getString(R.string.PublishedClosedFragment_name));
+        toolbar.setTitle(toolbar.getContext().getResources().getString(R.string.PublishedClosedFragment_name));
     }
 
     @Override

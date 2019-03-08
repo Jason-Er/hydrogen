@@ -4,10 +4,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.TopicEx;
@@ -18,6 +14,7 @@ import butterknife.ButterKnife;
 public class CreateActivity extends AppCompatActivity {
     final String TAG = "CreateActivity";
     TopicFragment topicFragment;
+    int REQUEST_CODE_CHOOSE = 123;
 
     public enum TopicHandleType {
         CREATE, ATTEND, CONTINUE
@@ -59,32 +56,6 @@ public class CreateActivity extends AppCompatActivity {
         finish();
         return super.onSupportNavigateUp();
     }
-
-    /*
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_create, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.action_ok:
-                Log.i(TAG, "action_ok");
-                topicFragment.startTopic();
-                navigateUp();
-                break;
-            case R.id.action_publish:
-                Log.i(TAG, "action_publish");
-                topicFragment.publishTopic();
-                navigateUp();
-                break;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-    */
 
     public void navigateUp() {
         finish();

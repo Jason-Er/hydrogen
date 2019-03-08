@@ -1,6 +1,7 @@
 package com.thumbstage.hydrogen.view.create.cases;
 
 import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.view.Menu;
 import android.view.MenuInflater;
 
@@ -41,7 +42,7 @@ public class CaseContinueTopic extends CaseBase implements ICreateMenuItemFuncti
     }
 
     @Override
-    public void settings() {
+    public void settings(Fragment fragment) {
 
     }
 

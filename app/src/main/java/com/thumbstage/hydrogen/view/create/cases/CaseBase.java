@@ -3,10 +3,13 @@ package com.thumbstage.hydrogen.view.create.cases;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.data.LCRepository;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.Pipe;
+import com.thumbstage.hydrogen.model.Setting;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.view.create.fragment.ITopicFragmentFunction;
 import com.thumbstage.hydrogen.view.create.fragment.TopicAdapter;
@@ -20,6 +23,7 @@ public abstract class CaseBase implements ITopicFragmentFunction {
     Pipe pipe = new Pipe(null);
     TopicAdapter topicAdapter;
     LinearLayoutManager layoutManager;
+    ImageView backgroundView;
 
     public CaseBase setPipe(Pipe pipe) {
         this.pipe = pipe;
@@ -29,6 +33,7 @@ public abstract class CaseBase implements ITopicFragmentFunction {
     public CaseBase setTopic(@NonNull Topic topic) {
         if( topic != null ) {
             this.topic = topic;
+            setSetting(topic.getSetting());
             addLines2Adapter(topic.getDialogue());
         } else {
             addLines2Adapter(this.topic.getDialogue());
@@ -36,6 +41,11 @@ public abstract class CaseBase implements ITopicFragmentFunction {
         return this;
     }
 
+    protected void setSetting(Setting setting) {
+        if(setting != null) {
+            Glide.with(backgroundView.getContext()).load(setting.getUrl()).into(backgroundView);
+        }
+    }
     public CaseBase setTopicAdapter(TopicAdapter topicAdapter) {
         this.topicAdapter = topicAdapter;
         return this;
@@ -43,6 +53,11 @@ public abstract class CaseBase implements ITopicFragmentFunction {
 
     public CaseBase setLayoutManager(LinearLayoutManager layoutManager) {
         this.layoutManager = layoutManager;
+        return this;
+    }
+
+    public CaseBase setBackgroundView(ImageView backgroundView) {
+        this.backgroundView = backgroundView;
         return this;
     }
 

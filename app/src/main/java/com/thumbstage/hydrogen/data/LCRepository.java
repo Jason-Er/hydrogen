@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.avos.avoscloud.AVACL;
-import com.avos.avoscloud.AVCallback;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
 import com.avos.avoscloud.AVObject;
@@ -13,6 +12,7 @@ import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
+import com.avos.avoscloud.GetDataCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
@@ -24,6 +24,7 @@ import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.thumbstage.hydrogen.app.UserGlobal;
+import com.thumbstage.hydrogen.model.HyFile;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.LineType;
 import com.thumbstage.hydrogen.model.Pipe;
@@ -34,14 +35,17 @@ import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.utils.DataConvertUtil;
 import com.thumbstage.hydrogen.utils.StringUtil;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import cn.leancloud.chatkit.LCChatKitUser;
-import cn.leancloud.chatkit.cache.LCIMProfileCache;
 
 
 public class LCRepository {
@@ -77,6 +81,18 @@ public class LCRepository {
 
     public interface IReturnUser {
         void callback(User user);
+    }
+
+    public interface IReturnURL {
+        void callback(String url);
+    }
+
+    public interface IReturnHyFile {
+        void callback(HyFile hyFile);
+    }
+
+    public interface IReturnFile {
+        void callback(File file);
     }
 
     public static void saveIStartedOpenedTopic(final Topic topic) {
@@ -181,7 +197,10 @@ public class LCRepository {
         });
     }
 
-    public static void saveTopic(Topic topic, final ICallBack iCallBack) {
+    public static void saveTopic(@NonNull Topic topic, final ICallBack iCallBack) {
+        if( topic.getMembers().size() == 0 ) {
+            topic.getMembers().add(UserGlobal.getInstance().getCurrentUserId());
+        }
         final AVObject record = new AVObject(Topic.class.getSimpleName());
         record.put("name", topic.getName());
         record.put("brief", topic.getBrief());
@@ -230,6 +249,7 @@ public class LCRepository {
     public static void getTopicEx(TopicExType type, int pageNum, final ITopicExCallBack callBack) {
         AVQuery<AVObject> avQuery = new AVQuery<>(type.title);
         avQuery.include("topic");
+        avQuery.include("topic.started_by");
         avQuery.orderByAscending("createdAt");
         avQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
@@ -239,49 +259,16 @@ public class LCRepository {
                     for(AVObject avObject: avObjects) {
                         Log.i("BrowseViewModel", "OK");
                         AVObject avTopic = avObject.getAVObject("topic");
-                        if(avTopic != null) {
-                            AVFile avFile = avTopic.getAVFile("setting");
-                            String id = avTopic.getObjectId();
-                            String name = (String) avTopic.get("name");
-                            String brief = (String) avTopic.get("brief");
-                            List<Map> datalist = avTopic.getList("dialogue");
-                            List<String> members = avTopic.getList("members");
-                            List<Line> dialogue = new ArrayList<>();
-                            for (Map map : datalist) {
-                                if( map.size() != 0 ) {
-                                    dialogue.add(new Line(
-                                            (String) map.get("who"),
-                                            StringUtil.string2Date((String) map.get("when")),
-                                            (String) map.get("what"),
-                                            (LineType.valueOf((String) map.get("type")))));
-                                }
-                            }
-                            AVObject avPipe = avObject.getAVObject("conversation");
-                            AVObject avStartedBy = avTopic.getAVObject("started_by");
-                            User user = new User(avStartedBy.getObjectId(), (String) avStartedBy.get("name"), (String) avStartedBy.get("avatar"));
-                            Setting setting;
-                            if(avFile != null) {
-                                setting = new Setting(avFile.getObjectId(), avFile.getUrl());
-                            } else {
-                                setting = null;
-                            }
-                            Topic topic = Topic.Builder()
-                                    .setId(id)
-                                    .setBrief(brief)
-                                    .setName(name)
-                                    .setDialogue(dialogue)
-                                    .setMembers(members)
-                                    .setStarted_by(user)
-                                    .setSetting(setting);
-                            Pipe pipe;
-                            if( avPipe != null ) {
-                                pipe = new Pipe(avPipe.getObjectId());
-                            } else {
-                                pipe = null;
-                            }
-                            TopicEx topicEx = new TopicEx(topic, pipe);
-                            topicExes.add(topicEx);
+                        AVObject avPipe = avObject.getAVObject("conversation");
+                        Pipe pipe;
+                        if( avPipe != null ) {
+                            pipe = new Pipe(avPipe.getObjectId());
+                        } else {
+                            pipe = null;
                         }
+                        Topic topic = getTopic(avTopic);
+                        TopicEx topicEx = new TopicEx(topic, pipe);
+                        topicExes.add(topicEx);
                     }
                     callBack.callback(topicExes);
                 } else {
@@ -313,7 +300,11 @@ public class LCRepository {
             User user = new User(avStartedBy.getObjectId(), (String) avStartedBy.get("username"), (String) avStartedBy.get("avatar"));
             Setting setting;
             if (avFile != null) {
-                setting = new Setting(avFile.getObjectId(), avFile.getUrl());
+                boolean isInCloud = false;
+                if(!TextUtils.isEmpty(avFile.getBucket())) {
+                    isInCloud = true;
+                }
+                setting = new Setting(avFile.getObjectId(), avFile.getUrl(), isInCloud);
             } else {
                 setting = null;
             }
@@ -458,6 +449,65 @@ public class LCRepository {
             iReturnLine.callback(null);
         }
 
+    }
+
+    public static void saveResURL2Cloud(String URL, final IReturnHyFile iReturnHyFile) {
+        final AVFile avFile = new AVFile(StringUtil.getSuffix(URL), URL, new HashMap<String, Object>() );
+        avFile.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                if(e == null) {
+                    HyFile hyFile = new HyFile(avFile.getName(), avFile.getObjectId(), avFile.getUrl(), false);
+                    iReturnHyFile.callback(hyFile);
+                }
+            }
+        });
+    }
+
+    public static void saveFile2Cloud(final File file, final IReturnHyFile iReturnHyFile) {
+        final AVFile avFile;
+        try {
+            avFile = AVFile.withAbsoluteLocalPath(file.getName(), file.getPath());
+            avFile.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(AVException e) {
+                    if(e== null) {
+                        HyFile hyFile = new HyFile(avFile.getName(), avFile.getObjectId(), avFile.getUrl(), true);
+                        iReturnHyFile.callback(hyFile);
+                    }
+                }
+            });
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void getFileFromCloud(HyFile hyFile, final IReturnFile iReturnFile) {
+        try {
+            final AVFile avfile = AVFile.withObjectId(hyFile.getId());
+            avfile.getDataInBackground(new GetDataCallback() {
+                @Override
+                public void done(byte[] data, AVException e) {
+                    if( e==null ) {
+                        File file = new File(avfile.getName());
+                        try {
+                            OutputStream output = new FileOutputStream(file);
+                            BufferedOutputStream bufferedOutput = new BufferedOutputStream(output);
+                            bufferedOutput.write(data);
+                            iReturnFile.callback(file);
+                        } catch (FileNotFoundException e1) {
+                            e1.printStackTrace();
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
+                    }
+                }
+            });
+        } catch (AVException e) {
+            e.printStackTrace();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
 }

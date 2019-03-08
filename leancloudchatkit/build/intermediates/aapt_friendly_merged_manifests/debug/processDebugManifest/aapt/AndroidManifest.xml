@@ -41,16 +41,18 @@
             </intent-filter>
         </receiver>
 
-        <provider
+        <!--
+        provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="dollar_openBracket_applicationId_closeBracket.provider"
+            android:authorities="${applicationId}.provider"
             android:exported="false"
-            android:grantUriPermissions="true" >
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" >
+                android:resource="@xml/file_paths">
             </meta-data>
-        </provider>
+        </provider
+        -->
 
         <service android:name="com.avos.avoscloud.PushService" />
 

@@ -1,5 +1,6 @@
 package com.thumbstage.hydrogen.view.browse.mine;
 
+import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -37,7 +38,6 @@ public class IStartedOpenedFragment extends Fragment implements IBrowseCustomize
     RecyclerView recyclerView;
 
     BrowseViewModel viewModel;
-
     IStartedOpenedAdapter recyclerViewAdapter;
     LinearLayoutManager layoutManager;
 
@@ -72,16 +72,16 @@ public class IStartedOpenedFragment extends Fragment implements IBrowseCustomize
     }
 
     @Override
-    public void customizeFab(FloatingActionButton fab) {
+    public void customizeFab(final FloatingActionButton fab) {
         fab.show();
         fab.setImageResource(R.drawable.ic_button_plus);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), CreateActivity.class);
+                Intent intent = new Intent(fab.getContext(), CreateActivity.class);
                 intent.putExtra(CreateActivity.TopicHandleType.class.getSimpleName(),
                         CreateActivity.TopicHandleType.CREATE.name());
-                startActivity(intent);
+                fab.getContext().startActivity(intent);
             }
         });
     }

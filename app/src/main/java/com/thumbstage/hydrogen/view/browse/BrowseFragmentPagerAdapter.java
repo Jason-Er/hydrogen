@@ -21,7 +21,7 @@ import java.util.Set;
 public class BrowseFragmentPagerAdapter extends FragmentPagerAdapter {
 
     private final Map<String, Fragment> fragmentMap;
-    private List<Fragment> fragmentList = null;
+    private List<Fragment> fragmentList;
 
     public BrowseFragmentPagerAdapter(FragmentManager fm) {
         super(fm);
@@ -35,7 +35,6 @@ public class BrowseFragmentPagerAdapter extends FragmentPagerAdapter {
                 put(Privilege.BROWSE_IATTENDED.name(), new IAttendedFragment());
             }
         };
-
     }
 
     @Override
@@ -74,4 +73,5 @@ public class BrowseFragmentPagerAdapter extends FragmentPagerAdapter {
         }
         notifyDataSetChanged();
     }
+
 }

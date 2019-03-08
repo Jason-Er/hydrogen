@@ -3,17 +3,20 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
+    <ImageView
+        android:id="@+id/fragment_topic_bk"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="centerCrop"/>
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/fragment_topic_pullrefresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/fragment_topic_inputbottombar">
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/fragment_chat_rv_chat"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
     </android.support.v4.widget.SwipeRefreshLayout>
 
     <com.thumbstage.hydrogen.view.create.fragment.TopicBottomBar

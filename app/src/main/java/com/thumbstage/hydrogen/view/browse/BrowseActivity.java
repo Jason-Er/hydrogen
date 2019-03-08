@@ -1,7 +1,11 @@
 package com.thumbstage.hydrogen.view.browse;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.ViewPager;
@@ -19,10 +23,8 @@ import com.avos.avoscloud.AVUser;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.im.IMService;
-import com.thumbstage.hydrogen.view.account.AccountActivity;
 import com.thumbstage.hydrogen.event.SignEvent;
 import com.thumbstage.hydrogen.view.common.Navigation;
-import com.thumbstage.hydrogen.view.sign.SignActivity;
 import com.thumbstage.hydrogen.viewmodel.BrowseViewModel;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
 
@@ -75,16 +77,6 @@ public class BrowseActivity extends AppCompatActivity
                 switch (menuItemId) {
                     case R.id.menu_browse_sign:
                         Navigation.sign(BrowseActivity.this);
-                        /*
-                        Intent intent = new Intent();
-                        AVUser currentUser = AVUser.getCurrentUser();
-                        if(currentUser != null) {
-                            intent.setClass(BrowseActivity.this, AccountActivity.class);
-                        } else {
-                            intent.setClass(BrowseActivity.this, SignActivity.class);
-                        }
-                        startActivity(intent);
-                        */
                         break;
                 }
                 return false;
@@ -119,6 +111,27 @@ public class BrowseActivity extends AppCompatActivity
             }
         };
         viewPager.addOnPageChangeListener(pageChangeListener);
+
+        /*
+        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (shouldShowRequestPermissionRationale(
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                // Explain to the user why we need to read the contacts
+            }
+
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+
+            // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an
+            // app-defined int constant that should be quite unique
+
+            return;
+        }
+        */
+
     }
 
     @Override

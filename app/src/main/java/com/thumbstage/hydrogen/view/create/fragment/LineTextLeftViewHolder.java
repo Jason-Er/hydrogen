@@ -11,6 +11,7 @@ import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.data.LCRepository;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.User;
+import com.thumbstage.hydrogen.utils.GlideUtil;
 import com.thumbstage.hydrogen.utils.StringUtil;
 
 import butterknife.BindView;
@@ -38,8 +39,7 @@ public class LineTextLeftViewHolder extends RecyclerView.ViewHolder {
         LCRepository.getUser(line.getWho(), new LCRepository.IReturnUser() {
             @Override
             public void callback(User user) {
-                Glide.with(itemView.getContext()).load(user.getAvatar())
-                        .placeholder(R.drawable.ic_item_account).into(avatar);
+                GlideUtil.inject(itemView.getContext(), user.getAvatar(), avatar);
             }
         });
         content.setText(line.getWhat());

@@ -70,7 +70,7 @@ public class IStartedFragment extends Fragment implements IBrowseCustomize, IAda
     @Override
     public void customizeToolbar(Toolbar toolbar) {
         this.toolbar = toolbar;
-        toolbar.setTitle(getResources().getString(R.string.IStartedFragment_name));
+        toolbar.setTitle(toolbar.getContext().getResources().getString(R.string.IStartedFragment_name));
         if( pagerAdapter.getItem(viewPager.getCurrentItem()) instanceof IBrowseCustomize){
             ((IBrowseCustomize) pagerAdapter.getItem(viewPager.getCurrentItem())).customizeToolbar(toolbar);
         }
@@ -92,4 +92,5 @@ public class IStartedFragment extends Fragment implements IBrowseCustomize, IAda
         return Privilege.BROWSE_ISTARTED.ordinal();
     }
     // endregion
+
 }

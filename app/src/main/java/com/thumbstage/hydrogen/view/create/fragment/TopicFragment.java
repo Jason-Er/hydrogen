@@ -14,6 +14,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Pipe;
@@ -41,6 +42,8 @@ public class TopicFragment extends Fragment {
 
     final String TAG = "TopicFragment";
 
+    @BindView(R.id.fragment_topic_bk)
+    ImageView background;
     @BindView(R.id.fragment_chat_rv_chat)
     RecyclerView recyclerView;
     @BindView(R.id.fragment_topic_pullrefresh)
@@ -88,21 +91,24 @@ public class TopicFragment extends Fragment {
 
     public void attendTopic(Topic topic) {
         currentRole = roleMap.get(CreateActivity.TopicHandleType.ATTEND);
-        currentRole.setTopicAdapter(topicAdapter)
+        currentRole.setBackgroundView(background)
+                .setTopicAdapter(topicAdapter)
                 .setLayoutManager(layoutManager)
                 .setTopic(topic);
     }
 
     public void createTopic() {
         currentRole = roleMap.get(CreateActivity.TopicHandleType.CREATE);
-        currentRole.setTopicAdapter(topicAdapter)
+        currentRole.setBackgroundView(background)
+                .setTopicAdapter(topicAdapter)
                 .setLayoutManager(layoutManager)
                 .setTopic(null);
     }
 
     public void continueTopic(Topic topic, Pipe pipe) {
         currentRole = roleMap.get(CreateActivity.TopicHandleType.CONTINUE);
-        currentRole.setTopicAdapter(topicAdapter)
+        currentRole.setBackgroundView(background)
+                .setTopicAdapter(topicAdapter)
                 .setLayoutManager(layoutManager)
                 .setPipe(pipe)
                 .setTopic(topic);
@@ -128,7 +134,7 @@ public class TopicFragment extends Fragment {
             case R.id.menu_create_setting:
                 Log.i(TAG, "menu_create_setting");
                 if( currentRole instanceof ICreateMenuItemFunction) {
-                    ((ICreateMenuItemFunction) currentRole).settings();
+                    ((ICreateMenuItemFunction) currentRole).settings(this);
                 }
                 break;
             case R.id.menu_create_start:
