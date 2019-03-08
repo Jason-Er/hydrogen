@@ -1,10 +1,7 @@
 package com.thumbstage.hydrogen.view.create.cases;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -12,15 +9,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.data.LCRepository;
 import com.thumbstage.hydrogen.model.HyFile;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
 import com.thumbstage.hydrogen.model.Setting;
-import com.thumbstage.hydrogen.view.common.FitCenterDrawable;
 import com.thumbstage.hydrogen.view.common.Navigation;
 import com.thumbstage.hydrogen.view.create.ICreateCustomize;
 import com.thumbstage.hydrogen.view.create.ICreateMenuItemFunction;

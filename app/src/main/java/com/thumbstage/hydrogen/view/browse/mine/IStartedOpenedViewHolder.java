@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.model.TopicEx;
+import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
 
 import butterknife.BindView;
@@ -26,6 +27,8 @@ public class IStartedOpenedViewHolder extends RecyclerView.ViewHolder {
     TextView name;
     @BindView(R.id.item_browse_topic_brief)
     TextView brief;
+    @BindView(R.id.item_browse_topic_avatar)
+    ImageView avatar;
 
     public IStartedOpenedViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -49,6 +52,10 @@ public class IStartedOpenedViewHolder extends RecyclerView.ViewHolder {
         brief.setText(topic.getBrief());
         if(topic.getSetting() != null) {
             Glide.with(setting.getContext()).load(topic.getSetting().getUrl()).into(setting);
+        }
+        User user = topic.getStarted_by();
+        if(user != null) {
+            Glide.with(avatar).load(user.getAvatar()).into(avatar);
         }
     }
 
