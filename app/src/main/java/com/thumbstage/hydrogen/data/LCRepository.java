@@ -250,6 +250,13 @@ public class LCRepository {
         AVQuery<AVObject> avQuery = new AVQuery<>(type.title);
         avQuery.include("topic");
         avQuery.include("topic.started_by");
+        avQuery.limit(15);
+        if(!type.title.toLowerCase().contains("published")) {
+            AVObject avUser = AVUser.createWithoutData("_User", UserGlobal.getInstance().getCurrentUserId());
+            AVQuery<AVObject> avQueryInner = new AVQuery<>(Topic.class.getSimpleName());
+            avQueryInner.whereEqualTo("started_by", avUser);
+            avQuery.whereMatchesQuery("topic", avQueryInner);
+        }
         avQuery.orderByAscending("createdAt");
         avQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
