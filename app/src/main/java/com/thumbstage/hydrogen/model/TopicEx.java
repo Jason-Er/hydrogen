@@ -6,16 +6,16 @@ import android.os.Parcelable;
 public class TopicEx implements Parcelable {
 
     Topic topic;
-    Pipe pipe;
+    Mic mic;
 
-    public TopicEx(Topic topic, Pipe pipe) {
+    public TopicEx(Topic topic, Mic mic) {
         this.topic = topic;
-        this.pipe = pipe;
+        this.mic = mic;
     }
 
     protected TopicEx(Parcel in) {
         topic = in.readParcelable(Topic.class.getClassLoader());
-        pipe = in.readParcelable(Pipe.class.getClassLoader());
+        mic = in.readParcelable(Mic.class.getClassLoader());
     }
 
     public static final Creator<TopicEx> CREATOR = new Creator<TopicEx>() {
@@ -38,7 +38,7 @@ public class TopicEx implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeParcelable(topic, flags);
-        dest.writeParcelable(pipe, flags);
+        dest.writeParcelable(mic, flags);
     }
 
     // region getter and setter
@@ -50,12 +50,12 @@ public class TopicEx implements Parcelable {
         this.topic = topic;
     }
 
-    public Pipe getPipe() {
-        return pipe;
+    public Mic getMic() {
+        return mic;
     }
 
-    public void setPipe(Pipe pipe) {
-        this.pipe = pipe;
+    public void setMic(Mic mic) {
+        this.mic = mic;
     }
     // endregion
 }

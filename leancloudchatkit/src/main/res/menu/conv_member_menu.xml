@@ -4,6 +4,6 @@
     <item
         android:id="@+id/menu_conv_member_saving"
         android:icon="@android:drawable/ic_menu_save"
-        android:title="@string/lcim_conversation_detail"
+        android:name="@string/lcim_conversation_detail"
         app:showAsAction="always"/>
 </menu>

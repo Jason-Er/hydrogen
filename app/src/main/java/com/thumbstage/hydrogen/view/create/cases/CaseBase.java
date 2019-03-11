@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.data.LCRepository;
 import com.thumbstage.hydrogen.model.Line;
-import com.thumbstage.hydrogen.model.Pipe;
+import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.Setting;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.view.create.fragment.ITopicFragmentFunction;
@@ -20,13 +20,13 @@ public abstract class CaseBase implements ITopicFragmentFunction {
 
     final String TAG = "CaseBase";
     Topic topic = new Topic();
-    Pipe pipe = new Pipe(null);
+    Mic mic = new Mic(null);
     TopicAdapter topicAdapter;
     LinearLayoutManager layoutManager;
     ImageView backgroundView;
 
-    public CaseBase setPipe(Pipe pipe) {
-        this.pipe = pipe;
+    public CaseBase setMic(Mic mic) {
+        this.mic = mic;
         return this;
     }
 
@@ -67,7 +67,7 @@ public abstract class CaseBase implements ITopicFragmentFunction {
     }
 
     protected void addLine2Pipe(Line line) {
-        LCRepository.sendLine(pipe, line, new LCRepository.IReturnBool() {
+        LCRepository.sendLine(mic, line, new LCRepository.IReturnBool() {
             @Override
             public void callback(Boolean isOK) {
                 if(isOK)  {

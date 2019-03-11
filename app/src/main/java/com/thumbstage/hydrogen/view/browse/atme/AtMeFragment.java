@@ -1,6 +1,5 @@
 package com.thumbstage.hydrogen.view.browse.atme;
 
-import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
@@ -13,15 +12,13 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.app.Privilege;
-import com.thumbstage.hydrogen.model.Pipe;
-import com.thumbstage.hydrogen.model.TopicEx;
+import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.view.browse.IAdapterFunction;
 import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
 import com.thumbstage.hydrogen.viewmodel.BrowseViewModel;
@@ -59,10 +56,10 @@ public class AtMeFragment extends Fragment implements IBrowseCustomize, IAdapter
         recyclerView.setAdapter(recyclerViewAdapter);
 
         viewModel = ViewModelProviders.of(getActivity()).get(BrowseViewModel.class);
-        viewModel.getAtMe().observe(getActivity(), new Observer<List<Pipe>>() {
+        viewModel.getAtMe().observe(getActivity(), new Observer<List<Mic>>() {
             @Override
-            public void onChanged(@Nullable List<Pipe> pipes) {
-                recyclerViewAdapter.setItems(pipes);
+            public void onChanged(@Nullable List<Mic> mics) {
+                recyclerViewAdapter.setItems(mics);
             }
         });
         viewModel.getAtMeByPageNum(0);

@@ -3,26 +3,26 @@ package com.thumbstage.hydrogen.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-public class Pipe implements Parcelable {
+public class Mic implements Parcelable {
     String id; // conversation id
 
-    public Pipe(String id) {
+    public Mic(String id) {
         this.id = id;
     }
 
-    protected Pipe(Parcel in) {
+    protected Mic(Parcel in) {
         id = in.readString();
     }
 
-    public static final Creator<Pipe> CREATOR = new Creator<Pipe>() {
+    public static final Creator<Mic> CREATOR = new Creator<Mic>() {
         @Override
-        public Pipe createFromParcel(Parcel in) {
-            return new Pipe(in);
+        public Mic createFromParcel(Parcel in) {
+            return new Mic(in);
         }
 
         @Override
-        public Pipe[] newArray(int size) {
-            return new Pipe[size];
+        public Mic[] newArray(int size) {
+            return new Mic[size];
         }
     };
 

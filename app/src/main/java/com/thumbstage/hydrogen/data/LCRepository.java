@@ -27,7 +27,7 @@ import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.model.HyFile;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.LineType;
-import com.thumbstage.hydrogen.model.Pipe;
+import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.Setting;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.model.TopicEx;
@@ -42,6 +42,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -76,7 +77,7 @@ public class LCRepository {
     }
 
     public interface IReturnPipe {
-        void callback(Pipe pipe);
+        void callback(Mic mic);
     }
 
     public interface IReturnUser {
@@ -95,26 +96,57 @@ public class LCRepository {
         void callback(File file);
     }
 
-    public static void saveIStartedOpenedTopic(final Topic topic) {
+    private enum TableName {
+        TABLE_USER("_User"),
+        TABLE_MIC("_Conversation"),
+        TABLE_FILE("_File"),
+        TABLE_PUBLISHED_OPENED("PublishedOpened"),
+        TABLE_STARTED_OPENED("StartedOpened"),
+        TABLE_ATTENDED_OPENED("AttendedOpened");
+
+        final String name;
+        TableName(String name) {
+            this.name = name;
+        }
+    }
+
+    private enum FieldName {
+        FIELD_NAME("name"),
+        FIELD_BRIEF("brief"),
+        FIELD_STARTED_BY("started_by"),
+        FIELD_DERIVE_FROM("derive_from"),
+        FIELD_SETTING("setting"),
+        FIELD_MEMBERS("members"),
+        FIELD_DIALOGUE("dialogue"),
+        FIELD_TOPIC("topic"),
+        FIELD_MIC("mic");
+
+        final String name;
+        FieldName(String name) {
+            this.name = name;
+        }
+    }
+
+    public static void saveTopic2StartedOpened(final Topic topic) {
         saveTopic(topic, new ICallBack() {
             @Override
             public void callback(final String topicID) {
-                createConversation(topic, new ICallBack() {
+                createMic(topic, new ICallBack() {
                     @Override
                     public void callback(String conversationID) {
-                        Log.i(TAG, "saveIStartedOpenedTopic topicID:"+topicID+" conversationID:"+conversationID);
+                        Log.i(TAG, "saveTopic2StartedOpened topicID:"+topicID+" conversationID:"+conversationID);
                         AVObject avTopic = AVObject.createWithoutData(Topic.class.getSimpleName(), topicID);
-                        AVObject avConversation = AVObject.createWithoutData("_Conversation", conversationID);
-                        avConversation.put("topic", avTopic);
-                        avConversation.saveInBackground();
-                        AVObject record = new AVObject("IStartedOpened");
-                        record.put("topic", avTopic);
-                        record.put("conversation", avConversation);
+                        AVObject avMic = AVObject.createWithoutData(TableName.TABLE_MIC.name, conversationID);
+                        avMic.put(FieldName.FIELD_TOPIC.name, avTopic);
+                        avMic.saveInBackground();
+                        AVObject record = new AVObject(TableName.TABLE_STARTED_OPENED.name);
+                        record.put(FieldName.FIELD_TOPIC.name, avTopic);
+                        record.put(FieldName.FIELD_MIC.name, avMic);
                         record.saveInBackground(new SaveCallback() {
                             @Override
                             public void done(AVException e) {
                                 // TODO: 2/18/2019 need toast here
-                                Log.i(TAG, "saveIStartedOpenedTopic ok");
+                                Log.i(TAG, "saveTopic2StartedOpened ok");
                             }
                         });
                     }
@@ -123,56 +155,56 @@ public class LCRepository {
         });
     }
 
-    public static void savePublishedOpenedTopic(Topic topic, final ICallBack iCallBack) {
+    public static void saveTopic2PublishedOpened(Topic topic, final ICallBack iCallBack) {
         saveTopic(topic, new ICallBack() {
             @Override
             public void callback(final String objectID) {
-                Log.i(TAG, "savePublishedOpenedTopic id:"+objectID);
+                Log.i(TAG, "saveTopic2PublishedOpened id:"+objectID);
                 AVObject avTopic = AVObject.createWithoutData(Topic.class.getSimpleName(), objectID);
-                AVObject record = new AVObject("PublishedOpened");
-                record.put("topic", avTopic);
+                AVObject record = new AVObject(TableName.TABLE_PUBLISHED_OPENED.name);
+                record.put(FieldName.FIELD_TOPIC.name, avTopic);
                 record.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(AVException e) {
                         // TODO: 2/18/2019 need toast here
                         iCallBack.callback(objectID);
-                        Log.i(TAG, "savePublishedOpenedTopic ok");
+                        Log.i(TAG, "saveTopic2PublishedOpened ok");
                     }
                 });
             }
         });
     }
 
-    public static void copyPublishedOpenedTopic(final Topic topic, final IReturnPipe iCallBack) {
+    public static void copyTopicFromPublishedOpened(final Topic topic, final IReturnPipe iCallBack) {
         copyTopic(topic, new ICallBack() {
             @Override
             public void callback(final String topicID) {
-                createConversation(topic, new ICallBack() {
+                createMic(topic, new ICallBack() {
                     @Override
                     public void callback(String conversationID) {
-                        Log.i(TAG, "saveIStartedOpenedTopic topicID:"+topicID+" conversationID:"+conversationID);
+                        Log.i(TAG, "saveTopic2StartedOpened topicID:"+topicID+" conversationID:"+conversationID);
                         AVObject avTopic = AVObject.createWithoutData(Topic.class.getSimpleName(), topicID);
-                        AVObject avConversation = AVObject.createWithoutData("_Conversation", conversationID);
-                        avConversation.put("topic", avTopic);
+                        AVObject avConversation = AVObject.createWithoutData(TableName.TABLE_MIC.name, conversationID);
+                        avConversation.put(FieldName.FIELD_TOPIC.name, avTopic);
                         avConversation.saveInBackground();
-                        AVObject record = new AVObject("IAttendedOpened");
-                        record.put("topic", avTopic);
-                        record.put("conversation", avConversation);
+                        AVObject record = new AVObject(TableName.TABLE_ATTENDED_OPENED.name);
+                        record.put(FieldName.FIELD_TOPIC.name, avTopic);
+                        record.put(FieldName.FIELD_MIC.name, avConversation);
                         record.saveInBackground(new SaveCallback() {
                             @Override
                             public void done(AVException e) {
                                 // TODO: 2/18/2019 need toast here
-                                Log.i(TAG, "copyPublishedOpenedTopic ok");
+                                Log.i(TAG, "copyTopicFromPublishedOpened ok");
                             }
                         });
-                        iCallBack.callback(new Pipe(conversationID));
+                        iCallBack.callback(new Mic(conversationID));
                     }
                 });
             }
         });
     }
 
-    public static void createConversation(final Topic topic, final ICallBack iCallBack) {
+    public static void createMic(final Topic topic, final ICallBack iCallBack) {
         AVIMClient client = AVIMClient.getInstance(AVUser.getCurrentUser().getObjectId());
         client.open(new AVIMClientCallback() {
             @Override
@@ -183,7 +215,7 @@ public class LCRepository {
                         @Override
                         public void done(AVIMConversation conversation, AVIMException e) {
                             if(e == null) {
-                                Log.i(TAG, "createConversation ok");
+                                Log.i(TAG, "createMic ok");
                                 iCallBack.callback(conversation.getConversationId());
                             } else {
                                 e.printStackTrace();
@@ -202,20 +234,20 @@ public class LCRepository {
             topic.getMembers().add(UserGlobal.getInstance().getCurrentUserId());
         }
         final AVObject record = new AVObject(Topic.class.getSimpleName());
-        record.put("name", topic.getName());
-        record.put("brief", topic.getBrief());
-        record.put("started_by", AVUser.getCurrentUser());
+        record.put(FieldName.FIELD_NAME.name, topic.getName());
+        record.put(FieldName.FIELD_BRIEF.name, topic.getBrief());
+        record.put(FieldName.FIELD_STARTED_BY.name, AVUser.getCurrentUser());
         if( !TextUtils.isEmpty( topic.getDerive_from() ) ) {
             AVObject avDeriveFrom = AVObject.createWithoutData(Topic.class.getSimpleName(), topic.getDerive_from());
-            record.put("derive_from", avDeriveFrom);
+            record.put(FieldName.FIELD_DERIVE_FROM.name, avDeriveFrom);
         }
         if(topic.getSetting() != null) {
-            AVObject avObject = AVObject.createWithoutData("_File", topic.getSetting().getId());
-            record.put("setting", avObject);
+            AVObject avObject = AVObject.createWithoutData(TableName.TABLE_FILE.name, topic.getSetting().getId());
+            record.put(FieldName.FIELD_SETTING.name, avObject);
         }
-        record.put("members", topic.getMembers());
+        record.put(FieldName.FIELD_MEMBERS.name, topic.getMembers());
         List<Map> list = DataConvertUtil.convert2AVObject(topic.getDialogue());
-        record.put("dialogue", list);
+        record.put(FieldName.FIELD_DIALOGUE.name, list);
         record.saveInBackground(new SaveCallback() {
             @Override
             public void done(AVException e) {
@@ -239,25 +271,56 @@ public class LCRepository {
     }
 
     public enum TopicExType {
-        PUBLISHED_OPENED("PublishedOpened"), ISTARTED_OPENED("IStartedOpened"), IATTENDED_OPENED("IAttendedOpened");
-        final String title;
-        TopicExType(String title) {
-            this.title = title;
+        PUBLISHED_OPENED(TableName.TABLE_PUBLISHED_OPENED.name),
+        IPUBLISHED_OPENED(TableName.TABLE_PUBLISHED_OPENED.name),
+        ISTARTED_OPENED(TableName.TABLE_STARTED_OPENED.name),
+        IATTENDED_OPENED(TableName.TABLE_ATTENDED_OPENED.name);
+
+        final String name;
+        TopicExType(String name) {
+            this.name = name;
         }
     }
 
     public static void getTopicEx(TopicExType type, int pageNum, final ITopicExCallBack callBack) {
-        AVQuery<AVObject> avQuery = new AVQuery<>(type.title);
-        avQuery.include("topic");
-        avQuery.include("topic.started_by");
+        AVQuery<AVObject> avQuery = new AVQuery<>(type.name);
+        avQuery.include(FieldName.FIELD_TOPIC.name);
+        avQuery.include(FieldName.FIELD_TOPIC.name+"."+FieldName.FIELD_STARTED_BY.name);
         avQuery.limit(15);
-        if(!type.title.toLowerCase().contains("published")) {
-            AVObject avUser = AVUser.createWithoutData("_User", UserGlobal.getInstance().getCurrentUserId());
-            AVQuery<AVObject> avQueryInner = new AVQuery<>(Topic.class.getSimpleName());
-            avQueryInner.whereEqualTo("started_by", avUser);
-            avQuery.whereMatchesQuery("topic", avQueryInner);
+        switch (type) {
+            case PUBLISHED_OPENED:
+                break;
+            case IPUBLISHED_OPENED: {
+                AVObject avUser = AVUser.createWithoutData(TableName.TABLE_USER.name, UserGlobal.getInstance().getCurrentUserId());
+                AVQuery<AVObject> avQueryInner = new AVQuery<>(Topic.class.getSimpleName());
+                avQueryInner.whereEqualTo(FieldName.FIELD_STARTED_BY.name, avUser);
+                avQuery.whereMatchesQuery(FieldName.FIELD_TOPIC.name, avQueryInner);
+            }
+                break;
+            case ISTARTED_OPENED: {
+                AVObject avUser = AVUser.createWithoutData(TableName.TABLE_USER.name, UserGlobal.getInstance().getCurrentUserId());
+                AVQuery<AVObject> avQueryInner = new AVQuery<>(Topic.class.getSimpleName());
+                avQueryInner.whereEqualTo(FieldName.FIELD_STARTED_BY.name, avUser);
+                avQuery.whereMatchesQuery(FieldName.FIELD_TOPIC.name, avQueryInner);
+            }
+                break;
+            case IATTENDED_OPENED: {
+                AVObject avUser = AVUser.createWithoutData(TableName.TABLE_USER.name, UserGlobal.getInstance().getCurrentUserId());
+                AVQuery<AVObject> avQueryInner1 = new AVQuery<>(Topic.class.getSimpleName());
+                avQueryInner1.whereNotEqualTo(FieldName.FIELD_STARTED_BY.name, avUser);
+                AVQuery<AVObject> avQueryInner2 = new AVQuery<>(Topic.class.getSimpleName());
+                avQueryInner2.whereEqualTo(FieldName.FIELD_MEMBERS.name, UserGlobal.getInstance().getCurrentUserId());
+                AVQuery<AVObject> avQueryInner = AVQuery.and(Arrays.asList(avQueryInner1, avQueryInner2));
+                avQuery.whereMatchesQuery(FieldName.FIELD_TOPIC.name, avQueryInner);
+
+            }
+                break;
         }
         avQuery.orderByAscending("createdAt");
+        getTopicEx(avQuery, pageNum, callBack);
+    }
+
+    private static void getTopicEx(AVQuery<AVObject> avQuery, int pageNum, final ITopicExCallBack callBack) {
         avQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> avObjects, AVException avException) {
@@ -265,16 +328,16 @@ public class LCRepository {
                 if(avException == null) {
                     for(AVObject avObject: avObjects) {
                         Log.i("BrowseViewModel", "OK");
-                        AVObject avTopic = avObject.getAVObject("topic");
-                        AVObject avPipe = avObject.getAVObject("conversation");
-                        Pipe pipe;
-                        if( avPipe != null ) {
-                            pipe = new Pipe(avPipe.getObjectId());
+                        AVObject avTopic = avObject.getAVObject(FieldName.FIELD_TOPIC.name);
+                        AVObject avMic = avObject.getAVObject(FieldName.FIELD_MIC.name);
+                        Mic mic;
+                        if( avMic != null ) {
+                            mic = new Mic(avMic.getObjectId());
                         } else {
-                            pipe = null;
+                            mic = null;
                         }
                         Topic topic = getTopic(avTopic);
-                        TopicEx topicEx = new TopicEx(topic, pipe);
+                        TopicEx topicEx = new TopicEx(topic, mic);
                         topicExes.add(topicEx);
                     }
                     callBack.callback(topicExes);
@@ -287,12 +350,12 @@ public class LCRepository {
 
     private static Topic getTopic(AVObject avTopic) {
         if(avTopic != null) {
-            AVFile avFile = avTopic.getAVFile("setting");
+            AVFile avFile = avTopic.getAVFile(FieldName.FIELD_SETTING.name);
             String id = avTopic.getObjectId();
-            String name = (String) avTopic.get("name");
-            String brief = (String) avTopic.get("brief");
-            List<Map> datalist = avTopic.getList("dialogue");
-            List<String> members = avTopic.getList("members");
+            String name = (String) avTopic.get(FieldName.FIELD_NAME.name);
+            String brief = (String) avTopic.get(FieldName.FIELD_BRIEF.name);
+            List<Map> datalist = avTopic.getList(FieldName.FIELD_DIALOGUE.name);
+            List<String> members = avTopic.getList(FieldName.FIELD_MEMBERS.name);
             List<Line> dialogue = new ArrayList<>();
             for (Map map : datalist) {
                 if (map.size() != 0) {
@@ -303,7 +366,7 @@ public class LCRepository {
                             (LineType.valueOf((String) map.get("type")))));
                 }
             }
-            AVObject avStartedBy = avTopic.getAVObject("started_by");
+            AVObject avStartedBy = avTopic.getAVObject(FieldName.FIELD_STARTED_BY.name);
             User user = new User(avStartedBy.getObjectId(), (String) avStartedBy.get("username"), (String) avStartedBy.get("avatar"));
             Setting setting;
             if (avFile != null) {
@@ -329,16 +392,16 @@ public class LCRepository {
         }
     }
 
-    public static void addTopicOneLine(final Pipe pipe, final Line line, final IReturnBool callBack) {
-        AVQuery<AVObject> avQuery = new AVQuery<>("_Conversation");
-        avQuery.getInBackground(pipe.getId(), new GetCallback<AVObject>() {
+    public static void addTopicOneLine(final Mic mic, final Line line, final IReturnBool callBack) {
+        AVQuery<AVObject> avQuery = new AVQuery<>(TableName.TABLE_MIC.name);
+        avQuery.getInBackground(mic.getId(), new GetCallback<AVObject>() {
             @Override
             public void done(AVObject avObject, AVException e) {
                 if( e == null ) {
-                    AVObject avTopic = avObject.getAVObject("topic");
+                    AVObject avTopic = avObject.getAVObject(FieldName.FIELD_TOPIC.name);
                     Map data = DataConvertUtil.convert2AVObject(line);
                     final AVObject topic = AVObject.createWithoutData(Topic.class.getSimpleName(), avTopic.getObjectId());
-                    topic.addUnique("dialogue", data);
+                    topic.addUnique(FieldName.FIELD_DIALOGUE.name, data);
                     topic.saveInBackground(new SaveCallback() {
                         @Override
                         public void done(AVException e) {
@@ -355,14 +418,14 @@ public class LCRepository {
 
     }
 
-    public static void getTopic(Pipe pipe, @NonNull final IReturnTopic returnTopic) {
-        AVQuery<AVObject> avQuery = new AVQuery<>("_Conversation");
-        avQuery.include("topic");
-        avQuery.getInBackground(pipe.getId(), new GetCallback<AVObject>() {
+    public static void getTopic(Mic mic, @NonNull final IReturnTopic returnTopic) {
+        AVQuery<AVObject> avQuery = new AVQuery<>(TableName.TABLE_MIC.name);
+        avQuery.include(FieldName.FIELD_TOPIC.name);
+        avQuery.getInBackground(mic.getId(), new GetCallback<AVObject>() {
             @Override
             public void done(AVObject avObject, AVException e) {
                 if( e == null ) {
-                    AVObject avTopic = avObject.getAVObject("topic");
+                    AVObject avTopic = avObject.getAVObject(FieldName.FIELD_TOPIC.name);
                     Topic topic = getTopic(avTopic);
                     returnTopic.callback(topic);
                 } else {
@@ -374,7 +437,7 @@ public class LCRepository {
     }
 
     public static void getUser(String userID, final IReturnUser iReturnUser) {
-        AVObject userObject = AVObject.createWithoutData("_User", userID);
+        AVObject userObject = AVObject.createWithoutData(TableName.TABLE_USER.name, userID);
         userObject.fetchInBackground(new GetCallback<AVObject>() {
             @Override
             public void done(AVObject avObject, AVException e) {
@@ -386,8 +449,8 @@ public class LCRepository {
         });
     }
 
-    public static void sendLine(final Pipe pipe, final Line line, final IReturnBool icallback) {
-        AVIMConversation conversation = UserGlobal.getInstance().getConversation(pipe.getId());
+    public static void sendLine(final Mic mic, final Line line, final IReturnBool icallback) {
+        AVIMConversation conversation = UserGlobal.getInstance().getConversation(mic.getId());
         if( !StringUtil.isUrl(line.getWhat()) ) { // must be a text
             AVIMTextMessage message = new AVIMTextMessage();
             message.setText(line.getWhat());
@@ -402,7 +465,7 @@ public class LCRepository {
                 @Override
                 public void done(AVIMException e) {
                     if( e == null ) {
-                        addTopicOneLine(pipe, line, icallback); // TODO: 2/28/2019 may this function add to server
+                        addTopicOneLine(mic, line, icallback); // TODO: 2/28/2019 may this function add to server
                     } else {
                         icallback.callback(false);
                     }
@@ -423,8 +486,8 @@ public class LCRepository {
         return line;
     }
 
-    public static void getLastLineUser(Pipe pipe, final IReturnUser iReturnUser) {
-        AVIMConversation conversation = UserGlobal.getInstance().getConversation(pipe.getId());
+    public static void getLastLineUser(Mic mic, final IReturnUser iReturnUser) {
+        AVIMConversation conversation = UserGlobal.getInstance().getConversation(mic.getId());
         if(conversation != null) {
             AVIMMessage message = conversation.getLastMessage();
             if(message != null) {
@@ -443,8 +506,8 @@ public class LCRepository {
 
     }
 
-    public static void getLastLine(Pipe pipe, final IReturnLine iReturnLine) {
-        AVIMConversation conversation = UserGlobal.getInstance().getConversation(pipe.getId());
+    public static void getLastLine(Mic mic, final IReturnLine iReturnLine) {
+        AVIMConversation conversation = UserGlobal.getInstance().getConversation(mic.getId());
         if(conversation != null) {
             AVIMMessage message = conversation.getLastMessage();
             if(message != null) {

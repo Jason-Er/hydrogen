@@ -7,11 +7,10 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.data.LCRepository;
 import com.thumbstage.hydrogen.model.Line;
-import com.thumbstage.hydrogen.model.Pipe;
+import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.model.TopicEx;
 import com.thumbstage.hydrogen.model.User;
@@ -24,7 +23,7 @@ import butterknife.ButterKnife;
 
 public class AtMeViewHolder extends RecyclerView.ViewHolder {
 
-    Pipe pipe;
+    Mic mic;
 
     @BindView(R.id.item_pipe_atme_iv_avatar)
     ImageView avatar;
@@ -45,10 +44,10 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                LCRepository.getTopic(pipe, new LCRepository.IReturnTopic() {
+                LCRepository.getTopic(mic, new LCRepository.IReturnTopic() {
                     @Override
                     public void callback(Topic topic) {
-                        TopicEx topicEx = new TopicEx(topic, pipe);
+                        TopicEx topicEx = new TopicEx(topic, mic);
                         Intent intent = new Intent(v.getContext(), CreateActivity.class);
                         intent.putExtra(TopicEx.class.getSimpleName(), topicEx);
                         intent.putExtra(CreateActivity.TopicHandleType.class.getSimpleName(),
@@ -60,9 +59,9 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    public void setPipe(Pipe pipe) {
-        this.pipe = pipe;
-        LCRepository.getLastLineUser(pipe, new LCRepository.IReturnUser() {
+    public void setMic(Mic mic) {
+        this.mic = mic;
+        LCRepository.getLastLineUser(mic, new LCRepository.IReturnUser() {
             @Override
             public void callback(User user) {
                 if(user != null) {
@@ -71,7 +70,7 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
                 }
             }
         });
-        LCRepository.getLastLine(pipe, new LCRepository.IReturnLine() {
+        LCRepository.getLastLine(mic, new LCRepository.IReturnLine() {
             @Override
             public void callback(Line line) {
                 if(line != null) {
@@ -81,7 +80,7 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
             }
         });
         /*
-        AVIMConversation conversation = UserGlobal.getInstance().getConversation(pipe.getId());
+        AVIMConversation conversation = UserGlobal.getInstance().getConversation(mic.getId());
 
         updateName(conversation);
         updateIcon(conversation);

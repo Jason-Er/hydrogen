@@ -7,7 +7,7 @@
     <item
         android:id="@+id/menu_create_sign"
         android:icon="@drawable/ic_menu_sign"
-        android:title="@string/action_sign"
+        android:name="@string/action_sign"
         app:showAsAction="always"/>
 
 </menu>

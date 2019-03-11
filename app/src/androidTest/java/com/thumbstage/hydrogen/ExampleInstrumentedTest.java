@@ -212,7 +212,7 @@ public class ExampleInstrumentedTest {
             @Override
             public void done(AVIMClient client, AVIMException e) {
                 if(e == null) {
-                    client.createConversation(Arrays.asList("Jerry"), "testConversation", null, new AVIMConversationCreatedCallback() {
+                    client.createMic(Arrays.asList("Jerry"), "testConversation", null, new AVIMConversationCreatedCallback() {
                         @Override
                         public void done(AVIMConversation conversation, AVIMException e) {
                             if(e == null) {
@@ -241,7 +241,7 @@ public class ExampleInstrumentedTest {
         topic.setSetting_id("5c629287303f390047c13726");
         topic.setStarted_by(AVUser.getCurrentUser().getObjectId());
         topic.getMembers().add(AVUser.getCurrentUser().getObjectId());
-        LCRepository.saveIStartedOpenedTopic(topic);
+        LCRepository.saveTopic2StartedOpened(topic);
         sleep(5);
     }
 
@@ -286,7 +286,7 @@ public class ExampleInstrumentedTest {
         topic.setSetting_id("5c629287303f390047c13726");
         topic.setStarted_by(AVUser.getCurrentUser().getObjectId());
         topic.getMembers().add(AVUser.getCurrentUser().getObjectId());
-        LCRepository.copyPublishedOpenedTopic(topic, new LCRepository.ICallBack() {
+        LCRepository.copyTopicFromPublishedOpened(topic, new LCRepository.ICallBack() {
             @Override
             public void callback(String objectID) {
                 Log.i("testCopyPublishedOpenedTopic", "success!");

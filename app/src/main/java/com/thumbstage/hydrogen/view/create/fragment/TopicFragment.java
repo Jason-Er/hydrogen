@@ -17,7 +17,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.model.Pipe;
+import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
@@ -105,12 +105,12 @@ public class TopicFragment extends Fragment {
                 .setTopic(null);
     }
 
-    public void continueTopic(Topic topic, Pipe pipe) {
+    public void continueTopic(Topic topic, Mic mic) {
         currentRole = roleMap.get(CreateActivity.TopicHandleType.CONTINUE);
         currentRole.setBackgroundView(background)
                 .setTopicAdapter(topicAdapter)
                 .setLayoutManager(layoutManager)
-                .setPipe(pipe)
+                .setMic(mic)
                 .setTopic(topic);
     }
 
