@@ -49,13 +49,16 @@ public class IMService {
         AVIMMessageManager.setConversationEventHandler(imConversationHandler);
         AVIMClient.setUnreadNotificationEnabled(true);
 
-        LCIMProfileCache.getInstance().initDB(AVOSCloud.applicationContext, AVUser.getCurrentUser().getObjectId());
-        LCIMConversationItemCache.getInstance().initDB(AVOSCloud.applicationContext, AVUser.getCurrentUser().getObjectId(), new AVCallback() {
-            @Override
-            protected void internalDone0(Object o, AVException avException) {
 
-            }
-        });
+        if(AVUser.getCurrentUser() != null) {
+            LCIMProfileCache.getInstance().initDB(AVOSCloud.applicationContext, AVUser.getCurrentUser().getObjectId());
+            LCIMConversationItemCache.getInstance().initDB(AVOSCloud.applicationContext, AVUser.getCurrentUser().getObjectId(), new AVCallback() {
+                @Override
+                protected void internalDone0(Object o, AVException avException) {
+
+                }
+            });
+        }
     }
 
     public IMMessageHandler getImMessageHandler() {

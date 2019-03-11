@@ -290,30 +290,13 @@ public class LCRepository {
         switch (type) {
             case PUBLISHED_OPENED:
                 break;
-            case IPUBLISHED_OPENED: {
+            case IPUBLISHED_OPENED:
+            case ISTARTED_OPENED:
+            case IATTENDED_OPENED:
                 AVObject avUser = AVUser.createWithoutData(TableName.TABLE_USER.name, UserGlobal.getInstance().getCurrentUserId());
                 AVQuery<AVObject> avQueryInner = new AVQuery<>(Topic.class.getSimpleName());
                 avQueryInner.whereEqualTo(FieldName.FIELD_STARTED_BY.name, avUser);
                 avQuery.whereMatchesQuery(FieldName.FIELD_TOPIC.name, avQueryInner);
-            }
-                break;
-            case ISTARTED_OPENED: {
-                AVObject avUser = AVUser.createWithoutData(TableName.TABLE_USER.name, UserGlobal.getInstance().getCurrentUserId());
-                AVQuery<AVObject> avQueryInner = new AVQuery<>(Topic.class.getSimpleName());
-                avQueryInner.whereEqualTo(FieldName.FIELD_STARTED_BY.name, avUser);
-                avQuery.whereMatchesQuery(FieldName.FIELD_TOPIC.name, avQueryInner);
-            }
-                break;
-            case IATTENDED_OPENED: {
-                AVObject avUser = AVUser.createWithoutData(TableName.TABLE_USER.name, UserGlobal.getInstance().getCurrentUserId());
-                AVQuery<AVObject> avQueryInner1 = new AVQuery<>(Topic.class.getSimpleName());
-                avQueryInner1.whereNotEqualTo(FieldName.FIELD_STARTED_BY.name, avUser);
-                AVQuery<AVObject> avQueryInner2 = new AVQuery<>(Topic.class.getSimpleName());
-                avQueryInner2.whereEqualTo(FieldName.FIELD_MEMBERS.name, UserGlobal.getInstance().getCurrentUserId());
-                AVQuery<AVObject> avQueryInner = AVQuery.and(Arrays.asList(avQueryInner1, avQueryInner2));
-                avQuery.whereMatchesQuery(FieldName.FIELD_TOPIC.name, avQueryInner);
-
-            }
                 break;
         }
         avQuery.orderByAscending("createdAt");
