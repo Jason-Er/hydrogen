@@ -1,17 +1,36 @@
 package com.thumbstage.hydrogen.app;
 
+import android.app.Activity;
 import android.app.Application;
 
 import com.avos.avoscloud.AVUser;
+import com.thumbstage.hydrogen.di.component.DaggerAppComponent;
 import com.thumbstage.hydrogen.im.IMService;
 
-public class Hydrogen extends Application {
+import javax.inject.Inject;
+
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.HasActivityInjector;
+
+public class Hydrogen extends Application implements HasActivityInjector {
+
+    @Inject
+    DispatchingAndroidInjector<Activity> dispatchingAndroidInjector;
 
     @Override
     public void onCreate() {
         super.onCreate();
-
+        this.initDagger();
         IMService.getInstance().init(getApplicationContext());
         UserGlobal.getInstance().setAvUser(AVUser.getCurrentUser());
+    }
+
+    @Override
+    public DispatchingAndroidInjector<Activity> activityInjector() {
+        return dispatchingAndroidInjector;
+    }
+
+    private void initDagger(){
+        DaggerAppComponent.builder().application(this).build().inject(this);
     }
 }

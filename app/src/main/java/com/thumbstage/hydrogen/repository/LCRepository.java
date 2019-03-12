@@ -1,4 +1,4 @@
-package com.thumbstage.hydrogen.data;
+package com.thumbstage.hydrogen.repository;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;

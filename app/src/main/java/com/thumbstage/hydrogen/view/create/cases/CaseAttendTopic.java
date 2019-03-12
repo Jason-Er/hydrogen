@@ -7,7 +7,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.data.LCRepository;
+import com.thumbstage.hydrogen.repository.LCRepository;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
