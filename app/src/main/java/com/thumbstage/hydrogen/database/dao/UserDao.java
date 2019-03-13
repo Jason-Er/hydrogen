@@ -1,7 +1,7 @@
 package com.thumbstage.hydrogen.database.dao;
 
-import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
+import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
@@ -10,6 +10,7 @@ import android.arch.persistence.room.Update;
 import com.thumbstage.hydrogen.database.entity.UserEntity;
 
 import java.util.Date;
+import java.util.List;
 
 import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
 
@@ -17,16 +18,20 @@ import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
 public interface UserDao {
 
     @Insert(onConflict = REPLACE)
-    void save(UserEntity user);
+    void insert(UserEntity user);
 
     @Update
     void update(UserEntity... userEntities);
 
-
+    @Delete
+    void delete(UserEntity... userEntities);
 
     @Query("SELECT * FROM user WHERE name = :username")
-    LiveData<UserEntity> load(String username);
+    UserEntity get(String username);
 
-    @Query("SELECT * FROM user WHERE name = :username AND lastRefresh > :lastRefreshMax LIMIT 1")
+    @Query("SELECT * FROM user LIMIT :num")
+    List<UserEntity> getRepos(int num);
+
+    @Query("SELECT * FROM user WHERE name = :username AND last_refresh > :lastRefreshMax LIMIT 1")
     UserEntity hasUser(String username, Date lastRefreshMax);
 }
