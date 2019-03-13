@@ -1,56 +1,34 @@
 package com.thumbstage.hydrogen.database.entity;
 
+import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Ignore;
-import android.arch.persistence.room.PrimaryKey;
+import android.arch.persistence.room.ForeignKey;
 import android.support.annotation.NonNull;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
+import com.thumbstage.hydrogen.model.LineType;
 
-import java.time.OffsetDateTime;
 import java.util.Date;
 
-/**
- * Created by Philippe on 02/03/2018.
- */
+import static android.arch.persistence.room.ForeignKey.CASCADE;
 
-@Entity
+
+@Entity(tableName = "line",
+        foreignKeys = {
+                @ForeignKey(entity = TopicEntity.class,
+                        parentColumns = "id",
+                        childColumns = "in_which_topic",
+                        onDelete = CASCADE)})
 public class LineEntity {
-
-    @PrimaryKey
+    
     @NonNull
-    @SerializedName("who")
-    @Expose
-    private String who;
+    protected String who;
+    protected Date when;
+    protected String what;
 
-    @Expose
-    private Date when;
-
-    @SerializedName("what")
-    @Expose
-    private String what;
-
-    @SerializedName("line_type")
-    @Expose
-    private String line_type;
-
-    private String topic;
-
-    private Date lastRefresh;
-
-    // --- CONSTRUCTORS ---
-
-    public LineEntity() { }
-
-    @Ignore
-    public LineEntity(@NonNull String who, Date when, String what, String line_type,  Date lastRefresh) {
-        this.who = who;
-        this.when = when;
-        this.what = what;
-        this.line_type = line_type;
-        this.lastRefresh = lastRefresh;
-    }
+    @ColumnInfo(name = "line_type")
+    protected LineType line_type;
+    @ColumnInfo(name = "in_which_topic")
+    protected String inWhichTopic;
 
     @NonNull
     public String getWho() {
@@ -77,27 +55,19 @@ public class LineEntity {
         this.what = what;
     }
 
-    public String getLine_type() {
+    public LineType getLine_type() {
         return line_type;
     }
 
-    public void setLine_type(String line_type) {
+    public void setLine_type(LineType line_type) {
         this.line_type = line_type;
     }
 
-    public String getTopic() {
-        return topic;
+    public String getInWhichTopic() {
+        return inWhichTopic;
     }
 
-    public void setTopic(String topic) {
-        this.topic = topic;
-    }
-
-    public Date getLastRefresh() {
-        return lastRefresh;
-    }
-
-    public void setLastRefresh(Date lastRefresh) {
-        this.lastRefresh = lastRefresh;
+    public void setInWhichTopic(String inWhichTopic) {
+        this.inWhichTopic = inWhichTopic;
     }
 }

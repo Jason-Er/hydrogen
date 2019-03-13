@@ -4,9 +4,8 @@ import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
-import android.arch.persistence.room.Update;
 
-
+import com.thumbstage.hydrogen.database.entity.TopicEntity;
 import com.thumbstage.hydrogen.database.entity.UserEntity;
 
 import java.util.Date;
@@ -14,19 +13,14 @@ import java.util.Date;
 import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
 
 @Dao
-public interface UserDao {
+public interface TopicDao {
 
     @Insert(onConflict = REPLACE)
-    void save(UserEntity user);
+    void save(TopicEntity topic);
 
-    @Update
-    void update(UserEntity... userEntities);
+    @Query("SELECT * FROM topic WHERE id = :id")
+    LiveData<TopicEntity> load(String id);
 
-
-
-    @Query("SELECT * FROM user WHERE name = :username")
-    LiveData<UserEntity> load(String username);
-
-    @Query("SELECT * FROM user WHERE name = :username AND lastRefresh > :lastRefreshMax LIMIT 1")
+    @Query("SELECT * FROM topic WHERE name = :username AND lastRefresh > :lastRefreshMax LIMIT 1")
     UserEntity hasUser(String username, Date lastRefreshMax);
 }

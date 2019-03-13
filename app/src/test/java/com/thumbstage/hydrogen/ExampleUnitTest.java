@@ -1,15 +1,8 @@
 package com.thumbstage.hydrogen;
 
-import com.avos.avoscloud.AVUtils;
 import com.thumbstage.hydrogen.model.LineType;
 
 import org.junit.Test;
-
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 import static org.junit.Assert.*;
 

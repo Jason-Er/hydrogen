@@ -1,5 +1,6 @@
 package com.thumbstage.hydrogen.database.entity;
 
+import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
@@ -14,39 +15,18 @@ public class UserEntity {
 
     @PrimaryKey
     @NonNull
-    @SerializedName("id")
-    @Expose
-    private String id;
+    protected String id;
+    protected String avatar;
+    protected String name;
 
-    @SerializedName("avatar")
-    @Expose
-    private String avatar;
+    @ColumnInfo(name = "last_refresh")
+    protected Date lastRefresh;
 
-    @SerializedName("name")
-    @Expose
-    private String name;
-
-    private Date lastRefresh;
-
-    // --- CONSTRUCTORS ---
-
-    public UserEntity() { }
-
-    public UserEntity(@NonNull String id, String login, String avatar_url, String name, String company, String blog, Date lastRefresh) {
-        this.id = id;
-        this.avatar = avatar_url;
-        this.name = name;
-        this.lastRefresh = lastRefresh;
-    }
-
-    // --- GETTER ---
 
     public String getId() { return id; }
     public String getAvatar() { return avatar; }
     public Date getLastRefresh() { return lastRefresh; }
     public String getName() { return name; }
-
-    // --- SETTER ---
 
     public void setId(String id) { this.id = id; }
     public void setAvatar(String avatar) { this.avatar = avatar; }

@@ -5,11 +5,17 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.thumbstage.hydrogen.database.dao.UserDao;
+import com.thumbstage.hydrogen.model.TopicEx;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.Executor;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+
+@Singleton
 public class TopicExRepository {
 
     private static int FRESH_TIMEOUT_IN_MINUTES = 1;
@@ -17,17 +23,16 @@ public class TopicExRepository {
     private final UserDao userDao;
     private final Executor executor;
 
+    @Inject
     public TopicExRepository(UserDao userDao, Executor executor) {
         this.userDao = userDao;
         this.executor = executor;
     }
 
-    /*
-    public LiveData<User> getUser(String userLogin) {
+    public LiveData<TopicEx> getTopicEx(LCRepository.TopicExType type, int pageNum) {
         refreshUser(userLogin); // try to refresh data if possible from Github Api
         return userDao.load(userLogin); // return a LiveData directly from the database.
     }
-
 
     private void refreshUser(final String userLogin) {
         executor.execute(() -> {
@@ -53,7 +58,7 @@ public class TopicExRepository {
             }
         });
     }
-    */
+
     // ---
 
     private Date getMaxRefreshTime(Date currentDate){

@@ -1,6 +1,7 @@
 package com.thumbstage.hydrogen.view.browse.atme;
 
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -19,18 +20,25 @@ import android.view.ViewGroup;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.app.Privilege;
 import com.thumbstage.hydrogen.model.Mic;
+import com.thumbstage.hydrogen.model.TopicEx;
 import com.thumbstage.hydrogen.view.browse.IAdapterFunction;
 import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
 import com.thumbstage.hydrogen.viewmodel.BrowseViewModel;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.android.support.AndroidSupportInjection;
 
 public class AtMeFragment extends Fragment implements IBrowseCustomize, IAdapterFunction {
 
     final String TAG = "AtMeFragment";
+
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
 
     @BindView(R.id.fragment_recycler_common_pullrefresh)
     SwipeRefreshLayout refreshLayout;
@@ -55,15 +63,29 @@ public class AtMeFragment extends Fragment implements IBrowseCustomize, IAdapter
         recyclerViewAdapter = new AtMeAdapter();
         recyclerView.setAdapter(recyclerViewAdapter);
 
-        viewModel = ViewModelProviders.of(getActivity()).get(BrowseViewModel.class);
-        viewModel.getAtMe().observe(getActivity(), new Observer<List<Mic>>() {
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        configureDagger();
+        configureViewModel();
+    }
+
+    private void configureDagger(){
+        AndroidSupportInjection.inject(this);
+    }
+
+    private void configureViewModel(){
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(BrowseViewModel.class);
+        viewModel.getAtMe().observe(this, new Observer<List<Mic>>() {
             @Override
             public void onChanged(@Nullable List<Mic> mics) {
                 recyclerViewAdapter.setItems(mics);
             }
         });
         viewModel.getAtMeByPageNum(0);
-        return view;
     }
 
     // region implement of interface IBrowseCustomize

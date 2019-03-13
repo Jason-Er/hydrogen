@@ -1,59 +1,39 @@
 package com.thumbstage.hydrogen.database.entity;
 
+import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
-import android.arch.persistence.room.Ignore;
+import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
 import java.util.Date;
 
-/**
- * Created by Philippe on 02/03/2018.
- */
-
-@Entity
+@Entity(tableName = "topic",
+        foreignKeys = {
+                @ForeignKey(entity = UserEntity.class,
+                        parentColumns = "id",
+                        childColumns = "started_by")})
 public class TopicEntity {
 
     @PrimaryKey
     @NonNull
-    @SerializedName("id")
-    @Expose
-    private String id;
+    protected String id;
+    protected String name;
+    protected String brief;
 
-    @SerializedName("name")
-    @Expose
-    private String name;
+    @ColumnInfo(name = "setting_url")
+    protected String setting_url;
 
-    @SerializedName("brief")
-    @Expose
-    private String brief;
+    @ColumnInfo(name = "derive_from")
+    protected String derive_from;
 
-    @SerializedName("setting_url")
-    @Expose
-    private String setting_url;
+    @ColumnInfo(name = "started_by")
+    protected String started_by;
 
-    @SerializedName("derive_from")
-    @Expose
-    private String derive_from;
-
-    private Date lastRefresh;
+    @ColumnInfo(name = "last_refresh")
+    protected Date lastRefresh;
 
     // --- CONSTRUCTORS ---
-
-    public TopicEntity() { }
-
-    @Ignore
-    public TopicEntity(@NonNull String id, String name, String brief, String setting_url, String derive_from, Date lastRefresh) {
-        this.id = id;
-        this.name = name;
-        this.brief = brief;
-        this.setting_url = setting_url;
-        this.derive_from = derive_from;
-        this.lastRefresh = lastRefresh;
-    }
 
     @NonNull
     public String getId() {
@@ -102,5 +82,13 @@ public class TopicEntity {
 
     public void setLastRefresh(Date lastRefresh) {
         this.lastRefresh = lastRefresh;
+    }
+
+    public String getStarted_by() {
+        return started_by;
+    }
+
+    public void setStarted_by(String started_by) {
+        this.started_by = started_by;
     }
 }
