@@ -3,6 +3,8 @@ package com.thumbstage.hydrogen.database.entity;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.arch.persistence.room.Index;
+import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
 import com.thumbstage.hydrogen.model.LineType;
@@ -13,13 +15,15 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 
 @Entity(tableName = "line",
+        indices = {@Index("in_which_topic")},
         foreignKeys = {
                 @ForeignKey(entity = TopicEntity.class,
                         parentColumns = "id",
                         childColumns = "in_which_topic",
                         onDelete = CASCADE)})
 public class LineEntity {
-    
+    @PrimaryKey(autoGenerate = true)
+    protected long id;
     @NonNull
     protected String who;
     protected Date when;
@@ -69,5 +73,13 @@ public class LineEntity {
 
     public void setInWhichTopic(String inWhichTopic) {
         this.inWhichTopic = inWhichTopic;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

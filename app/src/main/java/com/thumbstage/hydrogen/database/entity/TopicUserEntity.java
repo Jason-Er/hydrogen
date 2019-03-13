@@ -3,6 +3,7 @@ package com.thumbstage.hydrogen.database.entity;
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
+import android.support.annotation.NonNull;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
@@ -19,14 +20,26 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
         })
 public class TopicUserEntity {
 
+    @NonNull
     @ColumnInfo(name = "topic_id")
-    protected final String topicId;
+    protected String topicId;
+    @NonNull
     @ColumnInfo(name = "user_id")
-    protected final String userId;
+    protected String userId;
 
-    public TopicUserEntity(String topicId, String userId) {
-            this.topicId = topicId;
-            this.userId = userId;
+    public String getTopicId() {
+        return topicId;
     }
 
+    public void setTopicId(String topicId) {
+        this.topicId = topicId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 }

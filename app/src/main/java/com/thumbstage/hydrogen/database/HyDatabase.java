@@ -5,6 +5,12 @@ import android.arch.persistence.room.RoomDatabase;
 import android.arch.persistence.room.TypeConverters;
 
 import com.thumbstage.hydrogen.database.converter.DateConverter;
+import com.thumbstage.hydrogen.database.converter.LineTypeConverter;
+import com.thumbstage.hydrogen.database.dao.LineDao;
+import com.thumbstage.hydrogen.database.dao.MicDao;
+import com.thumbstage.hydrogen.database.dao.TopicDao;
+import com.thumbstage.hydrogen.database.dao.TopicExDao;
+import com.thumbstage.hydrogen.database.dao.TopicUserDao;
 import com.thumbstage.hydrogen.database.dao.UserDao;
 import com.thumbstage.hydrogen.database.entity.LineEntity;
 import com.thumbstage.hydrogen.database.entity.MicEntity;
@@ -21,7 +27,7 @@ import com.thumbstage.hydrogen.database.entity.UserEntity;
         TopicExEntity.class,
         TopicUserEntity.class,
         MicEntity.class }, version = 1)
-@TypeConverters({DateConverter.class})
+@TypeConverters({DateConverter.class, LineTypeConverter.class})
 public abstract class HyDatabase extends RoomDatabase {
 
     // --- SINGLETON ---
@@ -29,4 +35,10 @@ public abstract class HyDatabase extends RoomDatabase {
 
     // --- DAO ---
     public abstract UserDao userDao();
+    public abstract LineDao lineDao();
+    public abstract MicDao micDao();
+    public abstract TopicDao topicDao();
+    public abstract TopicExDao topicExDao();
+    public abstract TopicUserDao topicUserDao();
+
 }

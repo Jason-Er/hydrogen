@@ -31,6 +31,7 @@ import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.Setting;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.model.TopicEx;
+import com.thumbstage.hydrogen.model.TopicExType;
 import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.utils.DataConvertUtil;
 import com.thumbstage.hydrogen.utils.StringUtil;
@@ -93,20 +94,6 @@ public class LCRepository {
 
     public interface IReturnFile {
         void callback(File file);
-    }
-
-    private enum TableName {
-        TABLE_USER("_User"),
-        TABLE_MIC("_Conversation"),
-        TABLE_FILE("_File"),
-        TABLE_PUBLISHED_OPENED("PublishedOpened"),
-        TABLE_STARTED_OPENED("StartedOpened"),
-        TABLE_ATTENDED_OPENED("AttendedOpened");
-
-        final String name;
-        TableName(String name) {
-            this.name = name;
-        }
     }
 
     private enum FieldName {
@@ -267,18 +254,6 @@ public class LCRepository {
 
     public interface ITopicExCallBack {
         void callback(List<TopicEx> topicExList);
-    }
-
-    public enum TopicExType {
-        PUBLISHED_OPENED(TableName.TABLE_PUBLISHED_OPENED.name),
-        IPUBLISHED_OPENED(TableName.TABLE_PUBLISHED_OPENED.name),
-        ISTARTED_OPENED(TableName.TABLE_STARTED_OPENED.name),
-        IATTENDED_OPENED(TableName.TABLE_ATTENDED_OPENED.name);
-
-        final String name;
-        TopicExType(String name) {
-            this.name = name;
-        }
     }
 
     public static void getTopicEx(TopicExType type, int pageNum, final ITopicExCallBack callBack) {

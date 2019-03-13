@@ -9,4 +9,13 @@ public class MicEntity {
     @PrimaryKey
     @NonNull
     protected String id;
+
+    @NonNull
+    public String getId() {
+        return id;
+    }
+
+    public void setId(@NonNull String id) {
+        this.id = id;
+    }
 }

@@ -36,8 +36,8 @@ public class AppModule {
 
     @Provides
     @Singleton
-    TopicExRepository provideTopicExRepository(UserDao userDao, Executor executor) {
-        return new TopicExRepository(userDao, executor);
+    TopicExRepository provideTopicExRepository(HyDatabase database, Executor executor) {
+        return new TopicExRepository(database, executor);
     }
     // --- REPOSITORY INJECTION ---
 

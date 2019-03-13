@@ -9,6 +9,7 @@ import android.arch.persistence.room.Update;
 
 import com.thumbstage.hydrogen.database.entity.TopicExEntity;
 
+import java.util.Date;
 import java.util.List;
 
 @Dao
@@ -24,4 +25,7 @@ public interface TopicExDao {
 
     @Query("SELECT * FROM topic_ex WHERE type = :type")
     List<TopicExEntity> get(String type);
+
+    @Query("SELECT * FROM topic_ex WHERE type = :type AND last_refresh > :lastRefreshMax LIMIT 1")
+    TopicExEntity hasTopicEx(String type, Date lastRefreshMax);
 }
