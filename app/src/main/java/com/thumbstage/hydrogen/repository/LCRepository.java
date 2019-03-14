@@ -335,14 +335,14 @@ public class LCRepository {
             } else {
                 setting = null;
             }
-            Topic topic = Topic.Builder()
-                    .setId(id)
-                    .setBrief(brief)
-                    .setName(name)
-                    .setDialogue(dialogue)
-                    .setMembers(members)
-                    .setStarted_by(user)
-                    .setSetting(setting);
+            Topic topic = new Topic();
+            topic.setId(id);
+            topic.setBrief(brief);
+            topic.setName(name);
+            topic.setDialogue(dialogue);
+            topic.setMembers(members);
+            topic.setStarted_by(user);
+            topic.setSetting(setting);
             return topic;
         } else {
             return null;

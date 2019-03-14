@@ -26,8 +26,8 @@ import com.thumbstage.hydrogen.database.entity.UserEntity;
         TopicEntity.class,
         TopicExEntity.class,
         TopicUserEntity.class,
-        MicEntity.class }, version = 1)
-@TypeConverters({DateConverter.class, LineTypeConverter.class})
+        MicEntity.class }, version = 1, exportSchema = false)
+@TypeConverters({DateConverter.class})
 public abstract class HyDatabase extends RoomDatabase {
 
     // --- SINGLETON ---

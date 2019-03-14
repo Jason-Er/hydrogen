@@ -20,6 +20,9 @@ public interface UserDao {
     @Insert(onConflict = REPLACE)
     void insert(UserEntity user);
 
+    @Insert(onConflict = REPLACE)
+    void insert(List<UserEntity> userEntityList);
+
     @Update
     void update(UserEntity... userEntities);
 

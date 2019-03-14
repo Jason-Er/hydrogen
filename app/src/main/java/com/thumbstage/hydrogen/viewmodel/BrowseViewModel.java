@@ -28,7 +28,6 @@ public class BrowseViewModel extends ViewModel {
 
     final String TAG = "BrowseViewModel";
     private final MutableLiveData<List<Mic>> atMe = new MutableLiveData<>();
-    // private final MutableLiveData<List<TopicEx>> publishedOpened = new MutableLiveData<>();
     private final MutableLiveData<List<TopicEx>> iStartedOpened = new MutableLiveData<>();
     private final MutableLiveData<List<TopicEx>> iAttendedOpened = new MutableLiveData<>();
 
@@ -61,7 +60,7 @@ public class BrowseViewModel extends ViewModel {
     }
 
     public void getPublishedOpenedByPageNum(int pageNum) {
-        topicExRepository.getTopicEx(TopicExType.IATTENDED_OPENED, pageNum);
+        topicExRepository.getTopicEx(TopicExType.PUBLISHED_OPENED, pageNum);
         /*
         LCRepository.getTopicEx(TopicExType.PUBLISHED_OPENED, pageNum, new LCRepository.ITopicExCallBack() {
             @Override

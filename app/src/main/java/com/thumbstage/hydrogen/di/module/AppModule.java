@@ -26,7 +26,7 @@ public class AppModule {
     @Singleton
     HyDatabase provideDatabase(Application application) {
         return Room.databaseBuilder(application,
-                HyDatabase.class, "HyDatabase.db")
+                HyDatabase.class, "HyDatabase-db")
                 .build();
     }
 

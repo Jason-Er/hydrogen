@@ -14,8 +14,12 @@ import java.util.List;
 
 @Dao
 public interface TopicExDao {
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(TopicExEntity topicExEntity);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insert(List<TopicExEntity> topicExEntities);
 
     @Update
     void update(TopicExEntity... topicExEntities);

@@ -7,8 +7,6 @@ import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
-import com.thumbstage.hydrogen.model.LineType;
-
 import java.util.Date;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;
@@ -30,7 +28,7 @@ public class LineEntity {
     protected String what;
 
     @ColumnInfo(name = "line_type")
-    protected LineType line_type;
+    protected String line_type;
     @ColumnInfo(name = "in_which_topic")
     protected String inWhichTopic;
 
@@ -59,11 +57,11 @@ public class LineEntity {
         this.what = what;
     }
 
-    public LineType getLine_type() {
+    public String getLine_type() {
         return line_type;
     }
 
-    public void setLine_type(LineType line_type) {
+    public void setLine_type(String line_type) {
         this.line_type = line_type;
     }
 
