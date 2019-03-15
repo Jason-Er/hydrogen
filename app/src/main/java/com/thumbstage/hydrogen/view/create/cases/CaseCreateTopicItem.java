@@ -10,7 +10,7 @@ import android.view.MenuInflater;
 
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.data.LCRepository;
+import com.thumbstage.hydrogen.repository.LCRepository;
 import com.thumbstage.hydrogen.model.HyFile;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
@@ -85,7 +85,7 @@ public class CaseCreateTopicItem extends CaseBase implements ICreateMenuItemFunc
                 @Override
                 public void callback(HyFile hyFile) {
                     topic.setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
-                    LCRepository.saveIStartedOpenedTopic(topic);
+                    LCRepository.saveTopic2StartedOpened(topic);
                 }
             });
         } else {
@@ -93,7 +93,7 @@ public class CaseCreateTopicItem extends CaseBase implements ICreateMenuItemFunc
                 @Override
                 public void callback(HyFile hyFile) {
                     topic.setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
-                    LCRepository.saveIStartedOpenedTopic(topic);
+                    LCRepository.saveTopic2StartedOpened(topic);
                 }
             });
 
@@ -109,7 +109,7 @@ public class CaseCreateTopicItem extends CaseBase implements ICreateMenuItemFunc
                 @Override
                 public void callback(HyFile hyFile) {
                     topic.setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
-                    LCRepository.savePublishedOpenedTopic(topic, new LCRepository.ICallBack() {
+                    LCRepository.saveTopic2PublishedOpened(topic, new LCRepository.ICallBack() {
                         @Override
                         public void callback(String objectID) {
 
@@ -122,7 +122,7 @@ public class CaseCreateTopicItem extends CaseBase implements ICreateMenuItemFunc
                 @Override
                 public void callback(HyFile hyFile) {
                     topic.setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
-                    LCRepository.savePublishedOpenedTopic(topic, new LCRepository.ICallBack() {
+                    LCRepository.saveTopic2PublishedOpened(topic, new LCRepository.ICallBack() {
                         @Override
                         public void callback(String objectID) {
 

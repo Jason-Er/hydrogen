@@ -11,33 +11,20 @@ import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
-import com.avos.avoscloud.AVUtils;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetDataCallback;
 import com.avos.avoscloud.SaveCallback;
-import com.avos.avoscloud.im.v2.AVIMClient;
-import com.avos.avoscloud.im.v2.AVIMConversation;
-import com.avos.avoscloud.im.v2.AVIMException;
-import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
-import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
-import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
-import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
-import com.thumbstage.hydrogen.data.LCRepository;
-import com.thumbstage.hydrogen.model.LineType;
-import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.utils.StringUtil;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -212,7 +199,7 @@ public class ExampleInstrumentedTest {
             @Override
             public void done(AVIMClient client, AVIMException e) {
                 if(e == null) {
-                    client.createConversation(Arrays.asList("Jerry"), "testConversation", null, new AVIMConversationCreatedCallback() {
+                    client.createMic(Arrays.asList("Jerry"), "testConversation", null, new AVIMConversationCreatedCallback() {
                         @Override
                         public void done(AVIMConversation conversation, AVIMException e) {
                             if(e == null) {
@@ -241,7 +228,7 @@ public class ExampleInstrumentedTest {
         topic.setSetting_id("5c629287303f390047c13726");
         topic.setStarted_by(AVUser.getCurrentUser().getObjectId());
         topic.getMembers().add(AVUser.getCurrentUser().getObjectId());
-        LCRepository.saveIStartedOpenedTopic(topic);
+        LCRepository.saveTopic2StartedOpened(topic);
         sleep(5);
     }
 
@@ -286,7 +273,7 @@ public class ExampleInstrumentedTest {
         topic.setSetting_id("5c629287303f390047c13726");
         topic.setStarted_by(AVUser.getCurrentUser().getObjectId());
         topic.getMembers().add(AVUser.getCurrentUser().getObjectId());
-        LCRepository.copyPublishedOpenedTopic(topic, new LCRepository.ICallBack() {
+        LCRepository.copyTopicFromPublishedOpened(topic, new LCRepository.ICallBack() {
             @Override
             public void callback(String objectID) {
                 Log.i("testCopyPublishedOpenedTopic", "success!");
