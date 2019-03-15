@@ -27,8 +27,11 @@ public interface TopicExDao {
     @Delete
     void delete(TopicExEntity... topicExEntities);
 
-    @Query("SELECT * FROM topic_ex WHERE type = :type")
-    List<TopicExEntity> get(String type);
+    @Query("SELECT * FROM topic_ex WHERE type = :type ORDER BY last_refresh DESC LIMIT :perPageNum OFFSET :offset ")
+    List<TopicExEntity> get(String type, int perPageNum, int offset);
+
+    @Query("SELECT * FROM topic_ex, topic WHERE type = :type AND topic_id = topic.id AND topic.started_by =:started_by ORDER BY last_refresh DESC LIMIT :perPageNum OFFSET :offset ")
+    List<TopicExEntity> get(String type, String started_by, int perPageNum, int offset);
 
     @Query("SELECT * FROM topic_ex, topic WHERE topic_id = topic.id and type = :type and topic.started_by = :started_by")
     List<TopicExEntity> get(String type, String started_by);

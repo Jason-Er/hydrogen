@@ -28,4 +28,7 @@ public interface MicDao {
 
     @Query("SELECT * FROM mic WHERE id = :id")
     MicEntity get(String id);
+
+    @Query("SELECT * FROM mic WHERE id IN (:ids)")
+    List<MicEntity> get(List<String> ids);
 }

@@ -60,7 +60,7 @@ public class BrowseViewModel extends ViewModel {
     }
 
     public void getPublishedOpenedByPageNum(int pageNum) {
-        topicExRepository.getTopicEx(TopicExType.PUBLISHED_OPENED, pageNum);
+        topicExRepository.getTopicEx(TopicExType.PUBLISHED_OPENED, "", pageNum);
     }
 
     public void getIStartedOpenedByPageNum(int pageNum) {

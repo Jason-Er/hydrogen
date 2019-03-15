@@ -49,10 +49,10 @@ public class TopicExRepository {
         return publishedOpened;
     }
 
-    public void getTopicEx(TopicExType type, int pageNum) {
+    public void getTopicEx(TopicExType type, String started_by, int pageNum) {
         switch (type) {
             case PUBLISHED_OPENED:
-                getTopicEx(type, pageNum, publishedOpened);
+                getTopicEx(type, "", pageNum, publishedOpened);
                 break;
             case IPUBLISHED_OPENED:
                 break;
@@ -63,7 +63,7 @@ public class TopicExRepository {
         }
     }
 
-    private void getTopicEx(final TopicExType type, final int pageNum, final MutableLiveData<List<TopicEx>> mutableLiveData) {
+    private void getTopicEx(final TopicExType type, final String started_by, final int pageNum, final MutableLiveData<List<TopicEx>> mutableLiveData) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -90,18 +90,36 @@ public class TopicExRepository {
                         }
                     });
                 } else {
-                    // TODO: 3/14/2019 get from repository and merge to model
-
-
-
+                    // TODO: 3/15/2019 perPageNum need refactoring
+                    List<TopicEx> topicExes = getTopicExByPage(type, started_by, pageNum, 15);
+                    mutableLiveData.postValue(topicExes);
                 }
             }
         });
     }
 
-    private List<TopicEx> getTopicExByPage(TopicExType type) {
+    private List<TopicEx> getTopicExByPage(TopicExType type, String started_by, int pageNum, int perPageNum) {
+
         List<TopicEx> topicExes = new ArrayList<>();
-        List<TopicExEntity> topicExEntityList = database.topicExDao().get(type.name);
+        List<TopicExEntity> topicExEntityList = null;
+        if(started_by != null) {
+            topicExEntityList = database.topicExDao().get(type.name, started_by, perPageNum, pageNum*perPageNum);
+        } else {
+            topicExEntityList = database.topicExDao().get(type.name,  perPageNum, pageNum*perPageNum);
+        }
+        List<String> topicIds = new ArrayList<>();
+        List<String> micIds = new ArrayList<>();
+        for(TopicExEntity entity: topicExEntityList) {
+            topicIds.add(entity.getTopicId());
+            micIds.add(entity.getMicId());
+        }
+        List<Topic> topics = getTopic(topicIds);
+        List<Mic> mics = getMic(micIds);
+        for(TopicExEntity entity: topicExEntityList) {
+            int i = topicExEntityList.indexOf(entity);
+            TopicEx topicEx = new TopicEx(topics.get(i), mics.get(i));
+            topicExes.add(topicEx);
+        }
 
         return topicExes;
     }
@@ -129,6 +147,16 @@ public class TopicExRepository {
         UserEntity entity = database.userDao().get(userId);
         User user = new User(entity.getId(), entity.getName(), entity.getAvatar());
         return user;
+    }
+
+    private List<Mic> getMic(List<String> ids) {
+        List<Mic> mics = new ArrayList<>();
+        List<MicEntity> micEntities = database.micDao().get(ids);
+        for(MicEntity entity: micEntities) {
+            Mic mic = new Mic(entity.getId());
+            mics.add(mic);
+        }
+        return mics;
     }
 
     private List<Topic> getTopic(List<String> ids) {
