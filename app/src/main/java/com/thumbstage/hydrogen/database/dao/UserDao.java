@@ -29,11 +29,14 @@ public interface UserDao {
     @Delete
     void delete(UserEntity... userEntities);
 
-    @Query("SELECT * FROM user WHERE name = :username")
-    UserEntity get(String username);
+    @Query("SELECT * FROM user WHERE id = :userId")
+    UserEntity get(String userId);
+
+    @Query("SELECT * FROM user WHERE id IN (:userIds)")
+    List<UserEntity> get(List<String> userIds);
 
     @Query("SELECT * FROM user LIMIT :num")
-    List<UserEntity> getRepos(int num);
+    List<UserEntity> get(int num);
 
     @Query("SELECT * FROM user WHERE name = :username AND last_refresh > :lastRefreshMax LIMIT 1")
     UserEntity hasUser(String username, Date lastRefreshMax);

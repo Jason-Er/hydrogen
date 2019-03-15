@@ -4,11 +4,16 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 
 import com.thumbstage.hydrogen.database.HyDatabase;
+import com.thumbstage.hydrogen.database.entity.LineEntity;
 import com.thumbstage.hydrogen.database.entity.MicEntity;
 import com.thumbstage.hydrogen.database.entity.TopicEntity;
 import com.thumbstage.hydrogen.database.entity.TopicExEntity;
+import com.thumbstage.hydrogen.database.entity.TopicUserEntity;
 import com.thumbstage.hydrogen.database.entity.UserEntity;
+import com.thumbstage.hydrogen.model.Line;
+import com.thumbstage.hydrogen.model.LineType;
 import com.thumbstage.hydrogen.model.Mic;
+import com.thumbstage.hydrogen.model.Setting;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.model.TopicEx;
 import com.thumbstage.hydrogen.model.TopicExType;
@@ -88,9 +93,96 @@ public class TopicExRepository {
                     // TODO: 3/14/2019 get from repository and merge to model
 
 
+
                 }
             }
         });
+    }
+
+    private List<TopicEx> getTopicExByPage(TopicExType type) {
+        List<TopicEx> topicExes = new ArrayList<>();
+        List<TopicExEntity> topicExEntityList = database.topicExDao().get(type.name);
+
+        return topicExes;
+    }
+
+    private List<Line> getLine(String topicId) {
+        List<Line> lines = new ArrayList<>();
+        List<LineEntity> lineEntities = database.lineDao().get(topicId);
+        for(LineEntity entity: lineEntities) {
+            Line line = new Line(entity.getWho(), entity.getWhen(), entity.getWhat(), LineType.valueOf(entity.getLine_type()));
+            lines.add(line);
+        }
+        return lines;
+    }
+
+    private List<String> getMembers(String topicId) {
+        List<String> users = new ArrayList<>();
+        List<TopicUserEntity> topicUserEntities = database.topicUserDao().get(topicId);
+        for(TopicUserEntity entity: topicUserEntities) {
+            users.add(entity.getUserId());
+        }
+        return users;
+    }
+
+    private User getUser(String userId) {
+        UserEntity entity = database.userDao().get(userId);
+        User user = new User(entity.getId(), entity.getName(), entity.getAvatar());
+        return user;
+    }
+
+    private List<Topic> getTopic(List<String> ids) {
+        List<Topic> topics = new ArrayList<>();
+        List<TopicEntity> topicEntityList = database.topicDao().get(ids);
+        for(TopicEntity entity: topicEntityList) {
+            Topic topic = new Topic();
+            topic.setId(entity.getId());
+            topic.setName(entity.getName());
+            topic.setBrief(entity.getName());
+            topic.setSetting(new Setting("", entity.getSetting_url(), true));
+            topic.setDerive_from(entity.getDerive_from());
+            topic.setDialogue(getLine(entity.getId()));
+            topic.setStarted_by(getUser(entity.getStarted_by()));
+            topic.setMembers(getMembers(entity.getId()));
+        }
+        return topics;
+    }
+
+    private void saveLineList(List<Line> lineList, String topicId) {
+        List<LineEntity> lineEntities = new ArrayList<>();
+        for(Line line: lineList) {
+            LineEntity entity = new LineEntity();
+            entity.setWho(line.getWho());
+            entity.setWhen(line.getWhen());
+            entity.setWhat(line.getWhat());
+            entity.setInWhichTopic(topicId);
+            entity.setLine_type(line.getLineType().name());
+            lineEntities.add(entity);
+        }
+        database.lineDao().insert(lineEntities);
+    }
+
+    private void saveMembers(List<String> members, String topicId) {
+        List<String> userIds = new ArrayList<>();
+        userIds.addAll(members);
+
+        List<UserEntity> userEntityList = database.userDao().get(members);
+        for(UserEntity entity: userEntityList) {
+            if(members.contains(entity.getId())) {
+                userIds.remove(entity.getId());
+            }
+        }
+        userEntityList.clear();
+        saveUserIds(userIds);
+        List<TopicUserEntity> topicUserEntityList = new ArrayList<>();
+        for(String userId: members) {
+            TopicUserEntity entity = new TopicUserEntity();
+            entity.setTopicId(topicId);
+            entity.setUserId(userId);
+            topicUserEntityList.add(entity);
+        }
+        database.topicUserDao().insert(topicUserEntityList);
+
     }
 
     private void saveTopicList(List<Topic> topicList) {
@@ -98,7 +190,9 @@ public class TopicExRepository {
         for(Topic topic: topicList) {
             users.add(topic.getStarted_by());
         }
+
         saveUserList(users);
+
         List<TopicEntity> topicEntities = new ArrayList<>();
         for(Topic topic: topicList) {
             if(topic != null) {
@@ -111,6 +205,9 @@ public class TopicExRepository {
                 entity.setSetting_url(topic.getSetting().getUrl());
                 entity.setLastRefresh(new Date());
                 topicEntities.add(entity);
+
+                saveLineList(topic.getDialogue(), topic.getId());
+                saveMembers(topic.getMembers(), topic.getId());
             }
         }
         database.topicDao().insert(topicEntities);
@@ -141,6 +238,18 @@ public class TopicExRepository {
             }
         }
         database.topicExDao().insert(topicExEntities);
+    }
+
+    private void saveUserIds(List<String> userIds) {
+        List<UserEntity> userEntityList = new ArrayList<>();
+        for(String userId: userIds) {
+            UserEntity entity = new UserEntity();
+            entity.setId(userId);
+            entity.setLastRefresh(new Date());
+            userEntityList.add(entity);
+
+        }
+        database.userDao().insert(userEntityList);
     }
 
     private void saveUserList(List<User> userList) {

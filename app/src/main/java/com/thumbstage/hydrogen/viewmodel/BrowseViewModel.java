@@ -61,14 +61,6 @@ public class BrowseViewModel extends ViewModel {
 
     public void getPublishedOpenedByPageNum(int pageNum) {
         topicExRepository.getTopicEx(TopicExType.PUBLISHED_OPENED, pageNum);
-        /*
-        LCRepository.getTopicEx(TopicExType.PUBLISHED_OPENED, pageNum, new LCRepository.ITopicExCallBack() {
-            @Override
-            public void callback(List<TopicEx> topicExList) {
-                publishedOpened.setValue(topicExList);
-            }
-        });
-        */
     }
 
     public void getIStartedOpenedByPageNum(int pageNum) {

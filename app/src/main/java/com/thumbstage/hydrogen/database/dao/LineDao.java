@@ -17,6 +17,9 @@ public interface LineDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(LineEntity lineEntity);
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insert(List<LineEntity> lineEntities);
+
     @Update
     void update(LineEntity... lineEntities);
 

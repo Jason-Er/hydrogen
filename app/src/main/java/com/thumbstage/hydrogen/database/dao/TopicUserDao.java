@@ -13,8 +13,12 @@ import java.util.List;
 
 @Dao
 public interface TopicUserDao {
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(TopicUserEntity topicUserEntity);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insert(List<TopicUserEntity> topicUserEntity);
 
     @Update
     void update(TopicUserEntity... topicUserEntities);

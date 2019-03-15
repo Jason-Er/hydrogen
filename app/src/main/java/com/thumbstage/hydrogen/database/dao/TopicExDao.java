@@ -30,6 +30,9 @@ public interface TopicExDao {
     @Query("SELECT * FROM topic_ex WHERE type = :type")
     List<TopicExEntity> get(String type);
 
+    @Query("SELECT * FROM topic_ex, topic WHERE topic_id = topic.id and type = :type and topic.started_by = :started_by")
+    List<TopicExEntity> get(String type, String started_by);
+
     @Query("SELECT * FROM topic_ex WHERE type = :type AND last_refresh > :lastRefreshMax LIMIT 1")
     TopicExEntity hasTopicEx(String type, Date lastRefreshMax);
 }

@@ -34,13 +34,13 @@ abstract public class DbTest {
 
     @Before
     public void initDb() {
+        /*
         db = Room.databaseBuilder(InstrumentationRegistry.getTargetContext(),
                 HyDatabase.class, "HyDatabase.db")
                 .build();
-        /*
+        */
         db = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getContext(),
                 HyDatabase.class).build();
-                */
     }
 
     @After
