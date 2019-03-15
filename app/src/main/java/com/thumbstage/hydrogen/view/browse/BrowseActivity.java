@@ -2,12 +2,14 @@ package com.thumbstage.hydrogen.view.browse;
 
 import android.Manifest;
 import android.annotation.TargetApi;
+import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.support.design.widget.NavigationView;
@@ -32,20 +34,31 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.android.AndroidInjection;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.support.HasSupportFragmentInjector;
 
 public class BrowseActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, HasSupportFragmentInjector {
 
     private final String TAG = "BrowseActivity";
+
+    @Inject
+    DispatchingAndroidInjector<Fragment> dispatchingAndroidInjector;
+
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
 
     @BindView(R.id.browse_content)
     ViewPager viewPager;
     BrowseFragmentPagerAdapter pagerAdapter;
 
-    UserViewModel userViewModel;
-    BrowseViewModel browseViewModel;
+    // UserViewModel userViewModel;
+    // BrowseViewModel browseViewModel;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.fab)
@@ -82,10 +95,10 @@ public class BrowseActivity extends AppCompatActivity
                 return false;
             }
         });
-        userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
-        browseViewModel = ViewModelProviders.of(this).get(BrowseViewModel.class);
-        browseViewModel.setListenIMCallBack(IMService.getInstance().getImMessageHandler());
-        browseViewModel.setListenIMCallBack(IMService.getInstance().getImConversationHandler());
+        // userViewModel = ViewModelProviders.of(this, viewModelFactory).get(UserViewModel.class);
+        // browseViewModel = ViewModelProviders.of(this, viewModelFactory).get(BrowseViewModel.class);
+        // browseViewModel.setListenIMCallBack(IMService.getInstance().getImMessageHandler());
+        // browseViewModel.setListenIMCallBack(IMService.getInstance().getImConversationHandler());
         EventBus.getDefault().register(this);
         pagerAdapter = new BrowseFragmentPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
@@ -131,7 +144,16 @@ public class BrowseActivity extends AppCompatActivity
             return;
         }
         */
+        configureDagger();
+    }
 
+    @Override
+    public DispatchingAndroidInjector<Fragment> supportFragmentInjector() {
+        return dispatchingAndroidInjector;
+    }
+
+    private void configureDagger(){
+        AndroidInjection.inject(this);
     }
 
     @Override
@@ -210,7 +232,7 @@ public class BrowseActivity extends AppCompatActivity
             case "signUser":
                 Log.d(TAG,"receive signUser");
                 AVUser avUser = (AVUser) event.getData();
-                userViewModel.setAvUser(avUser);
+                // userViewModel.setAvUser(avUser);
                 break;
         }
     }

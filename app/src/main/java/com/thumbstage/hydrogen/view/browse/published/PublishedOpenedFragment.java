@@ -1,7 +1,7 @@
 package com.thumbstage.hydrogen.view.browse.published;
 
-import android.app.Activity;
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -26,10 +26,16 @@ import com.thumbstage.hydrogen.viewmodel.BrowseViewModel;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.android.support.AndroidSupportInjection;
 
 public class PublishedOpenedFragment extends Fragment implements IBrowseCustomize, IAdapterFunction {
+
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
 
     @BindView(R.id.fragment_recycler_common_pullrefresh)
     SwipeRefreshLayout refreshLayout;
@@ -54,18 +60,30 @@ public class PublishedOpenedFragment extends Fragment implements IBrowseCustomiz
         recyclerViewAdapter = new PublishedOpenedAdapter();
         recyclerView.setAdapter(recyclerViewAdapter);
 
-        viewModel = ViewModelProviders.of(getActivity()).get(BrowseViewModel.class);
-        viewModel.getPublishedOpened().observe(getActivity(), new Observer<List<TopicEx>>() {
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        configureDagger();
+        configureViewModel();
+    }
+
+    private void configureDagger(){
+        AndroidSupportInjection.inject(this);
+    }
+
+    private void configureViewModel(){
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(BrowseViewModel.class);
+        viewModel.getPublishedOpened().observe(this, new Observer<List<TopicEx>>() {
             @Override
             public void onChanged(@Nullable List<TopicEx> topicExes) {
                 recyclerViewAdapter.setItems(topicExes);
             }
         });
         viewModel.getPublishedOpenedByPageNum(0);
-
-        return view;
     }
-
     // region implement of interface IBrowseCustomize
     @Override
     public void customizeToolbar(Toolbar toolbar) {

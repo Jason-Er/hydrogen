@@ -6,7 +6,7 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.thumbstage.hydrogen.data.LCRepository;
+import com.thumbstage.hydrogen.repository.LCRepository;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.Setting;

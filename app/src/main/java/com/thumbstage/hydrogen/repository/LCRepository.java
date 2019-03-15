@@ -1,4 +1,4 @@
-package com.thumbstage.hydrogen.data;
+package com.thumbstage.hydrogen.repository;
 
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -31,6 +31,7 @@ import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.Setting;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.model.TopicEx;
+import com.thumbstage.hydrogen.model.TopicExType;
 import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.utils.DataConvertUtil;
 import com.thumbstage.hydrogen.utils.StringUtil;
@@ -42,7 +43,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -94,20 +94,6 @@ public class LCRepository {
 
     public interface IReturnFile {
         void callback(File file);
-    }
-
-    private enum TableName {
-        TABLE_USER("_User"),
-        TABLE_MIC("_Conversation"),
-        TABLE_FILE("_File"),
-        TABLE_PUBLISHED_OPENED("PublishedOpened"),
-        TABLE_STARTED_OPENED("StartedOpened"),
-        TABLE_ATTENDED_OPENED("AttendedOpened");
-
-        final String name;
-        TableName(String name) {
-            this.name = name;
-        }
     }
 
     private enum FieldName {
@@ -270,18 +256,6 @@ public class LCRepository {
         void callback(List<TopicEx> topicExList);
     }
 
-    public enum TopicExType {
-        PUBLISHED_OPENED(TableName.TABLE_PUBLISHED_OPENED.name),
-        IPUBLISHED_OPENED(TableName.TABLE_PUBLISHED_OPENED.name),
-        ISTARTED_OPENED(TableName.TABLE_STARTED_OPENED.name),
-        IATTENDED_OPENED(TableName.TABLE_ATTENDED_OPENED.name);
-
-        final String name;
-        TopicExType(String name) {
-            this.name = name;
-        }
-    }
-
     public static void getTopicEx(TopicExType type, int pageNum, final ITopicExCallBack callBack) {
         AVQuery<AVObject> avQuery = new AVQuery<>(type.name);
         avQuery.include(FieldName.FIELD_TOPIC.name);
@@ -361,14 +335,14 @@ public class LCRepository {
             } else {
                 setting = null;
             }
-            Topic topic = Topic.Builder()
-                    .setId(id)
-                    .setBrief(brief)
-                    .setName(name)
-                    .setDialogue(dialogue)
-                    .setMembers(members)
-                    .setStarted_by(user)
-                    .setSetting(setting);
+            Topic topic = new Topic();
+            topic.setId(id);
+            topic.setBrief(brief);
+            topic.setName(name);
+            topic.setDialogue(dialogue);
+            topic.setMembers(members);
+            topic.setStarted_by(user);
+            topic.setSetting(setting);
             return topic;
         } else {
             return null;
