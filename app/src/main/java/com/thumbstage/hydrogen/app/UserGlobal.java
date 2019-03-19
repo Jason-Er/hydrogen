@@ -11,6 +11,7 @@ import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
+import com.thumbstage.hydrogen.model.User;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -99,6 +100,11 @@ public class UserGlobal {
             return avUser.getObjectId();
         }
         return null;
+    }
+
+    public User getCurrentUser() {
+        User user = new User(avUser.getObjectId(), "","");
+        return user;
     }
 
     public AVIMConversation getConversation(final String conversationId) {

@@ -17,7 +17,7 @@ import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
 public interface TopicDao {
 
     @Insert(onConflict = REPLACE)
-    void insert(TopicEntity topicEntity);
+    long insert(TopicEntity topicEntity);
 
     @Insert(onConflict = REPLACE)
     void insert(List<TopicEntity> topicEntities);

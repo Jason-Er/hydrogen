@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.repository.LCRepository;
+import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.Topic;
@@ -17,6 +17,7 @@ import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.utils.GlideUtil;
 import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
+import com.thumbstage.hydrogen.view.create.fragment.TopicHandleType;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,24 +45,27 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                LCRepository.getTopic(mic, new LCRepository.IReturnTopic() {
+                /*
+                CloudAPI.getTopic(mic, new CloudAPI.IReturnTopic() {
                     @Override
                     public void callback(Topic topic) {
                         TopicEx topicEx = new TopicEx(topic, mic);
                         Intent intent = new Intent(v.getContext(), CreateActivity.class);
                         intent.putExtra(TopicEx.class.getSimpleName(), topicEx);
-                        intent.putExtra(CreateActivity.TopicHandleType.class.getSimpleName(),
-                                CreateActivity.TopicHandleType.CONTINUE.name());
+                        intent.putExtra(TopicHandleType.class.getSimpleName(),
+                                TopicHandleType.CONTINUE.name());
                         v.getContext().startActivity(intent);
                     }
                 });
+                */
             }
         });
     }
 
     public void setMic(Mic mic) {
         this.mic = mic;
-        LCRepository.getLastLineUser(mic, new LCRepository.IReturnUser() {
+        /*
+        CloudAPI.getLastLineUser(mic, new CloudAPI.IReturnUser() {
             @Override
             public void callback(User user) {
                 if(user != null) {
@@ -70,7 +74,7 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
                 }
             }
         });
-        LCRepository.getLastLine(mic, new LCRepository.IReturnLine() {
+        CloudAPI.getLastLine(mic, new CloudAPI.IReturnLine() {
             @Override
             public void callback(Line line) {
                 if(line != null) {
@@ -79,6 +83,7 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
                 }
             }
         });
+        */
         /*
         AVIMConversation conversation = UserGlobal.getInstance().getConversation(mic.getId());
 

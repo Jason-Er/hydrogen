@@ -10,7 +10,7 @@ import android.view.MenuInflater;
 
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.repository.LCRepository;
+import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.model.HyFile;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
@@ -28,22 +28,6 @@ public class CaseCreateTopicItem extends CaseBase implements ICreateMenuItemFunc
     Uri imageUri;
 
     @Override
-    public void handleBottomBarEvent(ConversationBottomBarEvent event) {
-        handleEvent(event);
-    }
-
-    protected void handleEvent(ConversationBottomBarEvent event) {
-        switch (event.getMessage()) {
-            case "text":
-                addLine2Adapter((Line) event.getData());
-                break;
-            case "voice":
-
-                break;
-        }
-    }
-
-    @Override
     public void createOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_case_create, menu);
     }
@@ -56,6 +40,7 @@ public class CaseCreateTopicItem extends CaseBase implements ICreateMenuItemFunc
 
     @Override
     public void settings(final Fragment fragment) {
+        /*
         TopicSettingDialog bottomDialog = new TopicSettingDialog(); //context, R.style.BottomDialog
         bottomDialog.setIOnOK(new TopicSettingDialog.IOnOK() {
             @Override
@@ -74,42 +59,46 @@ public class CaseCreateTopicItem extends CaseBase implements ICreateMenuItemFunc
             }
         });
         bottomDialog.show(fragment.getFragmentManager(), "hello");
+        */
     }
 
     @Override
     public void startTopic() {
         Log.i(TAG, "startTopic");
+        /*
         if(imageUri != null) {
             File file = new File(imageUri.getPath());
-            LCRepository.saveFile2Cloud(file, new LCRepository.IReturnHyFile() {
+            CloudAPI.saveFile2Cloud(file, new CloudAPI.IReturnHyFile() {
                 @Override
                 public void callback(HyFile hyFile) {
                     topic.setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
-                    LCRepository.saveTopic2StartedOpened(topic);
+                    CloudAPI.saveTopic2StartedOpened(topic);
                 }
             });
         } else {
-            LCRepository.saveResURL2Cloud(topic.getSetting().getUrl(), new LCRepository.IReturnHyFile() {
+            CloudAPI.saveResURL2Cloud(topic.getSetting().getUrl(), new CloudAPI.IReturnHyFile() {
                 @Override
                 public void callback(HyFile hyFile) {
                     topic.setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
-                    LCRepository.saveTopic2StartedOpened(topic);
+                    CloudAPI.saveTopic2StartedOpened(topic);
                 }
             });
 
         }
+        */
     }
 
     @Override
     public void publishTopic() {
         Log.i(TAG, "publishTopic");
+        /*
         if(imageUri != null) {
             File file = new File(imageUri.getPath());
-            LCRepository.saveFile2Cloud(file, new LCRepository.IReturnHyFile() {
+            CloudAPI.saveFile2Cloud(file, new CloudAPI.IReturnHyFile() {
                 @Override
                 public void callback(HyFile hyFile) {
                     topic.setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
-                    LCRepository.saveTopic2PublishedOpened(topic, new LCRepository.ICallBack() {
+                    CloudAPI.saveTopic2PublishedOpened(topic, new CloudAPI.ICallBack() {
                         @Override
                         public void callback(String objectID) {
 
@@ -118,11 +107,11 @@ public class CaseCreateTopicItem extends CaseBase implements ICreateMenuItemFunc
                 }
             });
         } else {
-            LCRepository.saveResURL2Cloud(topic.getSetting().getUrl(), new LCRepository.IReturnHyFile() {
+            CloudAPI.saveResURL2Cloud(topic.getSetting().getUrl(), new CloudAPI.IReturnHyFile() {
                 @Override
                 public void callback(HyFile hyFile) {
                     topic.setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
-                    LCRepository.saveTopic2PublishedOpened(topic, new LCRepository.ICallBack() {
+                    CloudAPI.saveTopic2PublishedOpened(topic, new CloudAPI.ICallBack() {
                         @Override
                         public void callback(String objectID) {
 
@@ -131,6 +120,7 @@ public class CaseCreateTopicItem extends CaseBase implements ICreateMenuItemFunc
                 }
             });
         }
+        */
     }
     // endregion
 }

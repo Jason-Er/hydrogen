@@ -6,7 +6,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.repository.LCRepository;
+import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.utils.GlideUtil;
@@ -33,12 +33,7 @@ public class LineTextRightViewHolder extends RecyclerView.ViewHolder {
 
     public void setLine(Line line) {
         this.line = line;
-        LCRepository.getUser(line.getWho(), new LCRepository.IReturnUser() {
-            @Override
-            public void callback(User user) {
-                GlideUtil.inject(itemView.getContext(), user.getAvatar(), avatar);
-            }
-        });
+        GlideUtil.inject(itemView.getContext(), line.getWho().getAvatar(), avatar);
         content.setText(line.getWhat());
         time.setText(StringUtil.date2String4Show(line.getWhen()));
     }

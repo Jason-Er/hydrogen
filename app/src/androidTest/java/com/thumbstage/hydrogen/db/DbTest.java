@@ -18,29 +18,29 @@ package com.thumbstage.hydrogen.db;
 
 
 import android.arch.persistence.room.Room;
-import android.content.Context;
 import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
-
 
 import com.thumbstage.hydrogen.database.HyDatabase;
+import com.thumbstage.hydrogen.database.ModelDB;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.runner.RunWith;
 
 abstract public class DbTest {
     protected HyDatabase db;
+    protected ModelDB converter;
 
     @Before
     public void initDb() {
-        /*
+
         db = Room.databaseBuilder(InstrumentationRegistry.getTargetContext(),
                 HyDatabase.class, "HyDatabase.db")
                 .build();
-        */
+        converter = new ModelDB(db);
+        /*
         db = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getContext(),
                 HyDatabase.class).build();
+                */
     }
 
     @After

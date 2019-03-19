@@ -1,8 +1,11 @@
 package com.thumbstage.hydrogen.view.create.fragment;
 
+import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.view.common.ListDelegationAdapter;
 
 public class TopicAdapter extends ListDelegationAdapter {
+
+    Topic topic;
 
     enum view_type {
         LINE_TEXT_CENTER, LINE_TEXT_LEFT, LINE_TEXT_RIGHT,
@@ -13,5 +16,10 @@ public class TopicAdapter extends ListDelegationAdapter {
         delegatesManager.addDelegate(new LineTextLeftDelegate(view_type.LINE_TEXT_LEFT.ordinal()));
         delegatesManager.addDelegate(new LineTextRightDelegate(view_type.LINE_TEXT_RIGHT.ordinal()));
         delegatesManager.addDelegate(new LineTextCenterDelegate(view_type.LINE_TEXT_CENTER.ordinal()));
+    }
+
+    public void setTopic(Topic topic) {
+        this.topic = topic;
+        addItems(topic.getDialogue());
     }
 }

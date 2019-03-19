@@ -6,6 +6,7 @@ import android.util.Log;
 import com.thumbstage.hydrogen.database.entity.TopicEntity;
 import com.thumbstage.hydrogen.database.entity.UserEntity;
 import com.thumbstage.hydrogen.model.Line;
+import com.thumbstage.hydrogen.model.Mic;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -90,5 +91,13 @@ public class UserDaoTest extends DbTest {
         db.userDao().insert(userEntityList);
         userEntities = db.userDao().get(15);
         Log.i("insertByIds","ok");
+    }
+
+    @Test
+    public void testSaveMicList() {
+        List<Mic> micList = new ArrayList<>();
+        micList.add(new Mic("5c85d82ba91c9300651146f9"));
+        converter.saveMicList(micList);
+
     }
 }

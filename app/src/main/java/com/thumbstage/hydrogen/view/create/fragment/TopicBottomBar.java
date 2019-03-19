@@ -110,7 +110,7 @@ public class TopicBottomBar extends LinearLayout {
             }
         }, MIN_INTERVAL_SEND_MESSAGE);
 
-        Line line = new Line(UserGlobal.getInstance().getCurrentUserId(), new Date(), content, LineType.LT_DIALOGUE);
+        Line line = new Line(UserGlobal.getInstance().getCurrentUser(), new Date(), content, LineType.LT_DIALOGUE);
         EventBus.getDefault().post(
                 new ConversationBottomBarEvent(line, "text"));
     }

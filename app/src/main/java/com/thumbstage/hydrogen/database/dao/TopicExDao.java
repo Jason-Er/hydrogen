@@ -19,7 +19,7 @@ public interface TopicExDao {
     void insert(TopicExEntity topicExEntity);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(List<TopicExEntity> topicExEntities);
+    List<Long> insert(List<TopicExEntity> topicExEntities);
 
     @Update
     void update(TopicExEntity... topicExEntities);

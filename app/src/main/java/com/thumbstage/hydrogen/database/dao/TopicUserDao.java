@@ -8,6 +8,7 @@ import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
 import com.thumbstage.hydrogen.database.entity.TopicUserEntity;
+import com.thumbstage.hydrogen.database.entity.UserEntity;
 
 import java.util.List;
 
@@ -26,6 +27,7 @@ public interface TopicUserDao {
     @Delete
     void delete(TopicUserEntity... topicUserEntities);
 
-    @Query("SELECT * FROM topic_user WHERE topic_id = :topicId")
-    List<TopicUserEntity> get(String topicId);
+    @Query("SELECT * FROM user WHERE id IN (" +
+            "SELECT user_id FROM topic_user WHERE topic_id =:topicId)")
+    List<UserEntity> get(String topicId);
 }

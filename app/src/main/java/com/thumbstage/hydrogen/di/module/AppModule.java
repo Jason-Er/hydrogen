@@ -5,9 +5,11 @@ import android.arch.persistence.room.Room;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.database.HyDatabase;
-import com.thumbstage.hydrogen.database.dao.UserDao;
+import com.thumbstage.hydrogen.database.ModelDB;
 import com.thumbstage.hydrogen.repository.TopicExRepository;
+import com.thumbstage.hydrogen.repository.TopicRepository;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -32,13 +34,28 @@ public class AppModule {
 
     @Provides
     @Singleton
-    UserDao provideUserDao(HyDatabase database) { return database.userDao(); }
+    ModelDB provideModelEntityConvert(HyDatabase database) {
+        return new ModelDB(database);
+    }
 
     @Provides
     @Singleton
-    TopicExRepository provideTopicExRepository(HyDatabase database, Executor executor) {
-        return new TopicExRepository(database, executor);
+    CloudAPI provideCloudAPI() {
+        return new CloudAPI();
     }
+
+    @Provides
+    @Singleton
+    TopicExRepository provideTopicExRepository(CloudAPI cloudAPI, ModelDB modelDB, Executor executor) {
+        return new TopicExRepository(cloudAPI, modelDB, executor);
+    }
+
+    @Provides
+    @Singleton
+    TopicRepository provideTopicRepository(CloudAPI cloudAPI, ModelDB modelDB, Executor executor) {
+        return new TopicRepository(cloudAPI, modelDB, executor);
+    }
+
     // --- REPOSITORY INJECTION ---
 
     @Provides
@@ -47,8 +64,6 @@ public class AppModule {
     }
 
     // --- NETWORK INJECTION ---
-
-    private static String BASE_URL = "https://api.github.com/";
 
     @Provides
     Gson provideGson() { return new GsonBuilder().create(); }

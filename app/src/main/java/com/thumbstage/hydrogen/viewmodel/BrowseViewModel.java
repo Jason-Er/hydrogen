@@ -4,8 +4,9 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
+import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.model.TopicExType;
-import com.thumbstage.hydrogen.repository.LCRepository;
+import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.im.IIMCallBack;
 import com.thumbstage.hydrogen.im.IMConversationHandler;
 import com.thumbstage.hydrogen.im.IMMessageHandler;
@@ -28,17 +29,15 @@ public class BrowseViewModel extends ViewModel {
 
     final String TAG = "BrowseViewModel";
     private final MutableLiveData<List<Mic>> atMe = new MutableLiveData<>();
-    private final MutableLiveData<List<TopicEx>> iStartedOpened = new MutableLiveData<>();
-    private final MutableLiveData<List<TopicEx>> iAttendedOpened = new MutableLiveData<>();
 
     public LiveData<List<TopicEx>> getPublishedOpened() {
         return topicExRepository.getPublishedOpened();
     }
-    public MutableLiveData<List<TopicEx>> getIStartedOpened() {
-        return iStartedOpened;
+    public LiveData<List<TopicEx>> getIStartedOpened() {
+        return topicExRepository.getIStartedOpened();
     }
-    public MutableLiveData<List<TopicEx>> getIAttendedOpened() {
-        return iAttendedOpened;
+    public LiveData<List<TopicEx>> getIAttendedOpened() {
+        return topicExRepository.getIAttendedOpened();
     }
     public MutableLiveData<List<Mic>> getAtMe() {
         return atMe;
@@ -51,12 +50,7 @@ public class BrowseViewModel extends ViewModel {
     }
 
     public void getIAttendedOpenedByPageNum(int pageNum) {
-        LCRepository.getTopicEx(TopicExType.IATTENDED_OPENED, pageNum, new LCRepository.ITopicExCallBack() {
-            @Override
-            public void callback(List<TopicEx> topicExList) {
-                iAttendedOpened.setValue(topicExList);
-            }
-        });
+        topicExRepository.getTopicEx(TopicExType.IATTENDED_OPENED, UserGlobal.getInstance().getCurrentUserId(), pageNum);
     }
 
     public void getPublishedOpenedByPageNum(int pageNum) {
@@ -64,12 +58,7 @@ public class BrowseViewModel extends ViewModel {
     }
 
     public void getIStartedOpenedByPageNum(int pageNum) {
-        LCRepository.getTopicEx(TopicExType.ISTARTED_OPENED, pageNum, new LCRepository.ITopicExCallBack() {
-            @Override
-            public void callback(List<TopicEx> topicExList) {
-                iStartedOpened.setValue(topicExList);
-            }
-        });
+        topicExRepository.getTopicEx(TopicExType.ISTARTED_OPENED, UserGlobal.getInstance().getCurrentUserId(), pageNum);
     }
 
     public void getAtMeByPageNum(int pageNum) {

@@ -12,6 +12,7 @@ import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.model.TopicEx;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
+import com.thumbstage.hydrogen.view.create.fragment.TopicHandleType;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,8 +36,8 @@ public class IAttendedOpenedViewHolder extends RecyclerView.ViewHolder {
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), CreateActivity.class);
                 intent.putExtra(TopicEx.class.getSimpleName(), topicEx);
-                intent.putExtra(CreateActivity.TopicHandleType.class.getSimpleName(),
-                        CreateActivity.TopicHandleType.CONTINUE.name());
+                intent.putExtra(TopicHandleType.class.getSimpleName(),
+                        TopicHandleType.CONTINUE.name());
                 v.getContext().startActivity(intent);
             }
         });

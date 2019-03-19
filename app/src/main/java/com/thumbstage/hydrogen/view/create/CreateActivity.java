@@ -8,17 +8,11 @@ import android.support.v7.app.AppCompatActivity;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.TopicEx;
 import com.thumbstage.hydrogen.view.create.fragment.TopicFragment;
+import com.thumbstage.hydrogen.view.create.fragment.TopicHandleType;
 
 import butterknife.ButterKnife;
 
 public class CreateActivity extends AppCompatActivity {
-    final String TAG = "CreateActivity";
-    TopicFragment topicFragment;
-    int REQUEST_CODE_CHOOSE = 123;
-
-    public enum TopicHandleType {
-        CREATE, ATTEND, CONTINUE
-    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -31,9 +25,10 @@ public class CreateActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle(getResources().getString(R.string.create_activity_name));
 
+        /*
         topicFragment = (TopicFragment) getSupportFragmentManager().findFragmentById(R.id.activity_create_fragment);
 
-        final TopicEx topicEx = getIntent().getParcelableExtra(TopicEx.class.getSimpleName());
+        TopicEx topicEx = getIntent().getParcelableExtra(TopicEx.class.getSimpleName());
         String handleType = getIntent().getStringExtra(TopicHandleType.class.getSimpleName());
         if( handleType == null) {
             throw new IllegalArgumentException("No TopicHandleType found!");
@@ -49,6 +44,7 @@ public class CreateActivity extends AppCompatActivity {
                 topicFragment.continueTopic(topicEx.getTopic(), topicEx.getMic());
                 break;
         }
+        */
     }
 
     @Override

@@ -18,7 +18,7 @@ public interface MicDao {
     void insert(MicEntity micEntity);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(List<MicEntity> micEntities);
+    List<Long> insert(List<MicEntity> micEntities);
 
     @Update
     void update(MicEntity... micEntities);

@@ -21,6 +21,7 @@ import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.TopicEx;
 import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
+import com.thumbstage.hydrogen.view.create.fragment.TopicHandleType;
 import com.thumbstage.hydrogen.viewmodel.BrowseViewModel;
 
 import java.util.List;
@@ -79,8 +80,8 @@ public class IStartedOpenedFragment extends Fragment implements IBrowseCustomize
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(fab.getContext(), CreateActivity.class);
-                intent.putExtra(CreateActivity.TopicHandleType.class.getSimpleName(),
-                        CreateActivity.TopicHandleType.CREATE.name());
+                intent.putExtra(TopicHandleType.class.getSimpleName(),
+                        TopicHandleType.CREATE.name());
                 fab.getContext().startActivity(intent);
             }
         });

@@ -13,12 +13,15 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 
 @Entity(tableName = "line",
-        indices = {@Index("in_which_topic")},
+        indices = {@Index("in_which_topic"),@Index("who")},
         foreignKeys = {
                 @ForeignKey(entity = TopicEntity.class,
                         parentColumns = "id",
                         childColumns = "in_which_topic",
-                        onDelete = CASCADE)})
+                        onDelete = CASCADE),
+                @ForeignKey(entity = UserEntity.class,
+                        parentColumns = "id",
+                        childColumns = "who")})
 public class LineEntity {
     @PrimaryKey(autoGenerate = true)
     protected long id;

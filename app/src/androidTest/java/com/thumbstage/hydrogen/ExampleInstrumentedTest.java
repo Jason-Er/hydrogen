@@ -228,7 +228,7 @@ public class ExampleInstrumentedTest {
         topic.setSetting_id("5c629287303f390047c13726");
         topic.setStarted_by(AVUser.getCurrentUser().getObjectId());
         topic.getMembers().add(AVUser.getCurrentUser().getObjectId());
-        LCRepository.saveTopic2StartedOpened(topic);
+        CloudAPI.saveTopic2StartedOpened(topic);
         sleep(5);
     }
 
@@ -273,7 +273,7 @@ public class ExampleInstrumentedTest {
         topic.setSetting_id("5c629287303f390047c13726");
         topic.setStarted_by(AVUser.getCurrentUser().getObjectId());
         topic.getMembers().add(AVUser.getCurrentUser().getObjectId());
-        LCRepository.copyTopicFromPublishedOpened(topic, new LCRepository.ICallBack() {
+        CloudAPI.copyTopicFromPublishedOpened(topic, new CloudAPI.ICallBack() {
             @Override
             public void callback(String objectID) {
                 Log.i("testCopyPublishedOpenedTopic", "success!");
