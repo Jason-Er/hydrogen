@@ -40,7 +40,7 @@ public class ModelDB {
     }
 
     public boolean isTopicExNeedFresh(TopicExType type) {
-        return database.topicExDao().hasTopicEx(type.name, getMaxRefreshTime(new Date())) != null;
+        return database.topicExDao().hasTopicEx(type.name, getMaxRefreshTime(new Date())) == null;
     }
 
     private Date getMaxRefreshTime(Date currentDate){

@@ -101,6 +101,7 @@ public class CloudAPI {
     }
 
     private enum FieldName {
+        FIELD_ID("objectId"),
         FIELD_NAME("name"),
         FIELD_BRIEF("brief"),
         FIELD_STARTED_BY("started_by"),
@@ -288,7 +289,6 @@ public class CloudAPI {
                 final List<TopicEx> topicExes = new ArrayList<>();
                 if(avException == null) {
                     for(AVObject avObject: avObjects) {
-                        Log.i("BrowseViewModel", "OK");
                         AVObject avTopic = avObject.getAVObject(FieldName.FIELD_TOPIC.name);
                         AVObject avMic = avObject.getAVObject(FieldName.FIELD_MIC.name);
                         final Mic mic;
@@ -428,7 +428,7 @@ public class CloudAPI {
 
     public void getUsers(List<String> membersId, final IReturnUsers iReturnUsers) {
         AVQuery<AVObject> query = new AVQuery<>(TableName.TABLE_USER.name);
-        query.whereContainedIn("id", membersId);
+        query.whereContainedIn(FieldName.FIELD_ID.name, membersId);
         query.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> avObjects, AVException avException) {
@@ -439,6 +439,8 @@ public class CloudAPI {
                         users.add(user);
                     }
                     iReturnUsers.callback(users);
+                } else {
+                    avException.printStackTrace();
                 }
             }
         });
