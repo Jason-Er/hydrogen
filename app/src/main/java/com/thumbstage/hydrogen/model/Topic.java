@@ -15,7 +15,7 @@ public class Topic implements Parcelable {
     User started_by;
     String derive_from; // topic id
     List<Line> dialogue;
-    List<String> members;
+    List<User> members;
 
     public Topic() {
         name = "";
@@ -30,10 +30,11 @@ public class Topic implements Parcelable {
         name = in.readString();
         brief = in.readString();
         derive_from = in.readString();
-        members = in.createStringArrayList();
+        members.clear();
+        in.readList(members, User.class.getClassLoader());
         setting = in.readParcelable(Setting.class.getClassLoader());
         started_by = in.readParcelable(User.class.getClassLoader());
-        dialogue = new ArrayList<>();
+        dialogue.clear();
         in.readList(dialogue, Line.class.getClassLoader());
     }
 
@@ -48,7 +49,7 @@ public class Topic implements Parcelable {
         dest.writeString(name);
         dest.writeString(brief);
         dest.writeString(derive_from);
-        dest.writeStringList(members);
+        dest.writeTypedList(members);
         dest.writeParcelable(setting, flags);
         dest.writeParcelable(started_by, flags);
         dest.writeList(dialogue);
@@ -101,7 +102,7 @@ public class Topic implements Parcelable {
         return this;
     }
 
-    public Topic setMembers(List<String> members) {
+    public Topic setMembers(List<User> members) {
         this.members = members;
         return this;
     }
@@ -134,7 +135,7 @@ public class Topic implements Parcelable {
         return started_by;
     }
 
-    public List<String> getMembers() {
+    public List<User> getMembers() {
         return members;
     }
 
