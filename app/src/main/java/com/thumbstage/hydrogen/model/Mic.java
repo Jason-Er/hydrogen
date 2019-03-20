@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 public class Mic implements Parcelable {
     String id; // conversation id
+    String name;
+    Topic topic;
 
     public Mic(String id) {
         this.id = id;
@@ -12,6 +14,8 @@ public class Mic implements Parcelable {
 
     protected Mic(Parcel in) {
         id = in.readString();
+        name = in.readString();
+
     }
 
     public static final Creator<Mic> CREATOR = new Creator<Mic>() {
@@ -34,6 +38,7 @@ public class Mic implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
+        dest.writeString(name);
     }
 
     // region getter and setter

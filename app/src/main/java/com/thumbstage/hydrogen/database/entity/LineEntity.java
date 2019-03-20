@@ -13,7 +13,8 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 
 @Entity(tableName = "line",
-        indices = {@Index("in_which_topic"),@Index("who")},
+        primaryKeys = {"who","when", "in_which_topic"},
+        indices = {@Index("in_which_topic"), @Index("who")},
         foreignKeys = {
                 @ForeignKey(entity = TopicEntity.class,
                         parentColumns = "id",
@@ -23,17 +24,20 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
                         parentColumns = "id",
                         childColumns = "who")})
 public class LineEntity {
-    @PrimaryKey(autoGenerate = true)
-    protected long id;
+
     @NonNull
     protected String who;
+    @NonNull
     protected Date when;
     protected String what;
 
     @ColumnInfo(name = "line_type")
     protected String line_type;
+    @NonNull
     @ColumnInfo(name = "in_which_topic")
     protected String inWhichTopic;
+
+    protected long ordinal;
 
     @NonNull
     public String getWho() {
@@ -43,12 +47,12 @@ public class LineEntity {
     public void setWho(@NonNull String who) {
         this.who = who;
     }
-
+    @NonNull
     public Date getWhen() {
         return when;
     }
 
-    public void setWhen(Date when) {
+    public void setWhen(@NonNull Date when) {
         this.when = when;
     }
 
@@ -76,11 +80,11 @@ public class LineEntity {
         this.inWhichTopic = inWhichTopic;
     }
 
-    public long getId() {
-        return id;
+    public long getOrdinal() {
+        return ordinal;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setOrdinal(long ordinal) {
+        this.ordinal = ordinal;
     }
 }

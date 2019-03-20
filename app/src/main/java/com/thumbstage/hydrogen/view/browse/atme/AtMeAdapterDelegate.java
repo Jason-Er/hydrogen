@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.model.Mic;
+import com.thumbstage.hydrogen.model.AtMe;
 import com.thumbstage.hydrogen.view.common.IAdapterDelegate;
 
 import java.util.List;
@@ -27,20 +27,20 @@ public class AtMeAdapterDelegate implements IAdapterDelegate<List> {
 
     @Override
     public boolean isForViewType(@NonNull List items, int position) {
-        return items.get(position) instanceof Mic;
+        return items.get(position) instanceof AtMe;
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_pipe_atme, parent, false);
+                .inflate(R.layout.item_mic_atme, parent, false);
         return new AtMeViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull List items, int position, @NonNull RecyclerView.ViewHolder holder) {
-        ((AtMeViewHolder)holder).setMic((Mic) items.get(position));
+        ((AtMeViewHolder)holder).setAtMe((AtMe) items.get(position));
     }
     
 }

@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 
 import com.thumbstage.hydrogen.app.UserGlobal;
+import com.thumbstage.hydrogen.model.AtMe;
 import com.thumbstage.hydrogen.model.TopicExType;
 import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.im.IIMCallBack;
@@ -12,6 +13,7 @@ import com.thumbstage.hydrogen.im.IMConversationHandler;
 import com.thumbstage.hydrogen.im.IMMessageHandler;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.TopicEx;
+import com.thumbstage.hydrogen.repository.AtMeRepository;
 import com.thumbstage.hydrogen.repository.TopicExRepository;
 
 import java.util.ArrayList;
@@ -26,9 +28,9 @@ import cn.leancloud.chatkit.cache.LCIMConversationItemCache;
 public class BrowseViewModel extends ViewModel {
 
     private TopicExRepository topicExRepository;
+    private AtMeRepository atMeRepository;
 
     final String TAG = "BrowseViewModel";
-    private final MutableLiveData<List<Mic>> atMe = new MutableLiveData<>();
 
     public LiveData<List<TopicEx>> getPublishedOpened() {
         return topicExRepository.getPublishedOpened();
@@ -39,14 +41,11 @@ public class BrowseViewModel extends ViewModel {
     public LiveData<List<TopicEx>> getIAttendedOpened() {
         return topicExRepository.getIAttendedOpened();
     }
-    public MutableLiveData<List<Mic>> getAtMe() {
-        return atMe;
-    }
-
 
     @Inject
-    public BrowseViewModel(TopicExRepository topicExRepository) {
+    public BrowseViewModel(TopicExRepository topicExRepository, AtMeRepository atMeRepository) {
         this.topicExRepository = topicExRepository;
+        this.atMeRepository = atMeRepository;
     }
 
     public void getIAttendedOpenedByPageNum(int pageNum) {
@@ -61,37 +60,8 @@ public class BrowseViewModel extends ViewModel {
         topicExRepository.getTopicEx(TopicExType.ISTARTED_OPENED, UserGlobal.getInstance().getCurrentUserId(), pageNum);
     }
 
-    public void getAtMeByPageNum(int pageNum) {
-        updateConversationList();
-    }
-
-    public void setListenIMCallBack(IMMessageHandler imMessageHandler) {
-        imMessageHandler.setCallback(new IIMCallBack() {
-            @Override
-            public void callBack() {
-                updateConversationList();
-            }
-        });
-    }
-
-    public void setListenIMCallBack(IMConversationHandler imConversationHandler) {
-        imConversationHandler.setCallback(new IIMCallBack() {
-            @Override
-            public void callBack() {
-                updateConversationList();
-            }
-        });
-    }
-
-    private void updateConversationList() {
-        List<String> convIdList = LCIMConversationItemCache.getInstance().getSortedConversationList();
-        List<Mic> micList = new ArrayList<>();
-        // List<AVIMConversation> conversationList = new ArrayList<>();
-        for (String convId : convIdList) {
-            micList.add(new Mic(convId));
-            // conversationList.add(UserGlobal.getInstance().getClient().getConversation(convId));
-        }
-        atMe.setValue(micList);
+    public LiveData<List<AtMe>> getAtMeByPageNum(String meId, int pageNum) {
+        return atMeRepository.getAtMeByPageNum(meId, pageNum);
     }
 
 }

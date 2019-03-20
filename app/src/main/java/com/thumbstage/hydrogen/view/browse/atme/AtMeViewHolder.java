@@ -8,12 +8,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.api.CloudAPI;
-import com.thumbstage.hydrogen.model.Line;
-import com.thumbstage.hydrogen.model.Mic;
-import com.thumbstage.hydrogen.model.Topic;
+import com.thumbstage.hydrogen.model.AtMe;
 import com.thumbstage.hydrogen.model.TopicEx;
-import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.utils.GlideUtil;
 import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
@@ -24,19 +20,17 @@ import butterknife.ButterKnife;
 
 public class AtMeViewHolder extends RecyclerView.ViewHolder {
 
-    Mic mic;
+    AtMe atMe;
 
-    @BindView(R.id.item_pipe_atme_iv_avatar)
+    @BindView(R.id.item_mic_atme_avatar)
     ImageView avatar;
-    @BindView(R.id.item_pipe_atme_tv_name)
+    @BindView(R.id.item_mic_atme_topic)
     TextView name;
-    @BindView(R.id.item_pipe_atme_tv_message)
+    @BindView(R.id.item_mic_atme_what)
     TextView message;
-    @BindView(R.id.item_pipe_atme_tv_type)
-    TextView typeView;
-    @BindView(R.id.item_pipe_atme_tv_time)
+    @BindView(R.id.item_mic_atme_time)
     TextView timeView;
-    @BindView(R.id.item_pipe_atme_tv_unread)
+    @BindView(R.id.item_mic_atme_unread)
     TextView unreadView;
 
     public AtMeViewHolder(@NonNull View itemView) {
@@ -45,26 +39,27 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                /*
-                CloudAPI.getTopic(mic, new CloudAPI.IReturnTopic() {
-                    @Override
-                    public void callback(Topic topic) {
-                        TopicEx topicEx = new TopicEx(topic, mic);
-                        Intent intent = new Intent(v.getContext(), CreateActivity.class);
-                        intent.putExtra(TopicEx.class.getSimpleName(), topicEx);
-                        intent.putExtra(TopicHandleType.class.getSimpleName(),
-                                TopicHandleType.CONTINUE.name());
-                        v.getContext().startActivity(intent);
-                    }
-                });
-                */
+                TopicEx topicEx = new TopicEx(null, atMe.getMic());
+                Intent intent = new Intent(v.getContext(), CreateActivity.class);
+                intent.putExtra(TopicEx.class.getSimpleName(), topicEx);
+                intent.putExtra(TopicHandleType.class.getSimpleName(),
+                        TopicHandleType.CONTINUE.name());
+                v.getContext().startActivity(intent);
             }
         });
     }
 
+    public void setAtMe(AtMe atMe) {
+        this.atMe = atMe;
+        GlideUtil.inject(itemView.getContext(), atMe.getWho().getAvatar(), avatar);
+        message.setText(atMe.getWho().getName()+":"+atMe.getWhat());
+        timeView.setText(StringUtil.date2String4Show(atMe.getWhen()));
+    }
+
+    /*
     public void setMic(Mic mic) {
         this.mic = mic;
-        /*
+
         CloudAPI.getLastLineUser(mic, new CloudAPI.IReturnUser() {
             @Override
             public void callback(User user) {
@@ -92,8 +87,9 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
         updateType(conversation);
         updateUnreadCount(conversation);
         updateLastMessage(conversation.getLastMessage());
-        */
+
     }
+    */
 
     /*
     private void updateIcon(AVIMConversation conversation) {

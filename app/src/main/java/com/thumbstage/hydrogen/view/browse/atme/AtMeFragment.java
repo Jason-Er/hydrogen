@@ -19,6 +19,8 @@ import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.app.Privilege;
+import com.thumbstage.hydrogen.app.UserGlobal;
+import com.thumbstage.hydrogen.model.AtMe;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.TopicEx;
 import com.thumbstage.hydrogen.view.browse.IAdapterFunction;
@@ -79,13 +81,13 @@ public class AtMeFragment extends Fragment implements IBrowseCustomize, IAdapter
 
     private void configureViewModel(){
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(BrowseViewModel.class);
-        viewModel.getAtMe().observe(this, new Observer<List<Mic>>() {
+        viewModel.getAtMeByPageNum(UserGlobal.getInstance().getCurrentUserId(), 0)
+                .observe(this, new Observer<List<AtMe>>() {
             @Override
-            public void onChanged(@Nullable List<Mic> mics) {
-                recyclerViewAdapter.setItems(mics);
+            public void onChanged(@Nullable List<AtMe> atMe) {
+                recyclerViewAdapter.setItems(atMe);
             }
         });
-        viewModel.getAtMeByPageNum(0);
     }
 
     // region implement of interface IBrowseCustomize

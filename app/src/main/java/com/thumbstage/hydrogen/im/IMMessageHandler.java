@@ -10,8 +10,6 @@ import com.avos.avoscloud.im.v2.AVIMTypedMessageHandler;
 import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.event.IMIMTypeMessageEvent;
 
-import org.greenrobot.eventbus.EventBus;
-
 import cn.leancloud.chatkit.cache.LCIMConversationItemCache;
 import cn.leancloud.chatkit.utils.LCIMNotificationUtils;
 

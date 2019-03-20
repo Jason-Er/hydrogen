@@ -9,32 +9,19 @@
               android:paddingTop="5dp">
 
     <RelativeLayout
-        android:id="@+id/item_pipe_atme_layout_avatar"
+        android:id="@+id/item_mic_atme_layout_avatar"
         android:layout_width="65dp"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/item_pipe_atme_tv_type"
-            android:layout_width="10dp"
-            android:layout_height="13dp"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="0dp"
-            android:layout_marginTop="5dp"
-            android:background="@android:color/background_light"
-            android:gravity="center"
-            android:textColor="@android:color/black"
-            android:textSize="10sp"
-            android:text="T"/>
-
         <ImageView
-            android:id="@+id/item_pipe_atme_iv_avatar"
+            android:id="@+id/item_mic_atme_avatar"
             style="@style/LCIMAvatar.Large"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="10dp"
             android:layout_centerVertical="true"/>
 
         <TextView
-            android:id="@+id/item_pipe_atme_tv_unread"
+            android:id="@+id/item_mic_atme_unread"
             android:layout_width="wrap_content"
             android:layout_height="13dp"
             android:layout_alignParentRight="true"
@@ -46,7 +33,7 @@
     </RelativeLayout>
 
     <LinearLayout
-        android:id="@+id/item_pipe_atme_layout_content"
+        android:id="@+id/item_mic_atme_layout_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
@@ -57,7 +44,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/item_pipe_atme_tv_name"
+                android:id="@+id/item_mic_atme_topic"
                 style="@android:style/TextAppearance.Large"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -68,7 +55,7 @@
                 android:textColor="@android:color/black"/>
 
             <TextView
-                android:id="@+id/item_pipe_atme_tv_time"
+                android:id="@+id/item_mic_atme_time"
                 style="@style/LCIMTextAppearance.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
@@ -77,7 +64,7 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/item_pipe_atme_tv_message"
+            android:id="@+id/item_mic_atme_what"
             style="@style/LCIMTextAppearance.Normal.Gray"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

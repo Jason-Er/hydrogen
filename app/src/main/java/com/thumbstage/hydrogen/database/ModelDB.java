@@ -2,7 +2,6 @@ package com.thumbstage.hydrogen.database;
 
 import android.util.Log;
 
-import com.thumbstage.hydrogen.database.HyDatabase;
 import com.thumbstage.hydrogen.database.entity.LineEntity;
 import com.thumbstage.hydrogen.database.entity.MicEntity;
 import com.thumbstage.hydrogen.database.entity.TopicEntity;
@@ -152,6 +151,7 @@ public class ModelDB {
             if(mic != null && mic.getId() != null) {
                 MicEntity entity = new MicEntity();
                 entity.setId(mic.getId());
+                // entity.setTopicId(mic.getId());
                 micEntities.add(entity);
             }
         }

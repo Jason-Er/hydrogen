@@ -5,6 +5,9 @@ import android.arch.lifecycle.MutableLiveData;
 
 import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.database.ModelDB;
+import com.thumbstage.hydrogen.im.IIMCallBack;
+import com.thumbstage.hydrogen.im.IMConversationHandler;
+import com.thumbstage.hydrogen.im.IMMessageHandler;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.model.TopicEx;
@@ -16,6 +19,8 @@ import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
+
+import cn.leancloud.chatkit.cache.LCIMConversationItemCache;
 
 
 @Singleton
@@ -99,4 +104,34 @@ public class TopicExRepository {
         });
     }
 
+    /*
+    public void setListenIMCallBack(IMMessageHandler imMessageHandler) {
+        imMessageHandler.setCallback(new IIMCallBack() {
+            @Override
+            public void callBack() {
+                updateConversationList();
+            }
+        });
+    }
+
+    public void setListenIMCallBack(IMConversationHandler imConversationHandler) {
+        imConversationHandler.setCallback(new IIMCallBack() {
+            @Override
+            public void callBack() {
+                updateConversationList();
+            }
+        });
+    }
+
+    private void updateConversationList() {
+        List<String> convIdList = LCIMConversationItemCache.getInstance().getSortedConversationList();
+        List<Mic> micList = new ArrayList<>();
+        // List<AVIMConversation> conversationList = new ArrayList<>();
+        for (String convId : convIdList) {
+            micList.add(new Mic(convId));
+            // conversationList.add(UserGlobal.getInstance().getClient().getConversation(convId));
+        }
+        atMe.setValue(micList);
+    }
+    */
 }
