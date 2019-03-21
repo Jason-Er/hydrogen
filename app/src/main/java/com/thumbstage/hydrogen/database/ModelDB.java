@@ -1,11 +1,11 @@
 package com.thumbstage.hydrogen.database;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.thumbstage.hydrogen.database.entity.LineEntity;
 import com.thumbstage.hydrogen.database.entity.MicEntity;
 import com.thumbstage.hydrogen.database.entity.TopicEntity;
-import com.thumbstage.hydrogen.database.entity.TopicExEntity;
 import com.thumbstage.hydrogen.database.entity.TopicUserEntity;
 import com.thumbstage.hydrogen.database.entity.UserEntity;
 import com.thumbstage.hydrogen.model.Line;
@@ -13,8 +13,7 @@ import com.thumbstage.hydrogen.model.LineType;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.Setting;
 import com.thumbstage.hydrogen.model.Topic;
-import com.thumbstage.hydrogen.model.TopicEx;
-import com.thumbstage.hydrogen.model.TopicExType;
+import com.thumbstage.hydrogen.model.TopicType;
 import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.utils.DataConvertUtil;
 
@@ -38,8 +37,8 @@ public class ModelDB {
         this.database = database;
     }
 
-    public boolean isTopicExNeedFresh(TopicExType type) {
-        return database.topicExDao().hasTopicEx(type.name, getMaxRefreshTime(new Date())) == null;
+    public boolean isTopicNeedFresh(TopicType type) {
+        return database.topicDao().hasTopic(type.name(), getMaxRefreshTime(new Date())) == null;
     }
 
     private Date getMaxRefreshTime(Date currentDate){
@@ -50,32 +49,34 @@ public class ModelDB {
     }
 
     // region Model 2 entity
+    public void saveTopic(Topic topic) {
+        User user = topic.getStarted_by();
+        saveUser(user);
+        TopicEntity entity = new TopicEntity();
+        entity.setId(topic.getId());
+        entity.setName(topic.getName());
+        entity.setBrief(topic.getBrief());
+        entity.setDerive_from(topic.getDerive_from());
+        entity.setStarted_by(topic.getStarted_by().getId());
+        entity.setSetting_url(topic.getSetting().getUrl());
+        entity.setLastRefresh(new Date());
+        entity.setType(topic.getType().name());
+        database.topicDao().insert(entity);
+        saveLineList(topic.getDialogue(), topic.getId());
+        saveMembers(DataConvertUtil.user2StringId(topic.getMembers()), topic.getId());
+    }
+
     public void saveTopicList(List<Topic> topicList) {
         List<User> users = new ArrayList<>();
         for(Topic topic: topicList) {
             users.add(topic.getStarted_by());
         }
-
         saveUserList(users);
-
-        List<TopicEntity> topicEntities = new ArrayList<>();
         for(Topic topic: topicList) {
             if(topic != null) {
-                TopicEntity entity = new TopicEntity();
-                entity.setId(topic.getId());
-                entity.setName(topic.getName());
-                entity.setBrief(topic.getBrief());
-                entity.setDerive_from(topic.getDerive_from());
-                entity.setStarted_by(topic.getStarted_by().getId());
-                entity.setSetting_url(topic.getSetting().getUrl());
-                entity.setLastRefresh(new Date());
-                topicEntities.add(entity);
-                long id = database.topicDao().insert(entity);
-                saveLineList(topic.getDialogue(), topic.getId());
-                saveMembers(DataConvertUtil.user2StringId(topic.getMembers()), topic.getId());
+                saveTopic(topic);
             }
         }
-        // database.topicDao().insert(topicEntities);
     }
 
     public void saveMembers(List<String> members, String topicId) {
@@ -127,24 +128,6 @@ public class ModelDB {
         database.lineDao().insert(lineEntities);
     }
 
-    public void saveTopicExList(List<TopicEx> topicExList, TopicExType type) {
-        List<TopicExEntity> topicExEntities = new ArrayList<>();
-        for(TopicEx topicEx: topicExList) {
-            if(topicEx != null) {
-                TopicExEntity entity = new TopicExEntity();
-                entity.setTopicId(topicEx.getTopic().getId());
-                entity.setMicId(topicEx.getMic()==null? null: topicEx.getMic().getId());
-                entity.setLastRefresh(new Date());
-                entity.setType(type.name());
-                topicExEntities.add(entity);
-            }
-        }
-        List<Long> ids = database.topicExDao().insert(topicExEntities);
-        // for debug
-        List<TopicExEntity> entityList = database.topicExDao().get(type.name, 15, 0);
-        Log.i("saveTopicExList", "ok");
-    }
-
     public void saveMicList(List<Mic> micList) {
         List<MicEntity> micEntities = new ArrayList<>();
         for(Mic mic: micList) {
@@ -161,16 +144,20 @@ public class ModelDB {
         Log.i("saveMicList", "ok");
     }
 
+    public void saveUser(User user) {
+        UserEntity entity = new UserEntity();
+        entity.setId(user.getId());
+        entity.setName(user.getName());
+        entity.setAvatar(user.getAvatar());
+        entity.setLastRefresh(new Date());
+        database.userDao().insert(entity);
+    }
+
     public void saveUserList(List<User> userList) {
         List<UserEntity> userEntityList = new ArrayList<>();
         for(User user: userList) {
             if(user != null) {
-                UserEntity entity = new UserEntity();
-                entity.setId(user.getId());
-                entity.setName(user.getName());
-                entity.setAvatar(user.getAvatar());
-                entity.setLastRefresh(new Date());
-                userEntityList.add(entity);
+                saveUser(user);
             }
         }
         database.userDao().insert(userEntityList);
@@ -179,30 +166,23 @@ public class ModelDB {
     // endregion
 
     // region getter
-    public List<TopicEx> getTopicExByPage(TopicExType type, String started_by, int pageNum, int perPageNum) {
+    public List<Mic> getMicByPage(TopicType type, String started_by, int pageNum, int perPageNum) {
 
-        List<TopicEx> topicExes = new ArrayList<>();
-        List<TopicExEntity> topicExEntityList = null;
-        if(started_by != null) {
-            topicExEntityList = database.topicExDao().get(type.name, started_by, perPageNum, pageNum*perPageNum);
+        List<Mic> micList = new ArrayList<>();
+        List<MicEntity> entities = null;
+
+        if(TextUtils.isEmpty(started_by)) {
+            entities = database.micDao().get(type.name(),  perPageNum, pageNum*perPageNum);
         } else {
-            topicExEntityList = database.topicExDao().get(type.name,  perPageNum, pageNum*perPageNum);
-        }
-        List<String> topicIds = new ArrayList<>();
-        List<String> micIds = new ArrayList<>();
-        for(TopicExEntity entity: topicExEntityList) {
-            topicIds.add(entity.getTopicId());
-            micIds.add(entity.getMicId());
-        }
-        List<Topic> topics = getTopic(topicIds);
-        List<Mic> mics = getMic(micIds);
-        for(TopicExEntity entity: topicExEntityList) {
-            int i = topicExEntityList.indexOf(entity);
-            TopicEx topicEx = new TopicEx(topics.get(i), mics.get(i));
-            topicExes.add(topicEx);
+            entities = database.micDao().get(type.name(), started_by, perPageNum, pageNum*perPageNum);
         }
 
-        return topicExes;
+        for(MicEntity entity: entities) {
+            Mic mic = getMic(entity.getId());
+            micList.add(mic);
+        }
+
+        return micList;
     }
 
     public List<Line> getLine(String topicId) {
@@ -230,14 +210,37 @@ public class ModelDB {
         return user;
     }
 
+    public Mic getMic(String id) {
+        MicEntity entity = database.micDao().get(id);
+        Mic mic = new Mic();
+        Topic topic = getTopic(entity.getTopicId());
+        mic.setTopic(topic);
+        mic.setId(entity.getId());
+        return mic;
+    }
+
     public List<Mic> getMic(List<String> ids) {
         List<Mic> mics = new ArrayList<>();
-        List<MicEntity> micEntities = database.micDao().get(ids);
-        for(MicEntity entity: micEntities) {
-            Mic mic = new Mic(entity.getId());
+        for(String id: ids) {
+            Mic mic = getMic(id);
             mics.add(mic);
         }
         return mics;
+    }
+
+    public Topic getTopic(String id) {
+        TopicEntity entity = database.topicDao().get(id);
+        Topic topic = new Topic();
+        topic.setId(entity.getId());
+        topic.setType(TopicType.valueOf(entity.getType()));
+        topic.setName(entity.getName());
+        topic.setBrief(entity.getName());
+        topic.setSetting(new Setting("", entity.getSetting_url(), true));
+        topic.setDerive_from(entity.getDerive_from());
+        topic.setDialogue(getLine(entity.getId()));
+        topic.setStarted_by(getUser(entity.getStarted_by()));
+        topic.setMembers(getMembers(entity.getId()));
+        return topic;
     }
 
     public List<Topic> getTopic(List<String> ids) {

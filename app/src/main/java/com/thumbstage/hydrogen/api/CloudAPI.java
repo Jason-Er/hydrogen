@@ -30,8 +30,7 @@ import com.thumbstage.hydrogen.model.LineType;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.Setting;
 import com.thumbstage.hydrogen.model.Topic;
-import com.thumbstage.hydrogen.model.TopicEx;
-import com.thumbstage.hydrogen.model.TopicExType;
+import com.thumbstage.hydrogen.model.TopicType;
 import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.repository.TableName;
 import com.thumbstage.hydrogen.utils.DataConvertUtil;
@@ -104,12 +103,14 @@ public class CloudAPI {
         FIELD_ID("objectId"),
         FIELD_NAME("name"),
         FIELD_BRIEF("brief"),
+        FIELD_IS_FINISHED("is_finished"),
         FIELD_STARTED_BY("started_by"),
         FIELD_DERIVE_FROM("derive_from"),
         FIELD_SETTING("setting"),
         FIELD_MEMBERS("members"),
         FIELD_DIALOGUE("dialogue"),
         FIELD_TOPIC("topic"),
+        FIELD_TYPE("type"),
         FIELD_MIC("mic");
 
         final String name;
@@ -118,6 +119,7 @@ public class CloudAPI {
         }
     }
 
+    /*
     public  void saveTopic2StartedOpened(final Topic topic) {
         saveTopic(topic, new ICallBack() {
             @Override
@@ -146,7 +148,7 @@ public class CloudAPI {
         });
     }
 
-    public void saveTopic2PublishedOpened(Topic topic, final ICallBack iCallBack) {
+    public void saveTopic2PublishedOpened(Topic topic) {
         saveTopic(topic, new ICallBack() {
             @Override
             public void callback(final String objectID) {
@@ -158,7 +160,6 @@ public class CloudAPI {
                     @Override
                     public void done(AVException e) {
                         // TODO: 2/18/2019 need toast here
-                        iCallBack.callback(objectID);
                         Log.i(TAG, "saveTopic2PublishedOpened ok");
                     }
                 });
@@ -194,6 +195,7 @@ public class CloudAPI {
             }
         });
     }
+    */
 
     public void createMic(final Topic topic, final ICallBack iCallBack) {
         AVIMClient client = AVIMClient.getInstance(AVUser.getCurrentUser().getObjectId());
@@ -220,6 +222,20 @@ public class CloudAPI {
         });
     }
 
+    public void saveTopic(@NonNull final Topic topic) {
+        saveTopic(topic, new ICallBack() {
+            @Override
+            public void callback(final String topicID) {
+                createMic(topic, new ICallBack() {
+                    @Override
+                    public void callback(String micID) {
+                        Log.i(TAG, "saveTopic topicID:"+topicID+" micID:"+micID);
+                    }
+                });
+            }
+        });
+    }
+
     public void saveTopic(@NonNull Topic topic, final ICallBack iCallBack) {
         if( topic.getMembers().size() == 0 ) {
             topic.getMembers().add(new User(UserGlobal.getInstance().getCurrentUserId(),"",""));
@@ -227,6 +243,7 @@ public class CloudAPI {
         final AVObject record = new AVObject(Topic.class.getSimpleName());
         record.put(FieldName.FIELD_NAME.name, topic.getName());
         record.put(FieldName.FIELD_BRIEF.name, topic.getBrief());
+        record.put(FieldName.FIELD_TYPE.name, topic.getType().name());
         record.put(FieldName.FIELD_STARTED_BY.name, AVUser.getCurrentUser());
         if( !TextUtils.isEmpty( topic.getDerive_from() ) ) {
             AVObject avDeriveFrom = AVObject.createWithoutData(Topic.class.getSimpleName(), topic.getDerive_from());
@@ -257,14 +274,57 @@ public class CloudAPI {
         saveTopic(topic, iCallBack);
     }
 
-    public interface ITopicExCallBack {
-        void callback(List<TopicEx> topicExList);
+    public interface IMicCallBack {
+        void callback(List<Mic> micList);
     }
 
-    public void getTopicEx(TopicExType type, int pageNum, final ITopicExCallBack callBack) {
-        AVQuery<AVObject> avQuery = new AVQuery<>(type.name);
+
+    public void getMic(TopicType type, String start_by, int pageNum, final IMicCallBack callBack) {
+        AVQuery<AVObject> avQuery = new AVQuery<>(TableName.TABLE_MIC.name);
         avQuery.include(FieldName.FIELD_TOPIC.name);
-        avQuery.include(FieldName.FIELD_TOPIC.name+"."+FieldName.FIELD_STARTED_BY.name);
+
+        List<AVQuery<AVObject>> andQuery = new ArrayList<>();
+        if(!TextUtils.isEmpty(start_by)) {
+            AVQuery<AVObject> avQueryAnd1 = new AVQuery<>(Topic.class.getSimpleName());
+            avQueryAnd1.whereEqualTo(FieldName.FIELD_STARTED_BY.name, start_by);
+            andQuery.add(avQueryAnd1);
+        }
+        AVQuery<AVObject> avQueryAnd2 = new AVQuery<>(Topic.class.getSimpleName());
+        avQueryAnd2.whereEqualTo(FieldName.FIELD_TYPE.name, type.name());
+        andQuery.add(avQueryAnd2);
+
+        AVQuery<AVObject> avQueryInner = AVQuery.and(andQuery);
+        avQuery.whereMatchesQuery(FieldName.FIELD_TOPIC.name, avQueryInner);
+        avQuery.limit(15);
+        avQuery.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> avObjects, AVException avException) {
+                if(avException == null) {
+                    final List<Mic> mices = new ArrayList<>();
+                    for(AVObject avObject: avObjects) {
+                        AVObject avTopic = avObject.getAVObject(FieldName.FIELD_TOPIC.name);
+                        getTopic(avTopic, new IReturnTopic() {
+                            @Override
+                            public void callback(Topic topic) {
+                                Mic mic = new Mic();
+                                mic.setTopic(topic);
+                                mices.add(mic);
+                                callBack.callback(mices);
+                            }
+                        });
+                    }
+                } else {
+                    avException.printStackTrace();
+                }
+            }
+        });
+    }
+    /*
+    public void getMic(TopicType type, int pageNum, final IMicCallBack callBack) {
+        AVQuery<AVObject> avQuery = new AVQuery<>(type.name);
+        avQuery.include(FieldName.FIELD_MIC.name);
+        avQuery.include(FieldName.FIELD_MIC.name+"."+FieldName.FIELD_TOPIC.name);
+        avQuery.include(FieldName.FIELD_MIC.name+"."+FieldName.FIELD_TOPIC.name+"."+FieldName.FIELD_STARTED_BY.name);
         avQuery.limit(15);
         switch (type) {
             case PUBLISHED_OPENED:
@@ -279,14 +339,14 @@ public class CloudAPI {
                 break;
         }
         avQuery.orderByAscending("createdAt");
-        getTopicEx(avQuery, pageNum, callBack);
+        getMic(avQuery, pageNum, callBack);
     }
 
-    private void getTopicEx(AVQuery<AVObject> avQuery, int pageNum, final ITopicExCallBack callBack) {
+    private void getMic(AVQuery<AVObject> avQuery, int pageNum, final IMicCallBack callBack) {
         avQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(List<AVObject> avObjects, AVException avException) {
-                final List<TopicEx> topicExes = new ArrayList<>();
+                final List<Mic> mices = new ArrayList<>();
                 if(avException == null) {
                     for(AVObject avObject: avObjects) {
                         AVObject avTopic = avObject.getAVObject(FieldName.FIELD_TOPIC.name);
@@ -300,9 +360,9 @@ public class CloudAPI {
                         getTopic(avTopic, new IReturnTopic() {
                             @Override
                             public void callback(Topic topic) {
-                                TopicEx topicEx = new TopicEx(topic, mic);
-                                topicExes.add(topicEx);
-                                callBack.callback(topicExes);
+                                Mic mic = new Mic(topic, mic);
+                                mices.add(mic);
+                                callBack.callback(mices);
                             }
                         });
                     }
@@ -312,7 +372,7 @@ public class CloudAPI {
             }
         });
     }
-
+    */
     private User findUser(List<User> users, String userId) {
         User user = null;
         for(User u: users) {

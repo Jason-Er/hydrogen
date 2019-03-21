@@ -1,10 +1,8 @@
 package com.thumbstage.hydrogen.view.browse.mine;
 
-import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,7 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.model.TopicEx;
+import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
 import com.thumbstage.hydrogen.view.create.fragment.TopicHandleType;
@@ -77,13 +75,12 @@ public class IStartedOpenedFragment extends Fragment implements IBrowseCustomize
 
     private void configureViewModel(){
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(BrowseViewModel.class);
-        viewModel.getIStartedOpened().observe(this, new Observer<List<TopicEx>>() {
+        viewModel.getIStartedOpenedByPageNum(0).observe(this, new Observer<List<Mic>>() {
             @Override
-            public void onChanged(@Nullable List<TopicEx> topicExes) {
-                recyclerViewAdapter.setItems(topicExes);
+            public void onChanged(@Nullable List<Mic> micList) {
+                recyclerViewAdapter.setItems(micList);
             }
         });
-        viewModel.getIStartedOpenedByPageNum(0);
     }
 
     // region implement of interface IBrowseCustomize

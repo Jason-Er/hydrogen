@@ -8,7 +8,7 @@ import com.google.gson.GsonBuilder;
 import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.database.HyDatabase;
 import com.thumbstage.hydrogen.database.ModelDB;
-import com.thumbstage.hydrogen.repository.TopicExRepository;
+import com.thumbstage.hydrogen.repository.MicRepository;
 import com.thumbstage.hydrogen.repository.TopicRepository;
 
 import java.util.concurrent.Executor;
@@ -46,8 +46,8 @@ public class AppModule {
 
     @Provides
     @Singleton
-    TopicExRepository provideTopicExRepository(CloudAPI cloudAPI, ModelDB modelDB, Executor executor) {
-        return new TopicExRepository(cloudAPI, modelDB, executor);
+    MicRepository provideTopicExRepository(CloudAPI cloudAPI, ModelDB modelDB, Executor executor) {
+        return new MicRepository(cloudAPI, modelDB, executor);
     }
 
     @Provides

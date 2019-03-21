@@ -23,15 +23,18 @@ import java.util.Date;
                         childColumns = "me")})
 public class AtMeEntity {
     @NonNull
-    protected String me;
+    private String me;
     @NonNull
     @ColumnInfo(name = "mic_id")
-    protected String micId;
+    private String micId;
     @NonNull
-    protected String who;
-    protected String what;
+    private String who;
+    @NonNull
+    private Date when;
+    private String what;
+    
     @ColumnInfo(name = "last_refresh")
-    protected Date lastRefresh;
+    private Date lastRefresh;
 
     @NonNull
     public String getMe() {
@@ -74,5 +77,14 @@ public class AtMeEntity {
 
     public void setLastRefresh(Date lastRefresh) {
         this.lastRefresh = lastRefresh;
+    }
+
+    @NonNull
+    public Date getWhen() {
+        return when;
+    }
+
+    public void setWhen(@NonNull Date when) {
+        this.when = when;
     }
 }

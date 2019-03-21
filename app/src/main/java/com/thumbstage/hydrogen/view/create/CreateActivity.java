@@ -6,9 +6,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.model.TopicEx;
-import com.thumbstage.hydrogen.view.create.fragment.TopicFragment;
-import com.thumbstage.hydrogen.view.create.fragment.TopicHandleType;
 
 import butterknife.ButterKnife;
 

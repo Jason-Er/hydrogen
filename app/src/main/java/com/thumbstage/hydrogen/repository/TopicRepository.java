@@ -8,6 +8,7 @@ import com.thumbstage.hydrogen.database.ModelDB;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.Topic;
+import com.thumbstage.hydrogen.model.TopicType;
 
 import java.util.concurrent.Executor;
 
@@ -35,19 +36,44 @@ public class TopicRepository {
     }
 
     public void createTopic() {
-
+        Topic topic = new Topic();
+        this.topic.setValue(topic);
     }
 
     public void attendTopic(Topic publishedOpened) {
 
     }
 
-    public void continueTopic(Topic toContinue, Mic mic) {
+    public void continueTopic(Mic mic) {
 
     }
 
     public void addLine(Line line) {
 
+    }
+
+    public void publishTheTopic() {
+        executor.execute(new Runnable() {
+             @Override
+             public void run() {
+                 Topic t = topic.getValue();
+                 t.setType(TopicType.PUBLISHED);
+                 cloudAPI.saveTopic(t);
+                 modelDB.saveTopic(t);
+             }
+         });
+    }
+
+    public void startTheTopic() {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                Topic t = topic.getValue();
+                t.setType(TopicType.UNPUBLISHED);
+                cloudAPI.saveTopic(t);
+                modelDB.saveTopic(t);
+            }
+        });
     }
 
 

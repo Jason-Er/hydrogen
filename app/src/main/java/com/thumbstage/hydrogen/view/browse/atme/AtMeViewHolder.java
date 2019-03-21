@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.AtMe;
-import com.thumbstage.hydrogen.model.TopicEx;
+import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.utils.GlideUtil;
 import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
@@ -39,9 +39,8 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                TopicEx topicEx = new TopicEx(null, atMe.getMic());
                 Intent intent = new Intent(v.getContext(), CreateActivity.class);
-                intent.putExtra(TopicEx.class.getSimpleName(), topicEx);
+                intent.putExtra(Mic.class.getSimpleName(), atMe.getMic());
                 intent.putExtra(TopicHandleType.class.getSimpleName(),
                         TopicHandleType.CONTINUE.name());
                 v.getContext().startActivity(intent);

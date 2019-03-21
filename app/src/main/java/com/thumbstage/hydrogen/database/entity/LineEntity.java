@@ -26,18 +26,18 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 public class LineEntity {
 
     @NonNull
-    protected String who;
+    private String who;
     @NonNull
-    protected Date when;
-    protected String what;
+    private Date when;
+    private String what;
 
     @ColumnInfo(name = "line_type")
-    protected String line_type;
+    private String line_type;
     @NonNull
     @ColumnInfo(name = "in_which_topic")
-    protected String inWhichTopic;
+    private String inWhichTopic;
 
-    protected long ordinal;
+    private long ordinal;
 
     @NonNull
     public String getWho() {

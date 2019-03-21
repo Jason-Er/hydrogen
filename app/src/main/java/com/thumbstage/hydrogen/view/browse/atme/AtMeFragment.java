@@ -21,8 +21,6 @@ import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.app.Privilege;
 import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.model.AtMe;
-import com.thumbstage.hydrogen.model.Mic;
-import com.thumbstage.hydrogen.model.TopicEx;
 import com.thumbstage.hydrogen.view.browse.IAdapterFunction;
 import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
 import com.thumbstage.hydrogen.viewmodel.BrowseViewModel;

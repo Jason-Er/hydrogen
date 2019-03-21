@@ -65,6 +65,7 @@ public class CaseCreateTopicItem extends CaseBase implements ICreateMenuItemFunc
     @Override
     public void startTopic() {
         Log.i(TAG, "startTopic");
+        viewModel.startTheTopic();
         /*
         if(imageUri != null) {
             File file = new File(imageUri.getPath());
@@ -91,6 +92,7 @@ public class CaseCreateTopicItem extends CaseBase implements ICreateMenuItemFunc
     @Override
     public void publishTopic() {
         Log.i(TAG, "publishTopic");
+        viewModel.publishTheTopic();
         /*
         if(imageUri != null) {
             File file = new File(imageUri.getPath());

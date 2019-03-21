@@ -11,6 +11,7 @@ public class Topic implements Parcelable {
     String id;
     String name;
     String brief;
+    TopicType type;
     Setting setting;
     User started_by;
     String derive_from; // topic id
@@ -30,6 +31,7 @@ public class Topic implements Parcelable {
         name = in.readString();
         brief = in.readString();
         derive_from = in.readString();
+        type = TopicType.valueOf(in.readString());
         members.clear();
         in.readList(members, User.class.getClassLoader());
         setting = in.readParcelable(Setting.class.getClassLoader());
@@ -49,6 +51,7 @@ public class Topic implements Parcelable {
         dest.writeString(name);
         dest.writeString(brief);
         dest.writeString(derive_from);
+        dest.writeString(type.name());
         dest.writeTypedList(members);
         dest.writeParcelable(setting, flags);
         dest.writeParcelable(started_by, flags);
@@ -111,6 +114,12 @@ public class Topic implements Parcelable {
         this.derive_from = derive_from;
         return this;
     }
+
+    public Topic setType(TopicType type) {
+        this.type = type;
+        return this;
+    }
+
     // endregion
 
     // region getter
@@ -146,5 +155,10 @@ public class Topic implements Parcelable {
     public String getDerive_from() {
         return derive_from;
     }
+
+    public TopicType getType() {
+        return type;
+    }
+
     // endregion
 }

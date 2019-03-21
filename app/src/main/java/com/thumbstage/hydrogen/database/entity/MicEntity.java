@@ -7,6 +7,8 @@ import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 
+import java.util.Date;
+
 @Entity(tableName = "mic",
         indices = {@Index("topic_id")},
         foreignKeys = {
@@ -16,12 +18,15 @@ import android.support.annotation.NonNull;
 public class MicEntity {
     @PrimaryKey
     @NonNull
-    protected String id;
-    protected String name;
+    private String id;
 
     @NonNull
     @ColumnInfo(name = "topic_id")
-    protected String topicId;
+    private String topicId;
+
+    @ColumnInfo(name = "last_refresh")
+    private Date lastRefresh;
+
 
     @NonNull
     public String getId() {
@@ -41,11 +46,11 @@ public class MicEntity {
         this.topicId = topicId;
     }
 
-    public String getName() {
-        return name;
+    public Date getLastRefresh() {
+        return lastRefresh;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setLastRefresh(Date lastRefresh) {
+        this.lastRefresh = lastRefresh;
     }
 }

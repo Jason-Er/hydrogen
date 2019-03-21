@@ -33,12 +33,20 @@ public class TopicViewModel extends ViewModel {
         topicRepository.attendTopic(publishedOpened);
     }
 
-    public void continueTopic(Topic toContinue, Mic mic) {
-        topicRepository.continueTopic(toContinue, mic);
+    public void continueTopic(Mic mic) {
+        topicRepository.continueTopic(mic);
     }
 
     public void addLine(Line line) {
         topicRepository.addLine(line);
+    }
+
+    public void publishTheTopic() {
+        topicRepository.publishTheTopic();
+    }
+
+    public void startTheTopic() {
+        topicRepository.startTheTopic();
     }
 
 

@@ -9,8 +9,8 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.Topic;
-import com.thumbstage.hydrogen.model.TopicEx;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
 import com.thumbstage.hydrogen.view.create.fragment.TopicHandleType;
 
@@ -19,7 +19,7 @@ import butterknife.ButterKnife;
 
 public class IAttendedOpenedViewHolder extends RecyclerView.ViewHolder {
 
-    TopicEx topicEx;
+    Mic mic;
 
     @BindView(R.id.item_browse_topic_setting)
     ImageView setting;
@@ -35,7 +35,7 @@ public class IAttendedOpenedViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), CreateActivity.class);
-                intent.putExtra(TopicEx.class.getSimpleName(), topicEx);
+                intent.putExtra(Mic.class.getSimpleName(), mic);
                 intent.putExtra(TopicHandleType.class.getSimpleName(),
                         TopicHandleType.CONTINUE.name());
                 v.getContext().startActivity(intent);
@@ -43,9 +43,9 @@ public class IAttendedOpenedViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    public void setTopicEx(TopicEx topicEx) {
-        this.topicEx = topicEx;
-        Topic topic = topicEx.getTopic();
+    public void setMic(Mic mic) {
+        this.mic = mic;
+        Topic topic = mic.getTopic();
         name.setText(topic.getName());
         brief.setText(topic.getBrief());
         if(topic.getSetting() != null) {

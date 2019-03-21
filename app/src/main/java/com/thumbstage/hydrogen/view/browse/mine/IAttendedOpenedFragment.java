@@ -16,8 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.model.Topic;
-import com.thumbstage.hydrogen.model.TopicEx;
+import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.viewmodel.BrowseViewModel;
 
 import java.util.List;
@@ -73,12 +72,11 @@ public class IAttendedOpenedFragment extends Fragment {
 
     private void configureViewModel() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(BrowseViewModel.class);
-        viewModel.getIAttendedOpened().observe(this, new Observer<List<TopicEx>>() {
+        viewModel.getIAttendedOpenedByPageNum(0).observe(this, new Observer<List<Mic>>() {
             @Override
-            public void onChanged(@Nullable List<TopicEx> topicExes) {
-                recyclerViewAdapter.setItems(topicExes);
+            public void onChanged(@Nullable List<Mic> micList) {
+                recyclerViewAdapter.setItems(micList);
             }
         });
-        viewModel.getIAttendedOpenedByPageNum(0);
     }
 }
