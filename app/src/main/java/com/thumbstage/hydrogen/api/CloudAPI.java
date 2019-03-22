@@ -110,8 +110,7 @@ public class CloudAPI {
         FIELD_MEMBERS("members"),
         FIELD_DIALOGUE("dialogue"),
         FIELD_TOPIC("topic"),
-        FIELD_TYPE("type"),
-        FIELD_MIC("mic");
+        FIELD_TYPE("type");
 
         final String name;
         FieldName(String name) {
@@ -207,8 +206,9 @@ public class CloudAPI {
 
         List<AVQuery<AVObject>> andQuery = new ArrayList<>();
         if(!TextUtils.isEmpty(start_by)) {
+            AVObject avUser = AVUser.createWithoutData(TableName.TABLE_USER.name, start_by);
             AVQuery<AVObject> avQueryAnd1 = new AVQuery<>(Topic.class.getSimpleName());
-            avQueryAnd1.whereEqualTo(FieldName.FIELD_STARTED_BY.name, start_by);
+            avQueryAnd1.whereEqualTo(FieldName.FIELD_STARTED_BY.name, avUser);
             andQuery.add(avQueryAnd1);
         }
         AVQuery<AVObject> avQueryAnd2 = new AVQuery<>(Topic.class.getSimpleName());

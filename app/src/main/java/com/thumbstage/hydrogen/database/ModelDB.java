@@ -62,8 +62,8 @@ public class ModelDB {
         entity.setLastRefresh(new Date());
         entity.setType(topic.getType().name());
         database.topicDao().insert(entity);
-        saveLineList(topic.getDialogue(), topic.getId());
         saveMembers(DataConvertUtil.user2StringId(topic.getMembers()), topic.getId());
+        saveLineList(topic.getDialogue(), topic.getId());
     }
 
     public void saveTopicList(List<Topic> topicList) {
