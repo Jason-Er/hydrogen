@@ -14,6 +14,9 @@ import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetDataCallback;
 import com.avos.avoscloud.SaveCallback;
+import com.thumbstage.hydrogen.api.CloudAPI;
+import com.thumbstage.hydrogen.model.Mic;
+import com.thumbstage.hydrogen.model.TopicType;
 import com.thumbstage.hydrogen.utils.StringUtil;
 
 import org.junit.Before;
@@ -371,6 +374,42 @@ public class ExampleInstrumentedTest {
             }
         });
         sleep(5);
+    }
+
+    @Test
+    public void testCloudAPI() {
+        CloudAPI cloudAPI = new CloudAPI();
+        cloudAPI.getMic(TopicType.PUBLISHED, "", false, 0, new CloudAPI.IMicCallBack() {
+            @Override
+            public void callback(List<Mic> micList) {
+                Log.i("testCloudAPI","");
+            }
+        });
+        sleep(10);
+    }
+
+    @Test
+    public void testCloudAPIRaw() {
+        AVQuery<AVObject> avQueryIs = new AVQuery<>("Topic");
+        avQueryIs.whereEqualTo("is_finished", false);
+
+        avQueryIs.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> avObjects, AVException avException) {
+                Log.i("testCloudAPIRaw","");
+                if (avException == null) {
+                    for (AVObject avObject : avObjects) {
+                        String type = (String) avObject.get("type");
+                        boolean isFinished = (boolean) avObject.get("is_finished");
+                        Log.i("testCloudAPIRaw", "");
+                    }
+                }
+            }
+        });
+
+
+
+        sleep(10);
     }
 
 

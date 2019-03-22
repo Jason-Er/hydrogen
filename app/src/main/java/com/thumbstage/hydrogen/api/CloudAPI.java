@@ -119,84 +119,6 @@ public class CloudAPI {
         }
     }
 
-    /*
-    public  void saveTopic2StartedOpened(final Topic topic) {
-        saveTopic(topic, new ICallBack() {
-            @Override
-            public void callback(final String topicID) {
-                createMic(topic, new ICallBack() {
-                    @Override
-                    public void callback(String conversationID) {
-                        Log.i(TAG, "saveTopic2StartedOpened topicID:"+topicID+" conversationID:"+conversationID);
-                        AVObject avTopic = AVObject.createWithoutData(Topic.class.getSimpleName(), topicID);
-                        AVObject avMic = AVObject.createWithoutData(TableName.TABLE_MIC.name, conversationID);
-                        avMic.put(FieldName.FIELD_TOPIC.name, avTopic);
-                        avMic.saveInBackground();
-                        AVObject record = new AVObject(TableName.TABLE_STARTED_OPENED.name);
-                        record.put(FieldName.FIELD_TOPIC.name, avTopic);
-                        record.put(FieldName.FIELD_MIC.name, avMic);
-                        record.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(AVException e) {
-                                // TODO: 2/18/2019 need toast here
-                                Log.i(TAG, "saveTopic2StartedOpened ok");
-                            }
-                        });
-                    }
-                });
-            }
-        });
-    }
-
-    public void saveTopic2PublishedOpened(Topic topic) {
-        saveTopic(topic, new ICallBack() {
-            @Override
-            public void callback(final String objectID) {
-                Log.i(TAG, "saveTopic2PublishedOpened id:"+objectID);
-                AVObject avTopic = AVObject.createWithoutData(Topic.class.getSimpleName(), objectID);
-                AVObject record = new AVObject(TableName.TABLE_PUBLISHED_OPENED.name);
-                record.put(FieldName.FIELD_TOPIC.name, avTopic);
-                record.saveInBackground(new SaveCallback() {
-                    @Override
-                    public void done(AVException e) {
-                        // TODO: 2/18/2019 need toast here
-                        Log.i(TAG, "saveTopic2PublishedOpened ok");
-                    }
-                });
-            }
-        });
-    }
-
-    public void copyTopicFromPublishedOpened(final Topic topic, final IReturnPipe iCallBack) {
-        copyTopic(topic, new ICallBack() {
-            @Override
-            public void callback(final String topicID) {
-                createMic(topic, new ICallBack() {
-                    @Override
-                    public void callback(String conversationID) {
-                        Log.i(TAG, "saveTopic2StartedOpened topicID:"+topicID+" conversationID:"+conversationID);
-                        AVObject avTopic = AVObject.createWithoutData(Topic.class.getSimpleName(), topicID);
-                        AVObject avConversation = AVObject.createWithoutData(TableName.TABLE_MIC.name, conversationID);
-                        avConversation.put(FieldName.FIELD_TOPIC.name, avTopic);
-                        avConversation.saveInBackground();
-                        AVObject record = new AVObject(TableName.TABLE_ATTENDED_OPENED.name);
-                        record.put(FieldName.FIELD_TOPIC.name, avTopic);
-                        record.put(FieldName.FIELD_MIC.name, avConversation);
-                        record.saveInBackground(new SaveCallback() {
-                            @Override
-                            public void done(AVException e) {
-                                // TODO: 2/18/2019 need toast here
-                                Log.i(TAG, "copyTopicFromPublishedOpened ok");
-                            }
-                        });
-                        iCallBack.callback(new Mic(conversationID));
-                    }
-                });
-            }
-        });
-    }
-    */
-
     public void createMic(final Topic topic, final ICallBack iCallBack) {
         AVIMClient client = AVIMClient.getInstance(AVUser.getCurrentUser().getObjectId());
         client.open(new AVIMClientCallback() {
@@ -281,6 +203,7 @@ public class CloudAPI {
     public void getMic(TopicType type, String start_by, boolean isFinished, int pageNum, final IMicCallBack callBack) {
         AVQuery<AVObject> avQuery = new AVQuery<>(TableName.TABLE_MIC.name);
         avQuery.include(FieldName.FIELD_TOPIC.name);
+        avQuery.include(FieldName.FIELD_TOPIC.name+"."+FieldName.FIELD_STARTED_BY.name);
 
         List<AVQuery<AVObject>> andQuery = new ArrayList<>();
         if(!TextUtils.isEmpty(start_by)) {
@@ -291,6 +214,7 @@ public class CloudAPI {
         AVQuery<AVObject> avQueryAnd2 = new AVQuery<>(Topic.class.getSimpleName());
         avQueryAnd2.whereEqualTo(FieldName.FIELD_TYPE.name, type.name());
         andQuery.add(avQueryAnd2);
+
         AVQuery<AVObject> avQueryAnd3 = new AVQuery<>(Topic.class.getSimpleName());
         avQueryAnd3.whereEqualTo(FieldName.FIELD_IS_FINISHED.name, isFinished);
         andQuery.add(avQueryAnd3);

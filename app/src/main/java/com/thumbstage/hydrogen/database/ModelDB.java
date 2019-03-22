@@ -134,7 +134,8 @@ public class ModelDB {
             if(mic != null && mic.getId() != null) {
                 MicEntity entity = new MicEntity();
                 entity.setId(mic.getId());
-                // entity.setTopicId(mic.getId());
+                entity.setTopicId(mic.getTopic().getId());
+                entity.setLastRefresh(new Date());
                 micEntities.add(entity);
             }
         }

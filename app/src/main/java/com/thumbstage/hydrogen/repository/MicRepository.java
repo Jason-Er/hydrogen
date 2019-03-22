@@ -2,6 +2,7 @@ package com.thumbstage.hydrogen.repository;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.text.TextUtils;
 
 import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.database.ModelDB;
@@ -10,7 +11,9 @@ import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.model.TopicType;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
@@ -24,8 +27,7 @@ public class MicRepository {
     private final ModelDB modelDB;
     private final Executor executor;
 
-    private MutableLiveData<List<Mic>> micListLive = new MutableLiveData<>();
-
+    private Map<String, MutableLiveData<List<Mic>>> liveDataMap = new HashMap<>();
 
     @Inject
     public MicRepository(CloudAPI cloudAPI, ModelDB modelDB, Executor executor) {
@@ -35,7 +37,17 @@ public class MicRepository {
     }
 
     public LiveData<List<Mic>> getMic(TopicType type, String started_by, boolean isFinished, int pageNum) {
-        micListLive.setValue(null);
+        MutableLiveData<List<Mic>> micListLive;
+        String key = type.name()+isFinished;
+        if(!TextUtils.isEmpty(started_by)) {
+            key += "personal";
+        }
+        if(liveDataMap.containsKey(key)) {
+            micListLive = liveDataMap.get(key);
+        } else {
+            micListLive = new MutableLiveData<>();
+            liveDataMap.put(key, micListLive);
+        }
         getMic(type, started_by, isFinished, pageNum, micListLive);
         return micListLive;
     }
@@ -44,29 +56,29 @@ public class MicRepository {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-            if( modelDB.isTopicNeedFresh(type) ) {
-                cloudAPI.getMic(type, started_by, isFinished, pageNum, new CloudAPI.IMicCallBack() {
-                    @Override
-                    public void callback(final List<Mic> micList) {
-                        executor.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                List<Topic> topics = new ArrayList<>();
-                                for(Mic mic:micList) {
-                                    topics.add(mic.getTopic());
+                if( modelDB.isTopicNeedFresh(type) ) {
+                    cloudAPI.getMic(type, started_by, isFinished, pageNum, new CloudAPI.IMicCallBack() {
+                        @Override
+                        public void callback(final List<Mic> micList) {
+                            executor.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    List<Topic> topics = new ArrayList<>();
+                                    for(Mic mic:micList) {
+                                        topics.add(mic.getTopic());
+                                    }
+                                    modelDB.saveTopicList(topics);
+                                    modelDB.saveMicList(micList);
+                                    mutableLiveData.postValue(micList);
                                 }
-                                modelDB.saveTopicList(topics);
-                                modelDB.saveMicList(micList);
-                                mutableLiveData.postValue(micList);
-                            }
-                        });
-                    }
-                });
-            } else {
-                // TODO: 3/15/2019 perPageNum need refactoring
-                List<Mic> micList = modelDB.getMicByPage(type, started_by, pageNum, 15);
-                mutableLiveData.postValue(micList);
-            }
+                            });
+                        }
+                    });
+                } else {
+                    // TODO: 3/15/2019 perPageNum need refactoring
+                    List<Mic> micList = modelDB.getMicByPage(type, started_by, pageNum, 15);
+                    mutableLiveData.postValue(micList);
+                }
             }
         });
     }

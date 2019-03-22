@@ -96,7 +96,7 @@ public class UserDaoTest extends DbTest {
     @Test
     public void testSaveMicList() {
         List<Mic> micList = new ArrayList<>();
-        micList.add(new Mic("5c85d82ba91c9300651146f9"));
+        //micList.add(new Mic("5c85d82ba91c9300651146f9"));
         converter.saveMicList(micList);
 
     }
