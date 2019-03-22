@@ -6,12 +6,12 @@ import android.os.Parcelable;
 import java.util.Date;
 
 public class Line implements Parcelable {
-    String who;
+    User who;
     Date when;
     String what;
     LineType lineType;
 
-    public Line(String who, Date when, String what, LineType lineType) {
+    public Line(User who, Date when, String what, LineType lineType) {
         this.who = who;
         this.when = when;
         this.what = what;
@@ -19,7 +19,7 @@ public class Line implements Parcelable {
     }
 
     protected Line(Parcel in) {
-        who = in.readString();
+        who = in.readParcelable(User.class.getClassLoader());
         what = in.readString();
         lineType = LineType.valueOf(in.readString());
         when = new Date(in.readLong());
@@ -44,15 +44,14 @@ public class Line implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(who);
+        dest.writeParcelable(who, flags);
         dest.writeString(what);
         dest.writeString(lineType.name());
         dest.writeLong(when.getTime());
     }
 
-
     // region getter
-    public String getWho() {
+    public User getWho() {
         return who;
     }
 

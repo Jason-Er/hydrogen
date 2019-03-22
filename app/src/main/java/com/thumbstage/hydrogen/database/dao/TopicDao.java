@@ -17,7 +17,7 @@ import static android.arch.persistence.room.OnConflictStrategy.REPLACE;
 public interface TopicDao {
 
     @Insert(onConflict = REPLACE)
-    void insert(TopicEntity topicEntity);
+    long insert(TopicEntity topicEntity);
 
     @Insert(onConflict = REPLACE)
     void insert(List<TopicEntity> topicEntities);
@@ -34,6 +34,6 @@ public interface TopicDao {
     @Query("SELECT * FROM topic WHERE id IN (:ids)")
     List<TopicEntity> get(List<String> ids);
 
-    @Query("SELECT * FROM topic WHERE id = :topicId AND last_refresh > :lastRefreshMax LIMIT 1")
-    TopicEntity hasTopic(String topicId, Date lastRefreshMax);
+    @Query("SELECT * FROM topic WHERE type = :type AND last_refresh > :lastRefreshMax LIMIT 1")
+    TopicEntity hasTopic(String type, Date lastRefreshMax);
 }

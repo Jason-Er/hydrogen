@@ -5,6 +5,7 @@ import com.avos.avoscloud.im.v2.messages.AVIMAudioMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.LineType;
+import com.thumbstage.hydrogen.model.User;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,7 +19,7 @@ public class DataConvertUtil {
         List<Map> list = new ArrayList<>();
         for(Line line:lines) {
             Map map = new HashMap();
-            map.put("who", line.getWho());
+            map.put("who", line.getWho().getId());
             map.put("when", StringUtil.date2String(line.getWhen()));
             map.put("what", line.getWhat());
             map.put("type", line.getLineType().name());
@@ -29,7 +30,7 @@ public class DataConvertUtil {
 
     public static Map convert2AVObject(Line line) {
         Map map = new HashMap();
-        map.put("who", line.getWho());
+        map.put("who", line.getWho().getId());
         map.put("when", StringUtil.date2String(line.getWhen()));
         map.put("what", line.getWhat());
         map.put("type", line.getLineType().name());
@@ -48,7 +49,15 @@ public class DataConvertUtil {
             what = (String) ((AVIMAudioMessage) message).getAttrs().get("what");
             type = LineType.valueOf((String) ((AVIMAudioMessage) message).getAttrs().get("type"));
         }
-        Line line = new Line(who, when, what, type);
+        Line line = new Line(new User(who, "",""), when, what, type);
         return line;
+    }
+
+    public static List<String> user2StringId(List<User> users) {
+        List<String> ids = new ArrayList<>();
+        for(User user: users) {
+            ids.add(user.getId());
+        }
+        return ids;
     }
 }

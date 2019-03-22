@@ -3,20 +3,15 @@ package com.thumbstage.hydrogen.app;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.avos.avoscloud.AVCallback;
-import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
+import com.thumbstage.hydrogen.model.User;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
-
-import cn.leancloud.chatkit.cache.LCIMConversationItemCache;
-import cn.leancloud.chatkit.cache.LCIMProfileCache;
 
 public class UserGlobal {
 
@@ -99,6 +94,11 @@ public class UserGlobal {
             return avUser.getObjectId();
         }
         return null;
+    }
+
+    public User getCurrentUser() {
+        User user = new User(avUser.getObjectId(), "","");
+        return user;
     }
 
     public AVIMConversation getConversation(final String conversationId) {

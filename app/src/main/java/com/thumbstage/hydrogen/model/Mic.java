@@ -5,9 +5,10 @@ import android.os.Parcelable;
 
 public class Mic implements Parcelable {
     String id; // conversation id
+    Topic topic;
 
-    public Mic(String id) {
-        this.id = id;
+    public Mic() {
+        topic = new Topic();
     }
 
     protected Mic(Parcel in) {
@@ -43,6 +44,14 @@ public class Mic implements Parcelable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public Topic getTopic() {
+        return topic;
+    }
+
+    public void setTopic(Topic topic) {
+        this.topic = topic;
     }
     // endregion
 }

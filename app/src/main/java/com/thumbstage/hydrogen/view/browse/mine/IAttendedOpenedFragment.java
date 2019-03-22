@@ -1,6 +1,7 @@
 package com.thumbstage.hydrogen.view.browse.mine;
 
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -15,16 +16,21 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.model.Topic;
-import com.thumbstage.hydrogen.model.TopicEx;
+import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.viewmodel.BrowseViewModel;
 
 import java.util.List;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.android.support.AndroidSupportInjection;
 
 public class IAttendedOpenedFragment extends Fragment {
+
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
 
     @BindView(R.id.fragment_recycler_common_pullrefresh)
     SwipeRefreshLayout refreshLayout;
@@ -50,15 +56,27 @@ public class IAttendedOpenedFragment extends Fragment {
         recyclerViewAdapter = new IAttendedOpenedAdapter();
         recyclerView.setAdapter(recyclerViewAdapter);
 
-        viewModel = ViewModelProviders.of(getActivity()).get(BrowseViewModel.class);
-        viewModel.getIAttendedOpened().observe(getActivity(), new Observer<List<TopicEx>>() {
+        return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        configureDagger();
+        configureViewModel();
+    }
+
+    private void configureDagger(){
+        AndroidSupportInjection.inject(this);
+    }
+
+    private void configureViewModel() {
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(BrowseViewModel.class);
+        viewModel.getIAttendedOpenedByPageNum(0).observe(this, new Observer<List<Mic>>() {
             @Override
-            public void onChanged(@Nullable List<TopicEx> topicExes) {
-                recyclerViewAdapter.setItems(topicExes);
+            public void onChanged(@Nullable List<Mic> micList) {
+                recyclerViewAdapter.setItems(micList);
             }
         });
-        viewModel.getIAttendedOpenedByPageNum(0);
-
-        return view;
     }
 }

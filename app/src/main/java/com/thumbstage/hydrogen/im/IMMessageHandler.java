@@ -10,11 +10,6 @@ import com.avos.avoscloud.im.v2.AVIMTypedMessageHandler;
 import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.event.IMIMTypeMessageEvent;
 
-import org.greenrobot.eventbus.EventBus;
-
-import cn.leancloud.chatkit.cache.LCIMConversationItemCache;
-import cn.leancloud.chatkit.utils.LCIMNotificationUtils;
-
 public class IMMessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> {
     final String TAG = "IMMessageHandler";
     private Context context;
@@ -39,6 +34,7 @@ public class IMMessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> 
             if (!client.getClientId().equals(UserGlobal.getInstance().getCurrentUserId())) {
                 client.close(null);
             } else {
+                /*
                 if (LCIMNotificationUtils.isShowNotification(conversation.getConversationId())) {
                     sendNotification(message, conversation);
                 }
@@ -49,6 +45,7 @@ public class IMMessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> 
                         callback.callBack();
                     }
                 }
+                */
             }
         }
     }

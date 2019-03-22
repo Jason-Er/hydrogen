@@ -24,10 +24,10 @@ public class TopicUserEntity {
 
     @NonNull
     @ColumnInfo(name = "topic_id")
-    protected String topicId;
+    private String topicId;
     @NonNull
     @ColumnInfo(name = "user_id")
-    protected String userId;
+    private String userId;
 
     public String getTopicId() {
         return topicId;

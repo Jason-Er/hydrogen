@@ -29,17 +29,19 @@
     <string name="sign">sign</string>
 
     <string name="IAttendedFragment_name">I attended topics</string>
-    <string name="IStartedFragment_name">I started topic</string>
-    <string name="PublishedClosedFragment_name">published closed topic</string>
-    <string name="PublishedOpenedFragment_name">published open topic</string>
+    <string name="IStartedFragment_name">I started mic</string>
+    <string name="PublishedClosedFragment_name">published closed mic</string>
+    <string name="PublishedOpenedFragment_name">published open mic</string>
     <string name="create_activity_name">create</string>
     <string name="action_ok">OK</string>
     <string name="action_publish">publish</string>
-    <string name="item_topic_setting">topic setting</string>
+    <string name="item_topic_setting">mic setting</string>
     <string name="AtMeFragment_name">who @ me</string>
     <string name="button_ok">OK</string>
     <string name="dialog_topic_setting_name">Name</string>
     <string name="dialog_topic_setting_brief">Brief</string>
     <string name="dialog_topic_setting_setting">Setting</string>
+    <string name="dialog_sent">send</string>
 
+    <string name="topic_bottom_record_layout_pressToRecord">按住录音</string>
 </resources>

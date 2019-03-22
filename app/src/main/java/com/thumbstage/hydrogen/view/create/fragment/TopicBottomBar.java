@@ -37,16 +37,8 @@ public class TopicBottomBar extends LinearLayout {
     View voiceBtn;
     @BindView(R.id.input_bar_btn_keyboard)
     View keyboardBtn;
-    @BindView(R.id.input_bar_layout_more)
-    View moreLayout;
     @BindView(R.id.input_bar_btn_record)
     VoiceRecordButton recordBtn;
-
-    /**
-     * action layout
-     */
-    @BindView(R.id.input_bar_layout_action)
-    LinearLayout actionLayout;
 
     /**
      * 最小间隔时间为 1 秒，避免多次点击
@@ -56,13 +48,6 @@ public class TopicBottomBar extends LinearLayout {
     public TopicBottomBar(Context context, AttributeSet attrs) {
         super(context, attrs);
         View.inflate(context, R.layout.layout_topic_bottom_bar, this);
-    }
-
-    /**
-     * 隐藏底部的图片、emtion 等 layout
-     */
-    public void hideMoreLayout() {
-        moreLayout.setVisibility(View.GONE);
     }
 
     @Override
@@ -76,7 +61,6 @@ public class TopicBottomBar extends LinearLayout {
         contentEditText.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                moreLayout.setVisibility(View.GONE);
                 SoftInputUtils.showSoftInput(getContext(), contentEditText);
             }
         });
@@ -87,10 +71,6 @@ public class TopicBottomBar extends LinearLayout {
      */
     @OnClick(R.id.input_bar_btn_action)
     public void actionBtn(View view) {
-        boolean showActionView =
-                (GONE == moreLayout.getVisibility() || GONE == actionLayout.getVisibility());
-        moreLayout.setVisibility(showActionView ? VISIBLE : GONE);
-        actionLayout.setVisibility(showActionView ? VISIBLE : GONE);
         SoftInputUtils.hideSoftInput(getContext(), contentEditText);
     }
 
@@ -98,7 +78,7 @@ public class TopicBottomBar extends LinearLayout {
     public void sendTextBtn(View view) {
         String content = contentEditText.getText().toString();
         if (TextUtils.isEmpty(content)) {
-            Toast.makeText(getContext(), cn.leancloud.chatkit.R.string.lcim_message_is_null, Toast.LENGTH_SHORT).show();
+            // Toast.makeText(getContext(), cn.leancloud.chatkit.R.string.lcim_message_is_null, Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -110,7 +90,7 @@ public class TopicBottomBar extends LinearLayout {
             }
         }, MIN_INTERVAL_SEND_MESSAGE);
 
-        Line line = new Line(UserGlobal.getInstance().getCurrentUserId(), new Date(), content, LineType.LT_DIALOGUE);
+        Line line = new Line(UserGlobal.getInstance().getCurrentUser(), new Date(), content, LineType.LT_DIALOGUE);
         EventBus.getDefault().post(
                 new ConversationBottomBarEvent(line, "text"));
     }
@@ -154,7 +134,6 @@ public class TopicBottomBar extends LinearLayout {
         voiceBtn.setVisibility(contentEditText.getText().length() > 0 ? GONE : VISIBLE);
         sendTextBtn.setVisibility(contentEditText.getText().length() > 0 ? VISIBLE : GONE);
         keyboardBtn.setVisibility(View.GONE);
-        moreLayout.setVisibility(View.GONE);
         contentEditText.requestFocus();
         SoftInputUtils.showSoftInput(getContext(), contentEditText);
     }
@@ -167,7 +146,6 @@ public class TopicBottomBar extends LinearLayout {
         recordBtn.setVisibility(View.VISIBLE);
         voiceBtn.setVisibility(GONE);
         keyboardBtn.setVisibility(VISIBLE);
-        moreLayout.setVisibility(View.GONE);
         SoftInputUtils.hideSoftInput(getContext(), contentEditText);
     }
 
