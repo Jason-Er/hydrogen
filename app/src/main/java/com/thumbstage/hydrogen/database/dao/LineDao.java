@@ -26,7 +26,7 @@ public interface LineDao {
     @Delete
     void delete(LineEntity... lineEntities);
 
-    @Query("SELECT * FROM line WHERE in_which_topic =:topicId")
+    @Query("SELECT * FROM line WHERE in_which_topic =:topicId ORDER BY ordinal ASC")
     List<LineEntity> get(String topicId);
 
 }

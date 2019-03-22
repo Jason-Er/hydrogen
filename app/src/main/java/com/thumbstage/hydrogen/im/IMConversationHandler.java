@@ -11,11 +11,6 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
-import cn.leancloud.chatkit.cache.LCIMConversationItemCache;
-import cn.leancloud.chatkit.event.LCIMConversationReadStatusEvent;
-import cn.leancloud.chatkit.event.LCIMMessageUpdatedEvent;
-import cn.leancloud.chatkit.event.LCIMOfflineMessageCountChangeEvent;
-
 /**
  * Created by wli on 15/12/1.
  * 和 Conversation 相关的事件的 handler
@@ -30,7 +25,7 @@ public class IMConversationHandler extends AVIMConversationEventHandler {
 
     @Override
     public void onUnreadMessagesCountUpdated(AVIMClient client, AVIMConversation conversation) {
-        LCIMConversationItemCache.getInstance().insertConversation(conversation.getConversationId());
+        // LCIMConversationItemCache.getInstance().insertConversation(conversation.getConversationId());
         AVIMMessage lastMessage = conversation.getLastMessage();
         Log.i(TAG, "lastMessage "+lastMessage.getContent());
         // System.out.println("LCIMConversationHandler#onUnreadMessagesCountUpdated conv=" + conversation.getConversationId() + ", lastMsg: " + lastMessage.getContent());
@@ -42,16 +37,20 @@ public class IMConversationHandler extends AVIMConversationEventHandler {
 
     @Override
     public void onLastDeliveredAtUpdated(AVIMClient client, AVIMConversation conversation) {
+        /*
         LCIMConversationReadStatusEvent event = new LCIMConversationReadStatusEvent();
         event.conversationId = conversation.getConversationId();
         // EventBus.getDefault().post(event);
+        */
     }
 
     @Override
     public void onLastReadAtUpdated(AVIMClient client, AVIMConversation conversation) {
+        /*
         LCIMConversationReadStatusEvent event = new LCIMConversationReadStatusEvent();
         event.conversationId = conversation.getConversationId();
         // EventBus.getDefault().post(event);
+        */
     }
 
     @Override

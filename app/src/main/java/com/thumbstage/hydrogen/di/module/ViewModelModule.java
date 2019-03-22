@@ -6,6 +6,7 @@ import android.arch.lifecycle.ViewModelProvider;
 import com.thumbstage.hydrogen.di.key.ViewModelKey;
 import com.thumbstage.hydrogen.viewmodel.BrowseViewModel;
 import com.thumbstage.hydrogen.viewmodel.FactoryViewModel;
+import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
 
 import dagger.Binds;
 import dagger.Module;
@@ -19,6 +20,11 @@ public abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(BrowseViewModel.class)
     abstract ViewModel bindBrowseViewModel(BrowseViewModel browseViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(TopicViewModel.class)
+    abstract ViewModel bindTopicViewModel(TopicViewModel topicViewModel);
 
     @Binds
     abstract ViewModelProvider.Factory bindViewModelFactory(FactoryViewModel factory);

@@ -19,21 +19,25 @@ public class TopicEntity {
 
     @PrimaryKey
     @NonNull
-    protected String id;
-    protected String name;
-    protected String brief;
+    private String id;
+    private String name;
+    private String brief;
 
     @ColumnInfo(name = "setting_url")
-    protected String setting_url;
+    private String setting_url;
 
     @ColumnInfo(name = "derive_from")
-    protected String derive_from;
+    private String derive_from;
 
     @ColumnInfo(name = "started_by")
-    protected String started_by;
+    private String started_by;
+
+    private String type;
+    @ColumnInfo(name = "is_finished")
+    private Boolean isFinished = false;
 
     @ColumnInfo(name = "last_refresh")
-    protected Date lastRefresh;
+    private Date lastRefresh;
 
     // --- CONSTRUCTORS ---
 
@@ -92,5 +96,21 @@ public class TopicEntity {
 
     public void setStarted_by(String started_by) {
         this.started_by = started_by;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
+
+    public Boolean getFinished() {
+        return isFinished;
+    }
+
+    public void setFinished(Boolean finished) {
+        isFinished = finished;
     }
 }

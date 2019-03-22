@@ -1,5 +1,8 @@
 package com.thumbstage.hydrogen.view.create.fragment;
 
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -7,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,7 +22,6 @@ import android.widget.ImageView;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Mic;
-import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
 import com.thumbstage.hydrogen.view.create.ICreateCustomize;
@@ -26,7 +29,8 @@ import com.thumbstage.hydrogen.view.create.ICreateMenuItemFunction;
 import com.thumbstage.hydrogen.view.create.cases.CaseAttendTopic;
 import com.thumbstage.hydrogen.view.create.cases.CaseBase;
 import com.thumbstage.hydrogen.view.create.cases.CaseContinueTopic;
-import com.thumbstage.hydrogen.view.create.cases.CaseCreateTopicItem;
+import com.thumbstage.hydrogen.view.create.cases.CaseCreateTopic;
+import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -35,8 +39,11 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.inject.Inject;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.android.support.AndroidSupportInjection;
 
 public class TopicFragment extends Fragment {
 
@@ -49,11 +56,15 @@ public class TopicFragment extends Fragment {
     @BindView(R.id.fragment_topic_pullrefresh)
     SwipeRefreshLayout refreshLayout;
 
-    Map<CreateActivity.TopicHandleType, CaseBase> roleMap = new HashMap<CreateActivity.TopicHandleType, CaseBase>(){
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
+    TopicViewModel viewModel;
+
+    Map<TopicHandleType, CaseBase> roleMap = new HashMap<TopicHandleType, CaseBase>(){
         {
-            put(CreateActivity.TopicHandleType.CREATE, new CaseCreateTopicItem());
-            put(CreateActivity.TopicHandleType.ATTEND, new CaseAttendTopic());
-            put(CreateActivity.TopicHandleType.CONTINUE, new CaseContinueTopic());
+            put(TopicHandleType.CREATE, new CaseCreateTopic());
+            put(TopicHandleType.ATTEND, new CaseAttendTopic());
+            put(TopicHandleType.PICKUP, new CaseContinueTopic());
         }
     };
 
@@ -73,9 +84,69 @@ public class TopicFragment extends Fragment {
         recyclerView.setLayoutManager( layoutManager );
         recyclerView.setAdapter(topicAdapter);
 
+        for(CaseBase caseBase: roleMap.values()) {
+            caseBase.setLayoutManager(layoutManager);
+            caseBase.setTopicAdapter(topicAdapter);
+            caseBase.setBackgroundView(background);
+        }
+
         EventBus.getDefault().register(this);
         setHasOptionsMenu(true);
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        configureDagger();
+        configureViewModel();
+    }
+
+    private void configureDagger(){
+        AndroidSupportInjection.inject(this);
+    }
+
+    private void configureViewModel(){
+        Mic mic = getActivity().getIntent().getParcelableExtra(Mic.class.getSimpleName());
+        String handleType = getActivity().getIntent().getStringExtra(TopicHandleType.class.getSimpleName());
+        if(TextUtils.isEmpty(handleType)) {
+            throw new IllegalArgumentException("No TopicHandleType found!");
+        }
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(TopicViewModel.class);
+
+        for(CaseBase caseBase: roleMap.values()) {
+            caseBase.setViewModel(viewModel);
+        }
+
+        switch (TopicHandleType.valueOf(handleType)) {
+            case CREATE:
+                currentRole = roleMap.get(TopicHandleType.CREATE);
+                viewModel.createTopic().observe(this, new Observer<Mic>() {
+                    @Override
+                    public void onChanged(@Nullable Mic mic) {
+                        topicAdapter.setMic(mic);
+                    }
+                });
+                break;
+            case ATTEND:
+                currentRole = roleMap.get(TopicHandleType.ATTEND);
+                viewModel.attendTopic(mic).observe(this, new Observer<Mic>() {
+                    @Override
+                    public void onChanged(@Nullable Mic mic) {
+
+                    }
+                });
+                break;
+            case PICKUP:
+                currentRole = roleMap.get(TopicHandleType.PICKUP);
+                viewModel.pickUpTopic(mic).observe(this, new Observer<Mic>() {
+                    @Override
+                    public void onChanged(@Nullable Mic mic) {
+
+                    }
+                });
+                break;
+        }
     }
 
     @Override
@@ -89,12 +160,13 @@ public class TopicFragment extends Fragment {
         currentRole.handleBottomBarEvent(event);
     }
 
-    public void attendTopic(Topic topic) {
+    /*
+    public void attendTopic(Topic mic) {
         currentRole = roleMap.get(CreateActivity.TopicHandleType.ATTEND);
         currentRole.setBackgroundView(background)
                 .setTopicAdapter(topicAdapter)
                 .setLayoutManager(layoutManager)
-                .setTopic(topic);
+                .setMic(mic);
     }
 
     public void createTopic() {
@@ -102,17 +174,18 @@ public class TopicFragment extends Fragment {
         currentRole.setBackgroundView(background)
                 .setTopicAdapter(topicAdapter)
                 .setLayoutManager(layoutManager)
-                .setTopic(null);
+                .setMic(null);
     }
 
-    public void continueTopic(Topic topic, Mic mic) {
-        currentRole = roleMap.get(CreateActivity.TopicHandleType.CONTINUE);
+    public void pickUpTopic(Topic mic, Mic mic) {
+        currentRole = roleMap.get(CreateActivity.TopicHandleType.PICKUP);
         currentRole.setBackgroundView(background)
                 .setTopicAdapter(topicAdapter)
                 .setLayoutManager(layoutManager)
                 .setMic(mic)
-                .setTopic(topic);
+                .setMic(mic);
     }
+    */
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

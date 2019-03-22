@@ -13,24 +13,31 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 
 @Entity(tableName = "line",
-        indices = {@Index("in_which_topic")},
+        primaryKeys = {"who","when", "in_which_topic"},
+        indices = {@Index("in_which_topic"), @Index("who")},
         foreignKeys = {
                 @ForeignKey(entity = TopicEntity.class,
                         parentColumns = "id",
                         childColumns = "in_which_topic",
-                        onDelete = CASCADE)})
+                        onDelete = CASCADE),
+                @ForeignKey(entity = UserEntity.class,
+                        parentColumns = "id",
+                        childColumns = "who")})
 public class LineEntity {
-    @PrimaryKey(autoGenerate = true)
-    protected long id;
+
     @NonNull
-    protected String who;
-    protected Date when;
-    protected String what;
+    private String who;
+    @NonNull
+    private Date when;
+    private String what;
 
     @ColumnInfo(name = "line_type")
-    protected String line_type;
+    private String line_type;
+    @NonNull
     @ColumnInfo(name = "in_which_topic")
-    protected String inWhichTopic;
+    private String inWhichTopic;
+
+    private long ordinal;
 
     @NonNull
     public String getWho() {
@@ -40,12 +47,12 @@ public class LineEntity {
     public void setWho(@NonNull String who) {
         this.who = who;
     }
-
+    @NonNull
     public Date getWhen() {
         return when;
     }
 
-    public void setWhen(Date when) {
+    public void setWhen(@NonNull Date when) {
         this.when = when;
     }
 
@@ -73,11 +80,11 @@ public class LineEntity {
         this.inWhichTopic = inWhichTopic;
     }
 
-    public long getId() {
-        return id;
+    public long getOrdinal() {
+        return ordinal;
     }
 
-    public void setId(long id) {
-        this.id = id;
+    public void setOrdinal(long ordinal) {
+        this.ordinal = ordinal;
     }
 }

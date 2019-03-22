@@ -9,17 +9,18 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.Topic;
-import com.thumbstage.hydrogen.model.TopicEx;
 import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
+import com.thumbstage.hydrogen.view.create.fragment.TopicHandleType;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class IStartedOpenedViewHolder extends RecyclerView.ViewHolder {
 
-    TopicEx topicEx;
+    Mic mic;
 
     @BindView(R.id.item_browse_topic_setting)
     ImageView setting;
@@ -37,17 +38,17 @@ public class IStartedOpenedViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), CreateActivity.class);
-                intent.putExtra(TopicEx.class.getSimpleName(), topicEx);
-                intent.putExtra(CreateActivity.TopicHandleType.class.getSimpleName(),
-                        CreateActivity.TopicHandleType.CONTINUE.name());
+                intent.putExtra(Mic.class.getSimpleName(), mic);
+                intent.putExtra(TopicHandleType.class.getSimpleName(),
+                        TopicHandleType.PICKUP.name());
                 v.getContext().startActivity(intent);
             }
         });
     }
 
-    public void setTopicEx(TopicEx topicEx) {
-        this.topicEx = topicEx;
-        Topic topic = topicEx.getTopic();
+    public void setMic(Mic mic) {
+        this.mic = mic;
+        Topic topic = mic.getTopic();
         name.setText(topic.getName());
         brief.setText(topic.getBrief());
         if(topic.getSetting() != null) {

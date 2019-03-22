@@ -12,12 +12,12 @@ public class UserEntity {
 
     @PrimaryKey
     @NonNull
-    protected String id;
-    protected String avatar;
-    protected String name;
+    private String id;
+    private String avatar;
+    private String name;
 
     @ColumnInfo(name = "last_refresh")
-    protected Date lastRefresh;
+    private Date lastRefresh;
 
 
     public String getId() { return id; }

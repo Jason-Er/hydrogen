@@ -18,7 +18,7 @@ public interface MicDao {
     void insert(MicEntity micEntity);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insert(List<MicEntity> micEntities);
+    List<Long> insert(List<MicEntity> micEntities);
 
     @Update
     void update(MicEntity... micEntities);
@@ -31,4 +31,11 @@ public interface MicDao {
 
     @Query("SELECT * FROM mic WHERE id IN (:ids)")
     List<MicEntity> get(List<String> ids);
+
+    @Query("SELECT * FROM mic WHERE topic_id IN ( SELECT id FROM topic WHERE type =:type) ORDER BY last_refresh DESC LIMIT :perPageNum OFFSET :offset")
+    List<MicEntity> get(String type, int perPageNum, int offset);
+
+    @Query("SELECT * FROM mic WHERE topic_id IN ( SELECT id FROM topic WHERE started_by =:started_by AND type =:type) ORDER BY last_refresh DESC LIMIT :perPageNum OFFSET :offset")
+    List<MicEntity> get(String type, String started_by, int perPageNum, int offset);
+
 }

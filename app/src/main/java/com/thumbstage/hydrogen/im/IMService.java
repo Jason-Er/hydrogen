@@ -12,9 +12,6 @@ import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 
 import java.util.List;
 
-import cn.leancloud.chatkit.cache.LCIMConversationItemCache;
-import cn.leancloud.chatkit.cache.LCIMProfileCache;
-
 public class IMService {
 
     private final String APP_ID = "mz0Nlz1o64kqyukS7pyj4sRe-gzGzoHsz";
@@ -51,6 +48,7 @@ public class IMService {
 
 
         if(AVUser.getCurrentUser() != null) {
+            /*
             LCIMProfileCache.getInstance().initDB(AVOSCloud.applicationContext, AVUser.getCurrentUser().getObjectId());
             LCIMConversationItemCache.getInstance().initDB(AVOSCloud.applicationContext, AVUser.getCurrentUser().getObjectId(), new AVCallback() {
                 @Override
@@ -58,6 +56,7 @@ public class IMService {
 
                 }
             });
+            */
         }
     }
 

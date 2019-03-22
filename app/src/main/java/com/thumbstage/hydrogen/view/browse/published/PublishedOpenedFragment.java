@@ -19,7 +19,7 @@ import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.app.Privilege;
-import com.thumbstage.hydrogen.model.TopicEx;
+import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.view.browse.IAdapterFunction;
 import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
 import com.thumbstage.hydrogen.viewmodel.BrowseViewModel;
@@ -76,13 +76,12 @@ public class PublishedOpenedFragment extends Fragment implements IBrowseCustomiz
 
     private void configureViewModel(){
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(BrowseViewModel.class);
-        viewModel.getPublishedOpened().observe(this, new Observer<List<TopicEx>>() {
+        viewModel.getPublishedOpenedByPageNum(0).observe(this, new Observer<List<Mic>>() {
             @Override
-            public void onChanged(@Nullable List<TopicEx> topicExes) {
-                recyclerViewAdapter.setItems(topicExes);
+            public void onChanged(@Nullable List<Mic> micList) {
+                recyclerViewAdapter.setItems(micList);
             }
         });
-        viewModel.getPublishedOpenedByPageNum(0);
     }
     // region implement of interface IBrowseCustomize
     @Override

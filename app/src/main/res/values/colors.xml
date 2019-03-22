@@ -5,4 +5,11 @@
     <color name="colorAccent">#D81B60</color>
 
     <color name="divider">#90909090</color>
+
+    <color name="hy_common_blue">#2c97e8</color>
+    <color name="hy_common_gray">#898989</color>
+    <color name="hy_commom_read">#ff0000</color>
+
+    <color name="hy_bottom_bar_text_black">#3e3e39</color>
+    <color name="hy_divider_line_color">#afafaf</color>
 </resources>

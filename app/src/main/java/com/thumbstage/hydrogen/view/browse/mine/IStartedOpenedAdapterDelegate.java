@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.model.TopicEx;
+import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.view.common.IAdapterDelegate;
 
 import java.util.List;
@@ -27,7 +27,7 @@ public class IStartedOpenedAdapterDelegate implements IAdapterDelegate<List> {
 
     @Override
     public boolean isForViewType(@NonNull List items, int position) {
-        return items.get(position) instanceof TopicEx;
+        return items.get(position) instanceof Mic;
     }
 
     @NonNull
@@ -40,6 +40,6 @@ public class IStartedOpenedAdapterDelegate implements IAdapterDelegate<List> {
 
     @Override
     public void onBindViewHolder(@NonNull List items, int position, @NonNull RecyclerView.ViewHolder holder) {
-        ((IStartedOpenedViewHolder)holder).setTopicEx((TopicEx) items.get(position));
+        ((IStartedOpenedViewHolder)holder).setMic((Mic) items.get(position));
     }
 }

@@ -22,10 +22,6 @@ import com.thumbstage.hydrogen.R;
 
 import java.io.File;
 
-import cn.leancloud.chatkit.utils.LCIMAudioHelper;
-import cn.leancloud.chatkit.utils.LCIMLogUtils;
-import cn.leancloud.chatkit.utils.LCIMPathUtils;
-
 public class VoiceRecordButton extends AppCompatButton {
     public static final int BACK_RECORDING = R.drawable.lcim_chat_voice_bg_pressed;
     public static final int BACK_IDLE = R.drawable.lcim_chat_voice_bg;
@@ -122,24 +118,27 @@ public class VoiceRecordButton extends AppCompatButton {
 
     private void setTextViewByStatus() {
         if (status == RELEASE_TO_CANCEL) {
-            textView.setTextColor(getColor(R.color.lcim_commom_read));
-            textView.setText(R.string.lcim_chat_record_button_releaseToCancel);
+            textView.setTextColor(getColor(R.color.hy_commom_read));
+            // textView.setText(R.string.lcim_chat_record_button_releaseToCancel);
         } else if (status == SLIDE_UP_TO_CANCEL) {
             textView.setTextColor(Color.WHITE);
-            textView.setText(R.string.lcim_chat_record_button_slideUpToCancel);
+            // textView.setText(R.string.lcim_chat_record_button_slideUpToCancel);
         }
     }
 
     private void startRecord() {
+        /*
         LCIMAudioHelper.getInstance().stopPlayer();
         initRecordDialog();
         startTime = System.currentTimeMillis();
         setBackgroundResource(BACK_RECORDING);
         startRecording();
         recordIndicator.show();
+        */
     }
 
     private void initRecordDialog() {
+        /*
         if (null == recordIndicator) {
             recordIndicator = new Dialog(getContext(), R.style.lcim_record_dialog_style);
             view = inflate(getContext(), R.layout.lcim_chat_record_layout, null);
@@ -153,6 +152,7 @@ public class VoiceRecordButton extends AppCompatButton {
             WindowManager.LayoutParams lp = recordIndicator.getWindow().getAttributes();
             lp.gravity = Gravity.CENTER;
         }
+        */
     }
 
     private void removeFile() {
@@ -172,11 +172,11 @@ public class VoiceRecordButton extends AppCompatButton {
         stopRecording();
         setBackgroundResource(BACK_IDLE);
         recordIndicator.dismiss();
-        Toast.makeText(getContext(), getContext().getString(R.string.lcim_chat_cancelRecord),
-                Toast.LENGTH_SHORT).show();
+        // Toast.makeText(getContext(), getContext().getString(R.string.lcim_chat_cancelRecord), Toast.LENGTH_SHORT).show();
         removeFile();
     }
 
+    /*
     private void startRecording() {
         outputPath = LCIMPathUtils.getRecordPathByCurrentTime(getContext());
         try {
@@ -212,6 +212,7 @@ public class VoiceRecordButton extends AppCompatButton {
             ex.printStackTrace();
         }
     }
+    */
 
     private void stopRecording() {
         if (thread != null) {
@@ -243,7 +244,7 @@ public class VoiceRecordButton extends AppCompatButton {
                 try {
                     Thread.sleep(200);
                 } catch (InterruptedException e) {
-                    LCIMLogUtils.logException(e);
+//                    LCIMLogUtils.logException(e);
                 }
                 if (audioRecorder == null || !running) {
                     break;
