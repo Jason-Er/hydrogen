@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,7 +22,6 @@ import android.widget.ImageView;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Mic;
-import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
 import com.thumbstage.hydrogen.view.create.ICreateCustomize;
@@ -29,7 +29,7 @@ import com.thumbstage.hydrogen.view.create.ICreateMenuItemFunction;
 import com.thumbstage.hydrogen.view.create.cases.CaseAttendTopic;
 import com.thumbstage.hydrogen.view.create.cases.CaseBase;
 import com.thumbstage.hydrogen.view.create.cases.CaseContinueTopic;
-import com.thumbstage.hydrogen.view.create.cases.CaseCreateTopicItem;
+import com.thumbstage.hydrogen.view.create.cases.CaseCreateTopic;
 import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
 
 import org.greenrobot.eventbus.EventBus;
@@ -62,9 +62,9 @@ public class TopicFragment extends Fragment {
 
     Map<TopicHandleType, CaseBase> roleMap = new HashMap<TopicHandleType, CaseBase>(){
         {
-            put(TopicHandleType.CREATE, new CaseCreateTopicItem());
+            put(TopicHandleType.CREATE, new CaseCreateTopic());
             put(TopicHandleType.ATTEND, new CaseAttendTopic());
-            put(TopicHandleType.CONTINUE, new CaseContinueTopic());
+            put(TopicHandleType.PICKUP, new CaseContinueTopic());
         }
     };
 
@@ -109,16 +109,10 @@ public class TopicFragment extends Fragment {
     private void configureViewModel(){
         Mic mic = getActivity().getIntent().getParcelableExtra(Mic.class.getSimpleName());
         String handleType = getActivity().getIntent().getStringExtra(TopicHandleType.class.getSimpleName());
-        if( handleType == null) {
+        if(TextUtils.isEmpty(handleType)) {
             throw new IllegalArgumentException("No TopicHandleType found!");
         }
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(TopicViewModel.class);
-        viewModel.getTopic().observe(this, new Observer<Topic>() {
-            @Override
-            public void onChanged(@Nullable Topic topic) {
-                topicAdapter.setTopic(topic);
-            }
-        });
 
         for(CaseBase caseBase: roleMap.values()) {
             caseBase.setViewModel(viewModel);
@@ -127,15 +121,30 @@ public class TopicFragment extends Fragment {
         switch (TopicHandleType.valueOf(handleType)) {
             case CREATE:
                 currentRole = roleMap.get(TopicHandleType.CREATE);
-                viewModel.createTopic();
+                viewModel.createTopic().observe(this, new Observer<Mic>() {
+                    @Override
+                    public void onChanged(@Nullable Mic mic) {
+                        topicAdapter.setMic(mic);
+                    }
+                });
                 break;
             case ATTEND:
                 currentRole = roleMap.get(TopicHandleType.ATTEND);
-                viewModel.attendTopic(mic.getTopic());
+                viewModel.attendTopic(mic).observe(this, new Observer<Mic>() {
+                    @Override
+                    public void onChanged(@Nullable Mic mic) {
+
+                    }
+                });
                 break;
-            case CONTINUE:
-                currentRole = roleMap.get(TopicHandleType.CONTINUE);
-                viewModel.continueTopic(mic);
+            case PICKUP:
+                currentRole = roleMap.get(TopicHandleType.PICKUP);
+                viewModel.pickUpTopic(mic).observe(this, new Observer<Mic>() {
+                    @Override
+                    public void onChanged(@Nullable Mic mic) {
+
+                    }
+                });
                 break;
         }
     }
@@ -152,12 +161,12 @@ public class TopicFragment extends Fragment {
     }
 
     /*
-    public void attendTopic(Topic topic) {
+    public void attendTopic(Topic mic) {
         currentRole = roleMap.get(CreateActivity.TopicHandleType.ATTEND);
         currentRole.setBackgroundView(background)
                 .setTopicAdapter(topicAdapter)
                 .setLayoutManager(layoutManager)
-                .setTopic(topic);
+                .setMic(mic);
     }
 
     public void createTopic() {
@@ -165,16 +174,16 @@ public class TopicFragment extends Fragment {
         currentRole.setBackgroundView(background)
                 .setTopicAdapter(topicAdapter)
                 .setLayoutManager(layoutManager)
-                .setTopic(null);
+                .setMic(null);
     }
 
-    public void continueTopic(Topic topic, Mic mic) {
-        currentRole = roleMap.get(CreateActivity.TopicHandleType.CONTINUE);
+    public void pickUpTopic(Topic mic, Mic mic) {
+        currentRole = roleMap.get(CreateActivity.TopicHandleType.PICKUP);
         currentRole.setBackgroundView(background)
                 .setTopicAdapter(topicAdapter)
                 .setLayoutManager(layoutManager)
                 .setMic(mic)
-                .setTopic(topic);
+                .setMic(mic);
     }
     */
 

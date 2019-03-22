@@ -5,8 +5,7 @@ import android.arch.lifecycle.ViewModel;
 
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.Mic;
-import com.thumbstage.hydrogen.model.Topic;
-import com.thumbstage.hydrogen.repository.TopicRepository;
+import com.thumbstage.hydrogen.repository.MicRepository;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -14,39 +13,37 @@ import javax.inject.Singleton;
 @Singleton
 public class TopicViewModel extends ViewModel {
 
-    private TopicRepository topicRepository;
+    private MicRepository micRepository;
 
     @Inject
-    public TopicViewModel(TopicRepository topicRepository) {
-        this.topicRepository = topicRepository;
+    public TopicViewModel(MicRepository micRepository) {
+        this.micRepository = micRepository;
     }
 
-    public LiveData<Topic> getTopic() {
-        return topicRepository.getTopic();
+    public LiveData<Mic> createTopic() {
+        return micRepository.createMic();
     }
 
-    public void createTopic() {
-        topicRepository.createTopic();
+    public LiveData<Mic> attendTopic(Mic mic) {
+        return micRepository.attendMic(mic);
     }
 
-    public void attendTopic(Topic publishedOpened) {
-        topicRepository.attendTopic(publishedOpened);
+    public LiveData<Mic> pickUpTopic(Mic mic) {
+        return micRepository.pickUpMic(mic);
     }
 
-    public void continueTopic(Mic mic) {
-        topicRepository.continueTopic(mic);
-    }
-
+    /*
     public void addLine(Line line) {
-        topicRepository.addLine(line);
+        micRepository.addLine(line);
     }
+    */
 
     public void publishTheTopic() {
-        topicRepository.publishTheTopic();
+        micRepository.publishTheTopic();
     }
 
     public void startTheTopic() {
-        topicRepository.startTheTopic();
+        micRepository.startTheTopic();
     }
 
 

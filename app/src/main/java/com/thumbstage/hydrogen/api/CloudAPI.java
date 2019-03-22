@@ -129,7 +129,7 @@ public class CloudAPI {
                         @Override
                         public void done(AVIMConversation conversation, AVIMException e) {
                             if(e == null) {
-                                Log.i(TAG, "createMic ok");
+                                Log.i(TAG, "createTopic ok");
                                 iCallBack.callback(conversation.getConversationId());
                             } else {
                                 e.printStackTrace();
@@ -284,7 +284,7 @@ public class CloudAPI {
                         } else {
                             mic = null;
                         }
-                        getTopic(avTopic, new IReturnTopic() {
+                        getMic(avTopic, new IReturnTopic() {
                             @Override
                             public void callback(Topic topic) {
                                 Mic mic = new Mic(topic, mic);

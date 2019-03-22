@@ -62,7 +62,7 @@ public abstract class CaseBase implements ITopicFragmentFunction {
     }
 
     protected void addLine(Line line) {
-        viewModel.addLine(line);
+        // viewModel.addLine(line);
         topicAdapter.addItems(line);
         scrollToBottom();
     }

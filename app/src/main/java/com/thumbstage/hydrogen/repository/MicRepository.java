@@ -83,6 +83,49 @@ public class MicRepository {
         });
     }
 
+    private MutableLiveData<Mic> micLiveData = new MutableLiveData<>();
+
+    public LiveData<Mic> createMic() {
+        Mic mic = new Mic();
+        micLiveData.setValue(mic);
+        return micLiveData;
+    }
+
+    public LiveData<Mic> attendMic(Mic mic) {
+        // TODO: 3/22/2019 do something
+        return micLiveData;
+    }
+
+    public LiveData<Mic> pickUpMic(Mic mic) {
+        // TODO: 3/22/2019 do something
+        return micLiveData;
+    }
+
+    public void publishTheTopic() {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                Mic mic = micLiveData.getValue();
+                mic.getTopic().setType(TopicType.PUBLISHED);
+                // cloudAPI.saveTopic(t);
+                // modelDB.saveTopic(t);
+            }
+        });
+    }
+
+    public void startTheTopic() {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                Mic mic = micLiveData.getValue();
+                mic.getTopic().setType(TopicType.UNPUBLISHED);
+                //cloudAPI.saveTopic(t);
+                //modelDB.saveTopic(t);
+            }
+        });
+    }
+
+
     /*
     public void setListenIMCallBack(IMMessageHandler imMessageHandler) {
         imMessageHandler.setCallback(new IIMCallBack() {

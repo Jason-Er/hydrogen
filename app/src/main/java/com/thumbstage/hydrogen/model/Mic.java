@@ -8,6 +8,7 @@ public class Mic implements Parcelable {
     Topic topic;
 
     public Mic() {
+        topic = new Topic();
     }
 
     protected Mic(Parcel in) {

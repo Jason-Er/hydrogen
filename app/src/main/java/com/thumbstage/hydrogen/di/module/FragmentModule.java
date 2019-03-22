@@ -8,6 +8,7 @@ import com.thumbstage.hydrogen.view.browse.mine.IStartedClosedFragment;
 import com.thumbstage.hydrogen.view.browse.mine.IStartedOpenedFragment;
 import com.thumbstage.hydrogen.view.browse.published.PublishedClosedFragment;
 import com.thumbstage.hydrogen.view.browse.published.PublishedOpenedFragment;
+import com.thumbstage.hydrogen.view.create.fragment.TopicFragment;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -28,4 +29,6 @@ public abstract class FragmentModule {
     abstract IAttendedClosedFragment contributeIAttendedClosedFragment();
     @ContributesAndroidInjector
     abstract AtMeFragment contributeAtMeFragment();
+    @ContributesAndroidInjector
+    abstract TopicFragment contributeTopicFragment();
 }

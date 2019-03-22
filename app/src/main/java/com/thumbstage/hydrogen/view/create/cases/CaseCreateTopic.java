@@ -22,9 +22,9 @@ import com.thumbstage.hydrogen.view.create.TopicSettingDialog;
 
 import java.io.File;
 
-public class CaseCreateTopicItem extends CaseBase implements ICreateMenuItemFunction, ICreateCustomize {
+public class CaseCreateTopic extends CaseBase implements ICreateMenuItemFunction, ICreateCustomize {
 
-    final String TAG = "CaseCreateTopicItem";
+    final String TAG = "CaseCreateTopic";
     Uri imageUri;
 
     @Override
@@ -40,6 +40,7 @@ public class CaseCreateTopicItem extends CaseBase implements ICreateMenuItemFunc
 
     @Override
     public void settings(final Fragment fragment) {
+
         /*
         TopicSettingDialog bottomDialog = new TopicSettingDialog(); //context, R.style.BottomDialog
         bottomDialog.setIOnOK(new TopicSettingDialog.IOnOK() {
@@ -60,6 +61,7 @@ public class CaseCreateTopicItem extends CaseBase implements ICreateMenuItemFunc
         });
         bottomDialog.show(fragment.getFragmentManager(), "hello");
         */
+
     }
 
     @Override

@@ -42,7 +42,7 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
                 Intent intent = new Intent(v.getContext(), CreateActivity.class);
                 intent.putExtra(Mic.class.getSimpleName(), atMe.getMic());
                 intent.putExtra(TopicHandleType.class.getSimpleName(),
-                        TopicHandleType.CONTINUE.name());
+                        TopicHandleType.PICKUP.name());
                 v.getContext().startActivity(intent);
             }
         });

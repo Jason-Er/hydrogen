@@ -36,8 +36,8 @@ public class TopicRepository {
     }
 
     public void createTopic() {
-        Topic topic = new Topic();
-        this.topic.setValue(topic);
+        Topic t = new Topic();
+        topic.setValue(t);
     }
 
     public void attendTopic(Topic publishedOpened) {
