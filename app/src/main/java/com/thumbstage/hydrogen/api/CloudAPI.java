@@ -278,8 +278,7 @@ public class CloudAPI {
         void callback(List<Mic> micList);
     }
 
-
-    public void getMic(TopicType type, String start_by, int pageNum, final IMicCallBack callBack) {
+    public void getMic(TopicType type, String start_by, boolean isFinished, int pageNum, final IMicCallBack callBack) {
         AVQuery<AVObject> avQuery = new AVQuery<>(TableName.TABLE_MIC.name);
         avQuery.include(FieldName.FIELD_TOPIC.name);
 
@@ -292,21 +291,25 @@ public class CloudAPI {
         AVQuery<AVObject> avQueryAnd2 = new AVQuery<>(Topic.class.getSimpleName());
         avQueryAnd2.whereEqualTo(FieldName.FIELD_TYPE.name, type.name());
         andQuery.add(avQueryAnd2);
+        AVQuery<AVObject> avQueryAnd3 = new AVQuery<>(Topic.class.getSimpleName());
+        avQueryAnd3.whereEqualTo(FieldName.FIELD_IS_FINISHED.name, isFinished);
+        andQuery.add(avQueryAnd3);
 
         AVQuery<AVObject> avQueryInner = AVQuery.and(andQuery);
         avQuery.whereMatchesQuery(FieldName.FIELD_TOPIC.name, avQueryInner);
         avQuery.limit(15);
         avQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
-            public void done(List<AVObject> avObjects, AVException avException) {
+            public void done(final List<AVObject> avObjects, AVException avException) {
                 if(avException == null) {
                     final List<Mic> mices = new ArrayList<>();
-                    for(AVObject avObject: avObjects) {
+                    for(final AVObject avObject: avObjects) {
                         AVObject avTopic = avObject.getAVObject(FieldName.FIELD_TOPIC.name);
                         getTopic(avTopic, new IReturnTopic() {
                             @Override
                             public void callback(Topic topic) {
                                 Mic mic = new Mic();
+                                mic.setId(avObject.getObjectId());
                                 mic.setTopic(topic);
                                 mices.add(mic);
                                 callBack.callback(mices);
@@ -388,6 +391,7 @@ public class CloudAPI {
             final AVFile avFile = avTopic.getAVFile(FieldName.FIELD_SETTING.name);
             final String id = avTopic.getObjectId();
             final String name = (String) avTopic.get(FieldName.FIELD_NAME.name);
+            final TopicType type = TopicType.valueOf((String) avTopic.get(FieldName.FIELD_TYPE.name));
             final String brief = (String) avTopic.get(FieldName.FIELD_BRIEF.name);
             final List<Map> datalist = avTopic.getList(FieldName.FIELD_DIALOGUE.name);
             final List<String> membersIds = avTopic.getList(FieldName.FIELD_MEMBERS.name);
@@ -424,6 +428,7 @@ public class CloudAPI {
                     });
 
                     Topic topic = new Topic();
+                    topic.setType(type);
                     topic.setId(id);
                     topic.setBrief(brief);
                     topic.setName(name);

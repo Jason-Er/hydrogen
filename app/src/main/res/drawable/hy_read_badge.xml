@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+       android:shape="rectangle">
+    <corners android:radius="@dimen/hy_badge_radius"/>
+    <solid android:color="@color/hy_commom_read"/>
+    <stroke
+        android:width="@dimen/hy_badge_stroke_width"
+        android:color="@android:color/white"/>
+    <padding
+        android:left="@dimen/hy_badge_padding"
+        android:right="@dimen/hy_badge_padding"/>
+</shape>

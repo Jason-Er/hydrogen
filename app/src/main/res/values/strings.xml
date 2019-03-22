@@ -41,5 +41,7 @@
     <string name="dialog_topic_setting_name">Name</string>
     <string name="dialog_topic_setting_brief">Brief</string>
     <string name="dialog_topic_setting_setting">Setting</string>
+    <string name="dialog_sent">send</string>
 
+    <string name="topic_bottom_record_layout_pressToRecord">按住录音</string>
 </resources>

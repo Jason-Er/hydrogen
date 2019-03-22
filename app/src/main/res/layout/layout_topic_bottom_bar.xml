@@ -7,13 +7,12 @@
     android:background="@android:color/white"
     android:orientation="vertical">
 
-    <View style="@style/LCIMDividerLine.Horizontal"/>
-
+    <View style="@style/HYDividerLine.Horizontal"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="@dimen/lcim_bottom_bar_height"
+        android:minHeight="@dimen/hy_bottom_bar_height"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -23,14 +22,14 @@
 
             <Button
                 android:id="@+id/input_bar_btn_action"
-                android:layout_width="@dimen/lcim_bottom_bar_button_size"
-                android:layout_height="@dimen/lcim_bottom_bar_button_size"
+                android:layout_width="@dimen/hy_bottom_bar_button_size"
+                android:layout_height="@dimen/hy_bottom_bar_button_size"
                 android:layout_marginLeft="3dp"
-                android:background="@drawable/lcim_bottom_bar_action_button_bg"/>
+                android:background="@drawable/hy_bottom_bar_action_button_bg"/>
         </LinearLayout>
 
         <include layout="@layout/layout_topic_bottom_bar_text"/>
     </LinearLayout>
 
-    <include layout="@layout/lcim_bottom_bar_more_layout"/>
+    <!--include layout="@layout/lcim_bottom_bar_more_layout"/-->
 </LinearLayout>

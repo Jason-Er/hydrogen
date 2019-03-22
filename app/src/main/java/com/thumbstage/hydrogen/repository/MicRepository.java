@@ -25,11 +25,7 @@ public class MicRepository {
     private final Executor executor;
 
     private MutableLiveData<List<Mic>> micListLive = new MutableLiveData<>();
-    /*
-    private MutableLiveData<List<Mic>> publishedOpened = new MutableLiveData<>();
-    private MutableLiveData<List<Mic>> iStartedOpened = new MutableLiveData<>();
-    private MutableLiveData<List<Mic>> iAttendedOpened = new MutableLiveData<>();
-    */
+
 
     @Inject
     public MicRepository(CloudAPI cloudAPI, ModelDB modelDB, Executor executor) {
@@ -38,32 +34,18 @@ public class MicRepository {
         this.executor = executor;
     }
 
-    /*
-    public LiveData<List<Mic>> getPublishedOpened() {
-        return publishedOpened;
-    }
-
-    public LiveData<List<Mic>> getIStartedOpened() {
-        return iStartedOpened;
-    }
-
-    public LiveData<List<Mic>> getIAttendedOpened() {
-        return iAttendedOpened;
-    }
-    */
-
-    public LiveData<List<Mic>> getMic(TopicType type, String started_by, int pageNum) {
+    public LiveData<List<Mic>> getMic(TopicType type, String started_by, boolean isFinished, int pageNum) {
         micListLive.setValue(null);
-        getMic(type, started_by, pageNum, micListLive);
+        getMic(type, started_by, isFinished, pageNum, micListLive);
         return micListLive;
     }
 
-    private void getMic(final TopicType type, final String started_by, final int pageNum, final MutableLiveData<List<Mic>> mutableLiveData) {
+    private void getMic(final TopicType type, final String started_by, final boolean isFinished, final int pageNum, final MutableLiveData<List<Mic>> mutableLiveData) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
             if( modelDB.isTopicNeedFresh(type) ) {
-                cloudAPI.getMic(type, started_by, pageNum, new CloudAPI.IMicCallBack() {
+                cloudAPI.getMic(type, started_by, isFinished, pageNum, new CloudAPI.IMicCallBack() {
                     @Override
                     public void callback(final List<Mic> micList) {
                         executor.execute(new Runnable() {

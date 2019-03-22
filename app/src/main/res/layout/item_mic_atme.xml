@@ -15,7 +15,7 @@
 
         <ImageView
             android:id="@+id/item_mic_atme_avatar"
-            style="@style/LCIMAvatar.Large"
+            style="@style/HyAvatar.Large"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="10dp"
             android:layout_centerVertical="true"/>
@@ -26,7 +26,7 @@
             android:layout_height="13dp"
             android:layout_alignParentRight="true"
             android:layout_marginRight="1dp"
-            android:background="@drawable/lcim_read_badge"
+            android:background="@drawable/hy_read_badge"
             android:gravity="center"
             android:textColor="@android:color/white"
             android:textSize="10sp"/>
@@ -56,7 +56,7 @@
 
             <TextView
                 android:id="@+id/item_mic_atme_time"
-                style="@style/LCIMTextAppearance.Small"
+                style="@style/HyTextAppearance.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="top"
@@ -65,7 +65,7 @@
 
         <TextView
             android:id="@+id/item_mic_atme_what"
-            style="@style/LCIMTextAppearance.Normal.Gray"
+            style="@style/HyTextAppearance.Normal.Gray"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:ellipsize="end"
