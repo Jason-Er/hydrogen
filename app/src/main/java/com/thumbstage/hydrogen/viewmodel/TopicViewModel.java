@@ -3,9 +3,8 @@ package com.thumbstage.hydrogen.viewmodel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
-import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.Mic;
-import com.thumbstage.hydrogen.repository.MicRepository;
+import com.thumbstage.hydrogen.repository.TopicRepository;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -13,37 +12,37 @@ import javax.inject.Singleton;
 @Singleton
 public class TopicViewModel extends ViewModel {
 
-    private MicRepository micRepository;
+    private TopicRepository topicRepository;
 
     @Inject
-    public TopicViewModel(MicRepository micRepository) {
-        this.micRepository = micRepository;
+    public TopicViewModel(TopicRepository topicRepository) {
+        this.topicRepository = topicRepository;
     }
 
     public LiveData<Mic> createTopic() {
-        return micRepository.createMic();
+        return topicRepository.createMic();
     }
 
     public LiveData<Mic> attendTopic(Mic mic) {
-        return micRepository.attendMic(mic);
+        return topicRepository.attendMic(mic);
     }
 
     public LiveData<Mic> pickUpTopic(Mic mic) {
-        return micRepository.pickUpMic(mic);
+        return topicRepository.pickUpMic(mic);
     }
 
     /*
     public void addLine(Line line) {
-        micRepository.addLine(line);
+        topicRepository.addLine(line);
     }
     */
 
     public void publishTheTopic() {
-        micRepository.publishTheTopic();
+        topicRepository.publishTheTopic();
     }
 
     public void startTheTopic() {
-        micRepository.startTheTopic();
+        topicRepository.startTheTopic();
     }
 
 

@@ -22,7 +22,7 @@ import android.widget.ImageView;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Mic;
-import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
+import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
 import com.thumbstage.hydrogen.view.create.ICreateCustomize;
 import com.thumbstage.hydrogen.view.create.ICreateMenuItemFunction;
@@ -156,36 +156,9 @@ public class TopicFragment extends Fragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onResponseMessageEvent(final ConversationBottomBarEvent event) {
+    public void onResponseMessageEvent(final TopicBottomBarEvent event) {
         currentRole.handleBottomBarEvent(event);
     }
-
-    /*
-    public void attendTopic(Topic mic) {
-        currentRole = roleMap.get(CreateActivity.TopicHandleType.ATTEND);
-        currentRole.setBackgroundView(background)
-                .setTopicAdapter(topicAdapter)
-                .setLayoutManager(layoutManager)
-                .setMic(mic);
-    }
-
-    public void createTopic() {
-        currentRole = roleMap.get(CreateActivity.TopicHandleType.CREATE);
-        currentRole.setBackgroundView(background)
-                .setTopicAdapter(topicAdapter)
-                .setLayoutManager(layoutManager)
-                .setMic(null);
-    }
-
-    public void pickUpTopic(Topic mic, Mic mic) {
-        currentRole = roleMap.get(CreateActivity.TopicHandleType.PICKUP);
-        currentRole.setBackgroundView(background)
-                .setTopicAdapter(topicAdapter)
-                .setLayoutManager(layoutManager)
-                .setMic(mic)
-                .setMic(mic);
-    }
-    */
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

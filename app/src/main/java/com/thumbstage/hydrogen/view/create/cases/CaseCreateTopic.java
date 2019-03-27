@@ -10,17 +10,11 @@ import android.view.MenuInflater;
 
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.api.CloudAPI;
-import com.thumbstage.hydrogen.model.HyFile;
-import com.thumbstage.hydrogen.model.Line;
-import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
 import com.thumbstage.hydrogen.model.Setting;
 import com.thumbstage.hydrogen.view.common.Navigation;
 import com.thumbstage.hydrogen.view.create.ICreateCustomize;
 import com.thumbstage.hydrogen.view.create.ICreateMenuItemFunction;
 import com.thumbstage.hydrogen.view.create.TopicSettingDialog;
-
-import java.io.File;
 
 public class CaseCreateTopic extends CaseBase implements ICreateMenuItemFunction, ICreateCustomize {
 
@@ -41,26 +35,24 @@ public class CaseCreateTopic extends CaseBase implements ICreateMenuItemFunction
     @Override
     public void settings(final Fragment fragment) {
 
-        /*
-        TopicSettingDialog bottomDialog = new TopicSettingDialog(); //context, R.style.BottomDialog
+        TopicSettingDialog bottomDialog = new TopicSettingDialog();
         bottomDialog.setIOnOK(new TopicSettingDialog.IOnOK() {
             @Override
             public void callback(TopicSettingDialog.LocalData localData) {
                 if(!TextUtils.isEmpty(localData.getName())) {
-                    topic.setName(localData.getName());
+                    topicAdapter.getTopic().setName(localData.getName());
                 }
                 if(!TextUtils.isEmpty(localData.getBrief())) {
-                    topic.setBrief(localData.getBrief());
+                    topicAdapter.getTopic().setBrief(localData.getBrief());
                 }
                 if(!TextUtils.isEmpty(localData.getImageURL())) {
-                    topic.setSetting(new Setting("", localData.getImageURL(), false));
+                    topicAdapter.getTopic().setSetting(new Setting("", localData.getImageURL(), false));
                 }
                 imageUri = localData.getImageUri();
                 Glide.with(backgroundView).load(imageUri).into(backgroundView);
             }
         });
         bottomDialog.show(fragment.getFragmentManager(), "hello");
-        */
 
     }
 

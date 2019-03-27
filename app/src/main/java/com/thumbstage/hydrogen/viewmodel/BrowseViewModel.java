@@ -8,7 +8,7 @@ import com.thumbstage.hydrogen.model.AtMe;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.TopicType;
 import com.thumbstage.hydrogen.repository.AtMeRepository;
-import com.thumbstage.hydrogen.repository.MicRepository;
+import com.thumbstage.hydrogen.repository.TopicRepository;
 
 import java.util.List;
 
@@ -18,27 +18,27 @@ import javax.inject.Singleton;
 @Singleton
 public class BrowseViewModel extends ViewModel {
 
-    private MicRepository micRepository;
+    private TopicRepository topicRepository;
     private AtMeRepository atMeRepository;
 
     final String TAG = "BrowseViewModel";
 
     @Inject
-    public BrowseViewModel(MicRepository micRepository, AtMeRepository atMeRepository) {
-        this.micRepository = micRepository;
+    public BrowseViewModel(TopicRepository topicRepository, AtMeRepository atMeRepository) {
+        this.topicRepository = topicRepository;
         this.atMeRepository = atMeRepository;
     }
 
     public LiveData<List<Mic>> getIAttendedOpenedByPageNum(int pageNum) {
-        return micRepository.getMic(TopicType.PICK_UP, UserGlobal.getInstance().getCurrentUserId(), false, pageNum);
+        return topicRepository.getMic(TopicType.PICK_UP, UserGlobal.getInstance().getCurrentUserId(), false, pageNum);
     }
 
     public LiveData<List<Mic>> getPublishedOpenedByPageNum(int pageNum) {
-        return micRepository.getMic(TopicType.PUBLISHED, "", false, pageNum);
+        return topicRepository.getMic(TopicType.PUBLISHED, "", false, pageNum);
     }
 
     public LiveData<List<Mic>> getIStartedOpenedByPageNum(int pageNum) {
-        return micRepository.getMic(TopicType.UNPUBLISHED, UserGlobal.getInstance().getCurrentUserId(), false, pageNum);
+        return topicRepository.getMic(TopicType.UNPUBLISHED, UserGlobal.getInstance().getCurrentUserId(), false, pageNum);
     }
 
     public LiveData<List<AtMe>> getAtMeByPageNum(String meId, int pageNum) {

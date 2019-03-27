@@ -130,6 +130,7 @@ public class CloudAPI {
                         public void done(AVIMConversation conversation, AVIMException e) {
                             if(e == null) {
                                 Log.i(TAG, "createTopic ok");
+
                                 iCallBack.callback(conversation.getConversationId());
                             } else {
                                 e.printStackTrace();
@@ -143,14 +144,16 @@ public class CloudAPI {
         });
     }
 
-    public void saveTopic(@NonNull final Topic topic) {
-        saveTopic(topic, new ICallBack() {
+    public void createMic(@NonNull final Mic mic, final ICallBack iCallBack) {
+        saveTopic(mic.getTopic(), new ICallBack() {
             @Override
             public void callback(final String topicID) {
-                createMic(topic, new ICallBack() {
+                createMic(mic.getTopic(), new ICallBack() {
                     @Override
                     public void callback(String micID) {
                         Log.i(TAG, "saveTopic topicID:"+topicID+" micID:"+micID);
+                        mic.setId(micID);
+                        mic.getTopic().setId(topicID);
                     }
                 });
             }

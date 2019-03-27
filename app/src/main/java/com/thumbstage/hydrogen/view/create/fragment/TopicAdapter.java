@@ -23,4 +23,12 @@ public class TopicAdapter extends ListDelegationAdapter {
         this.mic = mic;
         setItems(mic.getTopic().getDialogue());
     }
+
+    public Mic getMic() {
+        return mic;
+    }
+
+    public Topic getTopic() {
+        return mic.getTopic();
+    }
 }

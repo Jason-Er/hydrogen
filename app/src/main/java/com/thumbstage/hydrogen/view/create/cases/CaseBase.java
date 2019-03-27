@@ -4,7 +4,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
+import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.Setting;
 import com.thumbstage.hydrogen.view.create.fragment.ITopicFragmentFunction;
@@ -44,7 +44,7 @@ public abstract class CaseBase implements ITopicFragmentFunction {
 
 
     @Override
-    public void handleBottomBarEvent(ConversationBottomBarEvent event) {
+    public void handleBottomBarEvent(TopicBottomBarEvent event) {
         switch (event.getMessage()) {
             case "text":
                 addLine((Line) event.getData());
@@ -62,8 +62,7 @@ public abstract class CaseBase implements ITopicFragmentFunction {
     }
 
     protected void addLine(Line line) {
-        // viewModel.addLine(line);
-        topicAdapter.addItems(line);
+        topicAdapter.addItem(line);
         scrollToBottom();
     }
 

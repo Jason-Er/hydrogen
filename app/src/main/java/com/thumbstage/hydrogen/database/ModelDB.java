@@ -49,6 +49,10 @@ public class ModelDB {
     }
 
     // region Model 2 entity
+    public void saveMic(Mic mic) {
+
+    }
+
     public void saveTopic(Topic topic) {
         User user = topic.getStarted_by();
         saveUser(user);
