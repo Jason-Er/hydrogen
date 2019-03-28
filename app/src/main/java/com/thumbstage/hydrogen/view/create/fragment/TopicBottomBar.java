@@ -11,7 +11,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.LineType;
 import com.thumbstage.hydrogen.utils.PathUtils;
@@ -89,7 +88,7 @@ public class TopicBottomBar extends LinearLayout {
             }
         }, MIN_INTERVAL_SEND_MESSAGE);
 
-        Line line = new Line(UserGlobal.getInstance().getCurrentUser(), new Date(), content, LineType.LT_DIALOGUE);
+        Line line = new Line(null, new Date(), content, LineType.LT_DIALOGUE);
         EventBus.getDefault().post(
                 new TopicBottomBarEvent(line, "text"));
     }

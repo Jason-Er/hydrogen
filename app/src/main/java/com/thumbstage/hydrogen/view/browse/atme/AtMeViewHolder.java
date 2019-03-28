@@ -79,7 +79,7 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
         });
         */
         /*
-        AVIMConversation conversation = UserGlobal.getInstance().getConversation(mic.getId());
+        AVIMConversation conversation = CurrentUser.getInstance().getConversation(mic.getId());
 
         updateName(conversation);
         updateIcon(conversation);

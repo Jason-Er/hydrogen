@@ -5,11 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.view.common.IAdapterDelegate;
@@ -34,7 +31,7 @@ public class LineTextRightDelegate implements IAdapterDelegate<List> {
         Object object = items.get(position);
         if( object instanceof Line ) {
             if( !StringUtil.isUrl(((Line) object).getWhat())
-                    && ((Line) object).getWho().equals(UserGlobal.getInstance().getCurrentUserId()) ) {
+                    && ((Line) object).getWho().equals("currentUserId") ) {
                 status = true;
             }
         }

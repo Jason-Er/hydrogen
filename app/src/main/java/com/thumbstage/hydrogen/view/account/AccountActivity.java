@@ -9,7 +9,6 @@ import android.widget.EditText;
 
 import com.avos.avoscloud.AVUser;
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.app.UserGlobal;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -44,7 +43,7 @@ public class AccountActivity extends AppCompatActivity {
 
     @OnClick(R.id.activity_account_signOut)
     public void signOut(View view) {
-        UserGlobal.getInstance().signOut();
+        // CurrentUser.getInstance().signOut();
         onSupportNavigateUp();
     }
 

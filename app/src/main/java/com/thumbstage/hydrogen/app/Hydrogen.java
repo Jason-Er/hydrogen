@@ -22,7 +22,7 @@ public class Hydrogen extends Application implements HasActivityInjector {
         super.onCreate();
         this.initDagger();
         IMService.getInstance().init(getApplicationContext());
-        UserGlobal.getInstance().setAvUser(AVUser.getCurrentUser());
+        // CurrentUser.getInstance().setAvUser(AVUser.getCurrentUser());
     }
 
     @Override

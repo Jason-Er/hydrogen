@@ -1,12 +1,6 @@
 package com.thumbstage.hydrogen.view.browse;
 
-import android.Manifest;
-import android.annotation.TargetApi;
 import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -23,12 +17,8 @@ import android.view.MenuItem;
 
 import com.avos.avoscloud.AVUser;
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.app.UserGlobal;
-import com.thumbstage.hydrogen.im.IMService;
 import com.thumbstage.hydrogen.event.SignEvent;
 import com.thumbstage.hydrogen.view.common.Navigation;
-import com.thumbstage.hydrogen.viewmodel.BrowseViewModel;
-import com.thumbstage.hydrogen.viewmodel.UserViewModel;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -169,7 +159,7 @@ public class BrowseActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        pagerAdapter.updateFragmentsBy(UserGlobal.getInstance().getPrivilegeSet());
+        // pagerAdapter.updateFragmentsBy(CurrentUser.getInstance().getPrivilegeSet());
     }
 
     @Override
@@ -232,7 +222,7 @@ public class BrowseActivity extends AppCompatActivity
             case "signUser":
                 Log.d(TAG,"receive signUser");
                 AVUser avUser = (AVUser) event.getData();
-                // userViewModel.setAvUser(avUser);
+                // userViewModel.setUser(avUser);
                 break;
         }
     }

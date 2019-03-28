@@ -14,7 +14,6 @@ import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.SignUpCallback;
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.event.SignEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -81,7 +80,7 @@ public class SignUpFragment extends Fragment {
                 if( e == null ) {
                     SignEvent event = new SignEvent(user, "signUser");
                     EventBus.getDefault().post(event);
-                    UserGlobal.getInstance().setAvUser(AVUser.getCurrentUser());
+                    // CurrentUser.getInstance().setAvUser(AVUser.getCurrentUser());
                     ((SignActivity) getActivity()).onSupportNavigateUp();
                 } else {
                     switch (e.getCode()) {

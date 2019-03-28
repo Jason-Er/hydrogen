@@ -72,7 +72,7 @@ public class IAttendedOpenedFragment extends Fragment {
 
     private void configureViewModel() {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(BrowseViewModel.class);
-        viewModel.getIAttendedOpenedByPageNum(0).observe(this, new Observer<List<Mic>>() {
+        viewModel.getIAttendedOpenedByPageNum("", 0).observe(this, new Observer<List<Mic>>() {
             @Override
             public void onChanged(@Nullable List<Mic> micList) {
                 recyclerViewAdapter.setItems(micList);

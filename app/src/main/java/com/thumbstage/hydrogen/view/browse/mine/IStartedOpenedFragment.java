@@ -75,7 +75,7 @@ public class IStartedOpenedFragment extends Fragment implements IBrowseCustomize
 
     private void configureViewModel(){
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(BrowseViewModel.class);
-        viewModel.getIStartedOpenedByPageNum(0).observe(this, new Observer<List<Mic>>() {
+        viewModel.getIStartedOpenedByPageNum("", 0).observe(this, new Observer<List<Mic>>() {
             @Override
             public void onChanged(@Nullable List<Mic> micList) {
                 recyclerViewAdapter.setItems(micList);

@@ -13,6 +13,7 @@ import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.GetDataCallback;
+import com.avos.avoscloud.LogInCallback;
 import com.avos.avoscloud.SaveCallback;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
@@ -23,7 +24,6 @@ import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
-import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.model.HyFile;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.LineType;
@@ -144,8 +144,8 @@ public class CloudAPI {
         });
     }
 
-    public void createMic(@NonNull final Mic mic, final ICallBack iCallBack) {
-        saveTopic(mic.getTopic(), new ICallBack() {
+    public void createMic(String userId, @NonNull final Mic mic, final ICallBack iCallBack) {
+        saveTopic(userId, mic.getTopic(), new ICallBack() {
             @Override
             public void callback(final String topicID) {
                 createMic(mic.getTopic(), new ICallBack() {
@@ -160,9 +160,9 @@ public class CloudAPI {
         });
     }
 
-    public void saveTopic(@NonNull Topic topic, final ICallBack iCallBack) {
+    public void saveTopic(String userId, @NonNull Topic topic, final ICallBack iCallBack) {
         if( topic.getMembers().size() == 0 ) {
-            topic.getMembers().add(new User(UserGlobal.getInstance().getCurrentUserId(),"",""));
+            topic.getMembers().add(new User(userId,"",""));
         }
         final AVObject record = new AVObject(Topic.class.getSimpleName());
         record.put(FieldName.FIELD_NAME.name, topic.getName());
@@ -195,7 +195,7 @@ public class CloudAPI {
 
     public void copyTopic(Topic topic, final ICallBack iCallBack) {
         topic.setDerive_from(topic.getId());
-        saveTopic(topic, iCallBack);
+        saveTopic(getCurrentUserId(), topic, iCallBack);
     }
 
     public interface IMicCallBack {
@@ -262,7 +262,7 @@ public class CloudAPI {
             case IPUBLISHED_OPENED:
             case ISTARTED_OPENED:
             case IATTENDED_OPENED:
-                AVObject avUser = AVUser.createWithoutData(TableName.TABLE_USER.name, UserGlobal.getInstance().getCurrentUserId());
+                AVObject avUser = AVUser.createWithoutData(TableName.TABLE_USER.name, CurrentUser.getInstance().getCurrentUserId());
                 AVQuery<AVObject> avQueryInner = new AVQuery<>(Topic.class.getSimpleName());
                 avQueryInner.whereEqualTo(FieldName.FIELD_STARTED_BY.name, avUser);
                 avQuery.whereMatchesQuery(FieldName.FIELD_TOPIC.name, avQueryInner);
@@ -451,8 +451,10 @@ public class CloudAPI {
         });
     }
 
+
+
     public void sendLine(final Mic mic, final Line line, final IReturnBool icallback) {
-        AVIMConversation conversation = UserGlobal.getInstance().getConversation(mic.getId());
+        AVIMConversation conversation = getConversation(mic.getId());
         if( !StringUtil.isUrl(line.getWhat()) ) { // must be a text
             AVIMTextMessage message = new AVIMTextMessage();
             message.setText(line.getWhat());
@@ -489,7 +491,7 @@ public class CloudAPI {
     }
 
     public void getLastLineUser(Mic mic, final IReturnUser iReturnUser) {
-        AVIMConversation conversation = UserGlobal.getInstance().getConversation(mic.getId());
+        AVIMConversation conversation = getConversation(mic.getId());
         if(conversation != null) {
             AVIMMessage message = conversation.getLastMessage();
             if(message != null) {
@@ -509,7 +511,7 @@ public class CloudAPI {
     }
 
     public void getLastLine(Mic mic, final IReturnLine iReturnLine) {
-        AVIMConversation conversation = UserGlobal.getInstance().getConversation(mic.getId());
+        AVIMConversation conversation = getConversation(mic.getId());
         if(conversation != null) {
             AVIMMessage message = conversation.getLastMessage();
             if(message != null) {
@@ -580,6 +582,38 @@ public class CloudAPI {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    public void signIn(String id, String password, final IReturnUser iReturnUser) {
+        AVUser.logInInBackground(id, password, new LogInCallback<AVUser>() {
+            @Override
+            public void done(AVUser avObject, AVException e) {
+                if(e == null) {
+                    User user = new User(avObject.getObjectId(), (String) avObject.get("username"), (String) avObject.get("avatar"));
+                    iReturnUser.callback(user);
+                }
+            }
+        });
+    }
+
+    private AVIMClient getClient() {
+        AVUser avUser = AVUser.getCurrentUser();
+        if (!TextUtils.isEmpty(avUser.getObjectId()) && avUser != null) {
+            return AVIMClient.getInstance(avUser.getObjectId());
+        }
+        return null;
+    }
+
+    private AVIMConversation getConversation(final String conversationId) {
+        return getClient().getConversation(conversationId);
+    }
+
+    private String getCurrentUserId() {
+        AVUser avUser = AVUser.getCurrentUser();
+        if(avUser != null) {
+            return avUser.getObjectId();
+        }
+        return null;
     }
 
 }

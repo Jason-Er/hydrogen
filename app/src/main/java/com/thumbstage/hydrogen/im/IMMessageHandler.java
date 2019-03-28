@@ -7,7 +7,6 @@ import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 import com.avos.avoscloud.im.v2.AVIMTypedMessageHandler;
-import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.event.IMIMTypeMessageEvent;
 
 public class IMMessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> {
@@ -27,14 +26,15 @@ public class IMMessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> 
             return;
         }
 
-        if (UserGlobal.getInstance().getCurrentUserId() == null) {
+        /*
+        if (CurrentUser.getInstance().getCurrentUserId() == null) {
             Log.d(TAG,"selfId is null, please call LCChatKit.open!");
             client.close(null);
         } else {
-            if (!client.getClientId().equals(UserGlobal.getInstance().getCurrentUserId())) {
+            if (!client.getClientId().equals(CurrentUser.getInstance().getCurrentUserId())) {
                 client.close(null);
             } else {
-                /*
+
                 if (LCIMNotificationUtils.isShowNotification(conversation.getConversationId())) {
                     sendNotification(message, conversation);
                 }
@@ -45,9 +45,9 @@ public class IMMessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> 
                         callback.callBack();
                     }
                 }
-                */
             }
         }
+        */
     }
 
     @Override

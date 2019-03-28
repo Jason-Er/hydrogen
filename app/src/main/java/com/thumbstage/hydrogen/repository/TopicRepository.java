@@ -108,7 +108,7 @@ public class TopicRepository {
             public void run() {
                 Mic mic = micLiveData.getValue();
                 mic.getTopic().setType(TopicType.PUBLISHED);
-                cloudAPI.createMic(mic, new CloudAPI.ICallBack() {
+                cloudAPI.createMic("", mic, new CloudAPI.ICallBack() {
                     @Override
                     public void callback(String objectID) {
                         Log.i("TopicRepository","publishTheTopic ok objectID: "+objectID);
@@ -125,7 +125,7 @@ public class TopicRepository {
             public void run() {
                 Mic mic = micLiveData.getValue();
                 mic.getTopic().setType(TopicType.UNPUBLISHED);
-                cloudAPI.createMic(mic, new CloudAPI.ICallBack() {
+                cloudAPI.createMic("", mic, new CloudAPI.ICallBack() {
                     @Override
                     public void callback(String objectID) {
                         Log.i("TopicRepository","startTheTopic ok objectID: "+objectID);
@@ -162,7 +162,7 @@ public class TopicRepository {
         // List<AVIMConversation> conversationList = new ArrayList<>();
         for (String convId : convIdList) {
             micList.add(new Mic(convId));
-            // conversationList.add(UserGlobal.getInstance().getClient().getConversation(convId));
+            // conversationList.add(CurrentUser.getInstance().getClient().getConversation(convId));
         }
         atMe.setValue(micList);
     }

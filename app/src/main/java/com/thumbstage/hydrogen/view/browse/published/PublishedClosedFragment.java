@@ -1,12 +1,11 @@
 package com.thumbstage.hydrogen.view.browse.published;
 
-import android.app.Activity;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.app.Privilege;
+import com.thumbstage.hydrogen.model.Privilege;
 import com.thumbstage.hydrogen.view.browse.IAdapterFunction;
 import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
 

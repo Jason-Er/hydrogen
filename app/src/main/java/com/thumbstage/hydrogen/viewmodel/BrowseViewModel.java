@@ -3,7 +3,6 @@ package com.thumbstage.hydrogen.viewmodel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
-import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.model.AtMe;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.TopicType;
@@ -29,20 +28,20 @@ public class BrowseViewModel extends ViewModel {
         this.atMeRepository = atMeRepository;
     }
 
-    public LiveData<List<Mic>> getIAttendedOpenedByPageNum(int pageNum) {
-        return topicRepository.getMic(TopicType.PICK_UP, UserGlobal.getInstance().getCurrentUserId(), false, pageNum);
+    public LiveData<List<Mic>> getIAttendedOpenedByPageNum(String userId, int pageNum) {
+        return topicRepository.getMic(TopicType.PICK_UP, userId, false, pageNum);
     }
 
     public LiveData<List<Mic>> getPublishedOpenedByPageNum(int pageNum) {
         return topicRepository.getMic(TopicType.PUBLISHED, "", false, pageNum);
     }
 
-    public LiveData<List<Mic>> getIStartedOpenedByPageNum(int pageNum) {
-        return topicRepository.getMic(TopicType.UNPUBLISHED, UserGlobal.getInstance().getCurrentUserId(), false, pageNum);
+    public LiveData<List<Mic>> getIStartedOpenedByPageNum(String userId, int pageNum) {
+        return topicRepository.getMic(TopicType.UNPUBLISHED, userId, false, pageNum);
     }
 
-    public LiveData<List<AtMe>> getAtMeByPageNum(String meId, int pageNum) {
-        return atMeRepository.getAtMeByPageNum(meId, pageNum);
+    public LiveData<List<AtMe>> getAtMeByPageNum(String userId, int pageNum) {
+        return atMeRepository.getAtMeByPageNum(userId, pageNum);
     }
 
 }

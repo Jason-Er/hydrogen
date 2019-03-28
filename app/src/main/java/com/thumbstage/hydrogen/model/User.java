@@ -3,11 +3,14 @@ package com.thumbstage.hydrogen.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.Set;
+
 public class User implements Parcelable {
 
     String id;
     String name;
     String avatar;
+    Set<Privilege> privileges;
 
     public User(String id, String name, String avatar) {
         this.id = id;
@@ -69,5 +72,14 @@ public class User implements Parcelable {
     public void setAvatar(String avatar) {
         this.avatar = avatar;
     }
+
+    public Set<Privilege> getPrivileges() {
+        return privileges;
+    }
+
+    public void setPrivileges(Set<Privilege> privileges) {
+        this.privileges = privileges;
+    }
+
     // endregion
 }
