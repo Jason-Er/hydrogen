@@ -3,7 +3,6 @@ package com.thumbstage.hydrogen.app;
 import android.app.Activity;
 import android.app.Application;
 
-import com.avos.avoscloud.AVUser;
 import com.thumbstage.hydrogen.di.component.DaggerAppComponent;
 import com.thumbstage.hydrogen.im.IMService;
 

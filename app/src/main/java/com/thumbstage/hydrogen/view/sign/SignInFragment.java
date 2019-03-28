@@ -17,7 +17,7 @@ import android.widget.Toast;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.User;
-import com.thumbstage.hydrogen.viewmodel.SignViewModel;
+import com.thumbstage.hydrogen.viewmodel.UserViewModel;
 
 import javax.inject.Inject;
 
@@ -36,7 +36,7 @@ public class SignInFragment extends Fragment {
     @BindView(R.id.fragment_signIn_password)
     EditText password;
 
-    SignViewModel viewModel;
+    UserViewModel viewModel;
 
     @Nullable
     @Override
@@ -58,7 +58,7 @@ public class SignInFragment extends Fragment {
     }
 
     private void configureViewModel(){
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(SignViewModel.class);
+        viewModel = ViewModelProviders.of(this, viewModelFactory).get(UserViewModel.class);
     }
 
     @OnClick(R.id.fragment_signIn_signIn)

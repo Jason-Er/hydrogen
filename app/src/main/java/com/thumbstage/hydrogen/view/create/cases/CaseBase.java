@@ -20,7 +20,7 @@ public abstract class CaseBase implements ITopicFragmentFunction {
     TopicAdapter topicAdapter;
     LinearLayoutManager layoutManager;
     ImageView backgroundView;
-    TopicViewModel viewModel;
+    TopicViewModel topicViewModel;
 
     public CaseBase setTopicAdapter(TopicAdapter topicAdapter) {
         this.topicAdapter = topicAdapter;
@@ -37,11 +37,10 @@ public abstract class CaseBase implements ITopicFragmentFunction {
         return this;
     }
 
-    public CaseBase setViewModel(TopicViewModel viewModel) {
-        this.viewModel = viewModel;
+    public CaseBase setTopicViewModel(TopicViewModel topicViewModel) {
+        this.topicViewModel = topicViewModel;
         return this;
     }
-
 
     @Override
     public void handleBottomBarEvent(TopicBottomBarEvent event) {

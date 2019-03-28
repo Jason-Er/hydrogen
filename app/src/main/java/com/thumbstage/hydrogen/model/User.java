@@ -3,6 +3,7 @@ package com.thumbstage.hydrogen.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 public class User implements Parcelable {
@@ -16,6 +17,11 @@ public class User implements Parcelable {
         this.id = id;
         this.name = name;
         this.avatar = avatar;
+        this.privileges = new LinkedHashSet<Privilege>() {
+            {
+                add(Privilege.BROWSE_PUBLISHEDCLOSED);
+            }
+        };
     }
 
     protected User(Parcel in) {

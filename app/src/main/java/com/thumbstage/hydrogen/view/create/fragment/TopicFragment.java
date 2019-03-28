@@ -115,7 +115,7 @@ public class TopicFragment extends Fragment {
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(TopicViewModel.class);
 
         for(CaseBase caseBase: roleMap.values()) {
-            caseBase.setViewModel(viewModel);
+            caseBase.setTopicViewModel(viewModel);
         }
 
         switch (TopicHandleType.valueOf(handleType)) {

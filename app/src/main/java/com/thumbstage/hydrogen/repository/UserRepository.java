@@ -22,12 +22,14 @@ public class UserRepository {
     private final CloudAPI cloudAPI;
     private final ModelDB modelDB;
     private final Executor executor;
+    private User user = new User("0","anonymous", "");
 
     @Inject
     public UserRepository(CloudAPI cloudAPI, ModelDB modelDB, Executor executor) {
         this.cloudAPI = cloudAPI;
         this.modelDB = modelDB;
         this.executor = executor;
+        userLiveData.setValue(user);
     }
 
     private MutableLiveData<User> userLiveData = new MutableLiveData<>();
@@ -39,6 +41,10 @@ public class UserRepository {
                 userLiveData.setValue(user);
             }
         });
+        return userLiveData;
+    }
+
+    public LiveData<User> getCurrentUser() {
         return userLiveData;
     }
 }

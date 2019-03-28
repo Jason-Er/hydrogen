@@ -10,9 +10,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVUser;
-import com.avos.avoscloud.SignUpCallback;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.SignEvent;
 
@@ -70,6 +67,7 @@ public class SignUpFragment extends Fragment {
             return;
         }
 
+        /*
         final AVUser user = new AVUser();
         user.setUsername(name.getText().toString());
         user.setPassword(password.getText().toString());
@@ -103,6 +101,7 @@ public class SignUpFragment extends Fragment {
                 }
             }
         });
+        */
 
     }
 }
