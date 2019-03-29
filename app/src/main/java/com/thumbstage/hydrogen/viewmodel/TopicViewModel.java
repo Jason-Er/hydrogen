@@ -31,12 +31,6 @@ public class TopicViewModel extends ViewModel {
         return topicRepository.pickUpMic(mic);
     }
 
-    /*
-    public void addLine(Line line) {
-        topicRepository.addLine(line);
-    }
-    */
-
     public void publishTheTopic() {
         topicRepository.publishTheTopic();
     }

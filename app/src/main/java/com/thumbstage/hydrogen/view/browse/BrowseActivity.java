@@ -20,6 +20,7 @@ import android.view.MenuItem;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.User;
+import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.view.common.Navigation;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
 
@@ -79,7 +80,7 @@ public class BrowseActivity extends AppCompatActivity
                 int menuItemId = item.getItemId();
                 switch (menuItemId) {
                     case R.id.menu_browse_sign:
-                        if( user.getId().equals("anonymous") ) {
+                        if( user.getId().equals(StringUtil.DEFAULT_USERID) ) {
                             Navigation.sign2SignIn(BrowseActivity.this);
                         } else {
                             Navigation.sign2Account(BrowseActivity.this);

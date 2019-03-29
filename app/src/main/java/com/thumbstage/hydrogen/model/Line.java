@@ -6,10 +6,13 @@ import android.os.Parcelable;
 import java.util.Date;
 
 public class Line implements Parcelable {
-    User who;
-    Date when;
-    String what;
-    LineType lineType;
+    protected User who;
+    protected Date when;
+    protected String what;
+    protected LineType lineType;
+
+    public Line() {
+    }
 
     public Line(User who, Date when, String what, LineType lineType) {
         this.who = who;
@@ -50,9 +53,12 @@ public class Line implements Parcelable {
         dest.writeLong(when.getTime());
     }
 
-    // region getter
     public User getWho() {
         return who;
+    }
+
+    public void setWho(User who) {
+        this.who = who;
     }
 
     public Date getWhen() {
@@ -66,5 +72,5 @@ public class Line implements Parcelable {
     public LineType getLineType() {
         return lineType;
     }
-    // endregion
+
 }

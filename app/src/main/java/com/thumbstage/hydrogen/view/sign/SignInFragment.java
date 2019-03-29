@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.User;
+import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
 
 import javax.inject.Inject;
@@ -78,7 +79,7 @@ public class SignInFragment extends Fragment {
         viewModel.signIn(name_, password_).observe(this, new Observer<User>() {
             @Override
             public void onChanged(@Nullable User user) {
-                if( !user.getId().equals("anonymous") ) {
+                if( !user.getId().equals(StringUtil.DEFAULT_USERID) ) {
                     ((SignActivity) getActivity()).onSupportNavigateUp();
                 } else {
                     Toast toast = Toast.makeText(getContext(), getContext().getString(R.string.wrong_name_password), Toast.LENGTH_SHORT);

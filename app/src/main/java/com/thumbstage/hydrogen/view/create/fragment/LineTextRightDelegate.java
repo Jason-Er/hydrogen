@@ -10,6 +10,7 @@ import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.view.common.IAdapterDelegate;
+import com.thumbstage.hydrogen.view.create.type.LineTextRight;
 
 import java.util.List;
 
@@ -29,11 +30,8 @@ public class LineTextRightDelegate implements IAdapterDelegate<List> {
     public boolean isForViewType(@NonNull List items, int position) {
         boolean status = false;
         Object object = items.get(position);
-        if( object instanceof Line ) {
-            if( !StringUtil.isUrl(((Line) object).getWhat())
-                    && ((Line) object).getWho().equals("currentUserId") ) {
-                status = true;
-            }
+        if( object instanceof LineTextRight) {
+            status = true;
         }
         return status;
     }

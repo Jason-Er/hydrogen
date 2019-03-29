@@ -7,6 +7,7 @@ import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.Setting;
+import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.view.create.fragment.ITopicFragmentFunction;
 import com.thumbstage.hydrogen.view.create.fragment.TopicAdapter;
 import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
@@ -21,6 +22,7 @@ public abstract class CaseBase implements ITopicFragmentFunction {
     LinearLayoutManager layoutManager;
     ImageView backgroundView;
     TopicViewModel topicViewModel;
+    User user;
 
     public CaseBase setTopicAdapter(TopicAdapter topicAdapter) {
         this.topicAdapter = topicAdapter;
@@ -42,6 +44,10 @@ public abstract class CaseBase implements ITopicFragmentFunction {
         return this;
     }
 
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     @Override
     public void handleBottomBarEvent(TopicBottomBarEvent event) {
         switch (event.getMessage()) {
@@ -61,7 +67,8 @@ public abstract class CaseBase implements ITopicFragmentFunction {
     }
 
     protected void addLine(Line line) {
-        topicAdapter.addItem(line);
+        line.setWho(user);
+        topicAdapter.addLine(line);
         scrollToBottom();
     }
 

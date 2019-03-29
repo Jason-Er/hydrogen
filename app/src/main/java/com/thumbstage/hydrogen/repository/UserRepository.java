@@ -20,7 +20,7 @@ public class UserRepository {
     private final ModelDB modelDB;
     private final Executor executor;
 
-    private User defaultUser = new User("anonymous","anonymous", "");
+    private User defaultUser = new User(StringUtil.DEFAULT_USERID, StringUtil.DEFAULT_USERID, "");
     private User user = defaultUser;
 
     @Inject

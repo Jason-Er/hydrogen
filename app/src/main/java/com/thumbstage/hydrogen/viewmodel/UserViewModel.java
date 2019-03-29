@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModel;
 
 import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.repository.UserRepository;
-import com.thumbstage.hydrogen.utils.StringUtil;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

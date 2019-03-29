@@ -54,6 +54,30 @@ public class User implements Parcelable {
         dest.writeString(avatar);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this) {
+            return true;
+        }
+        if(!(obj instanceof User)) {
+            return false;
+        }
+        User user = (User) obj;
+        boolean status = name.equals(user.name)
+                && id.equals(user.id)
+                && avatar.equals(user.avatar)
+                && privileges.equals(user.privileges);
+        return status;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 53 * hash + (this.id != null ? this.id.hashCode() : 0);
+        hash = 53 * hash + this.name.hashCode();
+        return hash;
+    }
+
     // region getter and setter
     public String getId() {
         return id;

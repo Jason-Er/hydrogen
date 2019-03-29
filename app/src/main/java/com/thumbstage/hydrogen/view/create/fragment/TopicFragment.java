@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
+import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
 import com.thumbstage.hydrogen.view.create.ICreateCustomize;
 import com.thumbstage.hydrogen.view.create.ICreateMenuItemFunction;
@@ -31,6 +32,7 @@ import com.thumbstage.hydrogen.view.create.cases.CaseBase;
 import com.thumbstage.hydrogen.view.create.cases.CaseContinueTopic;
 import com.thumbstage.hydrogen.view.create.cases.CaseCreateTopic;
 import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
+import com.thumbstage.hydrogen.viewmodel.UserViewModel;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -58,7 +60,8 @@ public class TopicFragment extends Fragment {
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
-    TopicViewModel viewModel;
+    TopicViewModel topicViewModel;
+    UserViewModel userViewModel;
 
     Map<TopicHandleType, CaseBase> roleMap = new HashMap<TopicHandleType, CaseBase>(){
         {
@@ -68,6 +71,7 @@ public class TopicFragment extends Fragment {
         }
     };
 
+    User user;
     CaseBase currentRole = null;
     LinearLayoutManager layoutManager;
     TopicAdapter topicAdapter;
@@ -112,16 +116,28 @@ public class TopicFragment extends Fragment {
         if(TextUtils.isEmpty(handleType)) {
             throw new IllegalArgumentException("No TopicHandleType found!");
         }
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(TopicViewModel.class);
+        topicViewModel = ViewModelProviders.of(this, viewModelFactory).get(TopicViewModel.class);
+        userViewModel = ViewModelProviders.of(this, viewModelFactory).get(UserViewModel.class);
+
+        userViewModel.getCurrentUser().observe(this, new Observer<User>() {
+            @Override
+            public void onChanged(@Nullable User u) {
+                user = u;
+                topicAdapter.setUser(u);
+                for(CaseBase caseBase: roleMap.values()) {
+                    caseBase.setUser(user);
+                }
+            }
+        });
 
         for(CaseBase caseBase: roleMap.values()) {
-            caseBase.setTopicViewModel(viewModel);
+            caseBase.setTopicViewModel(topicViewModel);
         }
 
         switch (TopicHandleType.valueOf(handleType)) {
             case CREATE:
                 currentRole = roleMap.get(TopicHandleType.CREATE);
-                viewModel.createTopic().observe(this, new Observer<Mic>() {
+                topicViewModel.createTopic().observe(this, new Observer<Mic>() {
                     @Override
                     public void onChanged(@Nullable Mic mic) {
                         topicAdapter.setMic(mic);
@@ -130,7 +146,7 @@ public class TopicFragment extends Fragment {
                 break;
             case ATTEND:
                 currentRole = roleMap.get(TopicHandleType.ATTEND);
-                viewModel.attendTopic(mic).observe(this, new Observer<Mic>() {
+                topicViewModel.attendTopic(mic).observe(this, new Observer<Mic>() {
                     @Override
                     public void onChanged(@Nullable Mic mic) {
 
@@ -139,7 +155,7 @@ public class TopicFragment extends Fragment {
                 break;
             case PICKUP:
                 currentRole = roleMap.get(TopicHandleType.PICKUP);
-                viewModel.pickUpTopic(mic).observe(this, new Observer<Mic>() {
+                topicViewModel.pickUpTopic(mic).observe(this, new Observer<Mic>() {
                     @Override
                     public void onChanged(@Nullable Mic mic) {
 
