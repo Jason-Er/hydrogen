@@ -53,6 +53,7 @@ public class BrowseActivity extends AppCompatActivity
     @BindView(R.id.fab)
     FloatingActionButton fab;
 
+    User user;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,7 +79,11 @@ public class BrowseActivity extends AppCompatActivity
                 int menuItemId = item.getItemId();
                 switch (menuItemId) {
                     case R.id.menu_browse_sign:
-                        Navigation.sign(BrowseActivity.this);
+                        if( user.getId().equals("anonymous") ) {
+                            Navigation.sign2SignIn(BrowseActivity.this);
+                        } else {
+                            Navigation.sign2Account(BrowseActivity.this);
+                        }
                         break;
                 }
                 return false;
@@ -137,7 +142,8 @@ public class BrowseActivity extends AppCompatActivity
         super.onResume();
         userViewModel.getCurrentUser().observe(this, new Observer<User>() {
             @Override
-            public void onChanged(@Nullable User user) {
+            public void onChanged(@Nullable User u) {
+                user = u;
                 pagerAdapter.updateFragmentsBy(user.getPrivileges());
             }
         });

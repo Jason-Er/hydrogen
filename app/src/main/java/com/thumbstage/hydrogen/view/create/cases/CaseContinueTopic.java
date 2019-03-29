@@ -20,7 +20,7 @@ public class CaseContinueTopic extends CaseBase implements ICreateMenuItemFuncti
     // region implements interface ICreateMenuItemFunction
     @Override
     public void sign(Context context) {
-        Navigation.sign(context);
+        Navigation.sign2Account(context);
     }
 
     @Override

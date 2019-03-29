@@ -26,4 +26,8 @@ public class UserViewModel extends ViewModel {
     public LiveData<User> getCurrentUser() {
         return userRepository.getCurrentUser();
     }
+
+    public void signOut() {
+        userRepository.signOut();
+    }
 }

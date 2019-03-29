@@ -22,7 +22,9 @@ public class UserRepository {
     private final CloudAPI cloudAPI;
     private final ModelDB modelDB;
     private final Executor executor;
-    private User user = new User("0","anonymous", "");
+
+    private User defaultUser = new User("anonymous","anonymous", "");
+    private User user = defaultUser;
 
     @Inject
     public UserRepository(CloudAPI cloudAPI, ModelDB modelDB, Executor executor) {
@@ -45,6 +47,15 @@ public class UserRepository {
     }
 
     public LiveData<User> getCurrentUser() {
+        User user = cloudAPI.getCurrentUser();
+        if(user!=null) {
+            userLiveData.setValue(user);
+        }
         return userLiveData;
+    }
+
+    public void signOut() {
+        cloudAPI.signOut();
+        userLiveData.setValue(defaultUser);
     }
 }

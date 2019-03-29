@@ -3,7 +3,6 @@ package com.thumbstage.hydrogen.view.sign;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -80,10 +79,7 @@ public class SignInFragment extends Fragment {
         viewModel.signIn(name_, password_).observe(this, new Observer<User>() {
             @Override
             public void onChanged(@Nullable User user) {
-                if( user != null ) {
-                    Intent intent = new Intent();
-                    intent.putExtra(User.class.getSimpleName(), user);
-                    getActivity().setResult(2, intent);
+                if( !user.getId().equals("anonymous") ) {
                     ((SignActivity) getActivity()).onSupportNavigateUp();
                 } else {
                     Toast toast = Toast.makeText(getContext(), getContext().getString(R.string.wrong_name_password), Toast.LENGTH_SHORT);
@@ -91,22 +87,6 @@ public class SignInFragment extends Fragment {
                 }
             }
         });
-        /*
-        AVUser.logInInBackground(name.getText().toString(), password.getText().toString(), new LogInCallback<AVUser>() {
-            @Override
-            public void done(AVUser user, AVException e) {
-                if( e == null ) {
-                    SignEvent event = new SignEvent(user, "signUser");
-                    EventBus.getDefault().post(event);
-                    CurrentUser.getInstance().setAvUser(user);
-                    ((SignActivity) getActivity()).onSupportNavigateUp();
-                } else {
-                    Toast toast = Toast.makeText(getContext(), getContext().getString(R.string.wrong_name_password), Toast.LENGTH_SHORT);
-                    toast.show();
-                }
-            }
-        });
-        */
     }
 
     @OnClick(R.id.fragment_signIn_signUp)
