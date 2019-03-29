@@ -15,6 +15,7 @@ import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.GetDataCallback;
 import com.avos.avoscloud.LogInCallback;
 import com.avos.avoscloud.SaveCallback;
+import com.avos.avoscloud.SignUpCallback;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
@@ -289,7 +290,7 @@ public class CloudAPI {
                         }
                     }
                     AVObject avStartedBy = avTopic.getAVObject(FieldName.FIELD_STARTED_BY.name);
-                    User user = new User(avStartedBy.getObjectId(), (String) avStartedBy.get(FieldName.FIELD_USERNAME.name), (String) avStartedBy.get(FieldName.FIELD_AVATAR.name));
+                    User user = avObject2User(avStartedBy);
                     Setting setting;
                     if (avFile != null) {
                         boolean isInCloud = false;
@@ -380,7 +381,7 @@ public class CloudAPI {
                 if(avException == null) {
                     List<User> users = new ArrayList<>();
                     for(AVObject avObject: avObjects) {
-                        User user = new User(avObject.getObjectId(), (String) avObject.get(FieldName.FIELD_USERNAME.name), (String) avObject.get(FieldName.FIELD_AVATAR.name));
+                        User user = avObject2User(avObject);
                         users.add(user);
                     }
                     iReturnUsers.callback(users);
@@ -546,18 +547,43 @@ public class CloudAPI {
         AVUser.logOut();
     }
 
+    public void signUp(String name, String password, String email, final IReturnUser iReturnUser) {
+        final AVUser avUser = new AVUser();
+        avUser.setUsername( name );
+        avUser.setPassword( password );
+        avUser.setEmail(email);
+        avUser.signUpInBackground(new SignUpCallback() {
+            @Override
+            public void done(AVException e) {
+                if( e == null ) {
+                    User user = avUser2User(avUser);
+                    iReturnUser.callback(user);
+                } else {
+                    switch (e.getCode()) {
+                        case 202: {
+
+                        }
+                        break;
+                        case 203: {
+
+                        }
+                        break;
+                        case 214: {
+
+                        }
+                        break;
+                    }
+                }
+            }
+        });
+    }
+
     public void signIn(String id, String password, final IReturnUser iReturnUser) {
         AVUser.logInInBackground(id, password, new LogInCallback<AVUser>() {
             @Override
             public void done(AVUser avObject, AVException e) {
                 if(e == null) {
-                    User user = new User(avObject.getObjectId(), (String) avObject.get(FieldName.FIELD_USERNAME.name), (String) avObject.get(FieldName.FIELD_AVATAR.name));
-                    List<String> prilist = avObject.getList(FieldName.FIELD_PRIVILEGE.name);
-                    Set<Privilege> privileges = new LinkedHashSet<>();
-                    for(String str: prilist) {
-                        privileges.add(Privilege.valueOf(str));
-                    }
-                    user.setPrivileges(privileges);
+                    User user = avObject2User(avObject);
                     iReturnUser.callback(user);
                 }
             }
@@ -570,7 +596,7 @@ public class CloudAPI {
             @Override
             public void done(AVObject avObject, AVException e) {
                 if(e == null) {
-                    User user = new User(avObject.getObjectId(), (String) avObject.get(FieldName.FIELD_USERNAME.name), (String) avObject.get(FieldName.FIELD_AVATAR.name));
+                    User user = avObject2User(avObject);
                     iReturnUser.callback(user);
                 }
             }
@@ -579,6 +605,10 @@ public class CloudAPI {
 
     public User getCurrentUser() {
         AVUser avUser = AVUser.getCurrentUser();
+        return avUser2User(avUser);
+    }
+
+    private User avUser2User(AVUser avUser) {
         if(avUser!=null) {
             User user = new User(avUser.getObjectId(), avUser.getUsername(), (String) avUser.get(FieldName.FIELD_AVATAR.name));
             List<String> prilist = avUser.getList(FieldName.FIELD_PRIVILEGE.name);
@@ -598,5 +628,20 @@ public class CloudAPI {
             return user;
         }
         return null;
+    }
+
+    private User avObject2User(AVObject avObject) {
+        if(avObject != null) {
+            User user = new User(avObject.getObjectId(), (String) avObject.get(FieldName.FIELD_USERNAME.name), (String) avObject.get(FieldName.FIELD_AVATAR.name));
+            List<String> prilist = avObject.getList(FieldName.FIELD_PRIVILEGE.name);
+            Set<Privilege> privileges = new LinkedHashSet<>();
+            for(String str: prilist) {
+                privileges.add(Privilege.valueOf(str));
+            }
+            user.setPrivileges(privileges);
+            return user;
+        } else {
+            return null;
+        }
     }
 }

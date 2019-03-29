@@ -1,5 +1,6 @@
 package com.thumbstage.hydrogen.utils;
 
+import android.text.TextUtils;
 import android.webkit.URLUtil;
 
 import java.text.DateFormat;
@@ -51,5 +52,15 @@ public class StringUtil {
         Random random = new Random();
         int rannum = (int) (random.nextDouble() * (99999 - 10000 + 1)) + 10000;
         return rannum + str;
+    }
+
+    public static boolean isValidMail(String mail) {
+        boolean status = false;
+        if(!TextUtils.isEmpty(mail)) {
+            Pattern p = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+            Matcher matcher = p.matcher(mail);
+            status =  matcher.find();
+        }
+        return status;
     }
 }

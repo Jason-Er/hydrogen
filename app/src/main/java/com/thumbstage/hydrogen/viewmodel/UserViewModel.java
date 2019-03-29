@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModel;
 
 import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.repository.UserRepository;
+import com.thumbstage.hydrogen.utils.StringUtil;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -17,6 +18,10 @@ public class UserViewModel extends ViewModel {
     @Inject
     public UserViewModel(UserRepository userRepository) {
         this.userRepository = userRepository;
+    }
+
+    public LiveData<User> signUp(String name, String password, String email) {
+        return userRepository.signUp(name, password, email);
     }
 
     public LiveData<User> signIn(String id, String password) {

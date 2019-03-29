@@ -27,14 +27,13 @@ import dagger.android.support.AndroidSupportInjection;
 
 public class SignInFragment extends Fragment {
 
-    @Inject
-    ViewModelProvider.Factory viewModelFactory;
-
     @BindView(R.id.fragment_signIn_name)
     EditText name;
     @BindView(R.id.fragment_signIn_password)
     EditText password;
 
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
     UserViewModel viewModel;
 
     @Nullable

@@ -1,8 +1,12 @@
 package com.thumbstage.hydrogen;
 
 import com.thumbstage.hydrogen.model.LineType;
+import com.thumbstage.hydrogen.utils.StringUtil;
 
 import org.junit.Test;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
 
@@ -22,5 +26,14 @@ public class ExampleUnitTest {
         String dislogue = LineType.LT_DIALOGUE.name();
         System.out.println(dislogue);
         System.out.println(LineType.LT_DIALOGUE.name());
+    }
+
+    @Test
+    public void testIsValidEmail() {
+        String email = "c@163.com";
+        Pattern p = Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+        Matcher matcher = p.matcher(email);
+        boolean status =  matcher.find();
+        assertTrue(status);
     }
 }
