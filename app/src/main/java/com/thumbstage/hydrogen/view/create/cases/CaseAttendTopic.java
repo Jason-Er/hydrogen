@@ -6,7 +6,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.view.common.IStatusCallBack;
+import com.thumbstage.hydrogen.model.callback.IStatusCallBack;
 import com.thumbstage.hydrogen.view.common.Navigation;
 import com.thumbstage.hydrogen.view.create.ICreateCustomize;
 import com.thumbstage.hydrogen.view.create.ICreateMenuItemFunction;

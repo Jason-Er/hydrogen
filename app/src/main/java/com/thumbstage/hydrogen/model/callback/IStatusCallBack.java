@@ -1,4 +1,4 @@
-package com.thumbstage.hydrogen.view.common;
+package com.thumbstage.hydrogen.model.callback;
 
 public interface IStatusCallBack {
     enum STATUS {

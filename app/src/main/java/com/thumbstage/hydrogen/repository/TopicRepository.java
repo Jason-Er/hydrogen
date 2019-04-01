@@ -10,8 +10,10 @@ import com.thumbstage.hydrogen.database.ModelDB;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.model.TopicType;
-import com.thumbstage.hydrogen.view.common.IStatusCallBack;
+import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
+import com.thumbstage.hydrogen.model.callback.IStatusCallBack;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -138,6 +140,14 @@ public class TopicRepository {
         });
     }
 
+    public void saveFile(final File file, final IReturnHyFile iReturnHyFile) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                cloudAPI.saveFile(file, iReturnHyFile);
+            }
+        });
+    }
 
     /*
     public void setListenIMCallBack(IMMessageHandler imMessageHandler) {

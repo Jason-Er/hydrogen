@@ -34,6 +34,10 @@ import com.thumbstage.hydrogen.model.Setting;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.model.TopicType;
 import com.thumbstage.hydrogen.model.User;
+import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
+import com.thumbstage.hydrogen.model.callback.IReturnLine;
+import com.thumbstage.hydrogen.model.callback.IReturnTopic;
+import com.thumbstage.hydrogen.model.callback.IReturnUser;
 import com.thumbstage.hydrogen.repository.TableName;
 import com.thumbstage.hydrogen.utils.DataConvertUtil;
 import com.thumbstage.hydrogen.utils.StringUtil;
@@ -71,32 +75,12 @@ public class CloudAPI {
         void callback(Boolean isOK);
     }
 
-    public interface IReturnLine {
-        void callback(Line line);
-    }
-
-    public interface IReturnTopic {
-        void callback(Topic topic);
-    }
-
-    public interface IReturnPipe {
-        void callback(Mic mic);
-    }
-
-    public interface IReturnUser {
-        void callback(User user);
-    }
-
     public interface IReturnUsers {
         void callback(List<User> users);
     }
 
     public interface IReturnURL {
         void callback(String url);
-    }
-
-    public interface IReturnHyFile {
-        void callback(HyFile hyFile);
     }
 
     public interface IReturnFile {
@@ -161,10 +145,29 @@ public class CloudAPI {
         });
     }
 
+    public void saveFile(File file, final IReturnHyFile iReturnHyFile) {
+        final AVFile avFile;
+        try {
+            avFile = AVFile.withAbsoluteLocalPath(file.getName(), file.getPath());
+            avFile.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(AVException e) {
+                    if(e== null) {
+                        HyFile hyFile = new HyFile(avFile.getName(), avFile.getObjectId(), avFile.getUrl(), true);
+                        iReturnHyFile.callback(hyFile);
+                    }
+                }
+            });
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
     public void createMic(@NonNull final Mic mic, final ICallBack iCallBack) {
         saveTopic(mic.getTopic(), new ICallBack() {
             @Override
             public void callback(final String topicID) {
+                mic.getTopic().setId(topicID);
                 createMic(mic.getTopic(), new ICallBack() {
                     @Override
                     public void callback(String micID) {
@@ -178,7 +181,7 @@ public class CloudAPI {
         });
     }
 
-    public void saveTopic(@NonNull Topic topic, final ICallBack iCallBack) {
+    public void saveTopic(@NonNull final Topic topic, final ICallBack iCallBack) {
         if( topic.getMembers().size() == 0 ) {
             topic.getMembers().add(new User(AVUser.getCurrentUser().getObjectId(),"",""));
         }
@@ -486,24 +489,6 @@ public class CloudAPI {
                 }
             }
         });
-    }
-
-    public void saveFile2Cloud(final File file, final IReturnHyFile iReturnHyFile) {
-        final AVFile avFile;
-        try {
-            avFile = AVFile.withAbsoluteLocalPath(file.getName(), file.getPath());
-            avFile.saveInBackground(new SaveCallback() {
-                @Override
-                public void done(AVException e) {
-                    if(e== null) {
-                        HyFile hyFile = new HyFile(avFile.getName(), avFile.getObjectId(), avFile.getUrl(), true);
-                        iReturnHyFile.callback(hyFile);
-                    }
-                }
-            });
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
     }
 
     public void getFileFromCloud(HyFile hyFile, final IReturnFile iReturnFile) {

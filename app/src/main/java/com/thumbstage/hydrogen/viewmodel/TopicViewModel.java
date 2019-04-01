@@ -4,8 +4,11 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
 import com.thumbstage.hydrogen.model.Mic;
+import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
 import com.thumbstage.hydrogen.repository.TopicRepository;
-import com.thumbstage.hydrogen.view.common.IStatusCallBack;
+import com.thumbstage.hydrogen.model.callback.IStatusCallBack;
+
+import java.io.File;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -30,6 +33,10 @@ public class TopicViewModel extends ViewModel {
 
     public LiveData<Mic> pickUpTopic(Mic mic) {
         return topicRepository.pickUpMic(mic);
+    }
+
+    public void saveFile(File file, IReturnHyFile iReturnHyFile) {
+        topicRepository.saveFile(file, iReturnHyFile);
     }
 
     public void publishTheTopic(IStatusCallBack iStatusCallBack) {

@@ -6,6 +6,7 @@ import android.arch.lifecycle.MutableLiveData;
 import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.database.ModelDB;
 import com.thumbstage.hydrogen.model.User;
+import com.thumbstage.hydrogen.model.callback.IReturnUser;
 import com.thumbstage.hydrogen.utils.StringUtil;
 
 import java.util.concurrent.Executor;
@@ -34,7 +35,7 @@ public class UserRepository {
     private MutableLiveData<User> userLiveData = new MutableLiveData<>();
 
     public LiveData<User> signIn(String id, String password) {
-        cloudAPI.signIn(id, password, new CloudAPI.IReturnUser() {
+        cloudAPI.signIn(id, password, new IReturnUser() {
             @Override
             public void callback(User user) {
                 userLiveData.setValue(user);
@@ -45,7 +46,7 @@ public class UserRepository {
 
     public LiveData<User> signUp(String name, String password, String email) {
         if( StringUtil.isValidMail(email) ) {
-            cloudAPI.signUp(name, password, email, new CloudAPI.IReturnUser() {
+            cloudAPI.signUp(name, password, email, new IReturnUser() {
                 @Override
                 public void callback(User user) {
                     userLiveData.setValue(user);

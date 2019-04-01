@@ -10,12 +10,16 @@ import android.view.MenuInflater;
 
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.model.HyFile;
 import com.thumbstage.hydrogen.model.Setting;
-import com.thumbstage.hydrogen.view.common.IStatusCallBack;
+import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
+import com.thumbstage.hydrogen.model.callback.IStatusCallBack;
 import com.thumbstage.hydrogen.view.common.Navigation;
 import com.thumbstage.hydrogen.view.create.ICreateCustomize;
 import com.thumbstage.hydrogen.view.create.ICreateMenuItemFunction;
 import com.thumbstage.hydrogen.view.create.TopicSettingDialog;
+
+import java.io.File;
 
 public class CaseCreateTopic extends CaseBase implements ICreateMenuItemFunction, ICreateCustomize {
 
@@ -46,9 +50,11 @@ public class CaseCreateTopic extends CaseBase implements ICreateMenuItemFunction
                 if(!TextUtils.isEmpty(localData.getBrief())) {
                     topicAdapter.getTopic().setBrief(localData.getBrief());
                 }
+                /*
                 if(!TextUtils.isEmpty(localData.getImageURL())) {
                     topicAdapter.getTopic().setSetting(new Setting("", localData.getImageURL(), false));
                 }
+                */
                 imageUri = localData.getImageUri();
                 Glide.with(backgroundView).load(imageUri).into(backgroundView);
             }
@@ -85,9 +91,21 @@ public class CaseCreateTopic extends CaseBase implements ICreateMenuItemFunction
     }
 
     @Override
-    public void publishTopic(IStatusCallBack iStatusCallBack) {
+    public void publishTopic(final IStatusCallBack iStatusCallBack) {
         Log.i(TAG, "publishTopic");
-        topicViewModel.publishTheTopic(iStatusCallBack);
+        if(imageUri != null) {
+            File file = new File(imageUri.getPath());
+            topicViewModel.saveFile(file, new IReturnHyFile() {
+                @Override
+                public void callback(HyFile hyFile) {
+                    topicAdapter.getTopic().setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
+                    topicViewModel.publishTheTopic(iStatusCallBack);
+                }
+            });
+        } else {
+            topicViewModel.publishTheTopic(iStatusCallBack);
+        }
+
         /*
         if(imageUri != null) {
             File file = new File(imageUri.getPath());

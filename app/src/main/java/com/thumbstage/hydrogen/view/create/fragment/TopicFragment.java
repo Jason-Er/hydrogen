@@ -24,7 +24,7 @@ import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
 import com.thumbstage.hydrogen.model.User;
-import com.thumbstage.hydrogen.view.common.IStatusCallBack;
+import com.thumbstage.hydrogen.model.callback.IStatusCallBack;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
 import com.thumbstage.hydrogen.view.create.ICreateCustomize;
 import com.thumbstage.hydrogen.view.create.ICreateMenuItemFunction;
