@@ -126,7 +126,8 @@ public class CloudAPI {
     }
 
     public void createMic(final Topic topic, final ICallBack iCallBack) {
-        AVIMClient client = AVIMClient.getInstance(AVUser.getCurrentUser().getObjectId());
+        String userId = AVUser.getCurrentUser().getObjectId();
+        AVIMClient client = AVIMClient.getInstance(userId);
         client.open(new AVIMClientCallback() {
             @Override
             public void done(AVIMClient client, AVIMException e) {
@@ -134,11 +135,20 @@ public class CloudAPI {
                     Log.i(TAG, "client open ok");
                     client.createConversation(DataConvertUtil.user2StringId(topic.getMembers()), topic.getName(), null, new AVIMConversationCreatedCallback() {
                         @Override
-                        public void done(AVIMConversation conversation, AVIMException e) {
+                        public void done(final AVIMConversation conversation, AVIMException e) {
                             if(e == null) {
                                 Log.i(TAG, "createTopic ok");
-
-                                iCallBack.callback(conversation.getConversationId());
+                                AVObject avMic = AVObject.createWithoutData(TableName.TABLE_MIC.name, conversation.getConversationId());// 构建对象
+                                AVObject avTopic = AVObject.createWithoutData(TableName.TABLE_TOPIC.name, topic.getId());
+                                avMic.put(FieldName.FIELD_TOPIC.name, avTopic);
+                                avMic.saveInBackground(new SaveCallback() {
+                                    @Override
+                                    public void done(AVException e) {
+                                        if(e == null) {
+                                            iCallBack.callback(conversation.getConversationId());
+                                        }
+                                    }
+                                });
                             } else {
                                 e.printStackTrace();
                             }
@@ -151,8 +161,8 @@ public class CloudAPI {
         });
     }
 
-    public void createMic(String userId, @NonNull final Mic mic, final ICallBack iCallBack) {
-        saveTopic(userId, mic.getTopic(), new ICallBack() {
+    public void createMic(@NonNull final Mic mic, final ICallBack iCallBack) {
+        saveTopic(mic.getTopic(), new ICallBack() {
             @Override
             public void callback(final String topicID) {
                 createMic(mic.getTopic(), new ICallBack() {
@@ -161,38 +171,39 @@ public class CloudAPI {
                         Log.i(TAG, "saveTopic topicID:"+topicID+" micID:"+micID);
                         mic.setId(micID);
                         mic.getTopic().setId(topicID);
+                        iCallBack.callback(micID);
                     }
                 });
             }
         });
     }
 
-    public void saveTopic(String userId, @NonNull Topic topic, final ICallBack iCallBack) {
+    public void saveTopic(@NonNull Topic topic, final ICallBack iCallBack) {
         if( topic.getMembers().size() == 0 ) {
-            topic.getMembers().add(new User(userId,"",""));
+            topic.getMembers().add(new User(AVUser.getCurrentUser().getObjectId(),"",""));
         }
-        final AVObject record = new AVObject(Topic.class.getSimpleName());
-        record.put(FieldName.FIELD_NAME.name, topic.getName());
-        record.put(FieldName.FIELD_BRIEF.name, topic.getBrief());
-        record.put(FieldName.FIELD_TYPE.name, topic.getType().name());
-        record.put(FieldName.FIELD_STARTED_BY.name, AVUser.getCurrentUser());
+        final AVObject avTopic = new AVObject(Topic.class.getSimpleName());
+        avTopic.put(FieldName.FIELD_NAME.name, topic.getName());
+        avTopic.put(FieldName.FIELD_BRIEF.name, topic.getBrief());
+        avTopic.put(FieldName.FIELD_TYPE.name, topic.getType().name());
+        avTopic.put(FieldName.FIELD_STARTED_BY.name, AVUser.getCurrentUser());
         if( !TextUtils.isEmpty( topic.getDerive_from() ) ) {
-            AVObject avDeriveFrom = AVObject.createWithoutData(Topic.class.getSimpleName(), topic.getDerive_from());
-            record.put(FieldName.FIELD_DERIVE_FROM.name, avDeriveFrom);
+            AVObject avDeriveFrom = AVObject.createWithoutData(TableName.TABLE_TOPIC.name, topic.getDerive_from());
+            avTopic.put(FieldName.FIELD_DERIVE_FROM.name, avDeriveFrom);
         }
         if(topic.getSetting() != null) {
             AVObject avObject = AVObject.createWithoutData(TableName.TABLE_FILE.name, topic.getSetting().getId());
-            record.put(FieldName.FIELD_SETTING.name, avObject);
+            avTopic.put(FieldName.FIELD_SETTING.name, avObject);
         }
-        record.put(FieldName.FIELD_MEMBERS.name, DataConvertUtil.user2StringId(topic.getMembers()));
+        avTopic.put(FieldName.FIELD_MEMBERS.name, DataConvertUtil.user2StringId(topic.getMembers()));
         List<Map> list = DataConvertUtil.convert2AVObject(topic.getDialogue());
-        record.put(FieldName.FIELD_DIALOGUE.name, list);
-        record.saveInBackground(new SaveCallback() {
+        avTopic.put(FieldName.FIELD_DIALOGUE.name, list);
+        avTopic.saveInBackground(new SaveCallback() {
             @Override
             public void done(AVException e) {
                 if(e == null) {
                     Log.i(TAG, "saveTopic ok");
-                    iCallBack.callback(record.getObjectId());
+                    iCallBack.callback(avTopic.getObjectId());
                 } else {
                     e.printStackTrace();
                 }
@@ -202,7 +213,7 @@ public class CloudAPI {
 
     public void copyTopic(Topic topic, final ICallBack iCallBack) {
         topic.setDerive_from(topic.getId());
-        saveTopic(getCurrentUserId(), topic, iCallBack);
+        saveTopic(topic, iCallBack);
     }
 
     public interface IMicCallBack {
@@ -332,7 +343,7 @@ public class CloudAPI {
                 if( e == null ) {
                     AVObject avTopic = avObject.getAVObject(FieldName.FIELD_TOPIC.name);
                     Map data = DataConvertUtil.convert2AVObject(line);
-                    final AVObject topic = AVObject.createWithoutData(Topic.class.getSimpleName(), avTopic.getObjectId());
+                    final AVObject topic = AVObject.createWithoutData(TableName.TABLE_TOPIC.name, avTopic.getObjectId());
                     topic.addUnique(FieldName.FIELD_DIALOGUE.name, data);
                     topic.saveInBackground(new SaveCallback() {
                         @Override

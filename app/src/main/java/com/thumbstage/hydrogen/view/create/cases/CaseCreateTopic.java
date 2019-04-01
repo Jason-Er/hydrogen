@@ -11,6 +11,7 @@ import android.view.MenuInflater;
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Setting;
+import com.thumbstage.hydrogen.view.common.IStatusCallBack;
 import com.thumbstage.hydrogen.view.common.Navigation;
 import com.thumbstage.hydrogen.view.create.ICreateCustomize;
 import com.thumbstage.hydrogen.view.create.ICreateMenuItemFunction;
@@ -84,9 +85,9 @@ public class CaseCreateTopic extends CaseBase implements ICreateMenuItemFunction
     }
 
     @Override
-    public void publishTopic() {
+    public void publishTopic(IStatusCallBack iStatusCallBack) {
         Log.i(TAG, "publishTopic");
-        topicViewModel.publishTheTopic();
+        topicViewModel.publishTheTopic(iStatusCallBack);
         /*
         if(imageUri != null) {
             File file = new File(imageUri.getPath());

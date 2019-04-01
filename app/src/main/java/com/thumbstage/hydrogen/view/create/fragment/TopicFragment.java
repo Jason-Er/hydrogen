@@ -24,6 +24,7 @@ import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
 import com.thumbstage.hydrogen.model.User;
+import com.thumbstage.hydrogen.view.common.IStatusCallBack;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
 import com.thumbstage.hydrogen.view.create.ICreateCustomize;
 import com.thumbstage.hydrogen.view.create.ICreateMenuItemFunction;
@@ -71,7 +72,6 @@ public class TopicFragment extends Fragment {
         }
     };
 
-    User user;
     CaseBase currentRole = null;
     LinearLayoutManager layoutManager;
     TopicAdapter topicAdapter;
@@ -121,9 +121,8 @@ public class TopicFragment extends Fragment {
 
         userViewModel.getCurrentUser().observe(this, new Observer<User>() {
             @Override
-            public void onChanged(@Nullable User u) {
-                user = u;
-                topicAdapter.setUser(u);
+            public void onChanged(@Nullable User user) {
+                topicAdapter.setUser(user);
                 for(CaseBase caseBase: roleMap.values()) {
                     caseBase.setUser(user);
                 }
@@ -209,9 +208,15 @@ public class TopicFragment extends Fragment {
             case R.id.menu_create_publish:
                 Log.i(TAG, "menu_create_publish");
                 if( currentRole instanceof ICreateMenuItemFunction) {
-                    ((ICreateMenuItemFunction) currentRole).publishTopic();
+                    ((ICreateMenuItemFunction) currentRole).publishTopic(new IStatusCallBack() {
+                        @Override
+                        public void callback(STATUS status) {
+                            if(status == STATUS.OK) {
+                                ((CreateActivity)getActivity()).navigateUp();
+                            }
+                        }
+                    });
                 }
-                ((CreateActivity)getActivity()).navigateUp();
                 break;
         }
         return super.onOptionsItemSelected(item);

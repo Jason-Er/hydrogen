@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModel;
 
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.repository.TopicRepository;
+import com.thumbstage.hydrogen.view.common.IStatusCallBack;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -31,8 +32,8 @@ public class TopicViewModel extends ViewModel {
         return topicRepository.pickUpMic(mic);
     }
 
-    public void publishTheTopic() {
-        topicRepository.publishTheTopic();
+    public void publishTheTopic(IStatusCallBack iStatusCallBack) {
+        topicRepository.publishTheTopic(iStatusCallBack);
     }
 
     public void startTheTopic() {

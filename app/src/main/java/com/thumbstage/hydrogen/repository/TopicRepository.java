@@ -10,6 +10,7 @@ import com.thumbstage.hydrogen.database.ModelDB;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.model.TopicType;
+import com.thumbstage.hydrogen.view.common.IStatusCallBack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -102,17 +103,18 @@ public class TopicRepository {
         return micLiveData;
     }
 
-    public void publishTheTopic() {
+    public void publishTheTopic(final IStatusCallBack iStatusCallBack) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 Mic mic = micLiveData.getValue();
                 mic.getTopic().setType(TopicType.PUBLISHED);
-                cloudAPI.createMic("", mic, new CloudAPI.ICallBack() {
+                cloudAPI.createMic(mic, new CloudAPI.ICallBack() {
                     @Override
                     public void callback(String objectID) {
                         Log.i("TopicRepository","publishTheTopic ok objectID: "+objectID);
                         // modelDB.saveTopic(t);
+                        iStatusCallBack.callback(IStatusCallBack.STATUS.OK);
                     }
                 });
             }
@@ -125,7 +127,7 @@ public class TopicRepository {
             public void run() {
                 Mic mic = micLiveData.getValue();
                 mic.getTopic().setType(TopicType.UNPUBLISHED);
-                cloudAPI.createMic("", mic, new CloudAPI.ICallBack() {
+                cloudAPI.createMic(mic, new CloudAPI.ICallBack() {
                     @Override
                     public void callback(String objectID) {
                         Log.i("TopicRepository","startTheTopic ok objectID: "+objectID);
