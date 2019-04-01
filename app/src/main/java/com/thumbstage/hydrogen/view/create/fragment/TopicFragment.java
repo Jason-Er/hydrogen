@@ -201,9 +201,16 @@ public class TopicFragment extends Fragment {
             case R.id.menu_create_start:
                 Log.i(TAG, "menu_create_start");
                 if( currentRole instanceof ICreateMenuItemFunction) {
-                    ((ICreateMenuItemFunction) currentRole).startTopic();
+                    ((ICreateMenuItemFunction) currentRole).startTopic(new IStatusCallBack() {
+                        @Override
+                        public void callback(STATUS status) {
+                            if(status == STATUS.OK) {
+                                ((CreateActivity) getActivity()).navigateUp();
+                            }
+                        }
+                    });
                 }
-                ((CreateActivity)getActivity()).navigateUp();
+
                 break;
             case R.id.menu_create_publish:
                 Log.i(TAG, "menu_create_publish");

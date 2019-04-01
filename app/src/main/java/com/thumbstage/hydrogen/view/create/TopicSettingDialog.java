@@ -32,15 +32,12 @@ public class TopicSettingDialog extends DialogFragment {
     EditText name;
     @BindView(R.id.dialog_topic_setting_brief)
     EditText brief;
-    @BindView(R.id.dialog_topic_setting_setting)
-    EditText settingURL;
     @BindView(R.id.dialog_topic_setting_pic)
     ImageView settingPic;
 
     static public class LocalData {
         String name;
         String brief;
-        String imageURL;
         Uri imageUri;
 
         public String getName() {
@@ -53,10 +50,6 @@ public class TopicSettingDialog extends DialogFragment {
 
         public Uri getImageUri() {
             return imageUri;
-        }
-
-        public String getImageURL() {
-            return imageURL;
         }
     }
 
@@ -155,7 +148,6 @@ public class TopicSettingDialog extends DialogFragment {
     public void onOK(View view) {
         localData.name = name.getText().toString();
         localData.brief = brief.getText().toString();
-        localData.imageURL = settingURL.getText().toString();
         if(iOnOK != null) {
             iOnOK.callback(localData);
         }
@@ -176,7 +168,7 @@ public class TopicSettingDialog extends DialogFragment {
 
             @Override
             public void onCropImage(Uri imageUri) {
-                settingURL.setText(imageUri.toString());
+                // settingURL.setText(imageUri.toString());
                 localData.imageUri = imageUri;
                 GlideUtil.inject(getContext(), imageUri.toString(), settingPic);
             }

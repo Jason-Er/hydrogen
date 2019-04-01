@@ -123,7 +123,7 @@ public class TopicRepository {
         });
     }
 
-    public void startTheTopic() {
+    public void startTheTopic(final IStatusCallBack iStatusCallBack) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -134,6 +134,7 @@ public class TopicRepository {
                     public void callback(String objectID) {
                         Log.i("TopicRepository","startTheTopic ok objectID: "+objectID);
                         // modelDB.saveTopic(t);
+                        iStatusCallBack.callback(IStatusCallBack.STATUS.OK);
                     }
                 });
             }

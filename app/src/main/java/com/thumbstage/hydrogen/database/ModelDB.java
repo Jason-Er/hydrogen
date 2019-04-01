@@ -143,10 +143,7 @@ public class ModelDB {
                 micEntities.add(entity);
             }
         }
-        List<Long> ids = database.micDao().insert(micEntities);
-        // for debug
-        MicEntity entity = database.micDao().get(micEntities.get(0).getId());
-        Log.i("saveMicList", "ok");
+        database.micDao().insert(micEntities);
     }
 
     public void saveUser(User user) {

@@ -59,11 +59,6 @@
             android:text="@string/dialog_topic_setting_setting"
             android:textColor="#666666"
             android:textSize="14sp"/>
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:layout_height="wrap_content"
-            android:id="@+id/dialog_topic_setting_setting"/>
         <ImageButton
             android:id="@+id/dialog_topic_setting_select"
             android:layout_width="wrap_content"

@@ -30,7 +30,7 @@ public class CaseAttendTopic extends CaseBase implements ICreateMenuItemFunction
     }
 
     @Override
-    public void startTopic() {
+    public void startTopic(IStatusCallBack iStatusCallBack) {
 
     }
 

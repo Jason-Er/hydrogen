@@ -64,30 +64,20 @@ public class CaseCreateTopic extends CaseBase implements ICreateMenuItemFunction
     }
 
     @Override
-    public void startTopic() {
+    public void startTopic(final IStatusCallBack iStatusCallBack) {
         Log.i(TAG, "startTopic");
-        topicViewModel.startTheTopic();
-        /*
         if(imageUri != null) {
             File file = new File(imageUri.getPath());
-            CloudAPI.saveFile2Cloud(file, new CloudAPI.IReturnHyFile() {
+            topicViewModel.saveFile(file, new IReturnHyFile() {
                 @Override
                 public void callback(HyFile hyFile) {
-                    topic.setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
-                    CloudAPI.saveTopic2StartedOpened(topic);
+                    topicAdapter.getTopic().setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
+                    topicViewModel.startTheTopic(iStatusCallBack);
                 }
             });
         } else {
-            CloudAPI.saveResURL2Cloud(topic.getSetting().getUrl(), new CloudAPI.IReturnHyFile() {
-                @Override
-                public void callback(HyFile hyFile) {
-                    topic.setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
-                    CloudAPI.saveTopic2StartedOpened(topic);
-                }
-            });
-
+            topicViewModel.startTheTopic(iStatusCallBack);
         }
-        */
     }
 
     @Override
@@ -105,37 +95,6 @@ public class CaseCreateTopic extends CaseBase implements ICreateMenuItemFunction
         } else {
             topicViewModel.publishTheTopic(iStatusCallBack);
         }
-
-        /*
-        if(imageUri != null) {
-            File file = new File(imageUri.getPath());
-            CloudAPI.saveFile2Cloud(file, new CloudAPI.IReturnHyFile() {
-                @Override
-                public void callback(HyFile hyFile) {
-                    topic.setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
-                    CloudAPI.saveTopic2PublishedOpened(topic, new CloudAPI.ICallBack() {
-                        @Override
-                        public void callback(String objectID) {
-
-                        }
-                    });
-                }
-            });
-        } else {
-            CloudAPI.saveResURL2Cloud(topic.getSetting().getUrl(), new CloudAPI.IReturnHyFile() {
-                @Override
-                public void callback(HyFile hyFile) {
-                    topic.setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
-                    CloudAPI.saveTopic2PublishedOpened(topic, new CloudAPI.ICallBack() {
-                        @Override
-                        public void callback(String objectID) {
-
-                        }
-                    });
-                }
-            });
-        }
-        */
     }
     // endregion
 }

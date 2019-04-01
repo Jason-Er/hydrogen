@@ -43,8 +43,8 @@ public class TopicViewModel extends ViewModel {
         topicRepository.publishTheTopic(iStatusCallBack);
     }
 
-    public void startTheTopic() {
-        topicRepository.startTheTopic();
+    public void startTheTopic(IStatusCallBack iStatusCallBack) {
+        topicRepository.startTheTopic(iStatusCallBack);
     }
 
 
