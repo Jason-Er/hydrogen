@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.HyFile;
 import com.thumbstage.hydrogen.model.Setting;
+import com.thumbstage.hydrogen.model.TopicType;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
 import com.thumbstage.hydrogen.model.callback.IStatusCallBack;
 import com.thumbstage.hydrogen.view.common.Navigation;
@@ -59,19 +60,19 @@ public class CaseCreateTopic extends CaseBase implements ICreateMenuItemFunction
     }
 
     @Override
-    public void startTopic(final IStatusCallBack iStatusCallBack) {
-        Log.i(TAG, "startTopic");
+    public void createTopic(final IStatusCallBack iStatusCallBack) {
+        Log.i(TAG, "createTopic");
         if(imageUri != null) {
             File file = new File(imageUri.getPath());
             topicViewModel.saveFile(file, new IReturnHyFile() {
                 @Override
                 public void callback(HyFile hyFile) {
                     topicAdapter.getTopic().setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
-                    topicViewModel.startTheTopic(iStatusCallBack);
+                    topicViewModel.createTheTopic(TopicType.UNPUBLISHED, iStatusCallBack);
                 }
             });
         } else {
-            topicViewModel.startTheTopic(iStatusCallBack);
+            topicViewModel.createTheTopic(TopicType.UNPUBLISHED, iStatusCallBack);
         }
     }
 
@@ -84,11 +85,11 @@ public class CaseCreateTopic extends CaseBase implements ICreateMenuItemFunction
                 @Override
                 public void callback(HyFile hyFile) {
                     topicAdapter.getTopic().setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
-                    topicViewModel.publishTheTopic(iStatusCallBack);
+                    topicViewModel.createTheTopic(TopicType.PUBLISHED, iStatusCallBack);
                 }
             });
         } else {
-            topicViewModel.publishTheTopic(iStatusCallBack);
+            topicViewModel.createTheTopic(TopicType.PUBLISHED, iStatusCallBack);
         }
     }
     // endregion

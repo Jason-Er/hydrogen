@@ -141,6 +141,7 @@ public class TopicFragment extends Fragment {
                     @Override
                     public void onChanged(@Nullable Mic mic) {
                         topicAdapter.setMic(mic);
+
                     }
                 });
                 break;
@@ -203,7 +204,7 @@ public class TopicFragment extends Fragment {
             case R.id.menu_create_start:
                 Log.i(TAG, "menu_create_start");
                 if( currentRole instanceof ICreateMenuItemFunction) {
-                    ((ICreateMenuItemFunction) currentRole).startTopic(new IStatusCallBack() {
+                    ((ICreateMenuItemFunction) currentRole).createTopic(new IStatusCallBack() {
                         @Override
                         public void callback(STATUS status) {
                             if(status == STATUS.OK) {

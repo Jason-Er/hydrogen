@@ -6,8 +6,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
-import com.thumbstage.hydrogen.model.Line;
+import com.thumbstage.hydrogen.model.TopicType;
 import com.thumbstage.hydrogen.model.callback.IStatusCallBack;
 import com.thumbstage.hydrogen.view.common.Navigation;
 import com.thumbstage.hydrogen.view.create.ICreateCustomize;
@@ -17,7 +16,7 @@ public class CaseAttendTopic extends CaseBase implements ICreateMenuItemFunction
 
     @Override
     public void createOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_case_default, menu);
+        inflater.inflate(R.menu.menu_case_attend, menu);
     }
 
     // region implements interface ICreateMenuItemFunction
@@ -32,8 +31,8 @@ public class CaseAttendTopic extends CaseBase implements ICreateMenuItemFunction
     }
 
     @Override
-    public void startTopic(IStatusCallBack iStatusCallBack) {
-
+    public void createTopic(IStatusCallBack iStatusCallBack) {
+        topicViewModel.createTheTopic(TopicType.PICK_UP, iStatusCallBack);
     }
 
     @Override

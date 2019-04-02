@@ -8,11 +8,13 @@
         android:id="@+id/menu_create_sign"
         android:icon="@drawable/ic_menu_sign"
         android:name="@string/action_sign"
+        android:title="@string/action_sign"
         app:showAsAction="always"/>
     <item
         android:id="@+id/menu_create_setting"
         android:icon="@drawable/ic_menu_settings"
         android:name="@string/action_settings"
+        android:title="@string/action_settings"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/menu_create_start"

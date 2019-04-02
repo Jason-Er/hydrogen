@@ -119,30 +119,12 @@ public class TopicRepository {
         return micLiveData;
     }
 
-    public void publishTheTopic(final IStatusCallBack iStatusCallBack) {
+    public void createTheTopic(final TopicType type, final IStatusCallBack iStatusCallBack) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 Mic mic = micLiveData.getValue();
-                mic.getTopic().setType(TopicType.PUBLISHED);
-                cloudAPI.createMic(mic, new CloudAPI.ICallBack() {
-                    @Override
-                    public void callback(String objectID) {
-                        Log.i("TopicRepository","publishTheTopic ok objectID: "+objectID);
-                        // modelDB.saveTopic(t);
-                        iStatusCallBack.callback(IStatusCallBack.STATUS.OK);
-                    }
-                });
-            }
-        });
-    }
-
-    public void startTheTopic(final IStatusCallBack iStatusCallBack) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                Mic mic = micLiveData.getValue();
-                mic.getTopic().setType(TopicType.UNPUBLISHED);
+                mic.getTopic().setType(type);
                 cloudAPI.createMic(mic, new CloudAPI.ICallBack() {
                     @Override
                     public void callback(String objectID) {

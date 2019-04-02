@@ -6,7 +6,6 @@ import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.model.User;
-import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.view.common.ListDelegationAdapter;
 import com.thumbstage.hydrogen.view.create.type.LineTextLeft;
 import com.thumbstage.hydrogen.view.create.type.LineTextRight;
@@ -32,6 +31,12 @@ public class TopicAdapter extends ListDelegationAdapter {
 
     public void setMic(Mic mic) {
         this.mic = mic;
+        if(user == null) {
+            throw new IllegalStateException("no user available");
+        }
+        if(!mic.getTopic().getMembers().contains(user)) { // add new user to members
+            mic.getTopic().getMembers().add(user);
+        }
         setDialogue(mic.getTopic().getDialogue());
     }
 
