@@ -13,7 +13,6 @@ import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetDataCallback;
-import com.avos.avoscloud.LogUtil;
 import com.avos.avoscloud.SaveCallback;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMException;
@@ -383,7 +382,7 @@ public class ExampleInstrumentedTest {
     @Test
     public void testCloudAPI() {
         CloudAPI cloudAPI = new CloudAPI();
-        cloudAPI.getMic(TopicType.PUBLISHED, "", false, 0, new CloudAPI.IMicCallBack() {
+        cloudAPI.getMic(TopicType.PUBLISHED, "", false, 0, new CloudAPI.IReturnMicList() {
             @Override
             public void callback(List<Mic> micList) {
                 Log.i("testCloudAPI","");

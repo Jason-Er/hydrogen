@@ -27,12 +27,12 @@ public class TopicViewModel extends ViewModel {
         return topicRepository.createMic();
     }
 
-    public LiveData<Mic> attendTopic(Mic mic) {
-        return topicRepository.attendMic(mic);
+    public LiveData<Mic> attendTopic(String micId) {
+        return topicRepository.attendMic(micId);
     }
 
-    public LiveData<Mic> pickUpTopic(Mic mic) {
-        return topicRepository.pickUpMic(mic);
+    public LiveData<Mic> pickUpTopic(String micId) {
+        return topicRepository.pickUpMic(micId);
     }
 
     public void saveFile(File file, IReturnHyFile iReturnHyFile) {

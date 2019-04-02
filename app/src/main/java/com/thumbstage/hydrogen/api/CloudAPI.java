@@ -36,6 +36,8 @@ import com.thumbstage.hydrogen.model.TopicType;
 import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
 import com.thumbstage.hydrogen.model.callback.IReturnLine;
+import com.thumbstage.hydrogen.model.callback.IReturnMic;
+import com.thumbstage.hydrogen.model.callback.IReturnMicList;
 import com.thumbstage.hydrogen.model.callback.IReturnTopic;
 import com.thumbstage.hydrogen.model.callback.IReturnUser;
 import com.thumbstage.hydrogen.repository.TableName;
@@ -219,11 +221,41 @@ public class CloudAPI {
         saveTopic(topic, iCallBack);
     }
 
-    public interface IMicCallBack {
-        void callback(List<Mic> micList);
+
+
+    public void getMic(String micId, final IReturnMic iReturnMic) {
+        AVQuery<AVObject> avQuery = new AVQuery<>(TableName.TABLE_MIC.name);
+        avQuery.include(FieldName.FIELD_TOPIC.name);
+        avQuery.include(FieldName.FIELD_TOPIC.name+"."+FieldName.FIELD_STARTED_BY.name);
+        avQuery.getInBackground(micId, new GetCallback<AVObject>() {
+            @Override
+            public void done(AVObject object, AVException e) {
+                if(e == null) {
+                    avObject2Mic(object, new IReturnMic() {
+                        @Override
+                        public void callback(Mic mic) {
+                            iReturnMic.callback(mic);
+                        }
+                    });
+                }
+            }
+        });
     }
 
-    public void getMic(TopicType type, String start_by, boolean isFinished, int pageNum, final IMicCallBack callBack) {
+    private void avObject2Mic(final AVObject avObject, final IReturnMic iReturnMic) {
+        AVObject avTopic = avObject.getAVObject(FieldName.FIELD_TOPIC.name);
+        getTopic(avTopic, new IReturnTopic() {
+            @Override
+            public void callback(Topic topic) {
+                Mic mic = new Mic();
+                mic.setId(avObject.getObjectId());
+                mic.setTopic(topic);
+                iReturnMic.callback(mic);
+            }
+        });
+    }
+
+    public void getMic(TopicType type, String start_by, boolean isFinished, int pageNum, final IReturnMicList callBack) {
         AVQuery<AVObject> avQuery = new AVQuery<>(TableName.TABLE_MIC.name);
         avQuery.include(FieldName.FIELD_TOPIC.name);
         avQuery.include(FieldName.FIELD_TOPIC.name+"."+FieldName.FIELD_STARTED_BY.name);

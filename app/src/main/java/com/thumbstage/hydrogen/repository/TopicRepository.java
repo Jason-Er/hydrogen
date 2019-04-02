@@ -11,7 +11,10 @@ import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.model.TopicType;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
+import com.thumbstage.hydrogen.model.callback.IReturnMic;
+import com.thumbstage.hydrogen.model.callback.IReturnMicList;
 import com.thumbstage.hydrogen.model.callback.IStatusCallBack;
+import com.thumbstage.hydrogen.utils.StringUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -61,7 +64,7 @@ public class TopicRepository {
             @Override
             public void run() {
                 if( modelDB.isTopicNeedFresh(type) ) {
-                    cloudAPI.getMic(type, started_by, isFinished, pageNum, new CloudAPI.IMicCallBack() {
+                    cloudAPI.getMic(type, started_by, isFinished, pageNum, new IReturnMicList() {
                         @Override
                         public void callback(final List<Mic> micList) {
                             executor.execute(new Runnable() {
@@ -95,12 +98,23 @@ public class TopicRepository {
         return micLiveData;
     }
 
-    public LiveData<Mic> attendMic(Mic mic) {
-        // TODO: 3/22/2019 do something
+    public LiveData<Mic> attendMic(final String micId) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                cloudAPI.getMic(micId, new IReturnMic() {
+                    @Override
+                    public void callback(Mic mic) {
+                        Mic copy = (Mic) mic.clone();
+                        micLiveData.setValue(copy);
+                    }
+                });
+            }
+        });
         return micLiveData;
     }
 
-    public LiveData<Mic> pickUpMic(Mic mic) {
+    public LiveData<Mic> pickUpMic(String micId) {
         // TODO: 3/22/2019 do something
         return micLiveData;
     }

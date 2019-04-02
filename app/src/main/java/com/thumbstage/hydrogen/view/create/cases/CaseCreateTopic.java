@@ -50,11 +50,6 @@ public class CaseCreateTopic extends CaseBase implements ICreateMenuItemFunction
                 if(!TextUtils.isEmpty(localData.getBrief())) {
                     topicAdapter.getTopic().setBrief(localData.getBrief());
                 }
-                /*
-                if(!TextUtils.isEmpty(localData.getImageURL())) {
-                    topicAdapter.getTopic().setSetting(new Setting("", localData.getImageURL(), false));
-                }
-                */
                 imageUri = localData.getImageUri();
                 Glide.with(backgroundView).load(imageUri).into(backgroundView);
             }

@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
@@ -111,7 +112,7 @@ public class TopicFragment extends Fragment {
     }
 
     private void configureViewModel(){
-        Mic mic = getActivity().getIntent().getParcelableExtra(Mic.class.getSimpleName());
+        final String micId = getActivity().getIntent().getStringExtra(Mic.class.getSimpleName());
         String handleType = getActivity().getIntent().getStringExtra(TopicHandleType.class.getSimpleName());
         if(TextUtils.isEmpty(handleType)) {
             throw new IllegalArgumentException("No TopicHandleType found!");
@@ -145,16 +146,17 @@ public class TopicFragment extends Fragment {
                 break;
             case ATTEND:
                 currentRole = roleMap.get(TopicHandleType.ATTEND);
-                topicViewModel.attendTopic(mic).observe(this, new Observer<Mic>() {
+                topicViewModel.attendTopic(micId).observe(this, new Observer<Mic>() {
                     @Override
                     public void onChanged(@Nullable Mic mic) {
-
+                        topicAdapter.setMic(mic);
+                        Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
                     }
                 });
                 break;
             case PICKUP:
                 currentRole = roleMap.get(TopicHandleType.PICKUP);
-                topicViewModel.pickUpTopic(mic).observe(this, new Observer<Mic>() {
+                topicViewModel.pickUpTopic(micId).observe(this, new Observer<Mic>() {
                     @Override
                     public void onChanged(@Nullable Mic mic) {
 
