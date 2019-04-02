@@ -6,8 +6,10 @@ import android.arch.lifecycle.ViewModel;
 import com.thumbstage.hydrogen.model.AtMe;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.TopicType;
+import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.repository.AtMeRepository;
 import com.thumbstage.hydrogen.repository.TopicRepository;
+import com.thumbstage.hydrogen.repository.UserRepository;
 
 import java.util.List;
 
@@ -19,13 +21,15 @@ public class BrowseViewModel extends ViewModel {
 
     private TopicRepository topicRepository;
     private AtMeRepository atMeRepository;
+    private UserRepository userRepository;
 
     final String TAG = "BrowseViewModel";
 
     @Inject
-    public BrowseViewModel(TopicRepository topicRepository, AtMeRepository atMeRepository) {
+    public BrowseViewModel(TopicRepository topicRepository, AtMeRepository atMeRepository, UserRepository userRepository) {
         this.topicRepository = topicRepository;
         this.atMeRepository = atMeRepository;
+        this.userRepository = userRepository;
     }
 
     public LiveData<List<Mic>> getIAttendedOpenedByPageNum(String userId, int pageNum) {
@@ -42,6 +46,10 @@ public class BrowseViewModel extends ViewModel {
 
     public LiveData<List<AtMe>> getAtMeByPageNum(String userId, int pageNum) {
         return atMeRepository.getAtMeByPageNum(userId, pageNum);
+    }
+
+    public User getCurrentUser() {
+        return userRepository.getCurrentUser();
     }
 
 }

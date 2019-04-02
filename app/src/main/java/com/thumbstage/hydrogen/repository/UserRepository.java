@@ -56,12 +56,12 @@ public class UserRepository {
         return userLiveData;
     }
 
-    public LiveData<User> getCurrentUser() {
+    public User getCurrentUser() {
         User user = cloudAPI.getCurrentUser();
-        if(user!=null) {
-            userLiveData.setValue(user);
+        if( user == null) {
+            user = defaultUser;
         }
-        return userLiveData;
+        return user;
     }
 
     public void signOut() {

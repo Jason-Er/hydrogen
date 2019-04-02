@@ -120,15 +120,10 @@ public class TopicFragment extends Fragment {
         topicViewModel = ViewModelProviders.of(this, viewModelFactory).get(TopicViewModel.class);
         userViewModel = ViewModelProviders.of(this, viewModelFactory).get(UserViewModel.class);
 
-        userViewModel.getCurrentUser().observe(this, new Observer<User>() {
-            @Override
-            public void onChanged(@Nullable User user) {
-                topicAdapter.setUser(user);
-                for(CaseBase caseBase: roleMap.values()) {
-                    caseBase.setUser(user);
-                }
-            }
-        });
+        topicAdapter.setUser(userViewModel.getCurrentUser());
+        for(CaseBase caseBase: roleMap.values()) {
+            caseBase.setUser(userViewModel.getCurrentUser());
+        }
 
         for(CaseBase caseBase: roleMap.values()) {
             caseBase.setTopicViewModel(topicViewModel);

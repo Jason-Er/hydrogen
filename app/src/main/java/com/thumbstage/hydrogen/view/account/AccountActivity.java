@@ -1,6 +1,5 @@
 package com.thumbstage.hydrogen.view.account;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
@@ -11,7 +10,6 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
 
 import javax.inject.Inject;
@@ -44,12 +42,7 @@ public class AccountActivity extends AppCompatActivity {
         actionBar.setTitle(getResources().getString(R.string.profile));
 
         userViewModel = ViewModelProviders.of(this, viewModelFactory).get(UserViewModel.class);
-        userViewModel.getCurrentUser().observe(this, new Observer<User>() {
-            @Override
-            public void onChanged(@Nullable User user) {
-                name.setText(user.getName());
-            }
-        });
+        name.setText(userViewModel.getCurrentUser().getName());
 
     }
 
