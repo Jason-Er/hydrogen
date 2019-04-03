@@ -155,7 +155,8 @@ public class TopicFragment extends Fragment {
                 topicViewModel.pickUpTopic(micId).observe(this, new Observer<Mic>() {
                     @Override
                     public void onChanged(@Nullable Mic mic) {
-
+                        topicAdapter.setMic(mic);
+                        Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
                     }
                 });
                 break;

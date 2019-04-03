@@ -122,12 +122,27 @@ public class TopicRepository {
         return micLiveData;
     }
 
-    public LiveData<Mic> pickUpMic(String micId) {
-        // TODO: 3/22/2019 do something
+    public LiveData<Mic> pickUpMic(final String micId) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                cloudAPI.getMic(micId, new IReturnMic() {
+                    @Override
+                    public void callback(Mic mic) {
+                        micLiveData.setValue(mic);
+                    }
+                });
+            }
+        });
         return micLiveData;
     }
 
-    public void sendMicBuf(Mic mic, final IReturnBool iReturnBool) {
+    public void flushMicBuf(IReturnBool iReturnBool) {
+        Mic mic = micLiveData.getValue();
+        sendMicBuf(mic, iReturnBool);
+    }
+
+    private void sendMicBuf(Mic mic, final IReturnBool iReturnBool) {
         if(mic.getLineBuffer()!= null && mic.getLineBuffer().size()>0) {
             final Lock lock = new ReentrantLock();
             for(Line line: mic.getLineBuffer()) {
@@ -141,6 +156,7 @@ public class TopicRepository {
                     }
                 });
             }
+            mic.getLineBuffer().clear();
             iReturnBool.callback(true);
         }
     }

@@ -19,6 +19,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.im.IMService;
 import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.view.common.Navigation;
@@ -42,6 +43,8 @@ public class BrowseActivity extends AppCompatActivity
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
+    @Inject
+    IMService imService;
 
     @BindView(R.id.browse_content)
     ViewPager viewPager;

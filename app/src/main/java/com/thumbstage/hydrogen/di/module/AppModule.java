@@ -8,6 +8,7 @@ import com.google.gson.GsonBuilder;
 import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.database.HyDatabase;
 import com.thumbstage.hydrogen.database.ModelDB;
+import com.thumbstage.hydrogen.im.IMService;
 import com.thumbstage.hydrogen.repository.TopicRepository;
 
 import java.util.concurrent.Executor;
@@ -49,6 +50,11 @@ public class AppModule {
         return new TopicRepository(cloudAPI, modelDB, executor);
     }
 
+    @Provides
+    @Singleton
+    IMService provideIMService(Application application, ModelDB modelDB) {
+        return new IMService(application.getApplicationContext(), modelDB);
+    }
     // --- REPOSITORY INJECTION ---
 
     @Provides
