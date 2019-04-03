@@ -6,7 +6,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.model.callback.IStatusCallBack;
+import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.view.common.Navigation;
 import com.thumbstage.hydrogen.view.create.ICreateCustomize;
 import com.thumbstage.hydrogen.view.create.ICreateMenuItemFunction;
@@ -30,12 +30,12 @@ public class CaseContinueTopic extends CaseBase implements ICreateMenuItemFuncti
     }
 
     @Override
-    public void createTopic(IStatusCallBack iStatusCallBack) {
+    public void createTopic(IReturnBool iReturnBool) {
 
     }
 
     @Override
-    public void publishTopic(IStatusCallBack iStatusCallBack) {
+    public void publishTopic(IReturnBool iReturnBool) {
 
     }
     //endregion

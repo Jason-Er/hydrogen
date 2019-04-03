@@ -7,21 +7,27 @@ import android.util.Log;
 
 import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.database.ModelDB;
+import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.model.TopicType;
+import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
 import com.thumbstage.hydrogen.model.callback.IReturnMic;
 import com.thumbstage.hydrogen.model.callback.IReturnMicList;
 import com.thumbstage.hydrogen.model.callback.IStatusCallBack;
 import com.thumbstage.hydrogen.utils.StringUtil;
+import com.thumbstage.hydrogen.view.create.type.LineTextRight;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -70,12 +76,14 @@ public class TopicRepository {
                             executor.execute(new Runnable() {
                                 @Override
                                 public void run() {
-                                    List<Topic> topics = new ArrayList<>();
-                                    for(Mic mic:micList) {
-                                        topics.add(mic.getTopic());
+                                    if( micList.size()>0 ) {
+                                        List<Topic> topics = new ArrayList<>();
+                                        for(Mic mic:micList) {
+                                            topics.add(mic.getTopic());
+                                        }
+                                        modelDB.saveTopicList(topics);
+                                        modelDB.saveMicList(micList);
                                     }
-                                    modelDB.saveTopicList(topics);
-                                    modelDB.saveMicList(micList);
                                     mutableLiveData.postValue(micList);
                                 }
                             });
@@ -119,18 +127,40 @@ public class TopicRepository {
         return micLiveData;
     }
 
-    public void createTheTopic(final TopicType type, final IStatusCallBack iStatusCallBack) {
+    public void sendMicBuf(Mic mic, final IReturnBool iReturnBool) {
+        if(mic.getLineBuffer()!= null && mic.getLineBuffer().size()>0) {
+            final Lock lock = new ReentrantLock();
+            for(Line line: mic.getLineBuffer()) {
+                lock.lock();
+                cloudAPI.sendLine(mic, line, new IReturnBool() {
+                    @Override
+                    public void callback(Boolean status) {
+                        if (status) {
+                            lock.unlock();
+                        }
+                    }
+                });
+            }
+            iReturnBool.callback(true);
+        }
+    }
+
+    public void createTheTopic(final TopicType type, final IReturnBool iReturnBool) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Mic mic = micLiveData.getValue();
+                final Mic mic = micLiveData.getValue();
                 mic.getTopic().setType(type);
                 cloudAPI.createMic(mic, new CloudAPI.ICallBack() {
                     @Override
                     public void callback(String objectID) {
-                        Log.i("TopicRepository","startTheTopic ok objectID: "+objectID);
-                        // modelDB.saveTopic(t);
-                        iStatusCallBack.callback(IStatusCallBack.STATUS.OK);
+                        sendMicBuf(mic, new IReturnBool() {
+                            @Override
+                            public void callback(Boolean status) {
+                                // modelDB.createTopic(t);
+                                iReturnBool.callback(status);
+                            }
+                        });
                     }
                 });
             }

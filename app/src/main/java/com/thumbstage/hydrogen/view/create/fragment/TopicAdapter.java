@@ -34,9 +34,11 @@ public class TopicAdapter extends ListDelegationAdapter {
         if(user == null) {
             throw new IllegalStateException("no user available");
         }
+        /*
         if(!mic.getTopic().getMembers().contains(user)) { // add new user to members
             mic.getTopic().getMembers().add(user);
         }
+        */
         setDialogue(mic.getTopic().getDialogue());
     }
 
@@ -54,7 +56,8 @@ public class TopicAdapter extends ListDelegationAdapter {
 
     public void addLine(Line line) {
         addItem(generateLine(line));// for show
-        mic.getTopic().getDialogue().add(line); // for save
+        mic.speak(line);
+        // mic.getTopic().getDialogue().add(line); // for save
     }
 
     public void setDialogue(List<Line> lines) {

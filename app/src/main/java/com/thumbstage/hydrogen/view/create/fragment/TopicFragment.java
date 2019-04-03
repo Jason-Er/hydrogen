@@ -24,7 +24,7 @@ import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
-import com.thumbstage.hydrogen.model.User;
+import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IStatusCallBack;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
 import com.thumbstage.hydrogen.view.create.ICreateCustomize;
@@ -69,7 +69,7 @@ public class TopicFragment extends Fragment {
         {
             put(TopicHandleType.CREATE, new CaseCreateTopic());
             put(TopicHandleType.ATTEND, new CaseAttendTopic());
-            put(TopicHandleType.PICKUP, new CaseContinueTopic());
+            put(TopicHandleType.CONTINUE, new CaseContinueTopic());
         }
     };
 
@@ -150,8 +150,8 @@ public class TopicFragment extends Fragment {
                     }
                 });
                 break;
-            case PICKUP:
-                currentRole = roleMap.get(TopicHandleType.PICKUP);
+            case CONTINUE:
+                currentRole = roleMap.get(TopicHandleType.CONTINUE);
                 topicViewModel.pickUpTopic(micId).observe(this, new Observer<Mic>() {
                     @Override
                     public void onChanged(@Nullable Mic mic) {
@@ -199,10 +199,10 @@ public class TopicFragment extends Fragment {
             case R.id.menu_create_start:
                 Log.i(TAG, "menu_create_start");
                 if( currentRole instanceof ICreateMenuItemFunction) {
-                    ((ICreateMenuItemFunction) currentRole).createTopic(new IStatusCallBack() {
+                    ((ICreateMenuItemFunction) currentRole).createTopic(new IReturnBool() {
                         @Override
-                        public void callback(STATUS status) {
-                            if(status == STATUS.OK) {
+                        public void callback(Boolean status) {
+                            if(status) {
                                 ((CreateActivity) getActivity()).navigateUp();
                             }
                         }
@@ -213,10 +213,10 @@ public class TopicFragment extends Fragment {
             case R.id.menu_create_publish:
                 Log.i(TAG, "menu_create_publish");
                 if( currentRole instanceof ICreateMenuItemFunction) {
-                    ((ICreateMenuItemFunction) currentRole).publishTopic(new IStatusCallBack() {
+                    ((ICreateMenuItemFunction) currentRole).publishTopic(new IReturnBool() {
                         @Override
-                        public void callback(STATUS status) {
-                            if(status == STATUS.OK) {
+                        public void callback(Boolean status) {
+                            if(status) {
                                 ((CreateActivity)getActivity()).navigateUp();
                             }
                         }

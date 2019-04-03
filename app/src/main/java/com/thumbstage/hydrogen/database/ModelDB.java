@@ -62,7 +62,9 @@ public class ModelDB {
         entity.setBrief(topic.getBrief());
         entity.setDerive_from(topic.getDerive_from());
         entity.setStarted_by(topic.getStarted_by().getId());
-        entity.setSetting_url(topic.getSetting().getUrl());
+        if( topic.getSetting()!=null ) {
+            entity.setSetting_url(topic.getSetting().getUrl());
+        }
         entity.setLastRefresh(new Date());
         entity.setType(topic.getType().name());
         database.topicDao().insert(entity);

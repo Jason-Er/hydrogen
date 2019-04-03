@@ -5,9 +5,9 @@ import android.arch.lifecycle.ViewModel;
 
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.TopicType;
+import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
 import com.thumbstage.hydrogen.repository.TopicRepository;
-import com.thumbstage.hydrogen.model.callback.IStatusCallBack;
 
 import java.io.File;
 
@@ -40,8 +40,8 @@ public class TopicViewModel extends ViewModel {
         topicRepository.saveFile(file, iReturnHyFile);
     }
 
-    public void createTheTopic(TopicType type, IStatusCallBack iStatusCallBack) {
-        topicRepository.createTheTopic(type, iStatusCallBack);
+    public void createTheTopic(TopicType type, IReturnBool iReturnBool) {
+        topicRepository.createTheTopic(type, iReturnBool);
     }
 
 

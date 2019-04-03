@@ -1,11 +1,17 @@
 package com.thumbstage.hydrogen.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Mic implements Cloneable {
     String id; // conversation id
     Topic topic;
 
+    List<Line> lineBuffer;
+
     public Mic() {
         topic = new Topic();
+        lineBuffer = new ArrayList<>();
     }
 
     // region getter and setter
@@ -24,7 +30,19 @@ public class Mic implements Cloneable {
     public void setTopic(Topic topic) {
         this.topic = topic;
     }
+
+    public List<Line> getLineBuffer() {
+        return lineBuffer;
+    }
+
+    public void setLineBuffer(List<Line> lineBuffer) {
+        this.lineBuffer = lineBuffer;
+    }
     // endregion
+
+    public void speak(Line line) {
+        lineBuffer.add(line);
+    }
 
     @Override
     public Object clone(){

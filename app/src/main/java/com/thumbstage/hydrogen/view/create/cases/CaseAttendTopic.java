@@ -7,7 +7,7 @@ import android.view.MenuInflater;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.TopicType;
-import com.thumbstage.hydrogen.model.callback.IStatusCallBack;
+import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.view.common.Navigation;
 import com.thumbstage.hydrogen.view.create.ICreateCustomize;
 import com.thumbstage.hydrogen.view.create.ICreateMenuItemFunction;
@@ -31,12 +31,12 @@ public class CaseAttendTopic extends CaseBase implements ICreateMenuItemFunction
     }
 
     @Override
-    public void createTopic(IStatusCallBack iStatusCallBack) {
-        topicViewModel.createTheTopic(TopicType.PICK_UP, iStatusCallBack);
+    public void createTopic(IReturnBool iReturnBool) {
+        topicViewModel.createTheTopic(TopicType.PICK_UP, iReturnBool);
     }
 
     @Override
-    public void publishTopic(IStatusCallBack iStatusCallBack) {
+    public void publishTopic(IReturnBool iReturnBool) {
 
     }
     //endregion

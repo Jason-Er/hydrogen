@@ -13,6 +13,7 @@ import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.HyFile;
 import com.thumbstage.hydrogen.model.Setting;
 import com.thumbstage.hydrogen.model.TopicType;
+import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
 import com.thumbstage.hydrogen.model.callback.IStatusCallBack;
 import com.thumbstage.hydrogen.view.common.Navigation;
@@ -60,7 +61,7 @@ public class CaseCreateTopic extends CaseBase implements ICreateMenuItemFunction
     }
 
     @Override
-    public void createTopic(final IStatusCallBack iStatusCallBack) {
+    public void createTopic(final IReturnBool iReturnBool) {
         Log.i(TAG, "createTopic");
         if(imageUri != null) {
             File file = new File(imageUri.getPath());
@@ -68,16 +69,16 @@ public class CaseCreateTopic extends CaseBase implements ICreateMenuItemFunction
                 @Override
                 public void callback(HyFile hyFile) {
                     topicAdapter.getTopic().setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
-                    topicViewModel.createTheTopic(TopicType.UNPUBLISHED, iStatusCallBack);
+                    topicViewModel.createTheTopic(TopicType.UNPUBLISHED, iReturnBool);
                 }
             });
         } else {
-            topicViewModel.createTheTopic(TopicType.UNPUBLISHED, iStatusCallBack);
+            topicViewModel.createTheTopic(TopicType.UNPUBLISHED, iReturnBool);
         }
     }
 
     @Override
-    public void publishTopic(final IStatusCallBack iStatusCallBack) {
+    public void publishTopic(final IReturnBool iReturnBool) {
         Log.i(TAG, "publishTopic");
         if(imageUri != null) {
             File file = new File(imageUri.getPath());
@@ -85,11 +86,11 @@ public class CaseCreateTopic extends CaseBase implements ICreateMenuItemFunction
                 @Override
                 public void callback(HyFile hyFile) {
                     topicAdapter.getTopic().setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
-                    topicViewModel.createTheTopic(TopicType.PUBLISHED, iStatusCallBack);
+                    topicViewModel.createTheTopic(TopicType.PUBLISHED, iReturnBool);
                 }
             });
         } else {
-            topicViewModel.createTheTopic(TopicType.PUBLISHED, iStatusCallBack);
+            topicViewModel.createTheTopic(TopicType.PUBLISHED, iReturnBool);
         }
     }
     // endregion
