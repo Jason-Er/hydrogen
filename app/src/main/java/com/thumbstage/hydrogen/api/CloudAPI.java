@@ -1,5 +1,6 @@
 package com.thumbstage.hydrogen.api;
 
+import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
@@ -7,6 +8,7 @@ import android.util.Log;
 import com.avos.avoscloud.AVACL;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
+import com.avos.avoscloud.AVOSCloud;
 import com.avos.avoscloud.AVObject;
 import com.avos.avoscloud.AVQuery;
 import com.avos.avoscloud.AVUser;
@@ -20,7 +22,6 @@ import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.AVIMMessage;
-import com.avos.avoscloud.im.v2.AVIMMessageOption;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
@@ -41,7 +42,6 @@ import com.thumbstage.hydrogen.model.callback.IReturnMic;
 import com.thumbstage.hydrogen.model.callback.IReturnMicList;
 import com.thumbstage.hydrogen.model.callback.IReturnTopic;
 import com.thumbstage.hydrogen.model.callback.IReturnUser;
-import com.thumbstage.hydrogen.model.callback.IStatusCallBack;
 import com.thumbstage.hydrogen.repository.TableName;
 import com.thumbstage.hydrogen.utils.DataConvertUtil;
 import com.thumbstage.hydrogen.utils.StringUtil;
@@ -60,9 +60,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+@Singleton
 public class CloudAPI {
 
     final  String TAG = "CloudAPI";
+
+    private final String APP_ID = "mz0Nlz1o64kqyukS7pyj4sRe-gzGzoHsz";
+    private final String APP_KEY = "o5CboiXK6ONj59aq0lMPJGS3";
+
+    @Inject
+    public CloudAPI(Context context) {
+        AVOSCloud.initialize(context, APP_ID, APP_KEY);
+        AVOSCloud.setDebugLogEnabled(true);
+        checkInCurrentUser();
+    }
 
     private  AVACL generateDefaultACL() {
         AVACL acl = new AVACL();
@@ -163,6 +177,22 @@ public class CloudAPI {
         }
     }
 
+    private void checkInCurrentUser() {
+        if(AVUser.getCurrentUser() != null) {
+            AVIMClient client = AVIMClient.getInstance(AVUser.getCurrentUser());
+            client.open(new AVIMClientCallback() {
+                @Override
+                public void done(AVIMClient client, AVIMException e) {
+                    if(e == null) {
+
+                    } else {
+                        e.printStackTrace();
+                        throw new IllegalStateException();
+                    }
+                }
+            });
+        }
+    }
     public void sendLine(final Mic mic, final Line line, final IReturnBool iReturnBool) {
         AVIMClient client = AVIMClient.getInstance(AVUser.getCurrentUser());
         client.open(new AVIMClientCallback() {
@@ -652,6 +682,7 @@ public class CloudAPI {
             public void done(AVUser avObject, AVException e) {
                 if(e == null) {
                     User user = avObject2User(avObject);
+                    checkInCurrentUser();
                     iReturnUser.callback(user);
                 }
             }

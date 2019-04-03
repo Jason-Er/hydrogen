@@ -19,17 +19,12 @@ import javax.inject.Singleton;
 @Singleton
 public class IMService {
 
-    private final String APP_ID = "mz0Nlz1o64kqyukS7pyj4sRe-gzGzoHsz";
-    private final String APP_KEY = "o5CboiXK6ONj59aq0lMPJGS3";
     private volatile static IMService userGlobal = null;
     private IMMessageHandler imMessageHandler;
     private IMConversationHandler imConversationHandler;
 
-
     @Inject
     public IMService(Context context, ModelDB modelDB) {
-        AVOSCloud.initialize(context, APP_ID, APP_KEY);
-        AVOSCloud.setDebugLogEnabled(true);
         imMessageHandler = new IMMessageHandler(context, modelDB);
         AVIMMessageManager.registerMessageHandler(AVIMTypedMessage.class, imMessageHandler);
 

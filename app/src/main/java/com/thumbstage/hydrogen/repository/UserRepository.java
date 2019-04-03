@@ -22,14 +22,13 @@ public class UserRepository {
     private final Executor executor;
 
     private User defaultUser = new User(StringUtil.DEFAULT_USERID, StringUtil.DEFAULT_USERID, "");
-    private User user = defaultUser;
 
     @Inject
     public UserRepository(CloudAPI cloudAPI, ModelDB modelDB, Executor executor) {
         this.cloudAPI = cloudAPI;
         this.modelDB = modelDB;
         this.executor = executor;
-        userLiveData.setValue(user);
+        userLiveData.setValue(getCurrentUser());
     }
 
     private MutableLiveData<User> userLiveData = new MutableLiveData<>();

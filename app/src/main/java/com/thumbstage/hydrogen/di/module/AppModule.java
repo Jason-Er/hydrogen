@@ -2,6 +2,7 @@ package com.thumbstage.hydrogen.di.module;
 
 import android.app.Application;
 import android.arch.persistence.room.Room;
+import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -40,8 +41,8 @@ public class AppModule {
 
     @Provides
     @Singleton
-    CloudAPI provideCloudAPI() {
-        return new CloudAPI();
+    CloudAPI provideCloudAPI(Application application) {
+        return new CloudAPI(application.getApplicationContext());
     }
 
     @Provides
