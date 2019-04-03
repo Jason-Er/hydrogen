@@ -1,17 +1,11 @@
-package com.thumbstage.hydrogen.im;
+package com.thumbstage.hydrogen.api;
 
 import android.content.Context;
 
-import com.avos.avoscloud.AVCallback;
-import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVOSCloud;
-import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMMessageManager;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 import com.thumbstage.hydrogen.database.ModelDB;
-
-import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

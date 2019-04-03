@@ -1,4 +1,4 @@
-package com.thumbstage.hydrogen.im;
+package com.thumbstage.hydrogen.api;
 
 public interface IIMCallBack {
     void callBack();

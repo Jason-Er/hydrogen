@@ -1,4 +1,4 @@
-package com.thumbstage.hydrogen.im;
+package com.thumbstage.hydrogen.api;
 
 import android.util.Log;
 
@@ -6,8 +6,6 @@ import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMConversationEventHandler;
 import com.avos.avoscloud.im.v2.AVIMMessage;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 

@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Application;
 
 import com.thumbstage.hydrogen.di.component.DaggerAppComponent;
-import com.thumbstage.hydrogen.im.IMService;
 
 import javax.inject.Inject;
 

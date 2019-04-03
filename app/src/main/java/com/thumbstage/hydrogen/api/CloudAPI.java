@@ -193,6 +193,24 @@ public class CloudAPI {
             });
         }
     }
+
+    private void checkOutCurrentUser() {
+        if(AVUser.getCurrentUser() != null) {
+            AVIMClient client = AVIMClient.getInstance(AVUser.getCurrentUser());
+            client.close(new AVIMClientCallback() {
+                @Override
+                public void done(AVIMClient client, AVIMException e) {
+                    if(e == null) {
+
+                    } else {
+                        e.printStackTrace();
+                        throw new IllegalStateException();
+                    }
+                }
+            });
+        }
+    }
+
     public void sendLine(final Mic mic, final Line line, final IReturnBool iReturnBool) {
         AVIMClient client = AVIMClient.getInstance(AVUser.getCurrentUser());
         client.open(new AVIMClientCallback() {
@@ -642,6 +660,7 @@ public class CloudAPI {
     }
 
     public void signOut() {
+        checkOutCurrentUser();
         AVUser.logOut();
     }
 

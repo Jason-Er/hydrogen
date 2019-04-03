@@ -1,14 +1,11 @@
 package com.thumbstage.hydrogen.view.browse;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -19,8 +16,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.im.IMService;
-import com.thumbstage.hydrogen.model.User;
+import com.thumbstage.hydrogen.api.IMService;
 import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.view.common.Navigation;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;

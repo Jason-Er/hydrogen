@@ -1,4 +1,4 @@
-package com.thumbstage.hydrogen.im;
+package com.thumbstage.hydrogen.api;
 
 import android.content.Context;
 import android.util.Log;
