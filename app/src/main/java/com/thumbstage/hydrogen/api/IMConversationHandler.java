@@ -19,22 +19,18 @@ public class IMConversationHandler extends AVIMConversationEventHandler {
 
     String TAG = "IMConversationHandler";
 
-    IIMCallBack callback;
-
     @Override
     public void onUnreadMessagesCountUpdated(AVIMClient client, AVIMConversation conversation) {
         // LCIMConversationItemCache.getInstance().insertConversation(conversation.getConversationId());
         AVIMMessage lastMessage = conversation.getLastMessage();
-        Log.i(TAG, "lastMessage "+lastMessage.getContent());
+        Log.i(TAG, "onUnreadMessagesCountUpdated "+lastMessage.getContent());
         // System.out.println("LCIMConversationHandler#onUnreadMessagesCountUpdated conv=" + conversation.getConversationId() + ", lastMsg: " + lastMessage.getContent());
-        if(callback != null) {
-            callback.callBack();
-        }
         // EventBus.getDefault().post(new LCIMOfflineMessageCountChangeEvent(conversation, lastMessage));
     }
 
     @Override
     public void onLastDeliveredAtUpdated(AVIMClient client, AVIMConversation conversation) {
+        Log.i(TAG, "onLastDeliveredAtUpdated ");
         /*
         LCIMConversationReadStatusEvent event = new LCIMConversationReadStatusEvent();
         event.conversationId = conversation.getConversationId();
@@ -44,6 +40,7 @@ public class IMConversationHandler extends AVIMConversationEventHandler {
 
     @Override
     public void onLastReadAtUpdated(AVIMClient client, AVIMConversation conversation) {
+        Log.i(TAG, "onLastReadAtUpdated ");
         /*
         LCIMConversationReadStatusEvent event = new LCIMConversationReadStatusEvent();
         event.conversationId = conversation.getConversationId();
@@ -76,10 +73,6 @@ public class IMConversationHandler extends AVIMConversationEventHandler {
     @Override
     public void onMessageUpdated(AVIMClient client, AVIMConversation conversation, AVIMMessage message) {
         // EventBus.getDefault().post(new LCIMMessageUpdatedEvent(message));
-    }
-
-    public void setCallback(IIMCallBack callback) {
-        this.callback = callback;
     }
 
 }

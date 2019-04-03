@@ -14,7 +14,6 @@ public class IMMessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> 
     final String TAG = "IMMessageHandler";
     private Context context;
     private ModelDB modelDB;
-    IIMCallBack callback;
 
     public IMMessageHandler(Context context, ModelDB modelDB) {
         this.context = context;
@@ -87,7 +86,4 @@ public class IMMessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> 
         }
     }
 
-    public void setCallback(IIMCallBack callback) {
-        this.callback = callback;
-    }
 }
