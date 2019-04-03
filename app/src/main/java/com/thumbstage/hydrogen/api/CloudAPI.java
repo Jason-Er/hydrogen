@@ -395,7 +395,7 @@ public class CloudAPI {
     public void addTopicOneLine(Topic topic, final Line line, final IReturnBool callBack) {
         AVObject avTopic = AVObject.createWithoutData(TableName.TABLE_TOPIC.name, topic.getId());
         Map data = DataConvertUtil.convert2AVObject(line);
-        avTopic.addUnique(FieldName.FIELD_DIALOGUE.name, data);
+        avTopic.add(FieldName.FIELD_DIALOGUE.name, data);
         avTopic.saveInBackground(new SaveCallback() {
             @Override
             public void done(AVException e) {
@@ -417,7 +417,7 @@ public class CloudAPI {
                     AVObject avTopic = avObject.getAVObject(FieldName.FIELD_TOPIC.name);
                     Map data = DataConvertUtil.convert2AVObject(line);
                     final AVObject topic = AVObject.createWithoutData(TableName.TABLE_TOPIC.name, avTopic.getObjectId());
-                    topic.addUnique(FieldName.FIELD_DIALOGUE.name, data);
+                    topic.add(FieldName.FIELD_DIALOGUE.name, data);
                     topic.saveInBackground(new SaveCallback() {
                         @Override
                         public void done(AVException e) {
