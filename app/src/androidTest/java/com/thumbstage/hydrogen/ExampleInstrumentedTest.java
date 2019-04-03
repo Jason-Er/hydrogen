@@ -14,6 +14,9 @@ import com.avos.avoscloud.AVUser;
 import com.avos.avoscloud.FindCallback;
 import com.avos.avoscloud.GetDataCallback;
 import com.avos.avoscloud.SaveCallback;
+import com.avos.avoscloud.im.v2.AVIMClient;
+import com.avos.avoscloud.im.v2.AVIMException;
+import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.TopicType;
@@ -379,7 +382,7 @@ public class ExampleInstrumentedTest {
     @Test
     public void testCloudAPI() {
         CloudAPI cloudAPI = new CloudAPI();
-        cloudAPI.getMic(TopicType.PUBLISHED, "", false, 0, new CloudAPI.IMicCallBack() {
+        cloudAPI.getMic(TopicType.PUBLISHED, "", false, 0, new CloudAPI.IReturnMicList() {
             @Override
             public void callback(List<Mic> micList) {
                 Log.i("testCloudAPI","");
@@ -409,6 +412,18 @@ public class ExampleInstrumentedTest {
 
 
 
+        sleep(10);
+    }
+
+    @Test
+    public void testIMOpen() {
+        AVIMClient client = AVIMClient.getInstance(AVUser.getCurrentUser().getObjectId());
+        client.open(new AVIMClientCallback() {
+            @Override
+            public void done(AVIMClient client, AVIMException e) {
+                Log.i("testIMOpen","testIMOpen open ok");
+            }
+        });
         sleep(10);
     }
 

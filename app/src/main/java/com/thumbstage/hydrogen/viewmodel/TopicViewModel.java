@@ -3,9 +3,13 @@ package com.thumbstage.hydrogen.viewmodel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
-import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.Mic;
-import com.thumbstage.hydrogen.repository.MicRepository;
+import com.thumbstage.hydrogen.model.TopicType;
+import com.thumbstage.hydrogen.model.callback.IReturnBool;
+import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
+import com.thumbstage.hydrogen.repository.TopicRepository;
+
+import java.io.File;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -13,37 +17,31 @@ import javax.inject.Singleton;
 @Singleton
 public class TopicViewModel extends ViewModel {
 
-    private MicRepository micRepository;
+    private TopicRepository topicRepository;
 
     @Inject
-    public TopicViewModel(MicRepository micRepository) {
-        this.micRepository = micRepository;
+    public TopicViewModel(TopicRepository topicRepository) {
+        this.topicRepository = topicRepository;
     }
 
     public LiveData<Mic> createTopic() {
-        return micRepository.createMic();
+        return topicRepository.createMic();
     }
 
-    public LiveData<Mic> attendTopic(Mic mic) {
-        return micRepository.attendMic(mic);
+    public LiveData<Mic> attendTopic(String micId) {
+        return topicRepository.attendMic(micId);
     }
 
-    public LiveData<Mic> pickUpTopic(Mic mic) {
-        return micRepository.pickUpMic(mic);
+    public LiveData<Mic> pickUpTopic(String micId) {
+        return topicRepository.pickUpMic(micId);
     }
 
-    /*
-    public void addLine(Line line) {
-        micRepository.addLine(line);
-    }
-    */
-
-    public void publishTheTopic() {
-        micRepository.publishTheTopic();
+    public void saveFile(File file, IReturnHyFile iReturnHyFile) {
+        topicRepository.saveFile(file, iReturnHyFile);
     }
 
-    public void startTheTopic() {
-        micRepository.startTheTopic();
+    public void createTheTopic(TopicType type, IReturnBool iReturnBool) {
+        topicRepository.createTheTopic(type, iReturnBool);
     }
 
 

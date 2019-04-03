@@ -40,9 +40,9 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(final View v) {
                 Intent intent = new Intent(v.getContext(), CreateActivity.class);
-                intent.putExtra(Mic.class.getSimpleName(), atMe.getMic());
+                intent.putExtra(Mic.class.getSimpleName(), atMe.getMic().getId());
                 intent.putExtra(TopicHandleType.class.getSimpleName(),
-                        TopicHandleType.PICKUP.name());
+                        TopicHandleType.CONTINUE.name());
                 v.getContext().startActivity(intent);
             }
         });
@@ -79,7 +79,7 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
         });
         */
         /*
-        AVIMConversation conversation = UserGlobal.getInstance().getConversation(mic.getId());
+        AVIMConversation conversation = CurrentUser.getInstance().getConversation(mic.getId());
 
         updateName(conversation);
         updateIcon(conversation);

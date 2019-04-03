@@ -49,6 +49,10 @@ public class ModelDB {
     }
 
     // region Model 2 entity
+    public void saveMic(Mic mic) {
+
+    }
+
     public void saveTopic(Topic topic) {
         User user = topic.getStarted_by();
         saveUser(user);
@@ -58,7 +62,9 @@ public class ModelDB {
         entity.setBrief(topic.getBrief());
         entity.setDerive_from(topic.getDerive_from());
         entity.setStarted_by(topic.getStarted_by().getId());
-        entity.setSetting_url(topic.getSetting().getUrl());
+        if( topic.getSetting()!=null ) {
+            entity.setSetting_url(topic.getSetting().getUrl());
+        }
         entity.setLastRefresh(new Date());
         entity.setType(topic.getType().name());
         database.topicDao().insert(entity);
@@ -139,10 +145,7 @@ public class ModelDB {
                 micEntities.add(entity);
             }
         }
-        List<Long> ids = database.micDao().insert(micEntities);
-        // for debug
-        MicEntity entity = database.micDao().get(micEntities.get(0).getId());
-        Log.i("saveMicList", "ok");
+        database.micDao().insert(micEntities);
     }
 
     public void saveUser(User user) {

@@ -6,8 +6,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.model.Line;
-import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
+import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.view.common.Navigation;
 import com.thumbstage.hydrogen.view.create.ICreateCustomize;
 import com.thumbstage.hydrogen.view.create.ICreateMenuItemFunction;
@@ -22,7 +21,7 @@ public class CaseContinueTopic extends CaseBase implements ICreateMenuItemFuncti
     // region implements interface ICreateMenuItemFunction
     @Override
     public void sign(Context context) {
-        Navigation.sign(context);
+        Navigation.sign2Account(context);
     }
 
     @Override
@@ -31,12 +30,12 @@ public class CaseContinueTopic extends CaseBase implements ICreateMenuItemFuncti
     }
 
     @Override
-    public void startTopic() {
+    public void createTopic(IReturnBool iReturnBool) {
 
     }
 
     @Override
-    public void publishTopic() {
+    public void publishTopic(IReturnBool iReturnBool) {
 
     }
     //endregion
