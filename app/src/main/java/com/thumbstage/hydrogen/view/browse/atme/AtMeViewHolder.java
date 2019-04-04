@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.AtMe;
 import com.thumbstage.hydrogen.model.Mic;
@@ -22,6 +23,8 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
 
     AtMe atMe;
 
+    @BindView(R.id.item_mic_atme_topic_setting)
+    ImageView setting;
     @BindView(R.id.item_mic_atme_avatar)
     ImageView avatar;
     @BindView(R.id.item_mic_atme_topic)
@@ -52,6 +55,9 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
         this.atMe = atMe;
         GlideUtil.inject(itemView.getContext(), atMe.getWho().getAvatar(), avatar);
         topicName.setText(atMe.getMic().getTopic().getName());
+        if(atMe.getMic().getTopic().getSetting() != null) {
+            Glide.with(setting).load(atMe.getMic().getTopic().getSetting().getUrl()).into(setting);
+        }
         message.setText(atMe.getWho().getName()+":"+atMe.getWhat());
         timeView.setText(StringUtil.date2String4Show(atMe.getWhen()));
     }
