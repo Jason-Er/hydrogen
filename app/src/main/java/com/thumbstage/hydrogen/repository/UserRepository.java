@@ -37,6 +37,7 @@ public class UserRepository {
         cloudAPI.signIn(id, password, new IReturnUser() {
             @Override
             public void callback(User user) {
+                modelDB.saveUser(user);
                 userLiveData.setValue(user);
             }
         });
