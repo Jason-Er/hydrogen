@@ -2,12 +2,25 @@ package com.thumbstage.hydrogen.api;
 
 import android.util.Log;
 
+import com.avos.avoscloud.AVException;
+import com.avos.avoscloud.AVObject;
+import com.avos.avoscloud.AVQuery;
+import com.avos.avoscloud.AVUser;
+import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMConversationEventHandler;
 import com.avos.avoscloud.im.v2.AVIMMessage;
+import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
+import com.thumbstage.hydrogen.database.HyDatabase;
+import com.thumbstage.hydrogen.database.entity.AtMeEntity;
+import com.thumbstage.hydrogen.database.entity.UserEntity;
+import com.thumbstage.hydrogen.repository.FieldName;
+import com.thumbstage.hydrogen.repository.TableName;
 
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 /**
  * Created by wli on 15/12/1.
@@ -18,14 +31,61 @@ import java.util.List;
 public class IMConversationHandler extends AVIMConversationEventHandler {
 
     String TAG = "IMConversationHandler";
+    private HyDatabase database;
+    private Executor executor;
+
+    public IMConversationHandler(HyDatabase database, Executor executor) {
+        this.database = database;
+        this.executor = executor;
+    }
 
     @Override
-    public void onUnreadMessagesCountUpdated(AVIMClient client, AVIMConversation conversation) {
-        // LCIMConversationItemCache.getInstance().insertConversation(conversation.getConversationId());
-        AVIMMessage lastMessage = conversation.getLastMessage();
-        Log.i(TAG, "onUnreadMessagesCountUpdated "+lastMessage.getContent());
-        // System.out.println("LCIMConversationHandler#onUnreadMessagesCountUpdated conv=" + conversation.getConversationId() + ", lastMsg: " + lastMessage.getContent());
-        // EventBus.getDefault().post(new LCIMOfflineMessageCountChangeEvent(conversation, lastMessage));
+    public void onUnreadMessagesCountUpdated(AVIMClient client, final AVIMConversation conversation) {
+        Log.i(TAG, "onUnreadMessagesCountUpdated ");
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                database.runInTransaction(new Runnable() {
+                    @Override
+                    public void run() {
+                        final AVIMMessage lastMessage = conversation.getLastMessage();
+                        AVQuery<AVObject> avUser = new AVQuery<>(TableName.TABLE_USER.name);
+                        avUser.getInBackground(lastMessage.getFrom(), new GetCallback<AVObject>() {
+                            @Override
+                            public void done(final AVObject who, AVException e) {
+                                if(e == null) {
+                                    executor.execute(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            UserEntity userEntity = new UserEntity();
+                                            userEntity.setId(who.getObjectId());
+                                            userEntity.setName((String)who.get(FieldName.FIELD_NAME.name));
+                                            userEntity.setAvatar((String) who.get(FieldName.FIELD_AVATAR.name));
+                                            userEntity.setLastRefresh(new Date());
+                                            database.userDao().insert(userEntity);
+                                            AtMeEntity atMeEntity = new AtMeEntity();
+                                            atMeEntity.setWho(who.getObjectId());
+                                            atMeEntity.setMicId(conversation.getConversationId());
+                                            atMeEntity.setMe(AVUser.getCurrentUser().getObjectId());
+                                            atMeEntity.setWhen(new Date(lastMessage.getTimestamp()));
+                                            if(lastMessage instanceof AVIMTextMessage) {
+                                                atMeEntity.setWhat(((AVIMTextMessage) lastMessage).getText());
+                                            } else {
+                                                // TODO: 4/4/2019 may audio so save url then
+                                            }
+                                            atMeEntity.setLastRefresh(new Date());
+                                            database.atMeDao().insert(atMeEntity);
+                                        }
+                                    });
+                                } else {
+                                    return;
+                                }
+                            }
+                        });
+                    }
+                });
+            }
+        });
     }
 
     @Override

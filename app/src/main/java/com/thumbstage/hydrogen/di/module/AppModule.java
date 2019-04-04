@@ -52,8 +52,8 @@ public class AppModule {
 
     @Provides
     @Singleton
-    IMService provideIMService(Application application, ModelDB modelDB) {
-        return new IMService(application.getApplicationContext(), modelDB);
+    IMService provideIMService(Application application, HyDatabase hyDatabase, Executor executor) {
+        return new IMService(application.getApplicationContext(), hyDatabase, executor);
     }
     // --- REPOSITORY INJECTION ---
 

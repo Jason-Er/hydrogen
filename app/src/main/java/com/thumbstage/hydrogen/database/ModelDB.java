@@ -32,6 +32,7 @@ public class ModelDB {
 
     private static int FRESH_TIMEOUT_IN_MINUTES = 1;
 
+    // TODO: 4/4/2019 remember to use db roomDB.runInTransaction
     @Inject
     public ModelDB(HyDatabase database) {
         this.database = database;

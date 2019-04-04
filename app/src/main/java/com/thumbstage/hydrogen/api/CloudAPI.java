@@ -42,6 +42,7 @@ import com.thumbstage.hydrogen.model.callback.IReturnMic;
 import com.thumbstage.hydrogen.model.callback.IReturnMicList;
 import com.thumbstage.hydrogen.model.callback.IReturnTopic;
 import com.thumbstage.hydrogen.model.callback.IReturnUser;
+import com.thumbstage.hydrogen.repository.FieldName;
 import com.thumbstage.hydrogen.repository.TableName;
 import com.thumbstage.hydrogen.utils.DataConvertUtil;
 import com.thumbstage.hydrogen.utils.StringUtil;
@@ -99,28 +100,6 @@ public class CloudAPI {
 
     public interface IReturnFile {
         void callback(File file);
-    }
-
-    private enum FieldName {
-        FIELD_ID("objectId"),
-        FIELD_NAME("name"),
-        FIELD_USERNAME("username"),
-        FIELD_AVATAR("avatar"),
-        FIELD_BRIEF("brief"),
-        FIELD_IS_FINISHED("is_finished"),
-        FIELD_STARTED_BY("started_by"),
-        FIELD_DERIVE_FROM("derive_from"),
-        FIELD_SETTING("setting"),
-        FIELD_MEMBERS("members"),
-        FIELD_DIALOGUE("dialogue"),
-        FIELD_TOPIC("topic"),
-        FIELD_PRIVILEGE("privilege"),
-        FIELD_TYPE("type");
-
-        final String name;
-        FieldName(String name) {
-            this.name = name;
-        }
     }
 
     public void createMic(final Topic topic, final ICallBack iCallBack) {
