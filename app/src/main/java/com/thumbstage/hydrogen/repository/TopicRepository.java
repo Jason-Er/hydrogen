@@ -76,14 +76,7 @@ public class TopicRepository {
                             executor.execute(new Runnable() {
                                 @Override
                                 public void run() {
-                                    if( micList.size()>0 ) {
-                                        List<Topic> topics = new ArrayList<>();
-                                        for(Mic mic:micList) {
-                                            topics.add(mic.getTopic());
-                                        }
-                                        modelDB.saveTopicList(topics);
-                                        modelDB.saveMicList(micList);
-                                    }
+                                    modelDB.saveMicList(micList);
                                     mutableLiveData.postValue(micList);
                                 }
                             });

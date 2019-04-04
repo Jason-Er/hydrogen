@@ -5,7 +5,7 @@ import android.content.Context;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMMessageManager;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
-import com.thumbstage.hydrogen.database.HyDatabase;
+import com.thumbstage.hydrogen.database.ModelDB;
 
 import java.util.concurrent.Executor;
 
@@ -15,17 +15,16 @@ import javax.inject.Singleton;
 @Singleton
 public class IMService {
 
-    private volatile static IMService userGlobal = null;
     private IMMessageHandler imMessageHandler;
     private IMConversationHandler imConversationHandler;
 
     @Inject
-    public IMService(Context context, HyDatabase hyDatabase, Executor executor) {
-        imMessageHandler = new IMMessageHandler(context, hyDatabase);
+    public IMService(Context context, CloudAPI cloudAPI, ModelDB modelDB, Executor executor) {
+        imMessageHandler = new IMMessageHandler(context, modelDB);
         AVIMMessageManager.registerMessageHandler(AVIMTypedMessage.class, imMessageHandler);
 
         // 和 Conversation 相关的事件的 handler
-        imConversationHandler = new IMConversationHandler(hyDatabase, executor);
+        imConversationHandler = new IMConversationHandler(cloudAPI, modelDB, executor);
         AVIMMessageManager.setConversationEventHandler(imConversationHandler);
         AVIMClient.setUnreadNotificationEnabled(true);
     }

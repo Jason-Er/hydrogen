@@ -2,21 +2,16 @@ package com.thumbstage.hydrogen.api;
 
 import android.util.Log;
 
-import com.avos.avoscloud.AVException;
-import com.avos.avoscloud.AVObject;
-import com.avos.avoscloud.AVQuery;
-import com.avos.avoscloud.AVUser;
-import com.avos.avoscloud.GetCallback;
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMConversationEventHandler;
 import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
-import com.thumbstage.hydrogen.database.HyDatabase;
-import com.thumbstage.hydrogen.database.entity.AtMeEntity;
-import com.thumbstage.hydrogen.database.entity.UserEntity;
-import com.thumbstage.hydrogen.repository.FieldName;
-import com.thumbstage.hydrogen.repository.TableName;
+import com.thumbstage.hydrogen.database.ModelDB;
+import com.thumbstage.hydrogen.model.AtMe;
+import com.thumbstage.hydrogen.model.Mic;
+import com.thumbstage.hydrogen.model.User;
+import com.thumbstage.hydrogen.model.callback.IReturnMic;
 
 import java.util.Date;
 import java.util.List;
@@ -31,55 +26,42 @@ import java.util.concurrent.Executor;
 public class IMConversationHandler extends AVIMConversationEventHandler {
 
     String TAG = "IMConversationHandler";
-    private HyDatabase database;
+    private ModelDB modelDB;
     private Executor executor;
+    private CloudAPI cloudAPI;
 
-    public IMConversationHandler(HyDatabase database, Executor executor) {
-        this.database = database;
+    public IMConversationHandler(CloudAPI cloudAPI, ModelDB modelDB, Executor executor) {
+        this.cloudAPI = cloudAPI;
+        this.modelDB = modelDB;
         this.executor = executor;
     }
 
     @Override
-    public void onUnreadMessagesCountUpdated(AVIMClient client, final AVIMConversation conversation) {
+    public void onUnreadMessagesCountUpdated(final AVIMClient client, final AVIMConversation conversation) {
         Log.i(TAG, "onUnreadMessagesCountUpdated ");
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                database.runInTransaction(new Runnable() {
+                cloudAPI.getMic(conversation.getConversationId(), new IReturnMic() {
                     @Override
-                    public void run() {
-                        final AVIMMessage lastMessage = conversation.getLastMessage();
-                        AVQuery<AVObject> avUser = new AVQuery<>(TableName.TABLE_USER.name);
-                        avUser.getInBackground(lastMessage.getFrom(), new GetCallback<AVObject>() {
+                    public void callback(Mic mic) {
+                        AVIMMessage lastMessage = conversation.getLastMessage();
+                        final AtMe atMe = new AtMe();
+                        atMe.setMic(mic);
+                        if(lastMessage instanceof AVIMTextMessage)
+                            atMe.setWhat(((AVIMTextMessage) lastMessage).getText());
+                        for(User user: mic.getTopic().getMembers()) {
+                            if(user.getId().equals(lastMessage.getFrom())) {
+                                atMe.setWho(user);
+                                break;
+                            }
+                        }
+                        atMe.setWhen(new Date(lastMessage.getTimestamp()));
+                        atMe.setMe(cloudAPI.getCurrentUser());
+                        executor.execute(new Runnable() {
                             @Override
-                            public void done(final AVObject who, AVException e) {
-                                if(e == null) {
-                                    executor.execute(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            UserEntity userEntity = new UserEntity();
-                                            userEntity.setId(who.getObjectId());
-                                            userEntity.setName((String)who.get(FieldName.FIELD_USERNAME.name));
-                                            userEntity.setAvatar((String) who.get(FieldName.FIELD_AVATAR.name));
-                                            userEntity.setLastRefresh(new Date());
-                                            database.userDao().insert(userEntity);
-                                            AtMeEntity atMeEntity = new AtMeEntity();
-                                            atMeEntity.setWho(who.getObjectId());
-                                            atMeEntity.setMicId(conversation.getConversationId());
-                                            atMeEntity.setMe(AVUser.getCurrentUser().getObjectId());
-                                            atMeEntity.setWhen(new Date(lastMessage.getTimestamp()));
-                                            if(lastMessage instanceof AVIMTextMessage) {
-                                                atMeEntity.setWhat(((AVIMTextMessage) lastMessage).getText());
-                                            } else {
-                                                // TODO: 4/4/2019 may audio so save url then
-                                            }
-                                            atMeEntity.setLastRefresh(new Date());
-                                            database.atMeDao().insert(atMeEntity);
-                                        }
-                                    });
-                                } else {
-                                    return;
-                                }
+                            public void run() {
+                                modelDB.saveAtMe(atMe);
                             }
                         });
                     }

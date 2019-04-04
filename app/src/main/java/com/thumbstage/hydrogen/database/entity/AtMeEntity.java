@@ -10,8 +10,11 @@ import java.util.Date;
 
 @Entity(tableName = "at_me",
         primaryKeys = {"mic_id", "me"},
-        indices = {@Index("who"), @Index("me")},
+        indices = {@Index("mic_id"), @Index("who"), @Index("me")},
         foreignKeys = {
+                @ForeignKey(entity = MicEntity.class,
+                        parentColumns = "id",
+                        childColumns = "mic_id"),
                 @ForeignKey(entity = UserEntity.class,
                         parentColumns = "id",
                         childColumns = "who"),

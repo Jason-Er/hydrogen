@@ -7,17 +7,17 @@ import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 import com.avos.avoscloud.im.v2.AVIMTypedMessageHandler;
-import com.thumbstage.hydrogen.database.HyDatabase;
+import com.thumbstage.hydrogen.database.ModelDB;
 import com.thumbstage.hydrogen.event.IMIMTypeMessageEvent;
 
 public class IMMessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> {
     final String TAG = "IMMessageHandler";
     private Context context;
-    private HyDatabase database;
+    private ModelDB modelDB;
 
-    public IMMessageHandler(Context context, HyDatabase database) {
+    public IMMessageHandler(Context context, ModelDB modelDB) {
         this.context = context;
-        this.database = database;
+        this.modelDB = modelDB;
     }
 
     @Override
