@@ -4,7 +4,6 @@ import android.arch.core.util.Function;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
-import android.util.Log;
 
 import com.thumbstage.hydrogen.database.HyDatabase;
 import com.thumbstage.hydrogen.database.entity.AtMeEntity;

@@ -59,7 +59,7 @@ public class IMConversationHandler extends AVIMConversationEventHandler {
                                         public void run() {
                                             UserEntity userEntity = new UserEntity();
                                             userEntity.setId(who.getObjectId());
-                                            userEntity.setName((String)who.get(FieldName.FIELD_NAME.name));
+                                            userEntity.setName((String)who.get(FieldName.FIELD_USERNAME.name));
                                             userEntity.setAvatar((String) who.get(FieldName.FIELD_AVATAR.name));
                                             userEntity.setLastRefresh(new Date());
                                             database.userDao().insert(userEntity);

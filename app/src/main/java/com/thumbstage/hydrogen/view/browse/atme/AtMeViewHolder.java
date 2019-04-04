@@ -51,6 +51,7 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
     public void setAtMe(AtMe atMe) {
         this.atMe = atMe;
         GlideUtil.inject(itemView.getContext(), atMe.getWho().getAvatar(), avatar);
+        // name.setText(atMe.getMic().getTopic().getName());
         message.setText(atMe.getWho().getName()+":"+atMe.getWhat());
         timeView.setText(StringUtil.date2String4Show(atMe.getWhen()));
     }
