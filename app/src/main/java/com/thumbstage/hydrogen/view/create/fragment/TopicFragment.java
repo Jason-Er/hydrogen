@@ -20,9 +20,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Mic;
-import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
+import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
+import com.thumbstage.hydrogen.model.callback.IReturnBool;
+import com.thumbstage.hydrogen.model.callback.IStatusCallBack;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
 import com.thumbstage.hydrogen.view.create.ICreateCustomize;
 import com.thumbstage.hydrogen.view.create.ICreateMenuItemFunction;
@@ -31,6 +34,7 @@ import com.thumbstage.hydrogen.view.create.cases.CaseBase;
 import com.thumbstage.hydrogen.view.create.cases.CaseContinueTopic;
 import com.thumbstage.hydrogen.view.create.cases.CaseCreateTopic;
 import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
+import com.thumbstage.hydrogen.viewmodel.UserViewModel;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -58,13 +62,14 @@ public class TopicFragment extends Fragment {
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
-    TopicViewModel viewModel;
+    TopicViewModel topicViewModel;
+    UserViewModel userViewModel;
 
     Map<TopicHandleType, CaseBase> roleMap = new HashMap<TopicHandleType, CaseBase>(){
         {
             put(TopicHandleType.CREATE, new CaseCreateTopic());
             put(TopicHandleType.ATTEND, new CaseAttendTopic());
-            put(TopicHandleType.PICKUP, new CaseContinueTopic());
+            put(TopicHandleType.CONTINUE, new CaseContinueTopic());
         }
     };
 
@@ -107,42 +112,51 @@ public class TopicFragment extends Fragment {
     }
 
     private void configureViewModel(){
-        Mic mic = getActivity().getIntent().getParcelableExtra(Mic.class.getSimpleName());
+        final String micId = getActivity().getIntent().getStringExtra(Mic.class.getSimpleName());
         String handleType = getActivity().getIntent().getStringExtra(TopicHandleType.class.getSimpleName());
         if(TextUtils.isEmpty(handleType)) {
             throw new IllegalArgumentException("No TopicHandleType found!");
         }
-        viewModel = ViewModelProviders.of(this, viewModelFactory).get(TopicViewModel.class);
+        topicViewModel = ViewModelProviders.of(this, viewModelFactory).get(TopicViewModel.class);
+        userViewModel = ViewModelProviders.of(this, viewModelFactory).get(UserViewModel.class);
+
+        topicAdapter.setUser(userViewModel.getCurrentUser());
+        for(CaseBase caseBase: roleMap.values()) {
+            caseBase.setUser(userViewModel.getCurrentUser());
+        }
 
         for(CaseBase caseBase: roleMap.values()) {
-            caseBase.setViewModel(viewModel);
+            caseBase.setTopicViewModel(topicViewModel);
         }
 
         switch (TopicHandleType.valueOf(handleType)) {
             case CREATE:
                 currentRole = roleMap.get(TopicHandleType.CREATE);
-                viewModel.createTopic().observe(this, new Observer<Mic>() {
+                topicViewModel.createTopic().observe(this, new Observer<Mic>() {
                     @Override
                     public void onChanged(@Nullable Mic mic) {
                         topicAdapter.setMic(mic);
+
                     }
                 });
                 break;
             case ATTEND:
                 currentRole = roleMap.get(TopicHandleType.ATTEND);
-                viewModel.attendTopic(mic).observe(this, new Observer<Mic>() {
+                topicViewModel.attendTopic(micId).observe(this, new Observer<Mic>() {
                     @Override
                     public void onChanged(@Nullable Mic mic) {
-
+                        topicAdapter.setMic(mic);
+                        Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
                     }
                 });
                 break;
-            case PICKUP:
-                currentRole = roleMap.get(TopicHandleType.PICKUP);
-                viewModel.pickUpTopic(mic).observe(this, new Observer<Mic>() {
+            case CONTINUE:
+                currentRole = roleMap.get(TopicHandleType.CONTINUE);
+                topicViewModel.pickUpTopic(micId).observe(this, new Observer<Mic>() {
                     @Override
                     public void onChanged(@Nullable Mic mic) {
-
+                        topicAdapter.setMic(mic);
+                        Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
                     }
                 });
                 break;
@@ -156,36 +170,9 @@ public class TopicFragment extends Fragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onResponseMessageEvent(final ConversationBottomBarEvent event) {
+    public void onResponseMessageEvent(final TopicBottomBarEvent event) {
         currentRole.handleBottomBarEvent(event);
     }
-
-    /*
-    public void attendTopic(Topic mic) {
-        currentRole = roleMap.get(CreateActivity.TopicHandleType.ATTEND);
-        currentRole.setBackgroundView(background)
-                .setTopicAdapter(topicAdapter)
-                .setLayoutManager(layoutManager)
-                .setMic(mic);
-    }
-
-    public void createTopic() {
-        currentRole = roleMap.get(CreateActivity.TopicHandleType.CREATE);
-        currentRole.setBackgroundView(background)
-                .setTopicAdapter(topicAdapter)
-                .setLayoutManager(layoutManager)
-                .setMic(null);
-    }
-
-    public void pickUpTopic(Topic mic, Mic mic) {
-        currentRole = roleMap.get(CreateActivity.TopicHandleType.PICKUP);
-        currentRole.setBackgroundView(background)
-                .setTopicAdapter(topicAdapter)
-                .setLayoutManager(layoutManager)
-                .setMic(mic)
-                .setMic(mic);
-    }
-    */
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -213,16 +200,29 @@ public class TopicFragment extends Fragment {
             case R.id.menu_create_start:
                 Log.i(TAG, "menu_create_start");
                 if( currentRole instanceof ICreateMenuItemFunction) {
-                    ((ICreateMenuItemFunction) currentRole).startTopic();
+                    ((ICreateMenuItemFunction) currentRole).createTopic(new IReturnBool() {
+                        @Override
+                        public void callback(Boolean status) {
+                            if(status) {
+                                ((CreateActivity) getActivity()).navigateUp();
+                            }
+                        }
+                    });
                 }
-                ((CreateActivity)getActivity()).navigateUp();
+
                 break;
             case R.id.menu_create_publish:
                 Log.i(TAG, "menu_create_publish");
                 if( currentRole instanceof ICreateMenuItemFunction) {
-                    ((ICreateMenuItemFunction) currentRole).publishTopic();
+                    ((ICreateMenuItemFunction) currentRole).publishTopic(new IReturnBool() {
+                        @Override
+                        public void callback(Boolean status) {
+                            if(status) {
+                                ((CreateActivity)getActivity()).navigateUp();
+                            }
+                        }
+                    });
                 }
-                ((CreateActivity)getActivity()).navigateUp();
                 break;
         }
         return super.onOptionsItemSelected(item);

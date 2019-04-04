@@ -1,4 +1,4 @@
-package com.thumbstage.hydrogen.im;
+package com.thumbstage.hydrogen.api;
 
 import android.content.Context;
 import android.util.Log;
@@ -7,16 +7,17 @@ import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 import com.avos.avoscloud.im.v2.AVIMTypedMessageHandler;
-import com.thumbstage.hydrogen.app.UserGlobal;
+import com.thumbstage.hydrogen.database.ModelDB;
 import com.thumbstage.hydrogen.event.IMIMTypeMessageEvent;
 
 public class IMMessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> {
     final String TAG = "IMMessageHandler";
     private Context context;
-    IIMCallBack callback;
+    private ModelDB modelDB;
 
-    public IMMessageHandler(Context context) {
+    public IMMessageHandler(Context context, ModelDB modelDB) {
         this.context = context;
+        this.modelDB = modelDB;
     }
 
     @Override
@@ -27,14 +28,15 @@ public class IMMessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> 
             return;
         }
 
-        if (UserGlobal.getInstance().getCurrentUserId() == null) {
+        /*
+        if (CurrentUser.getInstance().getCurrentUserId() == null) {
             Log.d(TAG,"selfId is null, please call LCChatKit.open!");
             client.close(null);
         } else {
-            if (!client.getClientId().equals(UserGlobal.getInstance().getCurrentUserId())) {
+            if (!client.getClientId().equals(CurrentUser.getInstance().getCurrentUserId())) {
                 client.close(null);
             } else {
-                /*
+
                 if (LCIMNotificationUtils.isShowNotification(conversation.getConversationId())) {
                     sendNotification(message, conversation);
                 }
@@ -45,9 +47,9 @@ public class IMMessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> 
                         callback.callBack();
                     }
                 }
-                */
             }
         }
+        */
     }
 
     @Override
@@ -84,7 +86,4 @@ public class IMMessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> 
         }
     }
 
-    public void setCallback(IIMCallBack callback) {
-        this.callback = callback;
-    }
 }

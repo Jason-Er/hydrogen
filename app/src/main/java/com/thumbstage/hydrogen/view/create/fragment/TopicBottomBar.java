@@ -9,15 +9,13 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.app.UserGlobal;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.LineType;
 import com.thumbstage.hydrogen.utils.PathUtils;
 import com.thumbstage.hydrogen.utils.SoftInputUtils;
-import com.thumbstage.hydrogen.event.ConversationBottomBarEvent;
+import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -90,9 +88,9 @@ public class TopicBottomBar extends LinearLayout {
             }
         }, MIN_INTERVAL_SEND_MESSAGE);
 
-        Line line = new Line(UserGlobal.getInstance().getCurrentUser(), new Date(), content, LineType.LT_DIALOGUE);
+        Line line = new Line(null, new Date(), content, LineType.LT_DIALOGUE);
         EventBus.getDefault().post(
-                new ConversationBottomBarEvent(line, "text"));
+                new TopicBottomBarEvent(line, "text"));
     }
 
     @OnClick(R.id.input_bar_btn_keyboard)
@@ -115,7 +113,7 @@ public class TopicBottomBar extends LinearLayout {
             public void onFinishedRecord(final String audioPath, int secs) {
                 if (secs > 0)
                     EventBus.getDefault().post(
-                            new ConversationBottomBarEvent(audioPath, "voice"));
+                            new TopicBottomBarEvent(audioPath, "voice"));
                 recordBtn.setSavePath(PathUtils.getRecordPathByCurrentTime(getContext()));
             }
 

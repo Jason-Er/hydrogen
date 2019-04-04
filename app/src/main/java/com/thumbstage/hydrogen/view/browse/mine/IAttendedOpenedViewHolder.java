@@ -11,6 +11,7 @@ import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.Topic;
+import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
 import com.thumbstage.hydrogen.view.create.fragment.TopicHandleType;
 
@@ -27,6 +28,8 @@ public class IAttendedOpenedViewHolder extends RecyclerView.ViewHolder {
     TextView name;
     @BindView(R.id.item_browse_topic_brief)
     TextView brief;
+    @BindView(R.id.item_browse_topic_avatar)
+    ImageView avatar;
 
     public IAttendedOpenedViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -35,9 +38,9 @@ public class IAttendedOpenedViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), CreateActivity.class);
-                intent.putExtra(Mic.class.getSimpleName(), mic);
+                intent.putExtra(Mic.class.getSimpleName(), mic.getId());
                 intent.putExtra(TopicHandleType.class.getSimpleName(),
-                        TopicHandleType.PICKUP.name());
+                        TopicHandleType.CONTINUE.name());
                 v.getContext().startActivity(intent);
             }
         });
@@ -50,6 +53,10 @@ public class IAttendedOpenedViewHolder extends RecyclerView.ViewHolder {
         brief.setText(topic.getBrief());
         if(topic.getSetting() != null) {
             Glide.with(setting.getContext()).load(topic.getSetting().getUrl()).into(setting);
+        }
+        User user = topic.getStarted_by();
+        if(user != null) {
+            Glide.with(avatar).load(user.getAvatar()).into(avatar);
         }
     }
 

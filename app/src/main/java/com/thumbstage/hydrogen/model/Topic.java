@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Topic implements Parcelable {
+public class Topic implements Parcelable, Cloneable {
 
     String id;
     String name;
@@ -32,11 +32,11 @@ public class Topic implements Parcelable {
         brief = in.readString();
         derive_from = in.readString();
         type = TopicType.valueOf(in.readString());
-        members.clear();
+        members = new ArrayList<>();
         in.readList(members, User.class.getClassLoader());
         setting = in.readParcelable(Setting.class.getClassLoader());
         started_by = in.readParcelable(User.class.getClassLoader());
-        dialogue.clear();
+        dialogue = new ArrayList<>();
         in.readList(dialogue, Line.class.getClassLoader());
     }
 
@@ -52,7 +52,7 @@ public class Topic implements Parcelable {
         dest.writeString(brief);
         dest.writeString(derive_from);
         dest.writeString(type.name());
-        dest.writeTypedList(members);
+        dest.writeList(members);
         dest.writeParcelable(setting, flags);
         dest.writeParcelable(started_by, flags);
         dest.writeList(dialogue);
@@ -161,4 +161,16 @@ public class Topic implements Parcelable {
     }
 
     // endregion
+
+
+    @Override
+    public Object clone() {
+        Topic topic = null;
+        try{
+            topic = (Topic) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return topic;
+    }
 }

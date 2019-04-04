@@ -1,6 +1,5 @@
 package com.thumbstage.hydrogen.view.browse.mine;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -13,7 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.app.Privilege;
+import com.thumbstage.hydrogen.model.Privilege;
 import com.thumbstage.hydrogen.view.browse.IAdapterFunction;
 import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
 

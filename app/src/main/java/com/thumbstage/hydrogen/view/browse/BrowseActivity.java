@@ -1,17 +1,11 @@
 package com.thumbstage.hydrogen.view.browse;
 
-import android.Manifest;
-import android.annotation.TargetApi;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -21,18 +15,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.avos.avoscloud.AVUser;
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.app.UserGlobal;
-import com.thumbstage.hydrogen.im.IMService;
-import com.thumbstage.hydrogen.event.SignEvent;
+import com.thumbstage.hydrogen.api.IMService;
+import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.view.common.Navigation;
-import com.thumbstage.hydrogen.viewmodel.BrowseViewModel;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import javax.inject.Inject;
 
@@ -52,13 +39,15 @@ public class BrowseActivity extends AppCompatActivity
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
+    @Inject
+    IMService imService;
 
     @BindView(R.id.browse_content)
     ViewPager viewPager;
     BrowseFragmentPagerAdapter pagerAdapter;
 
-    // UserViewModel userViewModel;
-    // BrowseViewModel browseViewModel;
+    UserViewModel userViewModel;
+
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.fab)
@@ -68,18 +57,18 @@ public class BrowseActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse);
-
+        configureDagger();
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         fab.hide();
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         //
@@ -89,17 +78,19 @@ public class BrowseActivity extends AppCompatActivity
                 int menuItemId = item.getItemId();
                 switch (menuItemId) {
                     case R.id.menu_browse_sign:
-                        Navigation.sign(BrowseActivity.this);
+                        if( userViewModel.getCurrentUser().getId().equals(StringUtil.DEFAULT_USERID) ) {
+                            Navigation.sign2SignIn(BrowseActivity.this);
+                        } else {
+                            Navigation.sign2Account(BrowseActivity.this);
+                        }
                         break;
                 }
                 return false;
             }
         });
-        // userViewModel = ViewModelProviders.of(this, viewModelFactory).get(UserViewModel.class);
-        // browseViewModel = ViewModelProviders.of(this, viewModelFactory).get(BrowseViewModel.class);
-        // browseViewModel.setListenIMCallBack(IMService.getInstance().getImMessageHandler());
-        // browseViewModel.setListenIMCallBack(IMService.getInstance().getImConversationHandler());
-        EventBus.getDefault().register(this);
+
+        userViewModel = ViewModelProviders.of(this, viewModelFactory).get(UserViewModel.class);
+
         pagerAdapter = new BrowseFragmentPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
         ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {
@@ -124,27 +115,6 @@ public class BrowseActivity extends AppCompatActivity
             }
         };
         viewPager.addOnPageChangeListener(pageChangeListener);
-
-        /*
-        if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            // Should we show an explanation?
-            if (shouldShowRequestPermissionRationale(
-                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
-                // Explain to the user why we need to read the contacts
-            }
-
-            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
-
-            // MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE is an
-            // app-defined int constant that should be quite unique
-
-            return;
-        }
-        */
-        configureDagger();
     }
 
     @Override
@@ -158,7 +128,7 @@ public class BrowseActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -169,7 +139,7 @@ public class BrowseActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
-        pagerAdapter.updateFragmentsBy(UserGlobal.getInstance().getPrivilegeSet());
+        pagerAdapter.updateFragmentsBy(userViewModel.getCurrentUser().getPrivileges());
     }
 
     @Override
@@ -218,23 +188,6 @@ public class BrowseActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        EventBus.getDefault().unregister(this);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onResponseMessageEvent(SignEvent event) {
-        switch (event.getMessage()) {
-            case "signUser":
-                Log.d(TAG,"receive signUser");
-                AVUser avUser = (AVUser) event.getData();
-                // userViewModel.setAvUser(avUser);
-                break;
-        }
     }
 
 }

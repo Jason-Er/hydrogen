@@ -25,7 +25,7 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.item_mic_atme_avatar)
     ImageView avatar;
     @BindView(R.id.item_mic_atme_topic)
-    TextView name;
+    TextView topicName;
     @BindView(R.id.item_mic_atme_what)
     TextView message;
     @BindView(R.id.item_mic_atme_time)
@@ -40,9 +40,9 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
             @Override
             public void onClick(final View v) {
                 Intent intent = new Intent(v.getContext(), CreateActivity.class);
-                intent.putExtra(Mic.class.getSimpleName(), atMe.getMic());
+                intent.putExtra(Mic.class.getSimpleName(), atMe.getMic().getId());
                 intent.putExtra(TopicHandleType.class.getSimpleName(),
-                        TopicHandleType.PICKUP.name());
+                        TopicHandleType.CONTINUE.name());
                 v.getContext().startActivity(intent);
             }
         });
@@ -51,6 +51,7 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
     public void setAtMe(AtMe atMe) {
         this.atMe = atMe;
         GlideUtil.inject(itemView.getContext(), atMe.getWho().getAvatar(), avatar);
+        topicName.setText(atMe.getMic().getTopic().getName());
         message.setText(atMe.getWho().getName()+":"+atMe.getWhat());
         timeView.setText(StringUtil.date2String4Show(atMe.getWhen()));
     }
@@ -64,7 +65,7 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
             public void callback(User user) {
                 if(user != null) {
                     GlideUtil.inject(itemView.getContext(), user.getAvatar(), avatar);
-                    name.setText(user.getName());
+                    topicName.setText(user.getName());
                 }
             }
         });
@@ -79,7 +80,7 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
         });
         */
         /*
-        AVIMConversation conversation = UserGlobal.getInstance().getConversation(mic.getId());
+        AVIMConversation conversation = CurrentUser.getInstance().getConversation(mic.getId());
 
         updateName(conversation);
         updateIcon(conversation);
@@ -139,7 +140,7 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
                 if (null != e) {
                     LogUtils.logException(e);
                 } else {
-                    name.setText(s);
+                    topicName.setText(s);
                 }
             }
         });

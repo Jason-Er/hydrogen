@@ -7,6 +7,7 @@ public class AtMe {
     User who;
     Date when;
     String what;
+    User me;
 
     public User getWho() {
         return who;
@@ -38,5 +39,13 @@ public class AtMe {
 
     public void setWhen(Date when) {
         this.when = when;
+    }
+
+    public User getMe() {
+        return me;
+    }
+
+    public void setMe(User me) {
+        this.me = me;
     }
 }

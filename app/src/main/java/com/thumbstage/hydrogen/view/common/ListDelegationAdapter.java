@@ -40,7 +40,7 @@ public class ListDelegationAdapter extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
-    public void addItems(Object object) {
+    public void addItem(Object object) {
         items.add(object);
         notifyItemChanged(items.size()-1);
     }
