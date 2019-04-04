@@ -33,12 +33,22 @@ public class UserRepository {
 
     private MutableLiveData<User> userLiveData = new MutableLiveData<>();
 
-    public LiveData<User> signIn(String id, String password) {
-        cloudAPI.signIn(id, password, new IReturnUser() {
+    public LiveData<User> signIn(final String id, final String password) {
+        executor.execute(new Runnable() {
             @Override
-            public void callback(User user) {
-                modelDB.saveUser(user);
-                userLiveData.setValue(user);
+            public void run() {
+                cloudAPI.signIn(id, password, new IReturnUser() {
+                    @Override
+                    public void callback(final User user) {
+                        executor.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                modelDB.saveUser(user);
+                            }
+                        });
+                        userLiveData.setValue(user);
+                    }
+                });
             }
         });
         return userLiveData;
