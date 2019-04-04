@@ -32,7 +32,8 @@ public class BrowseViewModel extends ViewModel {
         this.userRepository = userRepository;
     }
 
-    public LiveData<List<Mic>> getIAttendedOpenedByPageNum(String userId, int pageNum) {
+    public LiveData<List<Mic>> getIAttendedOpenedByPageNum(int pageNum) {
+        String userId = userRepository.getCurrentUser().getId();
         return topicRepository.getMic(TopicType.PICK_UP, userId, false, pageNum);
     }
 
@@ -40,16 +41,14 @@ public class BrowseViewModel extends ViewModel {
         return topicRepository.getMic(TopicType.PUBLISHED, "", false, pageNum);
     }
 
-    public LiveData<List<Mic>> getIStartedOpenedByPageNum(String userId, int pageNum) {
+    public LiveData<List<Mic>> getIStartedOpenedByPageNum(int pageNum) {
+        String userId = userRepository.getCurrentUser().getId();
         return topicRepository.getMic(TopicType.UNPUBLISHED, userId, false, pageNum);
     }
 
-    public LiveData<List<AtMe>> getAtMeByPageNum(String userId, int pageNum) {
+    public LiveData<List<AtMe>> getAtMeByPageNum(int pageNum) {
+        String userId = userRepository.getCurrentUser().getId();
         return atMeRepository.getAtMeByPageNum(userId, pageNum);
-    }
-
-    public User getCurrentUser() {
-        return userRepository.getCurrentUser();
     }
 
 }

@@ -46,12 +46,6 @@ public class AppModule {
 
     @Provides
     @Singleton
-    TopicRepository provideTopicExRepository(CloudAPI cloudAPI, ModelDB modelDB, Executor executor) {
-        return new TopicRepository(cloudAPI, modelDB, executor);
-    }
-
-    @Provides
-    @Singleton
     IMService provideIMService(Application application, HyDatabase hyDatabase, Executor executor) {
         return new IMService(application.getApplicationContext(), hyDatabase, executor);
     }

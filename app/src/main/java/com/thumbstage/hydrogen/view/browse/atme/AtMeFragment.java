@@ -78,15 +78,13 @@ public class AtMeFragment extends Fragment implements IBrowseCustomize, IAdapter
 
     private void configureViewModel(){
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(BrowseViewModel.class);
-        /*
-        viewModel.getAtMeByPageNum(CurrentUser.getInstance().getCurrentUserId(), 0)
+        viewModel.getAtMeByPageNum(0)
                 .observe(this, new Observer<List<AtMe>>() {
             @Override
             public void onChanged(@Nullable List<AtMe> atMe) {
                 recyclerViewAdapter.setItems(atMe);
             }
         });
-        */
     }
 
     // region implement of interface IBrowseCustomize
