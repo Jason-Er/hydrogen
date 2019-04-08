@@ -153,7 +153,9 @@ public class TopicFragment extends Fragment {
                     @Override
                     public void onChanged(@Nullable Mic mic) {
                         topicAdapter.setMic(mic);
-                        Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
+                        if(mic.getTopic().getSetting() != null) {
+                            Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
+                        }
                         spinner.setVisibility(View.GONE);
                     }
                 });
@@ -164,7 +166,9 @@ public class TopicFragment extends Fragment {
                     @Override
                     public void onChanged(@Nullable Mic mic) {
                         topicAdapter.setMic(mic);
-                        Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
+                        if(mic.getTopic().getSetting() != null) {
+                            Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
+                        }
                         spinner.setVisibility(View.GONE);
                     }
                 });

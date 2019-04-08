@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.thumbstage.hydrogen.R;
@@ -32,6 +33,8 @@ public class SignInFragment extends Fragment {
     EditText name;
     @BindView(R.id.fragment_signIn_password)
     EditText password;
+    @BindView(R.id.loading_spinner)
+    ProgressBar spinner;
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
@@ -76,14 +79,13 @@ public class SignInFragment extends Fragment {
             return;
         }
 
+        spinner.setVisibility(View.VISIBLE);
         viewModel.signIn(name_, password_).observe(this, new Observer<User>() {
             @Override
             public void onChanged(@Nullable User user) {
                 if( !user.getId().equals(StringUtil.DEFAULT_USERID) ) {
+                    spinner.setVisibility(View.GONE);
                     ((SignActivity) getActivity()).onSupportNavigateUp();
-                } else {
-                    Toast toast = Toast.makeText(getContext(), getContext().getString(R.string.wrong_name_password), Toast.LENGTH_SHORT);
-                    toast.show();
                 }
             }
         });
