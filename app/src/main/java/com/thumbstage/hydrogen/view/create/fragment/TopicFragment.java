@@ -86,6 +86,7 @@ public class TopicFragment extends Fragment {
         refreshLayout.setEnabled(false);
         topicAdapter = new TopicAdapter();
         layoutManager = new LinearLayoutManager( getActivity() );
+        layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager( layoutManager );
         recyclerView.setAdapter(topicAdapter);
 
