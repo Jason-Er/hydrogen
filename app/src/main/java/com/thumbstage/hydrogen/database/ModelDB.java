@@ -208,12 +208,11 @@ public class ModelDB {
                         for(AtMeEntity entity:input) {
                             AtMe atMe = new AtMe();
                             Mic mic = getMic(entity.getMicId());
+                            atMe.setMe(getUser(entity.getMe()));
                             atMe.setMic(mic);
                             atMe.setWhat(entity.getWhat());
                             atMe.setWhen(entity.getWhen());
-                            UserEntity userEntity = database.userDao().get(entity.getWho());
-                            User who = new User(userEntity.getId(), userEntity.getName(), userEntity.getAvatar());
-                            atMe.setWho(who);
+                            atMe.setWho(getUser(entity.getWho()));
                             list.add(atMe);
                         }
                         atMeListLive.postValue(list);
@@ -320,4 +319,8 @@ public class ModelDB {
 
 
     // endregion
+
+    public void deleteAtMe(AtMe atMe) {
+        database.atMeDao().deleteAtMeByKey(atMe.getMic().getId(), atMe.getMe().getId());
+    }
 }

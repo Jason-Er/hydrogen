@@ -31,4 +31,8 @@ public interface AtMeDao {
     @Query("SELECT * FROM at_me WHERE me = :meId AND last_refresh > :lastRefreshMax LIMIT 1")
     AtMeEntity hasAtMe(String meId, Date lastRefreshMax);
 
+    @Query("DELETE FROM at_me WHERE mic_id = :micId AND me = :meId")
+    void deleteAtMeByKey(String micId, String meId);
+
+
 }

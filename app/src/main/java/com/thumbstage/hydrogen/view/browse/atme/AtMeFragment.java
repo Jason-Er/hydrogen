@@ -18,11 +18,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.event.AtMeEvent;
 import com.thumbstage.hydrogen.model.Privilege;
 import com.thumbstage.hydrogen.model.AtMe;
 import com.thumbstage.hydrogen.view.browse.IAdapterFunction;
 import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
 import com.thumbstage.hydrogen.viewmodel.BrowseViewModel;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -63,6 +68,27 @@ public class AtMeFragment extends Fragment implements IBrowseCustomize, IAdapter
         recyclerView.setAdapter(recyclerViewAdapter);
 
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void handleEvent(AtMeEvent messageEvent) {
+        switch (messageEvent.getMessage()) {
+            case "click":
+                viewModel.haveReadAtMe((AtMe) messageEvent.getData());
+                break;
+        }
     }
 
     @Override
