@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.AtMeEvent;
@@ -48,6 +49,8 @@ public class AtMeFragment extends Fragment implements IBrowseCustomize, IAdapter
     SwipeRefreshLayout refreshLayout;
     @BindView(R.id.fragment_recycler_common_recycler)
     RecyclerView recyclerView;
+    @BindView(R.id.loading_spinner)
+    ProgressBar spinner;
 
     BrowseViewModel viewModel;
 
@@ -66,6 +69,8 @@ public class AtMeFragment extends Fragment implements IBrowseCustomize, IAdapter
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
         recyclerViewAdapter = new AtMeAdapter();
         recyclerView.setAdapter(recyclerViewAdapter);
+
+        spinner.setVisibility(View.VISIBLE);
 
         return view;
     }
@@ -109,6 +114,7 @@ public class AtMeFragment extends Fragment implements IBrowseCustomize, IAdapter
             @Override
             public void onChanged(@Nullable List<AtMe> atMe) {
                 recyclerViewAdapter.setItems(atMe);
+                spinner.setVisibility(View.GONE);
             }
         });
     }

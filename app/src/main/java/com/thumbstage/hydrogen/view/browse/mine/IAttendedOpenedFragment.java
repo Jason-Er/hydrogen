@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Mic;
@@ -36,6 +37,8 @@ public class IAttendedOpenedFragment extends Fragment {
     SwipeRefreshLayout refreshLayout;
     @BindView(R.id.fragment_recycler_common_recycler)
     RecyclerView recyclerView;
+    @BindView(R.id.loading_spinner)
+    ProgressBar spinner;
 
     BrowseViewModel viewModel;
 
@@ -55,6 +58,8 @@ public class IAttendedOpenedFragment extends Fragment {
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
         recyclerViewAdapter = new IAttendedOpenedAdapter();
         recyclerView.setAdapter(recyclerViewAdapter);
+
+        spinner.setVisibility(View.VISIBLE);
 
         return view;
     }
@@ -76,6 +81,7 @@ public class IAttendedOpenedFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<Mic> micList) {
                 recyclerViewAdapter.setItems(micList);
+                spinner.setVisibility(View.GONE);
             }
         });
     }

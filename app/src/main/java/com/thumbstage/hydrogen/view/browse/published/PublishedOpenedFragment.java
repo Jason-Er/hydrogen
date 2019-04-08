@@ -16,6 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Privilege;
@@ -41,6 +42,8 @@ public class PublishedOpenedFragment extends Fragment implements IBrowseCustomiz
     SwipeRefreshLayout refreshLayout;
     @BindView(R.id.fragment_recycler_common_recycler)
     RecyclerView recyclerView;
+    @BindView(R.id.loading_spinner)
+    ProgressBar spinner;
 
     BrowseViewModel viewModel;
 
@@ -59,6 +62,8 @@ public class PublishedOpenedFragment extends Fragment implements IBrowseCustomiz
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
         recyclerViewAdapter = new PublishedOpenedAdapter();
         recyclerView.setAdapter(recyclerViewAdapter);
+
+        spinner.setVisibility(View.VISIBLE);
 
         return view;
     }
@@ -80,6 +85,7 @@ public class PublishedOpenedFragment extends Fragment implements IBrowseCustomiz
             @Override
             public void onChanged(@Nullable List<Mic> micList) {
                 recyclerViewAdapter.setItems(micList);
+                spinner.setVisibility(View.GONE);
             }
         });
     }
