@@ -44,5 +44,9 @@ public class TopicViewModel extends ViewModel {
         topicRepository.createTheTopic(type, iReturnBool);
     }
 
+    public void flushMicBuf(IReturnBool iReturnBool) {
+        topicRepository.flushMicBuf(iReturnBool);
+    }
+
 
 }

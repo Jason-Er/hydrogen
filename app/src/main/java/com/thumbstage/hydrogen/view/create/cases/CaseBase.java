@@ -69,15 +69,10 @@ public abstract class CaseBase implements ITopicFragmentFunction {
     protected void addLine(Line line) {
         line.setWho(user);
         topicAdapter.addLine(line);
-        scrollToBottom();
     }
 
     protected void addLines2Adapter(List<Line> lines) {
         topicAdapter.setItems(lines);
-    }
-
-    protected void scrollToBottom() {
-        layoutManager.scrollToPositionWithOffset(topicAdapter.getItemCount() - 1, 0);
     }
 
 }

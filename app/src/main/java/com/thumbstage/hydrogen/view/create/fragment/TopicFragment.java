@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
@@ -59,6 +60,8 @@ public class TopicFragment extends Fragment {
     RecyclerView recyclerView;
     @BindView(R.id.fragment_topic_pullrefresh)
     SwipeRefreshLayout refreshLayout;
+    @BindView(R.id.loading_spinner)
+    ProgressBar spinner;
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
@@ -86,6 +89,7 @@ public class TopicFragment extends Fragment {
         refreshLayout.setEnabled(false);
         topicAdapter = new TopicAdapter();
         layoutManager = new LinearLayoutManager( getActivity() );
+        layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager( layoutManager );
         recyclerView.setAdapter(topicAdapter);
 
@@ -97,6 +101,9 @@ public class TopicFragment extends Fragment {
 
         EventBus.getDefault().register(this);
         setHasOptionsMenu(true);
+
+        spinner.setVisibility(View.VISIBLE);
+
         return view;
     }
 
@@ -136,7 +143,7 @@ public class TopicFragment extends Fragment {
                     @Override
                     public void onChanged(@Nullable Mic mic) {
                         topicAdapter.setMic(mic);
-
+                        spinner.setVisibility(View.GONE);
                     }
                 });
                 break;
@@ -147,6 +154,7 @@ public class TopicFragment extends Fragment {
                     public void onChanged(@Nullable Mic mic) {
                         topicAdapter.setMic(mic);
                         Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
+                        spinner.setVisibility(View.GONE);
                     }
                 });
                 break;
@@ -155,7 +163,9 @@ public class TopicFragment extends Fragment {
                 topicViewModel.pickUpTopic(micId).observe(this, new Observer<Mic>() {
                     @Override
                     public void onChanged(@Nullable Mic mic) {
-
+                        topicAdapter.setMic(mic);
+                        Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
+                        spinner.setVisibility(View.GONE);
                     }
                 });
                 break;

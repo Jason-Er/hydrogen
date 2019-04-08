@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.Application;
 
 import com.thumbstage.hydrogen.di.component.DaggerAppComponent;
-import com.thumbstage.hydrogen.im.IMService;
 
 import javax.inject.Inject;
 
@@ -20,8 +19,6 @@ public class Hydrogen extends Application implements HasActivityInjector {
     public void onCreate() {
         super.onCreate();
         this.initDagger();
-        IMService.getInstance().init(getApplicationContext());
-        // CurrentUser.getInstance().setAvUser(AVUser.getCurrentUser());
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.thumbstage.hydrogen.im;
+package com.thumbstage.hydrogen.api;
 
 import android.util.Log;
 
@@ -6,10 +6,16 @@ import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMConversationEventHandler;
 import com.avos.avoscloud.im.v2.AVIMMessage;
+import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
+import com.thumbstage.hydrogen.database.ModelDB;
+import com.thumbstage.hydrogen.model.AtMe;
+import com.thumbstage.hydrogen.model.Mic;
+import com.thumbstage.hydrogen.model.User;
+import com.thumbstage.hydrogen.model.callback.IReturnMic;
 
-import org.greenrobot.eventbus.EventBus;
-
+import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Executor;
 
 /**
  * Created by wli on 15/12/1.
@@ -20,23 +26,53 @@ import java.util.List;
 public class IMConversationHandler extends AVIMConversationEventHandler {
 
     String TAG = "IMConversationHandler";
+    private ModelDB modelDB;
+    private Executor executor;
+    private CloudAPI cloudAPI;
 
-    IIMCallBack callback;
+    public IMConversationHandler(CloudAPI cloudAPI, ModelDB modelDB, Executor executor) {
+        this.cloudAPI = cloudAPI;
+        this.modelDB = modelDB;
+        this.executor = executor;
+    }
 
     @Override
-    public void onUnreadMessagesCountUpdated(AVIMClient client, AVIMConversation conversation) {
-        // LCIMConversationItemCache.getInstance().insertConversation(conversation.getConversationId());
-        AVIMMessage lastMessage = conversation.getLastMessage();
-        Log.i(TAG, "lastMessage "+lastMessage.getContent());
-        // System.out.println("LCIMConversationHandler#onUnreadMessagesCountUpdated conv=" + conversation.getConversationId() + ", lastMsg: " + lastMessage.getContent());
-        if(callback != null) {
-            callback.callBack();
-        }
-        // EventBus.getDefault().post(new LCIMOfflineMessageCountChangeEvent(conversation, lastMessage));
+    public void onUnreadMessagesCountUpdated(final AVIMClient client, final AVIMConversation conversation) {
+        Log.i(TAG, "onUnreadMessagesCountUpdated ");
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                cloudAPI.getMic(conversation.getConversationId(), new IReturnMic() {
+                    @Override
+                    public void callback(Mic mic) {
+                        AVIMMessage lastMessage = conversation.getLastMessage();
+                        final AtMe atMe = new AtMe();
+                        atMe.setMic(mic);
+                        if(lastMessage instanceof AVIMTextMessage)
+                            atMe.setWhat(((AVIMTextMessage) lastMessage).getText());
+                        for(User user: mic.getTopic().getMembers()) {
+                            if(user.getId().equals(lastMessage.getFrom())) {
+                                atMe.setWho(user);
+                                break;
+                            }
+                        }
+                        atMe.setWhen(new Date(lastMessage.getTimestamp()));
+                        atMe.setMe(cloudAPI.getCurrentUser());
+                        executor.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                modelDB.saveAtMe(atMe);
+                            }
+                        });
+                    }
+                });
+            }
+        });
     }
 
     @Override
     public void onLastDeliveredAtUpdated(AVIMClient client, AVIMConversation conversation) {
+        Log.i(TAG, "onLastDeliveredAtUpdated ");
         /*
         LCIMConversationReadStatusEvent event = new LCIMConversationReadStatusEvent();
         event.conversationId = conversation.getConversationId();
@@ -46,6 +82,7 @@ public class IMConversationHandler extends AVIMConversationEventHandler {
 
     @Override
     public void onLastReadAtUpdated(AVIMClient client, AVIMConversation conversation) {
+        Log.i(TAG, "onLastReadAtUpdated ");
         /*
         LCIMConversationReadStatusEvent event = new LCIMConversationReadStatusEvent();
         event.conversationId = conversation.getConversationId();
@@ -78,10 +115,6 @@ public class IMConversationHandler extends AVIMConversationEventHandler {
     @Override
     public void onMessageUpdated(AVIMClient client, AVIMConversation conversation, AVIMMessage message) {
         // EventBus.getDefault().post(new LCIMMessageUpdatedEvent(message));
-    }
-
-    public void setCallback(IIMCallBack callback) {
-        this.callback = callback;
     }
 
 }

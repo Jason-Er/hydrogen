@@ -22,23 +22,33 @@ public class UserRepository {
     private final Executor executor;
 
     private User defaultUser = new User(StringUtil.DEFAULT_USERID, StringUtil.DEFAULT_USERID, "");
-    private User user = defaultUser;
 
     @Inject
     public UserRepository(CloudAPI cloudAPI, ModelDB modelDB, Executor executor) {
         this.cloudAPI = cloudAPI;
         this.modelDB = modelDB;
         this.executor = executor;
-        userLiveData.setValue(user);
+        userLiveData.setValue(getCurrentUser());
     }
 
     private MutableLiveData<User> userLiveData = new MutableLiveData<>();
 
-    public LiveData<User> signIn(String id, String password) {
-        cloudAPI.signIn(id, password, new IReturnUser() {
+    public LiveData<User> signIn(final String id, final String password) {
+        executor.execute(new Runnable() {
             @Override
-            public void callback(User user) {
-                userLiveData.setValue(user);
+            public void run() {
+                cloudAPI.signIn(id, password, new IReturnUser() {
+                    @Override
+                    public void callback(final User user) {
+                        executor.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                modelDB.saveUser(user);
+                            }
+                        });
+                        userLiveData.setValue(user);
+                    }
+                });
             }
         });
         return userLiveData;
