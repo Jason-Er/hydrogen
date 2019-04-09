@@ -36,6 +36,10 @@ public class TopicViewModel extends ViewModel {
         return topicRepository.pickUpMic(micId);
     }
 
+    public LiveData<Mic> editTopic(String micId) {
+        return topicRepository.editTopic(micId);
+    }
+
     public void saveFile(File file, IReturnHyFile iReturnHyFile) {
         topicRepository.saveFile(file, iReturnHyFile);
     }

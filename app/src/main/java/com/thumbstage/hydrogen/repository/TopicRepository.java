@@ -130,6 +130,21 @@ public class TopicRepository {
         return micLiveData;
     }
 
+    public LiveData<Mic> editTopic(final String micId) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                cloudAPI.getMic(micId, new IReturnMic() {
+                    @Override
+                    public void callback(Mic mic) {
+                        micLiveData.setValue(mic);
+                    }
+                });
+            }
+        });
+        return micLiveData;
+    }
+
     public void flushMicBuf(IReturnBool iReturnBool) {
         Mic mic = micLiveData.getValue();
         sendMicBuf(mic, iReturnBool);

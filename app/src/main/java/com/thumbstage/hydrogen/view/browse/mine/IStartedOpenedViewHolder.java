@@ -40,7 +40,7 @@ public class IStartedOpenedViewHolder extends RecyclerView.ViewHolder {
                 Intent intent = new Intent(v.getContext(), CreateActivity.class);
                 intent.putExtra(Mic.class.getSimpleName(), mic.getId());
                 intent.putExtra(TopicHandleType.class.getSimpleName(),
-                        TopicHandleType.CONTINUE.name());
+                        TopicHandleType.EDIT.name());
                 v.getContext().startActivity(intent);
             }
         });

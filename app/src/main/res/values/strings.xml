@@ -44,4 +44,5 @@
     <string name="dialog_sent">send</string>
 
     <string name="topic_bottom_record_layout_pressToRecord">按住录音</string>
+    <string name="action_close">close</string>
 </resources>
