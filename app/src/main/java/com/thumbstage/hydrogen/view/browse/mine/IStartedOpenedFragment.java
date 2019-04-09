@@ -12,13 +12,14 @@ import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Mic;
+import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
 import com.thumbstage.hydrogen.view.common.BasicBrowseFragment;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
 import com.thumbstage.hydrogen.view.create.fragment.TopicHandleType;
 
 import java.util.List;
 
-public class IStartedOpenedFragment extends BasicBrowseFragment {
+public class IStartedOpenedFragment extends BasicBrowseFragment implements IBrowseCustomize {
 
     IStartedOpenedAdapter recyclerViewAdapter;
 

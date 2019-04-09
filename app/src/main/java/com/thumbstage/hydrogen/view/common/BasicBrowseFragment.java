@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
 import com.thumbstage.hydrogen.viewmodel.BrowseViewModel;
 
 import javax.inject.Inject;
@@ -24,7 +23,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.support.AndroidSupportInjection;
 
-public abstract class BasicBrowseFragment extends Fragment implements IBrowseCustomize {
+public abstract class BasicBrowseFragment extends Fragment {
 
     @Inject
     protected ViewModelProvider.Factory viewModelFactory;
