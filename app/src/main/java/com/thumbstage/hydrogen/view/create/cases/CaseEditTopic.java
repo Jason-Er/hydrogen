@@ -22,7 +22,7 @@ public class CaseEditTopic extends CaseBase implements ICanCreateOptionsMenu, IC
 
     @Override
     public void closeTopic(IReturnBool iReturnBool) {
-
+        topicViewModel.closeTheTopic(iReturnBool);
     }
 
     @Override

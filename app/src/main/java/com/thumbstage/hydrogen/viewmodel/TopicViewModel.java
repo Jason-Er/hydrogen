@@ -37,7 +37,7 @@ public class TopicViewModel extends ViewModel {
     }
 
     public LiveData<Mic> editTopic(String micId) {
-        return topicRepository.editTopic(micId);
+        return topicRepository.editMic(micId);
     }
 
     public void saveFile(File file, IReturnHyFile iReturnHyFile) {
@@ -45,11 +45,15 @@ public class TopicViewModel extends ViewModel {
     }
 
     public void createTheTopic(TopicType type, IReturnBool iReturnBool) {
-        topicRepository.createTheTopic(type, iReturnBool);
+        topicRepository.createTheMic(type, iReturnBool);
     }
 
     public void flushMicBuf(IReturnBool iReturnBool) {
         topicRepository.flushMicBuf(iReturnBool);
+    }
+
+    public void closeTheTopic(final IReturnBool iReturnBool) {
+        topicRepository.closeTheMic(iReturnBool);
     }
 
 

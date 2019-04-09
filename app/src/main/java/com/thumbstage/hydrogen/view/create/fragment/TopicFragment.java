@@ -29,6 +29,7 @@ import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
 import com.thumbstage.hydrogen.view.create.cases.CaseCreateTopic;
 import com.thumbstage.hydrogen.view.create.cases.CaseEditTopic;
+import com.thumbstage.hydrogen.view.create.feature.ICanCloseTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanCreateOptionsMenu;
 import com.thumbstage.hydrogen.view.create.cases.CaseCopyTopic;
 import com.thumbstage.hydrogen.view.create.cases.CaseBase;
@@ -216,19 +217,19 @@ public class TopicFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_item_play:
-                Log.i(TAG, "menu_create_sign");
+                Log.i(TAG, "menu_item_play");
                 if( currentRole instanceof ICanPlayTopic) {
                     ((ICanPlayTopic) currentRole).playTopic();
                 }
                 break;
             case R.id.menu_item_setting:
-                Log.i(TAG, "menu_create_setting");
+                Log.i(TAG, "menu_item_setting");
                 if( currentRole instanceof ICanSetSetting) {
                     ((ICanSetSetting) currentRole).setSetting(this);
                 }
                 break;
             case R.id.menu_item_start:
-                Log.i(TAG, "menu_create_start");
+                Log.i(TAG, "menu_item_start");
                 if( currentRole instanceof ICanCreateTopic) {
                     ((ICanCreateTopic) currentRole).createTopic(new IReturnBool() {
                         @Override
@@ -241,12 +242,25 @@ public class TopicFragment extends Fragment {
                 }
                 break;
             case R.id.menu_item_publish:
-                Log.i(TAG, "menu_create_publish");
+                Log.i(TAG, "menu_item_publish");
                 if( currentRole instanceof ICanPublishTopic) {
                     ((ICanPublishTopic) currentRole).publishTopic(new IReturnBool() {
                         @Override
                         public void callback(Boolean status) {
                             if(status) {
+                                ((CreateActivity)getActivity()).navigateUp();
+                            }
+                        }
+                    });
+                }
+                break;
+            case R.id.menu_item_close:
+                Log.i(TAG, "menu_item_close");
+                if(currentRole instanceof ICanCloseTopic) {
+                    ((ICanCloseTopic) currentRole).closeTopic(new IReturnBool() {
+                        @Override
+                        public void callback(Boolean isOK) {
+                            if(isOK) {
                                 ((CreateActivity)getActivity()).navigateUp();
                             }
                         }

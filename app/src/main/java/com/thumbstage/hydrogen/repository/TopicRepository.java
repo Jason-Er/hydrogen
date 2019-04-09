@@ -130,7 +130,7 @@ public class TopicRepository {
         return micLiveData;
     }
 
-    public LiveData<Mic> editTopic(final String micId) {
+    public LiveData<Mic> editMic(final String micId) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -169,7 +169,7 @@ public class TopicRepository {
         }
     }
 
-    public void createTheTopic(final TopicType type, final IReturnBool iReturnBool) {
+    public void createTheMic(final TopicType type, final IReturnBool iReturnBool) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -196,6 +196,25 @@ public class TopicRepository {
             @Override
             public void run() {
                 cloudAPI.saveFile(file, iReturnHyFile);
+            }
+        });
+    }
+
+    public void closeTheMic(final IReturnBool iReturnBool) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                final Mic mic = micLiveData.getValue();
+                cloudAPI.closeMic(mic, new CloudAPI.ICallBack() {
+                    @Override
+                    public void callback(String objectID) {
+                        if(!TextUtils.isEmpty(objectID)) {
+                            iReturnBool.callback(true);
+                        } else {
+                            iReturnBool.callback(false);
+                        }
+                    }
+                });
             }
         });
     }
