@@ -1,4 +1,4 @@
-package com.thumbstage.hydrogen.view.browse.mine;
+package com.thumbstage.hydrogen.view.browse.published;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -17,7 +17,7 @@ import com.thumbstage.hydrogen.view.show.ShowActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class IStartedClosedViewHolder extends RecyclerView.ViewHolder {
+public class PublishedClosedViewHolder extends RecyclerView.ViewHolder {
 
     Mic mic;
 
@@ -30,7 +30,7 @@ public class IStartedClosedViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.item_browse_topic_avatar)
     ImageView avatar;
 
-    public IStartedClosedViewHolder(@NonNull View itemView) {
+    public PublishedClosedViewHolder(@NonNull View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         itemView.setOnClickListener(new View.OnClickListener() {
@@ -49,7 +49,7 @@ public class IStartedClosedViewHolder extends RecyclerView.ViewHolder {
         name.setText(topic.getName());
         brief.setText(topic.getBrief());
         if(topic.getSetting() != null) {
-            Glide.with(setting.getContext()).load(topic.getSetting().getUrl()).into(setting);
+            Glide.with(setting).load(topic.getSetting().getUrl()).into(setting);
         }
         User user = topic.getStarted_by();
         if(user != null) {

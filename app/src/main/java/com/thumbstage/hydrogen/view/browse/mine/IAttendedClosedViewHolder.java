@@ -17,7 +17,7 @@ import com.thumbstage.hydrogen.view.show.ShowActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class IStartedClosedViewHolder extends RecyclerView.ViewHolder {
+public class IAttendedClosedViewHolder extends RecyclerView.ViewHolder {
 
     Mic mic;
 
@@ -30,7 +30,7 @@ public class IStartedClosedViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.item_browse_topic_avatar)
     ImageView avatar;
 
-    public IStartedClosedViewHolder(@NonNull View itemView) {
+    public IAttendedClosedViewHolder(@NonNull View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         itemView.setOnClickListener(new View.OnClickListener() {
