@@ -1,5 +1,6 @@
 package com.thumbstage.hydrogen.view.browse.mine;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -15,6 +16,8 @@ import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Privilege;
 import com.thumbstage.hydrogen.view.browse.IAdapterFunction;
 import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
+import com.thumbstage.hydrogen.view.create.CreateActivity;
+import com.thumbstage.hydrogen.view.create.fragment.TopicHandleType;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -77,12 +80,19 @@ public class IStartedFragment extends Fragment implements IBrowseCustomize, IAda
     }
 
     @Override
-    public void customizeFab(FloatingActionButton fab) {
+    public void customizeFab(final FloatingActionButton fab) {
         this.fab = fab;
-        fab.hide();
-        if( pagerAdapter.getItem(viewPager.getCurrentItem()) instanceof IBrowseCustomize){
-            ((IBrowseCustomize) pagerAdapter.getItem(viewPager.getCurrentItem())).customizeFab(fab);
-        }
+        fab.show();
+        fab.setImageResource(R.drawable.ic_button_plus);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(fab.getContext(), CreateActivity.class);
+                intent.putExtra(TopicHandleType.class.getSimpleName(),
+                        TopicHandleType.CREATE.name());
+                fab.getContext().startActivity(intent);
+            }
+        });
     }
     // endregion
 

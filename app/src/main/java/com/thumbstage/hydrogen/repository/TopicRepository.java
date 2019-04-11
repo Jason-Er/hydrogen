@@ -2,30 +2,20 @@ package com.thumbstage.hydrogen.repository;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
-import android.arch.lifecycle.Transformations;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.database.ModelDB;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.Mic;
-import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.model.TopicType;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
 import com.thumbstage.hydrogen.model.callback.IReturnMic;
 import com.thumbstage.hydrogen.model.callback.IReturnMicList;
-import com.thumbstage.hydrogen.model.callback.IStatusCallBack;
-import com.thumbstage.hydrogen.utils.StringUtil;
-import com.thumbstage.hydrogen.view.create.type.LineTextRight;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Executor;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
@@ -164,7 +154,7 @@ public class TopicRepository {
                         sendMicBuf(mic, new IReturnBool() {
                             @Override
                             public void callback(Boolean status) {
-                                // modelDB.createTopic(t);
+                                saveMic(mic);
                                 iReturnBool.callback(status);
                             }
                         });
@@ -192,6 +182,7 @@ public class TopicRepository {
                     @Override
                     public void callback(String objectID) {
                         if(!TextUtils.isEmpty(objectID)) {
+                            saveMic(mic);
                             iReturnBool.callback(true);
                         } else {
                             iReturnBool.callback(false);
@@ -202,34 +193,13 @@ public class TopicRepository {
         });
     }
 
-    /*
-    public void setListenIMCallBack(IMMessageHandler imMessageHandler) {
-        imMessageHandler.setCallback(new IIMCallBack() {
+    private void saveMic(final Mic mic) {
+        executor.execute(new Runnable() {
             @Override
-            public void callBack() {
-                updateConversationList();
+            public void run() {
+                modelDB.saveMic(mic);
             }
         });
     }
 
-    public void setListenIMCallBack(IMConversationHandler imConversationHandler) {
-        imConversationHandler.setCallback(new IIMCallBack() {
-            @Override
-            public void callBack() {
-                updateConversationList();
-            }
-        });
-    }
-
-    private void updateConversationList() {
-        List<String> convIdList = LCIMConversationItemCache.getInstance().getSortedConversationList();
-        List<Mic> micList = new ArrayList<>();
-        // List<AVIMConversation> conversationList = new ArrayList<>();
-        for (String convId : convIdList) {
-            micList.add(new Mic(convId));
-            // conversationList.add(CurrentUser.getInstance().getClient().getConversation(convId));
-        }
-        atMe.setValue(micList);
-    }
-    */
 }
