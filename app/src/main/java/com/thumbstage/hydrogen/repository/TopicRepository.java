@@ -2,6 +2,7 @@ package com.thumbstage.hydrogen.repository;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Transformations;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -40,8 +41,6 @@ public class TopicRepository {
     private final ModelDB modelDB;
     private final Executor executor;
 
-    private Map<String, MutableLiveData<List<Mic>>> liveDataMap = new HashMap<>();
-
     @Inject
     public TopicRepository(CloudAPI cloudAPI, ModelDB modelDB, Executor executor) {
         this.cloudAPI = cloudAPI;
@@ -50,26 +49,15 @@ public class TopicRepository {
     }
 
     public LiveData<List<Mic>> getMic(TopicType type, String started_by, boolean isFinished, int pageNum) {
-        MutableLiveData<List<Mic>> micListLive;
-        String key = type.name()+isFinished;
-        if(!TextUtils.isEmpty(started_by)) {
-            key += "personal";
-        }
-        if(liveDataMap.containsKey(key)) {
-            micListLive = liveDataMap.get(key);
-        } else {
-            micListLive = new MutableLiveData<>();
-            liveDataMap.put(key, micListLive);
-        }
-        getMic(type, started_by, isFinished, pageNum, micListLive);
-        return micListLive;
+        refreshMic(type, started_by, isFinished, pageNum);
+        return modelDB.getMic(type, started_by, isFinished, pageNum);
     }
 
-    private void getMic(final TopicType type, final String started_by, final boolean isFinished, final int pageNum, final MutableLiveData<List<Mic>> mutableLiveData) {
+    private void refreshMic(final TopicType type, final String started_by, final boolean isFinished, final int pageNum) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                if( modelDB.isTopicNeedFresh(type) ) {
+                if( modelDB.isTopicNeedFresh(type, started_by, isFinished) ) {
                     cloudAPI.getMic(type, started_by, isFinished, pageNum, new IReturnMicList() {
                         @Override
                         public void callback(final List<Mic> micList) {
@@ -77,15 +65,10 @@ public class TopicRepository {
                                 @Override
                                 public void run() {
                                     modelDB.saveMicList(micList);
-                                    mutableLiveData.postValue(micList);
                                 }
                             });
                         }
                     });
-                } else {
-                    // TODO: 3/15/2019 perPageNum need refactoring
-                    List<Mic> micList = modelDB.getMicByPage(type, started_by, pageNum, 15);
-                    mutableLiveData.postValue(micList);
                 }
             }
         });

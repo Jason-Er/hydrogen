@@ -6,7 +6,6 @@ import android.arch.lifecycle.ViewModel;
 import com.thumbstage.hydrogen.model.AtMe;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.TopicType;
-import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.repository.AtMeRepository;
 import com.thumbstage.hydrogen.repository.TopicRepository;
 import com.thumbstage.hydrogen.repository.UserRepository;

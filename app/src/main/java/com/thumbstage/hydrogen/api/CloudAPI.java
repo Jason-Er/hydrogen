@@ -408,6 +408,7 @@ public class CloudAPI {
             final String brief = (String) avTopic.get(FieldName.FIELD_BRIEF.name);
             final List<Map> datalist = avTopic.getList(FieldName.FIELD_DIALOGUE.name);
             final List<String> membersIds = avTopic.getList(FieldName.FIELD_MEMBERS.name);
+            final boolean isFinished = avTopic.getBoolean(FieldName.FIELD_IS_FINISHED.name);
             getUsers(membersIds, new IReturnUsers() {
                 @Override
                 public void callback(List<User> users) {
@@ -449,7 +450,7 @@ public class CloudAPI {
                     topic.setMembers(users);
                     topic.setStarted_by(user);
                     topic.setSetting(setting);
-
+                    topic.setFinished(isFinished);
                     iReturnTopic.callback(topic);
                 }
             });
