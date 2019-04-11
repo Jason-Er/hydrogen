@@ -232,6 +232,43 @@ public class CloudAPI {
         });
     }
 
+    public void closeMic(@NonNull final Mic mic, final ICallBack iCallBack) {
+        closeTopic(mic.getTopic(), new ICallBack() {
+            @Override
+            public void callback(String objectID) {
+                if(!TextUtils.isEmpty(objectID)) {
+                    AVObject avMic = AVObject.createWithoutData(TableName.TABLE_MIC.name, mic.getId());
+                    avMic.put(FieldName.FIELD_MIC_MEMBERS.name, new ArrayList<>());
+                    avMic.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(AVException e) {
+                            if(e == null) {
+                                iCallBack.callback(mic.getId());
+                            } else {
+                                iCallBack.callback(null);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private void closeTopic(@NonNull final Topic topic, final ICallBack iCallBack) {
+        AVObject avTopic = AVObject.createWithoutData(TableName.TABLE_TOPIC.name, topic.getId());
+        avTopic.put(FieldName.FIELD_IS_FINISHED.name, true);
+        avTopic.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                if(e == null) {
+                    iCallBack.callback(topic.getId());
+                } else {
+                    iCallBack.callback(null);
+                }
+            }
+        });
+    }
+
     public void createTopic(@NonNull final Topic topic, final ICallBack iCallBack) {
         if( getCurrentUser()!=null && !topic.getMembers().contains(getCurrentUser()) ) {
             topic.getMembers().add(getCurrentUser());
@@ -371,6 +408,7 @@ public class CloudAPI {
             final String brief = (String) avTopic.get(FieldName.FIELD_BRIEF.name);
             final List<Map> datalist = avTopic.getList(FieldName.FIELD_DIALOGUE.name);
             final List<String> membersIds = avTopic.getList(FieldName.FIELD_MEMBERS.name);
+            final boolean isFinished = avTopic.getBoolean(FieldName.FIELD_IS_FINISHED.name);
             getUsers(membersIds, new IReturnUsers() {
                 @Override
                 public void callback(List<User> users) {
@@ -412,7 +450,7 @@ public class CloudAPI {
                     topic.setMembers(users);
                     topic.setStarted_by(user);
                     topic.setSetting(setting);
-
+                    topic.setFinished(isFinished);
                     iReturnTopic.callback(topic);
                 }
             });

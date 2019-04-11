@@ -10,6 +10,7 @@ public enum FieldName {
     FIELD_STARTED_BY("started_by"),
     FIELD_DERIVE_FROM("derive_from"),
     FIELD_SETTING("setting"),
+    FIELD_MIC_MEMBERS("m"),
     FIELD_MEMBERS("members"),
     FIELD_DIALOGUE("dialogue"),
     FIELD_TOPIC("topic"),

@@ -19,21 +19,21 @@ import com.thumbstage.hydrogen.view.create.fragment.TopicHandleType;
 
 import java.util.List;
 
-public class IStartedOpenedFragment extends BasicBrowseFragment implements IBrowseCustomize {
+public class IPublishedClosedFragment extends BasicBrowseFragment implements IBrowseCustomize {
 
-    IStartedOpenedAdapter recyclerViewAdapter;
+    IPublishedClosedAdapter recyclerViewAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = super.onCreateView(inflater, container, savedInstanceState);
-        recyclerViewAdapter = new IStartedOpenedAdapter();
+        recyclerViewAdapter = new IPublishedClosedAdapter();
         recyclerView.setAdapter(recyclerViewAdapter);
         return view;
     }
 
     @Override
     public void customObserve() {
-        viewModel.getIStartedOpenedByPageNum(0).observe(this, new Observer<List<Mic>>() {
+        viewModel.getIPublishedClosedByPageNum(0).observe(this, new Observer<List<Mic>>() {
             @Override
             public void onChanged(@Nullable List<Mic> micList) {
                 recyclerViewAdapter.setItems(micList);
@@ -57,7 +57,7 @@ public class IStartedOpenedFragment extends BasicBrowseFragment implements IBrow
             public void onClick(View v) {
                 Intent intent = new Intent(fab.getContext(), CreateActivity.class);
                 intent.putExtra(TopicHandleType.class.getSimpleName(),
-                        TopicHandleType.CREATE.name());
+                        TopicHandleType.EDIT.name());
                 fab.getContext().startActivity(intent);
             }
         });

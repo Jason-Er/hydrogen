@@ -26,14 +26,18 @@ import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
-import com.thumbstage.hydrogen.model.callback.IStatusCallBack;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
-import com.thumbstage.hydrogen.view.create.ICreateCustomize;
-import com.thumbstage.hydrogen.view.create.ICreateMenuItemFunction;
-import com.thumbstage.hydrogen.view.create.cases.CaseAttendTopic;
+import com.thumbstage.hydrogen.view.create.cases.CaseCreateTopic;
+import com.thumbstage.hydrogen.view.create.cases.CaseEditTopic;
+import com.thumbstage.hydrogen.view.create.feature.ICanCloseTopic;
+import com.thumbstage.hydrogen.view.create.feature.ICanCreateOptionsMenu;
+import com.thumbstage.hydrogen.view.create.cases.CaseCopyTopic;
 import com.thumbstage.hydrogen.view.create.cases.CaseBase;
 import com.thumbstage.hydrogen.view.create.cases.CaseContinueTopic;
-import com.thumbstage.hydrogen.view.create.cases.CaseCreateTopic;
+import com.thumbstage.hydrogen.view.create.feature.ICanCreateTopic;
+import com.thumbstage.hydrogen.view.create.feature.ICanPlayTopic;
+import com.thumbstage.hydrogen.view.create.feature.ICanPublishTopic;
+import com.thumbstage.hydrogen.view.create.feature.ICanSetSetting;
 import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
 
@@ -71,8 +75,9 @@ public class TopicFragment extends Fragment {
     Map<TopicHandleType, CaseBase> roleMap = new HashMap<TopicHandleType, CaseBase>(){
         {
             put(TopicHandleType.CREATE, new CaseCreateTopic());
-            put(TopicHandleType.ATTEND, new CaseAttendTopic());
+            put(TopicHandleType.ATTEND, new CaseCopyTopic());
             put(TopicHandleType.CONTINUE, new CaseContinueTopic());
+            put(TopicHandleType.EDIT, new CaseEditTopic());
         }
     };
 
@@ -153,7 +158,9 @@ public class TopicFragment extends Fragment {
                     @Override
                     public void onChanged(@Nullable Mic mic) {
                         topicAdapter.setMic(mic);
-                        Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
+                        if(mic.getTopic().getSetting() != null) {
+                            Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
+                        }
                         spinner.setVisibility(View.GONE);
                     }
                 });
@@ -164,7 +171,22 @@ public class TopicFragment extends Fragment {
                     @Override
                     public void onChanged(@Nullable Mic mic) {
                         topicAdapter.setMic(mic);
-                        Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
+                        if(mic.getTopic().getSetting() != null) {
+                            Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
+                        }
+                        spinner.setVisibility(View.GONE);
+                    }
+                });
+                break;
+            case EDIT:
+                currentRole = roleMap.get(TopicHandleType.EDIT);
+                topicViewModel.editTopic(micId).observe(this, new Observer<Mic>() {
+                    @Override
+                    public void onChanged(@Nullable Mic mic) {
+                        topicAdapter.setMic(mic);
+                        if(mic.getTopic().getSetting() != null) {
+                            Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
+                        }
                         spinner.setVisibility(View.GONE);
                     }
                 });
@@ -185,8 +207,8 @@ public class TopicFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if( currentRole instanceof ICreateCustomize) {
-            ((ICreateCustomize) currentRole).createOptionsMenu(menu, inflater);
+        if( currentRole instanceof ICanCreateOptionsMenu) {
+            ((ICanCreateOptionsMenu) currentRole).createOptionsMenu(menu, inflater);
         }
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -194,22 +216,22 @@ public class TopicFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.menu_create_sign:
-                Log.i(TAG, "menu_create_sign");
-                if( currentRole instanceof ICreateMenuItemFunction) {
-                    ((ICreateMenuItemFunction) currentRole).sign(getContext());
+            case R.id.menu_item_play:
+                Log.i(TAG, "menu_item_play");
+                if( currentRole instanceof ICanPlayTopic) {
+                    ((ICanPlayTopic) currentRole).playTopic();
                 }
                 break;
-            case R.id.menu_create_setting:
-                Log.i(TAG, "menu_create_setting");
-                if( currentRole instanceof ICreateMenuItemFunction) {
-                    ((ICreateMenuItemFunction) currentRole).settings(this);
+            case R.id.menu_item_setting:
+                Log.i(TAG, "menu_item_setting");
+                if( currentRole instanceof ICanSetSetting) {
+                    ((ICanSetSetting) currentRole).setSetting(this);
                 }
                 break;
-            case R.id.menu_create_start:
-                Log.i(TAG, "menu_create_start");
-                if( currentRole instanceof ICreateMenuItemFunction) {
-                    ((ICreateMenuItemFunction) currentRole).createTopic(new IReturnBool() {
+            case R.id.menu_item_start:
+                Log.i(TAG, "menu_item_start");
+                if( currentRole instanceof ICanCreateTopic) {
+                    ((ICanCreateTopic) currentRole).createTopic(new IReturnBool() {
                         @Override
                         public void callback(Boolean status) {
                             if(status) {
@@ -218,15 +240,27 @@ public class TopicFragment extends Fragment {
                         }
                     });
                 }
-
                 break;
-            case R.id.menu_create_publish:
-                Log.i(TAG, "menu_create_publish");
-                if( currentRole instanceof ICreateMenuItemFunction) {
-                    ((ICreateMenuItemFunction) currentRole).publishTopic(new IReturnBool() {
+            case R.id.menu_item_publish:
+                Log.i(TAG, "menu_item_publish");
+                if( currentRole instanceof ICanPublishTopic) {
+                    ((ICanPublishTopic) currentRole).publishTopic(new IReturnBool() {
                         @Override
                         public void callback(Boolean status) {
                             if(status) {
+                                ((CreateActivity)getActivity()).navigateUp();
+                            }
+                        }
+                    });
+                }
+                break;
+            case R.id.menu_item_close:
+                Log.i(TAG, "menu_item_close");
+                if(currentRole instanceof ICanCloseTopic) {
+                    ((ICanCloseTopic) currentRole).closeTopic(new IReturnBool() {
+                        @Override
+                        public void callback(Boolean isOK) {
+                            if(isOK) {
                                 ((CreateActivity)getActivity()).navigateUp();
                             }
                         }

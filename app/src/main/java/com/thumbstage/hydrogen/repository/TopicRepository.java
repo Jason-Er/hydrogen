@@ -2,6 +2,7 @@ package com.thumbstage.hydrogen.repository;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Transformations;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -40,8 +41,6 @@ public class TopicRepository {
     private final ModelDB modelDB;
     private final Executor executor;
 
-    private Map<String, MutableLiveData<List<Mic>>> liveDataMap = new HashMap<>();
-
     @Inject
     public TopicRepository(CloudAPI cloudAPI, ModelDB modelDB, Executor executor) {
         this.cloudAPI = cloudAPI;
@@ -50,26 +49,15 @@ public class TopicRepository {
     }
 
     public LiveData<List<Mic>> getMic(TopicType type, String started_by, boolean isFinished, int pageNum) {
-        MutableLiveData<List<Mic>> micListLive;
-        String key = type.name()+isFinished;
-        if(!TextUtils.isEmpty(started_by)) {
-            key += "personal";
-        }
-        if(liveDataMap.containsKey(key)) {
-            micListLive = liveDataMap.get(key);
-        } else {
-            micListLive = new MutableLiveData<>();
-            liveDataMap.put(key, micListLive);
-        }
-        getMic(type, started_by, isFinished, pageNum, micListLive);
-        return micListLive;
+        refreshMic(type, started_by, isFinished, pageNum);
+        return modelDB.getMic(type, started_by, isFinished, pageNum);
     }
 
-    private void getMic(final TopicType type, final String started_by, final boolean isFinished, final int pageNum, final MutableLiveData<List<Mic>> mutableLiveData) {
+    private void refreshMic(final TopicType type, final String started_by, final boolean isFinished, final int pageNum) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                if( modelDB.isTopicNeedFresh(type) ) {
+                if( modelDB.isTopicNeedFresh(type, started_by, isFinished) ) {
                     cloudAPI.getMic(type, started_by, isFinished, pageNum, new IReturnMicList() {
                         @Override
                         public void callback(final List<Mic> micList) {
@@ -77,15 +65,10 @@ public class TopicRepository {
                                 @Override
                                 public void run() {
                                     modelDB.saveMicList(micList);
-                                    mutableLiveData.postValue(micList);
                                 }
                             });
                         }
                     });
-                } else {
-                    // TODO: 3/15/2019 perPageNum need refactoring
-                    List<Mic> micList = modelDB.getMicByPage(type, started_by, pageNum, 15);
-                    mutableLiveData.postValue(micList);
                 }
             }
         });
@@ -130,6 +113,21 @@ public class TopicRepository {
         return micLiveData;
     }
 
+    public LiveData<Mic> editMic(final String micId) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                cloudAPI.getMic(micId, new IReturnMic() {
+                    @Override
+                    public void callback(Mic mic) {
+                        micLiveData.setValue(mic);
+                    }
+                });
+            }
+        });
+        return micLiveData;
+    }
+
     public void flushMicBuf(IReturnBool iReturnBool) {
         Mic mic = micLiveData.getValue();
         sendMicBuf(mic, iReturnBool);
@@ -154,7 +152,7 @@ public class TopicRepository {
         }
     }
 
-    public void createTheTopic(final TopicType type, final IReturnBool iReturnBool) {
+    public void createTheMic(final TopicType type, final IReturnBool iReturnBool) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -181,6 +179,25 @@ public class TopicRepository {
             @Override
             public void run() {
                 cloudAPI.saveFile(file, iReturnHyFile);
+            }
+        });
+    }
+
+    public void closeTheMic(final IReturnBool iReturnBool) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                final Mic mic = micLiveData.getValue();
+                cloudAPI.closeMic(mic, new CloudAPI.ICallBack() {
+                    @Override
+                    public void callback(String objectID) {
+                        if(!TextUtils.isEmpty(objectID)) {
+                            iReturnBool.callback(true);
+                        } else {
+                            iReturnBool.callback(false);
+                        }
+                    }
+                });
             }
         });
     }

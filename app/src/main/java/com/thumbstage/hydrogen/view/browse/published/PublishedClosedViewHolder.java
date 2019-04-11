@@ -1,4 +1,4 @@
-package com.thumbstage.hydrogen.view.browse.mine;
+package com.thumbstage.hydrogen.view.browse.published;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -12,13 +12,12 @@ import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.Topic;
 import com.thumbstage.hydrogen.model.User;
-import com.thumbstage.hydrogen.view.create.CreateActivity;
-import com.thumbstage.hydrogen.view.create.fragment.TopicHandleType;
+import com.thumbstage.hydrogen.view.show.ShowActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class IStartedOpenedViewHolder extends RecyclerView.ViewHolder {
+public class PublishedClosedViewHolder extends RecyclerView.ViewHolder {
 
     Mic mic;
 
@@ -31,16 +30,14 @@ public class IStartedOpenedViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.item_browse_topic_avatar)
     ImageView avatar;
 
-    public IStartedOpenedViewHolder(@NonNull View itemView) {
+    public PublishedClosedViewHolder(@NonNull View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), CreateActivity.class);
+                Intent intent = new Intent(v.getContext(), ShowActivity.class);
                 intent.putExtra(Mic.class.getSimpleName(), mic.getId());
-                intent.putExtra(TopicHandleType.class.getSimpleName(),
-                        TopicHandleType.EDIT.name());
                 v.getContext().startActivity(intent);
             }
         });
@@ -52,7 +49,7 @@ public class IStartedOpenedViewHolder extends RecyclerView.ViewHolder {
         name.setText(topic.getName());
         brief.setText(topic.getBrief());
         if(topic.getSetting() != null) {
-            Glide.with(setting.getContext()).load(topic.getSetting().getUrl()).into(setting);
+            Glide.with(setting).load(topic.getSetting().getUrl()).into(setting);
         }
         User user = topic.getStarted_by();
         if(user != null) {
