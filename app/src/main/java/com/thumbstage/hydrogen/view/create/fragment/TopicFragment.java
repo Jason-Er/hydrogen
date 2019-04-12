@@ -94,14 +94,13 @@ public class TopicFragment extends Fragment {
         refreshLayout.setEnabled(false);
         topicAdapter = new TopicAdapter();
         layoutManager = new LinearLayoutManager( getActivity() );
-        layoutManager.setStackFromEnd(true);
         recyclerView.setLayoutManager( layoutManager );
         recyclerView.setAdapter(topicAdapter);
-
         for(CaseBase caseBase: roleMap.values()) {
             caseBase.setLayoutManager(layoutManager);
             caseBase.setTopicAdapter(topicAdapter);
             caseBase.setBackgroundView(background);
+            caseBase.setRecyclerView(recyclerView);
         }
 
         EventBus.getDefault().register(this);
@@ -171,6 +170,7 @@ public class TopicFragment extends Fragment {
                     @Override
                     public void onChanged(@Nullable Mic mic) {
                         topicAdapter.setMic(mic);
+                        recyclerView.smoothScrollToPosition(topicAdapter.getItemCount()-1);
                         if(mic.getTopic().getSetting() != null) {
                             Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
                         }

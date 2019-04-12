@@ -1,6 +1,7 @@
 package com.thumbstage.hydrogen.view.create.cases;
 
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -22,6 +23,7 @@ public abstract class CaseBase implements ITopicFragmentFunction {
     LinearLayoutManager layoutManager;
     ImageView backgroundView;
     TopicViewModel topicViewModel;
+    RecyclerView recyclerView;
     User user;
 
     public CaseBase setTopicAdapter(TopicAdapter topicAdapter) {
@@ -42,6 +44,10 @@ public abstract class CaseBase implements ITopicFragmentFunction {
     public CaseBase setTopicViewModel(TopicViewModel topicViewModel) {
         this.topicViewModel = topicViewModel;
         return this;
+    }
+
+    public void setRecyclerView(RecyclerView recyclerView) {
+        this.recyclerView = recyclerView;
     }
 
     public void setUser(User user) {
@@ -69,6 +75,7 @@ public abstract class CaseBase implements ITopicFragmentFunction {
     protected void addLine(Line line) {
         line.setWho(user);
         topicAdapter.addLine(line);
+        recyclerView.smoothScrollToPosition(topicAdapter.getItemCount()-1);
     }
 
     protected void addLines2Adapter(List<Line> lines) {
