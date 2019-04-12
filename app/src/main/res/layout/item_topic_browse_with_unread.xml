@@ -29,6 +29,17 @@
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp" />
+
+            <TextView
+                android:id="@+id/item_browse_topic_unread"
+                android:layout_width="wrap_content"
+                android:layout_height="13dp"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="1dp"
+                android:background="@drawable/hy_read_badge"
+                android:gravity="center"
+                android:textColor="@android:color/white"
+                android:textSize="10sp" />
         </RelativeLayout>
 
         <LinearLayout
