@@ -270,6 +270,7 @@ public class CloudAPI {
     }
 
     public void createTopic(@NonNull final Topic topic, final ICallBack iCallBack) {
+        topic.setStarted_by(getCurrentUser());
         if( getCurrentUser()!=null && !topic.getMembers().contains(getCurrentUser()) ) {
             topic.getMembers().add(getCurrentUser());
         }
@@ -306,8 +307,6 @@ public class CloudAPI {
         topic.setDerive_from(topic.getId());
         createTopic(topic, iCallBack);
     }
-
-
 
     public void getMic(String micId, final IReturnMic iReturnMic) {
         AVQuery<AVObject> avQuery = new AVQuery<>(TableName.TABLE_MIC.name);

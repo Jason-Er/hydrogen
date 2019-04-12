@@ -17,8 +17,6 @@ import com.thumbstage.hydrogen.model.callback.IReturnMicList;
 import java.io.File;
 import java.util.List;
 import java.util.concurrent.Executor;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -121,23 +119,25 @@ public class TopicRepository {
     public void flushMicBuf(IReturnBool iReturnBool) {
         Mic mic = micLiveData.getValue();
         sendMicBuf(mic, iReturnBool);
+        moveLineBuf2Dialogue(mic);
     }
 
-    private void sendMicBuf(Mic mic, final IReturnBool iReturnBool) {
+    private void moveLineBuf2Dialogue(Mic mic) {
+        mic.getTopic().getDialogue().addAll(mic.getLineBuffer());
+        mic.getLineBuffer().clear();
+    }
+
+    private void sendMicBuf(final Mic mic, final IReturnBool iReturnBool) {
         if(mic.getLineBuffer()!= null && mic.getLineBuffer().size()>0) {
-            final Lock lock = new ReentrantLock();
-            for(Line line: mic.getLineBuffer()) {
-                lock.lock();
+            for(final Line line: mic.getLineBuffer()) {
                 cloudAPI.sendLine(mic, line, new IReturnBool() {
                     @Override
                     public void callback(Boolean status) {
                         if (status) {
-                            lock.unlock();
                         }
                     }
                 });
             }
-            mic.getLineBuffer().clear();
             iReturnBool.callback(true);
         }
     }
@@ -154,6 +154,7 @@ public class TopicRepository {
                         sendMicBuf(mic, new IReturnBool() {
                             @Override
                             public void callback(Boolean status) {
+                                moveLineBuf2Dialogue(mic);
                                 saveMic(mic);
                                 iReturnBool.callback(status);
                             }
