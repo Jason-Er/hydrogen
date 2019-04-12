@@ -12,6 +12,7 @@ import com.thumbstage.hydrogen.view.browse.published.PublishedClosedFragment;
 import com.thumbstage.hydrogen.view.browse.published.PublishedOpenedFragment;
 import com.thumbstage.hydrogen.view.common.BasicBrowseFragment;
 import com.thumbstage.hydrogen.view.create.fragment.TopicFragment;
+import com.thumbstage.hydrogen.view.show.fragment.ShowFragment;
 import com.thumbstage.hydrogen.view.sign.SignInFragment;
 import com.thumbstage.hydrogen.view.sign.SignUpFragment;
 
@@ -42,6 +43,8 @@ public abstract class FragmentModule {
     abstract AtMeFragment contributeAtMeFragment();
     @ContributesAndroidInjector
     abstract TopicFragment contributeTopicFragment();
+    @ContributesAndroidInjector
+    abstract ShowFragment contributeShowFragment();
     @ContributesAndroidInjector
     abstract SignInFragment contributeSignInFragment();
     @ContributesAndroidInjector
