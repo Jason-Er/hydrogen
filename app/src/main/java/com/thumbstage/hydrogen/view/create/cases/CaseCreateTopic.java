@@ -1,6 +1,5 @@
 package com.thumbstage.hydrogen.view.create.cases;
 
-import android.content.Context;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -15,15 +14,16 @@ import com.thumbstage.hydrogen.model.Setting;
 import com.thumbstage.hydrogen.model.TopicType;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
-import com.thumbstage.hydrogen.model.callback.IStatusCallBack;
-import com.thumbstage.hydrogen.view.common.Navigation;
-import com.thumbstage.hydrogen.view.create.ICreateCustomize;
-import com.thumbstage.hydrogen.view.create.ICreateMenuItemFunction;
+import com.thumbstage.hydrogen.view.create.feature.ICanCreateOptionsMenu;
 import com.thumbstage.hydrogen.view.create.TopicSettingDialog;
+import com.thumbstage.hydrogen.view.create.feature.ICanCreateTopic;
+import com.thumbstage.hydrogen.view.create.feature.ICanPublishTopic;
+import com.thumbstage.hydrogen.view.create.feature.ICanSetSetting;
 
 import java.io.File;
 
-public class CaseCreateTopic extends CaseBase implements ICreateMenuItemFunction, ICreateCustomize {
+public class CaseCreateTopic extends CaseBase implements ICanCreateTopic,
+        ICanPublishTopic, ICanSetSetting, ICanCreateOptionsMenu {
 
     final String TAG = "CaseCreateTopic";
     Uri imageUri;
@@ -33,14 +33,8 @@ public class CaseCreateTopic extends CaseBase implements ICreateMenuItemFunction
         inflater.inflate(R.menu.menu_case_create, menu);
     }
 
-    // region implements interface ICreateMenuItemFunction
     @Override
-    public void sign(Context context) {
-        Navigation.sign2Account(context);
-    }
-
-    @Override
-    public void settings(final Fragment fragment) {
+    public void setSetting(final Fragment fragment) {
 
         TopicSettingDialog bottomDialog = new TopicSettingDialog();
         bottomDialog.setIOnOK(new TopicSettingDialog.IOnOK() {
@@ -93,5 +87,5 @@ public class CaseCreateTopic extends CaseBase implements ICreateMenuItemFunction
             topicViewModel.createTheTopic(TopicType.PUBLISHED, iReturnBool);
         }
     }
-    // endregion
+
 }

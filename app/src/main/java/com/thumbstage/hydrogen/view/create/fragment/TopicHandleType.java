@@ -1,5 +1,5 @@
 package com.thumbstage.hydrogen.view.create.fragment;
 
 public enum TopicHandleType {
-    CREATE, ATTEND, CONTINUE
+    CREATE, ATTEND, CONTINUE, EDIT
 }

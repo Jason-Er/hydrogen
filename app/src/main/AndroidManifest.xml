@@ -47,6 +47,12 @@
             android:screenOrientation="portrait"
             >
         </activity>
+        <activity
+            android:name="com.thumbstage.hydrogen.view.show.ShowActivity"
+            android:label="ShowActivity"
+            android:screenOrientation="landscape"
+            >
+        </activity>
         <activity android:name="com.linchaolong.android.imagepicker.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat"/>
 

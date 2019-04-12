@@ -11,10 +11,12 @@ import java.util.List;
 public class IStartedFragmentPagerAdapter extends FragmentPagerAdapter {
 
     List<Fragment> fragmentList;
-    String[] titles = new String[]{"Opened","Closed"};
+    String[] titles = new String[]{"PublishedOpened","PublishedClosed","PrivateOpened","PrivateClosed"};
     public IStartedFragmentPagerAdapter(FragmentManager fm) {
         super(fm);
         fragmentList=new ArrayList<>();
+        fragmentList.add(new IPublishedOpenedFragment());
+        fragmentList.add(new IPublishedClosedFragment());
         fragmentList.add(new IStartedOpenedFragment());
         fragmentList.add(new IStartedClosedFragment());
     }

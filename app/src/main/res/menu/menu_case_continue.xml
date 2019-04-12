@@ -5,8 +5,8 @@
     tools:context="com.example.actionbartest.MainActivity" >
 
     <item
-        android:id="@+id/menu_create_sign"
-        android:icon="@drawable/ic_menu_sign"
+        android:id="@+id/menu_item_play"
+        android:icon="@drawable/ic_menu_play"
         android:name="@string/action_sign"
         android:title="@string/action_sign"
         app:showAsAction="always"/>

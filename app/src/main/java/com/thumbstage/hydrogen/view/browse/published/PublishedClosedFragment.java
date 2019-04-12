@@ -1,15 +1,47 @@
 package com.thumbstage.hydrogen.view.browse.published;
 
+import android.arch.lifecycle.Observer;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.Privilege;
 import com.thumbstage.hydrogen.view.browse.IAdapterFunction;
 import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
+import com.thumbstage.hydrogen.view.common.BasicBrowseFragment;
 
-public class PublishedClosedFragment extends Fragment implements IBrowseCustomize, IAdapterFunction {
+import java.util.List;
+
+public class PublishedClosedFragment extends BasicBrowseFragment implements IBrowseCustomize, IAdapterFunction {
+
+    PublishedClosedAdapter recyclerViewAdapter;
+
+    @Nullable
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        recyclerViewAdapter = new PublishedClosedAdapter();
+        recyclerView.setAdapter(recyclerViewAdapter);
+        return view;
+    }
+
+    @Override
+    public void customObserve() {
+        viewModel.getPublishedClosedByPageNum(0).observe(this, new Observer<List<Mic>>() {
+            @Override
+            public void onChanged(@Nullable List<Mic> micList) {
+                recyclerViewAdapter.setItems(micList);
+                spinner.setVisibility(View.GONE);
+            }
+        });
+    }
 
     // region implement of interface IBrowseCustomize
     @Override

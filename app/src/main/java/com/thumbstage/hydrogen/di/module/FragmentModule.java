@@ -4,10 +4,13 @@ package com.thumbstage.hydrogen.di.module;
 import com.thumbstage.hydrogen.view.browse.atme.AtMeFragment;
 import com.thumbstage.hydrogen.view.browse.mine.IAttendedClosedFragment;
 import com.thumbstage.hydrogen.view.browse.mine.IAttendedOpenedFragment;
+import com.thumbstage.hydrogen.view.browse.mine.IPublishedClosedFragment;
+import com.thumbstage.hydrogen.view.browse.mine.IPublishedOpenedFragment;
 import com.thumbstage.hydrogen.view.browse.mine.IStartedClosedFragment;
 import com.thumbstage.hydrogen.view.browse.mine.IStartedOpenedFragment;
 import com.thumbstage.hydrogen.view.browse.published.PublishedClosedFragment;
 import com.thumbstage.hydrogen.view.browse.published.PublishedOpenedFragment;
+import com.thumbstage.hydrogen.view.common.BasicBrowseFragment;
 import com.thumbstage.hydrogen.view.create.fragment.TopicFragment;
 import com.thumbstage.hydrogen.view.sign.SignInFragment;
 import com.thumbstage.hydrogen.view.sign.SignUpFragment;
@@ -18,9 +21,15 @@ import dagger.android.ContributesAndroidInjector;
 @Module
 public abstract class FragmentModule {
     @ContributesAndroidInjector
+    abstract BasicBrowseFragment contributeBasicBrowseFragment();
+    @ContributesAndroidInjector
     abstract PublishedOpenedFragment contributePublishedOpenedFragment();
     @ContributesAndroidInjector
     abstract PublishedClosedFragment contributePublishedClosedFragment();
+    @ContributesAndroidInjector
+    abstract IPublishedOpenedFragment contributeIPublishedOpenedFragment();
+    @ContributesAndroidInjector
+    abstract IPublishedClosedFragment contributeIPublishedClosedFragment();
     @ContributesAndroidInjector
     abstract IStartedOpenedFragment contributeIStartedOpenedFragment();
     @ContributesAndroidInjector

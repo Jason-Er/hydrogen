@@ -26,7 +26,9 @@ import com.thumbstage.hydrogen.utils.DataConvertUtil;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
@@ -38,6 +40,7 @@ public class ModelDB {
     private final HyDatabase database;
     private Executor executor;
 
+    private final int PER_PAGE_NUM = 15;
     private static int FRESH_TIMEOUT_IN_MINUTES = 1;
 
     // TODO: 4/4/2019 remember to use db roomDB.runInTransaction
@@ -47,8 +50,12 @@ public class ModelDB {
         this.executor = executor;
     }
 
-    public boolean isTopicNeedFresh(TopicType type) {
-        return database.topicDao().hasTopic(type.name(), getMaxRefreshTime(new Date())) == null;
+    public boolean isTopicNeedFresh(TopicType type, final String started_by, final boolean isFinished) {
+        if(TextUtils.isEmpty(started_by)) {
+            return database.topicDao().hasTopic(type.name(), isFinished, getMaxRefreshTime(new Date())) == null;
+        } else {
+            return database.topicDao().hasTopic(type.name(), started_by, isFinished, getMaxRefreshTime(new Date())) == null;
+        }
     }
 
     private Date getMaxRefreshTime(Date currentDate){
@@ -71,6 +78,7 @@ public class ModelDB {
                 entity.setBrief(topic.getBrief());
                 entity.setDerive_from(topic.getDerive_from());
                 entity.setStarted_by(topic.getStarted_by().getId());
+                entity.setFinished(topic.isFinished());
                 if( topic.getSetting()!=null ) {
                     entity.setSetting_url(topic.getSetting().getUrl());
                 }
@@ -208,12 +216,11 @@ public class ModelDB {
                         for(AtMeEntity entity:input) {
                             AtMe atMe = new AtMe();
                             Mic mic = getMic(entity.getMicId());
+                            atMe.setMe(getUser(entity.getMe()));
                             atMe.setMic(mic);
                             atMe.setWhat(entity.getWhat());
                             atMe.setWhen(entity.getWhen());
-                            UserEntity userEntity = database.userDao().get(entity.getWho());
-                            User who = new User(userEntity.getId(), userEntity.getName(), userEntity.getAvatar());
-                            atMe.setWho(who);
+                            atMe.setWho(getUser(entity.getWho()));
                             list.add(atMe);
                         }
                         atMeListLive.postValue(list);
@@ -224,23 +231,44 @@ public class ModelDB {
         });
     }
 
-    public List<Mic> getMicByPage(TopicType type, String started_by, int pageNum, int perPageNum) {
+    private Map<String, MutableLiveData<List<Mic>>> liveDataMap = new HashMap<>();
+    public LiveData<List<Mic>> getMic(TopicType type, String started_by, boolean isFinished, int pageNum) {
 
-        List<Mic> micList = new ArrayList<>();
-        List<MicEntity> entities = null;
-
-        if(TextUtils.isEmpty(started_by)) {
-            entities = database.micDao().get(type.name(),  perPageNum, pageNum*perPageNum);
+        final MutableLiveData<List<Mic>> micListLive;
+        String key = type.name()+isFinished;
+        if(!TextUtils.isEmpty(started_by)) {
+            key += "personal";
+        }
+        if(liveDataMap.containsKey(key)) {
+            micListLive = liveDataMap.get(key);
         } else {
-            entities = database.micDao().get(type.name(), started_by, perPageNum, pageNum*perPageNum);
+            micListLive = new MutableLiveData<>();
+            liveDataMap.put(key, micListLive);
         }
 
-        for(MicEntity entity: entities) {
-            Mic mic = getMic(entity.getId());
-            micList.add(mic);
+        LiveData<List<MicEntity>> liveData;
+        if(TextUtils.isEmpty(started_by)) {
+            liveData = database.micDao().get(type.name(), isFinished, PER_PAGE_NUM, pageNum * PER_PAGE_NUM);
+        } else {
+            liveData = database.micDao().get(type.name(), started_by, isFinished, PER_PAGE_NUM, pageNum*PER_PAGE_NUM);
         }
-
-        return micList;
+        return Transformations.switchMap(liveData, new Function<List<MicEntity>, LiveData<List<Mic>>>() {
+            @Override
+            public LiveData<List<Mic>> apply(final List<MicEntity> input) {
+                executor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        List<Mic> micList = new ArrayList<>();
+                        for(MicEntity entity: input) {
+                            Mic mic = getMic(entity.getId());
+                            micList.add(mic);
+                        }
+                        micListLive.postValue(micList);
+                    }
+                });
+                return micListLive;
+            }
+        });
     }
 
     public List<Line> getLine(String topicId) {
@@ -320,4 +348,8 @@ public class ModelDB {
 
 
     // endregion
+
+    public void deleteAtMe(AtMe atMe) {
+        database.atMeDao().deleteAtMeByKey(atMe.getMic().getId(), atMe.getMe().getId());
+    }
 }

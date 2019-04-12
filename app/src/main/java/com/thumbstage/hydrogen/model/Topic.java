@@ -1,12 +1,9 @@
 package com.thumbstage.hydrogen.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class Topic implements Parcelable, Cloneable {
+public class Topic implements Cloneable {
 
     String id;
     String name;
@@ -17,6 +14,7 @@ public class Topic implements Parcelable, Cloneable {
     String derive_from; // topic id
     List<Line> dialogue;
     List<User> members;
+    boolean isFinished;
 
     public Topic() {
         name = "";
@@ -26,98 +24,45 @@ public class Topic implements Parcelable, Cloneable {
         members = new ArrayList<>();
     }
 
-    protected Topic(Parcel in) {
-        id = in.readString();
-        name = in.readString();
-        brief = in.readString();
-        derive_from = in.readString();
-        type = TopicType.valueOf(in.readString());
-        members = new ArrayList<>();
-        in.readList(members, User.class.getClassLoader());
-        setting = in.readParcelable(Setting.class.getClassLoader());
-        started_by = in.readParcelable(User.class.getClassLoader());
-        dialogue = new ArrayList<>();
-        in.readList(dialogue, Line.class.getClassLoader());
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(name);
-        dest.writeString(brief);
-        dest.writeString(derive_from);
-        dest.writeString(type.name());
-        dest.writeList(members);
-        dest.writeParcelable(setting, flags);
-        dest.writeParcelable(started_by, flags);
-        dest.writeList(dialogue);
-    }
-
-    public static final Creator<Topic> CREATOR = new Creator<Topic>() {
-        @Override
-        public Topic createFromParcel(Parcel in) {
-            return new Topic(in);
-        }
-
-        @Override
-        public Topic[] newArray(int size) {
-            return new Topic[size];
-        }
-    };
-
-    public static Topic Builder() {
-        return new Topic();
-    }
-
     // region setter
-    public Topic setId(String id) {
+    public void setId(String id) {
         this.id = id;
-        return this;
     }
 
-    public Topic setName(String name) {
+    public void setName(String name) {
         this.name = name;
-        return this;
     }
 
-    public Topic setBrief(String brief) {
+    public void setBrief(String brief) {
         this.brief = brief;
-        return this;
     }
 
-    public Topic setSetting(Setting setting) {
+    public void setSetting(Setting setting) {
         this.setting = setting;
-        return this;
     }
 
-    public Topic setStarted_by(User started_by) {
+    public void setStarted_by(User started_by) {
         this.started_by = started_by;
-        return this;
     }
 
-    public Topic setDialogue(List<Line> dialogue) {
+    public void setDialogue(List<Line> dialogue) {
         this.dialogue = dialogue;
-        return this;
     }
 
-    public Topic setMembers(List<User> members) {
+    public void setMembers(List<User> members) {
         this.members = members;
-        return this;
     }
 
-    public Topic setDerive_from(String derive_from) {
+    public void setDerive_from(String derive_from) {
         this.derive_from = derive_from;
-        return this;
     }
 
-    public Topic setType(TopicType type) {
+    public void setType(TopicType type) {
         this.type = type;
-        return this;
+    }
+
+    public void setFinished(boolean finished) {
+        isFinished = finished;
     }
 
     // endregion
@@ -160,6 +105,9 @@ public class Topic implements Parcelable, Cloneable {
         return type;
     }
 
+    public boolean isFinished() {
+        return isFinished;
+    }
     // endregion
 
 

@@ -1,5 +1,6 @@
 package com.thumbstage.hydrogen.database.dao;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -32,10 +33,10 @@ public interface MicDao {
     @Query("SELECT * FROM mic WHERE id IN (:ids)")
     List<MicEntity> get(List<String> ids);
 
-    @Query("SELECT * FROM mic WHERE topic_id IN ( SELECT id FROM topic WHERE type =:type) ORDER BY last_refresh DESC LIMIT :perPageNum OFFSET :offset")
-    List<MicEntity> get(String type, int perPageNum, int offset);
+    @Query("SELECT * FROM mic WHERE topic_id IN ( SELECT id FROM topic WHERE type =:type AND is_finished =:isFinished) ORDER BY last_refresh DESC LIMIT :perPageNum OFFSET :offset")
+    LiveData<List<MicEntity>> get(String type, boolean isFinished, int perPageNum,  int offset);
 
-    @Query("SELECT * FROM mic WHERE topic_id IN ( SELECT id FROM topic WHERE started_by =:started_by AND type =:type) ORDER BY last_refresh DESC LIMIT :perPageNum OFFSET :offset")
-    List<MicEntity> get(String type, String started_by, int perPageNum, int offset);
+    @Query("SELECT * FROM mic WHERE topic_id IN ( SELECT id FROM topic WHERE started_by =:started_by AND is_finished =:isFinished AND type =:type) ORDER BY last_refresh DESC LIMIT :perPageNum OFFSET :offset")
+    LiveData<List<MicEntity>> get(String type, String started_by, boolean isFinished, int perPageNum, int offset);
 
 }

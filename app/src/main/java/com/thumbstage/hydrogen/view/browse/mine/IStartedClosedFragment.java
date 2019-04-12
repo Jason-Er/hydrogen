@@ -1,22 +1,38 @@
 package com.thumbstage.hydrogen.view.browse.mine;
 
-import android.app.Activity;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
+import android.arch.lifecycle.Observer;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
+import com.thumbstage.hydrogen.model.Mic;
+import com.thumbstage.hydrogen.view.common.BasicBrowseFragment;
 
-public class IStartedClosedFragment extends Fragment implements IBrowseCustomize {
-    // region implement of interface IBrowseCustomize
+import java.util.List;
+
+public class IStartedClosedFragment extends BasicBrowseFragment {
+
+    IStartedClosedAdapter recyclerViewAdapter;
+
     @Override
-    public void customizeToolbar(Toolbar toolbar) {
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = super.onCreateView(inflater, container, savedInstanceState);
+        recyclerViewAdapter = new IStartedClosedAdapter();
+        recyclerView.setAdapter(recyclerViewAdapter);
+        return view;
     }
 
     @Override
-    public void customizeFab(FloatingActionButton fab) {
-        fab.hide();
+    public void customObserve() {
+        viewModel.getIStartedClosedByPageNum(0).observe(this, new Observer<List<Mic>>() {
+            @Override
+            public void onChanged(@Nullable List<Mic> micList) {
+                recyclerViewAdapter.setItems(micList);
+                spinner.setVisibility(View.GONE);
+            }
+        });
     }
-    // endregion
+
 }

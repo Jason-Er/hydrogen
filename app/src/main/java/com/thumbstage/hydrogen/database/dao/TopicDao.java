@@ -34,6 +34,9 @@ public interface TopicDao {
     @Query("SELECT * FROM topic WHERE id IN (:ids)")
     List<TopicEntity> get(List<String> ids);
 
-    @Query("SELECT * FROM topic WHERE type = :type AND last_refresh > :lastRefreshMax LIMIT 1")
-    TopicEntity hasTopic(String type, Date lastRefreshMax);
+    @Query("SELECT * FROM topic WHERE type =:type AND is_finished =:isFinished AND last_refresh > :lastRefreshMax LIMIT 1")
+    TopicEntity hasTopic(String type, boolean isFinished, Date lastRefreshMax);
+
+    @Query("SELECT * FROM topic WHERE type = :type AND started_by =:started_by AND is_finished =:isFinished AND last_refresh > :lastRefreshMax LIMIT 1")
+    TopicEntity hasTopic(String type, String started_by, boolean isFinished, Date lastRefreshMax);
 }

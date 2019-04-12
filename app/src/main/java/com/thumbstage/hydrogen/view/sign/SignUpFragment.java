@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.thumbstage.hydrogen.R;
@@ -36,6 +37,8 @@ public class SignUpFragment extends Fragment {
     EditText password2;
     @BindView(R.id.fragment_signUp_email)
     EditText email;
+    @BindView(R.id.loading_spinner)
+    ProgressBar spinner;
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
@@ -99,10 +102,12 @@ public class SignUpFragment extends Fragment {
             return;
         }
 
+        spinner.setVisibility(View.VISIBLE);
         viewModel.signUp(namel, passwordl, emaill).observe(this, new Observer<User>() {
             @Override
             public void onChanged(@Nullable User user) {
                 if(!user.getId().equals(StringUtil.DEFAULT_USERID)) {
+                    spinner.setVisibility(View.GONE);
                     ((SignActivity) getActivity()).onSupportNavigateUp();
                 }
             }

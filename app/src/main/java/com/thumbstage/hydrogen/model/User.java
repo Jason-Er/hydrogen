@@ -1,12 +1,9 @@
 package com.thumbstage.hydrogen.model;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-public class User implements Parcelable {
+public class User {
 
     String id;
     String name;
@@ -22,36 +19,6 @@ public class User implements Parcelable {
                 add(Privilege.BROWSE_PUBLISHEDCLOSED);
             }
         };
-    }
-
-    protected User(Parcel in) {
-        id = in.readString();
-        name = in.readString();
-        avatar = in.readString();
-    }
-
-    public static final Creator<User> CREATOR = new Creator<User>() {
-        @Override
-        public User createFromParcel(Parcel in) {
-            return new User(in);
-        }
-
-        @Override
-        public User[] newArray(int size) {
-            return new User[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(name);
-        dest.writeString(avatar);
     }
 
     @Override

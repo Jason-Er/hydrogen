@@ -7,13 +7,17 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.event.AtMeEvent;
 import com.thumbstage.hydrogen.model.AtMe;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.utils.GlideUtil;
 import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
 import com.thumbstage.hydrogen.view.create.fragment.TopicHandleType;
+
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,6 +26,8 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
 
     AtMe atMe;
 
+    @BindView(R.id.item_mic_atme_topic_setting)
+    ImageView setting;
     @BindView(R.id.item_mic_atme_avatar)
     ImageView avatar;
     @BindView(R.id.item_mic_atme_topic)
@@ -43,6 +49,7 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
                 intent.putExtra(Mic.class.getSimpleName(), atMe.getMic().getId());
                 intent.putExtra(TopicHandleType.class.getSimpleName(),
                         TopicHandleType.CONTINUE.name());
+                EventBus.getDefault().post(new AtMeEvent(atMe, "click"));
                 v.getContext().startActivity(intent);
             }
         });
@@ -52,136 +59,11 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
         this.atMe = atMe;
         GlideUtil.inject(itemView.getContext(), atMe.getWho().getAvatar(), avatar);
         topicName.setText(atMe.getMic().getTopic().getName());
+        if(atMe.getMic().getTopic().getSetting() != null) {
+            Glide.with(setting).load(atMe.getMic().getTopic().getSetting().getUrl()).into(setting);
+        }
         message.setText(atMe.getWho().getName()+":"+atMe.getWhat());
         timeView.setText(StringUtil.date2String4Show(atMe.getWhen()));
     }
 
-    /*
-    public void setMic(Mic mic) {
-        this.mic = mic;
-
-        CloudAPI.getLastLineUser(mic, new CloudAPI.IReturnUser() {
-            @Override
-            public void callback(User user) {
-                if(user != null) {
-                    GlideUtil.inject(itemView.getContext(), user.getAvatar(), avatar);
-                    topicName.setText(user.getName());
-                }
-            }
-        });
-        CloudAPI.getLastLine(mic, new CloudAPI.IReturnLine() {
-            @Override
-            public void callback(Line line) {
-                if(line != null) {
-                    message.setText(line.getWhat());
-                    timeView.setText(StringUtil.date2String4Show(line.getWhen()));
-                }
-            }
-        });
-        */
-        /*
-        AVIMConversation conversation = CurrentUser.getInstance().getConversation(mic.getId());
-
-        updateName(conversation);
-        updateIcon(conversation);
-        updateType(conversation);
-        updateUnreadCount(conversation);
-        updateLastMessage(conversation.getLastMessage());
-
-    }
-    */
-
-    /*
-    private void updateIcon(AVIMConversation conversation) {
-        if (null != conversation) {
-            if (conversation.isTransient() || conversation.getMembers().size() > 2) {
-                avatar.setImageResource(R.drawable.ic_item_account_multiple);
-            } else {
-                PipeUtils.getConversationPeerIcon(conversation, new AVCallback<String>() {
-                    @Override
-                    protected void internalDone0(String s, AVException e) {
-                        if (null != e) {
-                            LogUtils.logException(e);
-                        }
-                        if (!TextUtils.isEmpty(s)) {
-                            Glide.with(itemView.getContext()).load(s)
-                                    .placeholder(R.drawable.ic_item_account).into(avatar);
-                        } else {
-                            avatar.setImageResource(R.drawable.ic_item_account);
-                        }
-                    }
-                });
-            }
-        }
-    }
-
-    private void updateType(AVIMConversation conversation) {
-        if (conversation instanceof AVIMServiceConversation) {
-            typeView.setText("S");
-        } else if (conversation instanceof AVIMTemporaryConversation) {
-            typeView.setText("T");
-        } else if (conversation instanceof AVIMChatRoom) {
-            typeView.setText("R");
-        } else {
-            typeView.setText("C");
-        }
-    }
-
-    private void updateUnreadCount(AVIMConversation conversation) {
-        int num = conversation.getUnreadMessagesCount();
-        unreadView.setText(num + "");
-        unreadView.setVisibility(num > 0 ? View.VISIBLE : View.GONE);
-    }
-
-    private void updateName(final AVIMConversation conversation) {
-        PipeUtils.getConversationName(conversation, new AVCallback<String>() {
-            @Override
-            protected void internalDone0(String s, AVException e) {
-                if (null != e) {
-                    LogUtils.logException(e);
-                } else {
-                    topicName.setText(s);
-                }
-            }
-        });
-    }
-
-    private void updateLastMessage(AVIMMessage message) {
-        if (null != message) {
-            Date date = new Date(message.getTimestamp());
-            SimpleDateFormat format = new SimpleDateFormat("MM-dd HH:mm");
-            timeView.setText(format.format(date));
-            this.message.setText(getMessageeShorthand(this.message.getContext(), message));
-        }
-    }
-
-    private static CharSequence getMessageeShorthand(Context context, AVIMMessage message) {
-        if (message instanceof AVIMTypedMessage) {
-            AVIMReservedMessageType type = AVIMReservedMessageType.getAVIMReservedMessageType(
-                    ((AVIMTypedMessage) message).getMessageType());
-            switch (type) {
-                case TextMessageType:
-                    return ((AVIMTextMessage) message).getText();
-                case ImageMessageType:
-                    return context.getString(cn.leancloud.chatkit.R.string.lcim_message_shorthand_image);
-                case LocationMessageType:
-                    return context.getString(cn.leancloud.chatkit.R.string.lcim_message_shorthand_location);
-                case AudioMessageType:
-                    return context.getString(cn.leancloud.chatkit.R.string.lcim_message_shorthand_audio);
-                default:
-                    CharSequence shortHand = "";
-                    if (message instanceof LCChatMessageInterface) {
-                        LCChatMessageInterface messageInterface = (LCChatMessageInterface) message;
-                        shortHand = messageInterface.getShorthand();
-                    }
-                    if (TextUtils.isEmpty(shortHand)) {
-                        shortHand = context.getString(cn.leancloud.chatkit.R.string.lcim_message_shorthand_unknown);
-                    }
-                    return shortHand;
-            }
-        } else {
-            return message.getContent();
-        }
-    }
-    */
 }
