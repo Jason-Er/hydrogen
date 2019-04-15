@@ -30,4 +30,6 @@
     <dimen name="topic_item_horizontal_margin">15dp</dimen>
     <dimen name="topic_item_horizontal_big_margin">40dp</dimen>
     <dimen name="topic_item_imageview_width">150dp</dimen>
+
+    <dimen name="player_control_bar_size">48dp</dimen>
 </resources>
