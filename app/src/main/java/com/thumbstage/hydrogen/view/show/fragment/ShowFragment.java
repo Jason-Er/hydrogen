@@ -3,22 +3,35 @@ package com.thumbstage.hydrogen.view.show.fragment;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextSwitcher;
+import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.event.PlayerControlEvent;
 import com.thumbstage.hydrogen.model.Mic;
+import com.thumbstage.hydrogen.utils.DensityUtil;
 import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import javax.inject.Inject;
 
@@ -36,6 +49,8 @@ public class ShowFragment extends Fragment {
     RecyclerView recyclerView;
     @BindView(R.id.loading_spinner)
     ProgressBar spinner;
+    @BindView(R.id.fragment_show_subtitle)
+    TextSwitcher subtitle;
     @Inject
     ViewModelProvider.Factory viewModelFactory;
     TopicViewModel topicViewModel;
@@ -54,7 +69,28 @@ public class ShowFragment extends Fragment {
         recyclerView.setLayoutManager( layoutManager );
         recyclerView.setAdapter(topicAdapter);
 
+        subtitle.setFactory(new ViewSwitcher.ViewFactory() {
+            @Override
+            public View makeView() {
+                final TextView tv = new TextView(getContext());
+                tv.setTextSize(DensityUtil.dp2px(getContext(), 15));
+                tv.setTextColor(Color.BLACK);
+                tv.setEllipsize(TextUtils.TruncateAt.END);
+                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                lp.gravity = Gravity.CENTER;
+                tv.setLayoutParams(lp);
+                return tv;
+            }
+        });
+
+        EventBus.getDefault().register(this);
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
@@ -62,6 +98,27 @@ public class ShowFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         configureDagger();
         configureViewModel();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onResponseMessageEvent(final PlayerControlEvent event) {
+        switch (event.getMessage()) {
+            case "STOP":
+
+                break;
+            case "PLAY":
+                subtitle.setText("Hello world");
+                break;
+            case "PAUSE":
+
+                break;
+            case "SEEK":
+
+                break;
+            case "VOLUME":
+
+                break;
+        }
     }
 
     private void configureDagger(){

@@ -8,17 +8,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitCenter"/>
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/fragment_topic_pullrefresh"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/fragment_chat_rv_chat"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/fragment_topic_inputbottombar">
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/fragment_chat_rv_chat"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </android.support.v4.widget.SwipeRefreshLayout>
-
+        android:layout_height="match_parent" />
+    <TextSwitcher
+        android:id="@+id/fragment_show_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/fragment_show_bottom_bar"
+        android:inAnimation="@anim/slide_in_down"
+        android:outAnimation="@anim/slide_out_up"/>
+    <include
+        android:id="@+id/fragment_show_bottom_bar"
+        layout="@layout/layout_show_bottom_bar" />
     <include
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

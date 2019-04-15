@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.wecyberstage.wecyberstage.view.main.PlayerControlBar xmlns:android="http://schemas.android.com/apk/res/android"
+<com.thumbstage.hydrogen.view.show.fragment.PlayerControlBar xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/player_control_bar_size"
     android:layout_alignParentBottom="true"
@@ -63,4 +63,4 @@
             android:src="@drawable/ic_volume"/>
     </LinearLayout>
 
-</com.wecyberstage.wecyberstage.view.main.PlayerControlBar>
+</com.thumbstage.hydrogen.view.show.fragment.PlayerControlBar>
