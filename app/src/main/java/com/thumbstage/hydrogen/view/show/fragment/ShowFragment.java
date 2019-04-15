@@ -5,12 +5,14 @@ import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
+import android.speech.tts.UtteranceProgressListener;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.bumptech.glide.Glide;
@@ -33,20 +36,20 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.Locale;
+
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.support.AndroidSupportInjection;
 
-public class ShowFragment extends Fragment {
+public class ShowFragment extends Fragment implements TextToSpeech.OnInitListener{
 
     final String TAG = "TopicFragment";
 
     @BindView(R.id.fragment_topic_bk)
     ImageView background;
-    @BindView(R.id.fragment_chat_rv_chat)
-    RecyclerView recyclerView;
     @BindView(R.id.loading_spinner)
     ProgressBar spinner;
     @BindView(R.id.fragment_show_subtitle)
@@ -56,18 +59,13 @@ public class ShowFragment extends Fragment {
     TopicViewModel topicViewModel;
 
     LinearLayoutManager layoutManager;
-    ShowAdapter topicAdapter;
+    TextToSpeech textToSpeech;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_show, container, false);
         ButterKnife.bind(this, view);
-
-        topicAdapter = new ShowAdapter();
-        layoutManager = new LinearLayoutManager( getActivity() );
-        recyclerView.setLayoutManager( layoutManager );
-        recyclerView.setAdapter(topicAdapter);
 
         subtitle.setFactory(new ViewSwitcher.ViewFactory() {
             @Override
@@ -83,6 +81,7 @@ public class ShowFragment extends Fragment {
             }
         });
 
+        textToSpeech = new TextToSpeech(getContext(), this);
         EventBus.getDefault().register(this);
         return view;
     }
@@ -104,13 +103,18 @@ public class ShowFragment extends Fragment {
     public void onResponseMessageEvent(final PlayerControlEvent event) {
         switch (event.getMessage()) {
             case "STOP":
-
+                textToSpeech.shutdown();
                 break;
             case "PLAY":
-                subtitle.setText("Hello world");
+                if(textToSpeech !=null && !textToSpeech.isSpeaking()) {
+                    subtitle.setText("Hello world");
+                    textToSpeech.setPitch(0.5f);
+                    textToSpeech.setSpeechRate(1.5f);
+                    textToSpeech.speak("hello", TextToSpeech.QUEUE_FLUSH, null, null);
+                }
                 break;
             case "PAUSE":
-
+                textToSpeech.stop();
                 break;
             case "SEEK":
 
@@ -131,7 +135,6 @@ public class ShowFragment extends Fragment {
         topicViewModel.pickUpTopic(micId).observe(this, new Observer<Mic>() {
             @Override
             public void onChanged(@Nullable Mic mic) {
-                topicAdapter.setMic(mic);
                 if(mic.getTopic().getSetting() != null) {
                     Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
                 }
@@ -140,4 +143,32 @@ public class ShowFragment extends Fragment {
         });
     }
 
+    @Override
+    public void onInit(int status) {
+        if (status == TextToSpeech.SUCCESS) {
+            int result = textToSpeech.setLanguage(Locale.ENGLISH);
+            if (result == TextToSpeech.LANG_MISSING_DATA
+                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                Toast.makeText(getContext(), "数据丢失或不支持", Toast.LENGTH_SHORT).show();
+            } else {
+                textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
+                    @Override
+                    public void onStart(String utteranceId) {
+                        Log.i("textToSpeech onStart","utteranceId: "+ utteranceId);
+                    }
+
+                    @Override
+                    public void onDone(String utteranceId) {
+                        Log.i("textToSpeech onDone","utteranceId: "+ utteranceId);
+                    }
+
+                    @Override
+                    public void onError(String utteranceId) {
+                        Log.i("textToSpeech onError","utteranceId: "+ utteranceId);
+                    }
+                });
+            }
+
+        }
+    }
 }
