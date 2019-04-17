@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -25,19 +26,12 @@ import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
-import com.thumbstage.hydrogen.model.callback.IReturnBool;
-import com.thumbstage.hydrogen.view.create.CreateActivity;
 import com.thumbstage.hydrogen.view.create.cases.CaseCreateTopic;
 import com.thumbstage.hydrogen.view.create.cases.CaseEditTopic;
-import com.thumbstage.hydrogen.view.create.feature.ICanCloseTopic;
-import com.thumbstage.hydrogen.view.create.feature.ICanCreateOptionsMenu;
 import com.thumbstage.hydrogen.view.create.cases.CaseCopyTopic;
 import com.thumbstage.hydrogen.view.create.cases.CaseBase;
 import com.thumbstage.hydrogen.view.create.cases.CaseContinueTopic;
-import com.thumbstage.hydrogen.view.create.feature.ICanCreateTopic;
-import com.thumbstage.hydrogen.view.create.feature.ICanPlayTopic;
-import com.thumbstage.hydrogen.view.create.feature.ICanPublishTopic;
-import com.thumbstage.hydrogen.view.create.feature.ICanSetSetting;
+import com.thumbstage.hydrogen.view.create.feature.ICanPopupMenu;
 import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
 
@@ -207,15 +201,21 @@ public class TopicFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        if( currentRole instanceof ICanCreateOptionsMenu) {
-            ((ICanCreateOptionsMenu) currentRole).createOptionsMenu(menu, inflater);
-        }
+        inflater.inflate(R.menu.menu_create_default, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.menu_item_setup:
+                Log.i(TAG, "menu_item_setup");
+                View anchor = getActivity().findViewById(R.id.menu_item_setup);
+                if( currentRole instanceof ICanPopupMenu ) {
+                    ((ICanPopupMenu) currentRole).popupMenu(getContext(), anchor);
+                }
+                break;
+                /*
             case R.id.menu_item_play:
                 Log.i(TAG, "menu_item_play");
                 if( currentRole instanceof ICanPlayTopic) {
@@ -267,6 +267,7 @@ public class TopicFragment extends Fragment {
                     });
                 }
                 break;
+                */
         }
         return super.onOptionsItemSelected(item);
     }
