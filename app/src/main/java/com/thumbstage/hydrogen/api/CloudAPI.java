@@ -390,14 +390,20 @@ public class CloudAPI {
     }
 
     public void getContact(String userId, int pageNum, final IReturnUsers iReturnUsers) {
-        AVQuery<AVObject> avQuery = new AVQuery<>(TableName.TABLE_USER.name);
+        AVQuery<AVObject> avQuery = new AVQuery<>(TableName.TABLE_CONTACT.name);
         avQuery.orderByDescending(FieldName.FIELD_CREATEDAT.name);
-        avQuery.getInBackground(userId, new GetCallback<AVObject>() {
+        avQuery.include(FieldName.FIELD_CONTACT.name);
+        AVObject avWho = AVObject.createWithoutData(TableName.TABLE_USER.name, userId);
+        avQuery.whereEqualTo(FieldName.FIELD_WHO.name, avWho);
+        avQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
-            public void done(AVObject object, AVException e) {
+            public void done(List<AVObject> avObjects, AVException e) {
                 if(e == null) {
-                    List<String> contactIds = object.getList(FieldName.FIELD_CONTACT.name);
-                    getUsers(contactIds, iReturnUsers);
+                    List<AVObject> avUsers = new ArrayList<>();
+                    for(AVObject avObject: avObjects) {
+                        avUsers.add(avObject.getAVObject(FieldName.FIELD_CONTACT.name));
+                    }
+                    iReturnUsers.callback(avObject2User(avUsers));
                 }
             }
         });
@@ -542,11 +548,7 @@ public class CloudAPI {
             @Override
             public void done(List<AVObject> avObjects, AVException avException) {
                 if(avException == null) {
-                    List<User> users = new ArrayList<>();
-                    for(AVObject avObject: avObjects) {
-                        User user = avObject2User(avObject);
-                        users.add(user);
-                    }
+                    List<User> users = avObject2User(avObjects);
                     iReturnUsers.callback(users);
                 } else {
                     avException.printStackTrace();
@@ -777,6 +779,15 @@ public class CloudAPI {
             return user;
         }
         return null;
+    }
+
+    private List<User> avObject2User(List<AVObject> list) {
+        List<User> users = new ArrayList<>();
+        for(AVObject avObject: list) {
+            User user = avObject2User(avObject);
+            users.add(user);
+        }
+        return users;
     }
 
     private User avObject2User(AVObject avObject) {
