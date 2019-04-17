@@ -21,14 +21,14 @@
         android:layout_height="match_parent">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@+id/rv"
+            android:id="@+id/fragment_contact_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
         </android.support.v7.widget.RecyclerView>
 
         <com.thumbstage.hydrogen.view.common.WaveSideBarView
-            android:id="@+id/sideBar"
+            android:id="@+id/fragment_contact_sidebar"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 

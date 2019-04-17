@@ -26,6 +26,7 @@ import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
+import com.thumbstage.hydrogen.database.ModelDB;
 import com.thumbstage.hydrogen.model.HyFile;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.LineType;
@@ -388,6 +389,20 @@ public class CloudAPI {
         });
     }
 
+    public void getContact(String userId, int pageNum, final IReturnUsers iReturnUsers) {
+        AVQuery<AVObject> avQuery = new AVQuery<>(TableName.TABLE_USER.name);
+        avQuery.orderByDescending(FieldName.FIELD_CREATEDAT.name);
+        avQuery.getInBackground(userId, new GetCallback<AVObject>() {
+            @Override
+            public void done(AVObject object, AVException e) {
+                if(e == null) {
+                    List<String> contactIds = object.getList(FieldName.FIELD_CONTACT.name);
+                    getUsers(contactIds, iReturnUsers);
+                }
+            }
+        });
+    }
+
     private User findUser(List<User> users, String userId) {
         User user = null;
         for(User u: users) {
@@ -520,7 +535,7 @@ public class CloudAPI {
         });
     }
 
-    public void getUsers(List<String> membersId, final IReturnUsers iReturnUsers) {
+    private void getUsers(List<String> membersId, final IReturnUsers iReturnUsers) {
         AVQuery<AVObject> query = new AVQuery<>(TableName.TABLE_USER.name);
         query.whereContainedIn(FieldName.FIELD_ID.name, membersId);
         query.findInBackground(new FindCallback<AVObject>() {

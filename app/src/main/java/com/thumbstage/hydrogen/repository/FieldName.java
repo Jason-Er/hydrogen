@@ -15,6 +15,8 @@ public enum FieldName {
     FIELD_DIALOGUE("dialogue"),
     FIELD_TOPIC("topic"),
     FIELD_PRIVILEGE("privilege"),
+    FIELD_CONTACT("contact"),
+    FIELD_CREATEDAT("createdAt"),
     FIELD_TYPE("type");
 
     final public String name;

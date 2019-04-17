@@ -6,6 +6,8 @@ import android.arch.lifecycle.ViewModel;
 import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.repository.UserRepository;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
@@ -33,5 +35,10 @@ public class UserViewModel extends ViewModel {
 
     public void signOut() {
         userRepository.signOut();
+    }
+
+    public LiveData<List<User>> getContactByPageNum(int pageNum) {
+        String userId = userRepository.getCurrentUser().getId();
+        return userRepository.getContact(userId, pageNum);
     }
 }
