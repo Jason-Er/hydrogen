@@ -31,15 +31,18 @@ public class TitleItemDecoration extends RecyclerView.ItemDecoration {
     private static int mTitleTextSize;
 
 
-    public TitleItemDecoration(Context context, List<User> data) {
+    public TitleItemDecoration(Context context) {
         super();
-        mData = data;
         mPaint = new Paint();
         mBounds = new Rect();
         mTitleHeight = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 30, context.getResources().getDisplayMetrics());
         mTitleTextSize = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 16, context.getResources().getDisplayMetrics());
         mPaint.setTextSize(mTitleTextSize);
         mPaint.setAntiAlias(true);
+    }
+
+    public void setmData(List<User> mData) {
+        this.mData = mData;
     }
 
     @Override

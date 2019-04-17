@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.view.common.IAdapterDelegate;
 
@@ -28,7 +27,7 @@ public class ContactUserDelegate implements IAdapterDelegate<List> {
 
     @Override
     public boolean isForViewType(@NonNull List items, int position) {
-        return items.get(position) instanceof Mic;
+        return items.get(position) instanceof User;
     }
 
     @NonNull

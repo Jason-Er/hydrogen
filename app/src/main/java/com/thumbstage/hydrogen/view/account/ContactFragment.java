@@ -36,7 +36,9 @@ public class ContactFragment extends Fragment {
     @BindView(R.id.fragment_contact_recycler)
     RecyclerView recyclerView;
 
+    ContactAdapter recyclerViewAdapter;
     LinearLayoutManager layoutManager;
+    TitleItemDecoration itemDecoration;
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
@@ -57,8 +59,12 @@ public class ContactFragment extends Fragment {
             }
         });
 
+        recyclerViewAdapter = new ContactAdapter();
+        recyclerView.setAdapter(recyclerViewAdapter);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
+        itemDecoration = new TitleItemDecoration(getContext());
+        recyclerView.addItemDecoration(itemDecoration);
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
         return view;
     }
@@ -72,7 +78,8 @@ public class ContactFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<User> userList) {
                 Log.i("ContactFragment","onChanged");
-                recyclerView.addItemDecoration(new TitleItemDecoration(getContext(), userList));
+                itemDecoration.setmData(userList);
+                recyclerViewAdapter.setItems(userList);
             }
         });
 
