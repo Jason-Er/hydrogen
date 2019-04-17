@@ -66,7 +66,10 @@ public class ContactFragment extends Fragment {
         sideBar.setOnTouchLetterChangeListener(new WaveSideBarView.OnTouchLetterChangeListener() {
             @Override
             public void onLetterChange(String letter) {
-
+                int position = recyclerViewAdapter.getPositionForSection(letter.charAt(0));
+                if (position != -1) {
+                    layoutManager.scrollToPositionWithOffset(position, 0);
+                }
             }
         });
 
