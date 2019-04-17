@@ -7,7 +7,7 @@
     android:focusable="true"
     android:focusableInTouchMode="true">
     <com.thumbstage.hydrogen.view.common.ClearEditText
-        android:id="@+id/filter_edit"
+        android:id="@+id/fragment_contact_filter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="8dp"

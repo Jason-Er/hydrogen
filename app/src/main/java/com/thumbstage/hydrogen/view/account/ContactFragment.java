@@ -10,6 +10,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,10 +20,15 @@ import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.User;
+import com.thumbstage.hydrogen.utils.PinyinComparator;
+import com.thumbstage.hydrogen.utils.PinyinUtils;
+import com.thumbstage.hydrogen.view.common.ClearEditText;
 import com.thumbstage.hydrogen.view.common.TitleItemDecoration;
 import com.thumbstage.hydrogen.view.common.WaveSideBarView;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -35,10 +43,13 @@ public class ContactFragment extends Fragment {
     WaveSideBarView sideBar;
     @BindView(R.id.fragment_contact_recycler)
     RecyclerView recyclerView;
+    @BindView(R.id.fragment_contact_filter)
+    ClearEditText filter;
 
     ContactAdapter recyclerViewAdapter;
     LinearLayoutManager layoutManager;
     TitleItemDecoration itemDecoration;
+    List<User> contacts;
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
@@ -66,7 +77,48 @@ public class ContactFragment extends Fragment {
         itemDecoration = new TitleItemDecoration(getContext());
         recyclerView.addItemDecoration(itemDecoration);
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
+
+        filter.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                filterData(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
+
         return view;
+    }
+
+    private void filterData(String filterStr) {
+        List<User> filterDateList = new ArrayList<>();
+        if (TextUtils.isEmpty(filterStr)) {
+            filterDateList = contacts;
+        } else {
+            filterDateList.clear();
+            for (User user : (List<User>)recyclerViewAdapter.getItems()) {
+                String name = user.getName();
+                if (name.indexOf(filterStr) != -1 ||
+                        PinyinUtils.getFirstSpell(name).startsWith(filterStr)
+                        || PinyinUtils.getFirstSpell(name).toLowerCase().startsWith(filterStr)
+                        || PinyinUtils.getFirstSpell(name).toUpperCase().startsWith(filterStr)
+                ) {
+                    filterDateList.add(user);
+                }
+            }
+        }
+        // 根据a-z进行排序
+        Collections.sort(filterDateList, new PinyinComparator());
+        itemDecoration.setmData(filterDateList);
+        recyclerViewAdapter.setItems(filterDateList);
     }
 
     @Override
@@ -78,6 +130,7 @@ public class ContactFragment extends Fragment {
             @Override
             public void onChanged(@Nullable List<User> userList) {
                 Log.i("ContactFragment","onChanged");
+                contacts = userList;
                 itemDecoration.setmData(userList);
                 recyclerViewAdapter.setItems(userList);
             }
