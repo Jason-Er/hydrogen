@@ -5,7 +5,7 @@ public class HyMenuItem {
     CommandType commandName;
 
     public enum CommandType {
-        SETTING, START, PUBLISH, CLOSE
+        SETTING, START, PUBLISH, CLOSE, ADD_MEMBER
     }
 
     public HyMenuItem(int resId, CommandType commandName) {

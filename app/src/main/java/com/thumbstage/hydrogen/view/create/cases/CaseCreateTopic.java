@@ -1,5 +1,8 @@
 package com.thumbstage.hydrogen.view.create.cases;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -12,8 +15,10 @@ import com.thumbstage.hydrogen.model.Setting;
 import com.thumbstage.hydrogen.model.TopicType;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
+import com.thumbstage.hydrogen.view.account.AccountActivity;
 import com.thumbstage.hydrogen.view.common.HyMenuItem;
 import com.thumbstage.hydrogen.view.create.TopicSettingDialog;
+import com.thumbstage.hydrogen.view.create.feature.ICanAddMember;
 import com.thumbstage.hydrogen.view.create.feature.ICanCreateTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanPopupMenu;
 import com.thumbstage.hydrogen.view.create.feature.ICanPublishTopic;
@@ -24,8 +29,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CaseCreateTopic extends CaseBase implements ICanCreateTopic,
-        ICanPublishTopic, ICanSetSetting, ICanPopupMenu {
+public class CaseCreateTopic extends CaseBase implements ICanPopupMenu, ICanCreateTopic,
+        ICanPublishTopic, ICanSetSetting, ICanAddMember {
 
     final String TAG = "CaseCreateTopic";
     Uri imageUri;
@@ -86,11 +91,20 @@ public class CaseCreateTopic extends CaseBase implements ICanCreateTopic,
     }
 
     @Override
+    public void addMember(Activity activity) {
+        Intent intent = new Intent(activity, AccountActivity.class);
+        intent.putExtra(AccountActivity.Type.class.getSimpleName(), AccountActivity.Type.SELECT_MEMBER.name());
+        activity.startActivityForResult(intent, AccountActivity.Type.SELECT_MEMBER.ordinal());
+    }
+
+    @Override
     public void setUpPopupMenu(PopupWindowAdapter adapter) {
         List<HyMenuItem> itemList = new ArrayList<>();
         itemList.add(new HyMenuItem(R.drawable.ic_menu_setting_b, HyMenuItem.CommandType.SETTING));
+        itemList.add(new HyMenuItem(R.drawable.ic_menu_account_plus, HyMenuItem.CommandType.ADD_MEMBER));
         itemList.add(new HyMenuItem(R.drawable.ic_menu_start_g, HyMenuItem.CommandType.START));
         itemList.add(new HyMenuItem(R.drawable.ic_menu_publish_g, HyMenuItem.CommandType.PUBLISH));
         adapter.setItemList(itemList);
     }
+
 }

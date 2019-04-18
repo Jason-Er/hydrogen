@@ -3,6 +3,7 @@ package com.thumbstage.hydrogen.view.create.fragment;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -34,6 +35,7 @@ import com.thumbstage.hydrogen.view.create.cases.CaseEditTopic;
 import com.thumbstage.hydrogen.view.create.cases.CaseCopyTopic;
 import com.thumbstage.hydrogen.view.create.cases.CaseBase;
 import com.thumbstage.hydrogen.view.create.cases.CaseContinueTopic;
+import com.thumbstage.hydrogen.view.create.feature.ICanAddMember;
 import com.thumbstage.hydrogen.view.create.feature.ICanCloseTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanCreateTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanPopupMenu;
@@ -126,6 +128,16 @@ public class TopicFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         configureDagger();
         configureViewModel();
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        /*
+        if(requestCode == && resultCode == ) {
+
+        }
+        */
     }
 
     private void configureDagger(){
@@ -251,6 +263,11 @@ public class TopicFragment extends Fragment {
 
                         }
                     });
+                }
+                break;
+            case ADD_MEMBER:
+                if(currentRole instanceof ICanAddMember) {
+                    ((ICanAddMember) currentRole).addMember(getActivity());
                 }
                 break;
         }

@@ -19,6 +19,10 @@ import dagger.android.support.HasSupportFragmentInjector;
 
 public class AccountActivity extends AppCompatActivity implements HasSupportFragmentInjector {
 
+    public enum Type {
+        PROFILE, ACCOUNT, SELECT_MEMBER
+    }
+
     @Inject
     DispatchingAndroidInjector<Fragment> dispatchingAndroidInjector;
 
@@ -41,6 +45,19 @@ public class AccountActivity extends AppCompatActivity implements HasSupportFrag
 
         pagerAdapter = new AccountPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
+
+        String type = getIntent().getStringExtra(AccountActivity.Type.class.getSimpleName());
+        switch (AccountActivity.Type.valueOf(type)) {
+            case PROFILE:
+                viewPager.setCurrentItem(0);
+                break;
+            case ACCOUNT:
+                viewPager.setCurrentItem(1);
+                break;
+            case SELECT_MEMBER:
+                viewPager.setCurrentItem(1);
+                break;
+        }
 
     }
 
