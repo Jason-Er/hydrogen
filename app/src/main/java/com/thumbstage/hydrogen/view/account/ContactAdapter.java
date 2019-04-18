@@ -6,12 +6,12 @@ import com.thumbstage.hydrogen.view.common.ListDelegationAdapter;
 
 public class ContactAdapter extends ListDelegationAdapter {
 
-    enum view_type {
-        CONTACT_USER
+    public enum ModelType {
+        LIST_CONTACT, SELECT_CONTACT
     }
 
     public ContactAdapter() {
-        delegatesManager.addDelegate(new ContactUserDelegate(view_type.CONTACT_USER.ordinal()));
+        delegatesManager.addDelegate(new ListContactUserDelegate(ModelType.LIST_CONTACT.ordinal()));
     }
 
     public int getPositionForSection(int section) {
@@ -23,6 +23,17 @@ public class ContactAdapter extends ListDelegationAdapter {
             }
         }
         return -1;
+    }
+
+    public void setAdapterModel(ModelType type) {
+        switch (type) {
+            case LIST_CONTACT:
+                delegatesManager.removeAllDelegate().addDelegate(new ListContactUserDelegate(type.ordinal()) );
+                break;
+            case SELECT_CONTACT:
+                delegatesManager.removeAllDelegate().addDelegate(new SelectContactUserDelegate(type.ordinal()) );
+                break;
+        }
     }
 
 }

@@ -14,7 +14,7 @@ import com.thumbstage.hydrogen.model.User;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ContactUserViewHolder extends RecyclerView.ViewHolder {
+public class ListContactUserViewHolder extends RecyclerView.ViewHolder {
 
     User user;
 
@@ -22,10 +22,8 @@ public class ContactUserViewHolder extends RecyclerView.ViewHolder {
     ImageView avatar;
     @BindView(R.id.item_contact_user_name)
     TextView name;
-    @BindView(R.id.item_contact_selected)
-    RadioButton selected;
 
-    public ContactUserViewHolder(@NonNull View itemView) {
+    public ListContactUserViewHolder(@NonNull View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         itemView.setOnClickListener(new View.OnClickListener() {

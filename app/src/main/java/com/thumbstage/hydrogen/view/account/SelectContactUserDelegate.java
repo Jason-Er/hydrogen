@@ -12,11 +12,11 @@ import com.thumbstage.hydrogen.view.common.IAdapterDelegate;
 
 import java.util.List;
 
-public class ContactUserDelegate implements IAdapterDelegate<List> {
+public class SelectContactUserDelegate implements IAdapterDelegate<List> {
 
     private int viewType;
 
-    public ContactUserDelegate(int viewType) {
+    public SelectContactUserDelegate(int viewType) {
         this.viewType = viewType;
     }
 
@@ -34,13 +34,13 @@ public class ContactUserDelegate implements IAdapterDelegate<List> {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_contact_user, parent, false);
-        return new ContactUserViewHolder(view);
+                .inflate(R.layout.item_select_user, parent, false);
+        return new SelectContactUserViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull List items, int position, @NonNull RecyclerView.ViewHolder holder) {
-        ((ContactUserViewHolder)holder).setUser((User) items.get(position));
+        ((SelectContactUserViewHolder)holder).setUser((User) items.get(position));
     }
     
 }

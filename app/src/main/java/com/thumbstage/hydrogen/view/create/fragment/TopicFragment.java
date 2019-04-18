@@ -234,6 +234,7 @@ public class TopicFragment extends Fragment {
                 if( currentRole instanceof ICanSetSetting) {
                     ((ICanSetSetting) currentRole).setSetting(this);
                 }
+                popupWindow.dismiss();
                 break;
             case START:
                 if( currentRole instanceof ICanCreateTopic) {
@@ -244,6 +245,7 @@ public class TopicFragment extends Fragment {
                         }
                     });
                 }
+                popupWindow.dismiss();
                 break;
             case PUBLISH:
                 if( currentRole instanceof ICanPublishTopic) {
@@ -254,6 +256,7 @@ public class TopicFragment extends Fragment {
                         }
                     });
                 }
+                popupWindow.dismiss();
                 break;
             case CLOSE:
                 if(currentRole instanceof ICanCloseTopic) {
@@ -264,11 +267,13 @@ public class TopicFragment extends Fragment {
                         }
                     });
                 }
+                popupWindow.dismiss();
                 break;
             case ADD_MEMBER:
                 if(currentRole instanceof ICanAddMember) {
                     ((ICanAddMember) currentRole).addMember(getActivity());
                 }
+                popupWindow.dismiss();
                 break;
         }
     }

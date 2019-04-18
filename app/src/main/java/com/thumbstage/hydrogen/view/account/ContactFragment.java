@@ -139,6 +139,19 @@ public class ContactFragment extends Fragment {
             }
         });
 
+        String type = getActivity().getIntent().getStringExtra(AccountActivity.Type.class.getSimpleName());
+        switch (AccountActivity.Type.valueOf(type)) {
+            case PROFILE:
+                break;
+            case CONTACT:
+                recyclerViewAdapter.setAdapterModel(ContactAdapter.ModelType.LIST_CONTACT);
+                break;
+            case SELECT_MEMBER:
+                recyclerViewAdapter.setAdapterModel(ContactAdapter.ModelType.SELECT_CONTACT);
+                break;
+        }
+
+
     }
 
 }

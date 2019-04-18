@@ -16,6 +16,11 @@ public class AdapterDelegatesManager<T> {
         return this;
     }
 
+    public AdapterDelegatesManager<T> removeAllDelegate() {
+        delegates = new SparseArray<>();
+        return this;
+    }
+
     public int getItemViewType(@NonNull T items, int position) {
         int key = 0;
         for(int i = 0; i < delegates.size(); i++) {

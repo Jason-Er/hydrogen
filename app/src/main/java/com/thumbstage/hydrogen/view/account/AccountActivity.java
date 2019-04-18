@@ -20,7 +20,7 @@ import dagger.android.support.HasSupportFragmentInjector;
 public class AccountActivity extends AppCompatActivity implements HasSupportFragmentInjector {
 
     public enum Type {
-        PROFILE, ACCOUNT, SELECT_MEMBER
+        PROFILE, CONTACT, SELECT_MEMBER
     }
 
     @Inject
@@ -51,7 +51,7 @@ public class AccountActivity extends AppCompatActivity implements HasSupportFrag
             case PROFILE:
                 viewPager.setCurrentItem(0);
                 break;
-            case ACCOUNT:
+            case CONTACT:
                 viewPager.setCurrentItem(1);
                 break;
             case SELECT_MEMBER:
