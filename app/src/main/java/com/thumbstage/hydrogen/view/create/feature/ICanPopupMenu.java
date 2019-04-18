@@ -1,9 +1,8 @@
 package com.thumbstage.hydrogen.view.create.feature;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
-import android.view.View;
+
+import com.thumbstage.hydrogen.view.create.fragment.PopupWindowAdapter;
 
 public interface ICanPopupMenu {
-    void popupMenu(@NonNull Context context, @NonNull View anchor);
+    void setUpPopupMenu(PopupWindowAdapter adapter);
 }

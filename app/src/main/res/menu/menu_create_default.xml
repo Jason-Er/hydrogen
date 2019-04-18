@@ -6,7 +6,7 @@
 
     <item
         android:id="@+id/menu_item_setup"
-        android:icon="@drawable/ic_menu_settings"
+        android:icon="@drawable/ic_menu_setting"
         android:name="@string/action_settings"
         android:title="@string/action_settings"
         app:showAsAction="always" />

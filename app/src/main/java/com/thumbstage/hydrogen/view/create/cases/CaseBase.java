@@ -10,6 +10,7 @@ import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.Setting;
 import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.view.create.fragment.ITopicFragmentFunction;
+import com.thumbstage.hydrogen.view.create.fragment.PopupWindowAdapter;
 import com.thumbstage.hydrogen.view.create.fragment.TopicAdapter;
 import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
 

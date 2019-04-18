@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -20,18 +19,26 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListPopupWindow;
 import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.event.HyMenuItemEvent;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
+import com.thumbstage.hydrogen.model.callback.IReturnBool;
+import com.thumbstage.hydrogen.view.common.HyMenuItem;
 import com.thumbstage.hydrogen.view.create.cases.CaseCreateTopic;
 import com.thumbstage.hydrogen.view.create.cases.CaseEditTopic;
 import com.thumbstage.hydrogen.view.create.cases.CaseCopyTopic;
 import com.thumbstage.hydrogen.view.create.cases.CaseBase;
 import com.thumbstage.hydrogen.view.create.cases.CaseContinueTopic;
+import com.thumbstage.hydrogen.view.create.feature.ICanCloseTopic;
+import com.thumbstage.hydrogen.view.create.feature.ICanCreateTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanPopupMenu;
+import com.thumbstage.hydrogen.view.create.feature.ICanPublishTopic;
+import com.thumbstage.hydrogen.view.create.feature.ICanSetSetting;
 import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
 
@@ -65,6 +72,8 @@ public class TopicFragment extends Fragment {
     ViewModelProvider.Factory viewModelFactory;
     TopicViewModel topicViewModel;
     UserViewModel userViewModel;
+    ListPopupWindow popupWindow;
+    PopupWindowAdapter popupWindowAdapter;
 
     Map<TopicHandleType, CaseBase> roleMap = new HashMap<TopicHandleType, CaseBase>(){
         {
@@ -99,6 +108,13 @@ public class TopicFragment extends Fragment {
 
         EventBus.getDefault().register(this);
         setHasOptionsMenu(true);
+
+        popupWindow = new ListPopupWindow(getContext());
+        popupWindowAdapter = new PopupWindowAdapter();
+        popupWindow.setAdapter(popupWindowAdapter);
+        popupWindow.setWidth(300);
+        popupWindow.setHeight(ListPopupWindow.WRAP_CONTENT);
+        popupWindow.setModal(true);
 
         spinner.setVisibility(View.VISIBLE);
 
@@ -199,6 +215,47 @@ public class TopicFragment extends Fragment {
         currentRole.handleBottomBarEvent(event);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onResponseMessageEvent(final HyMenuItemEvent event) {
+        switch ((HyMenuItem.CommandType) event.getData()) {
+            case SETTING:
+                if( currentRole instanceof ICanSetSetting) {
+                    ((ICanSetSetting) currentRole).setSetting(this);
+                }
+                break;
+            case START:
+                if( currentRole instanceof ICanCreateTopic) {
+                    ((ICanCreateTopic) currentRole).createTopic(new IReturnBool() {
+                        @Override
+                        public void callback(Boolean status) {
+
+                        }
+                    });
+                }
+                break;
+            case PUBLISH:
+                if( currentRole instanceof ICanPublishTopic) {
+                    ((ICanPublishTopic) currentRole).publishTopic(new IReturnBool() {
+                        @Override
+                        public void callback(Boolean status) {
+
+                        }
+                    });
+                }
+                break;
+            case CLOSE:
+                if(currentRole instanceof ICanCloseTopic) {
+                    ((ICanCloseTopic) currentRole).closeTopic(new IReturnBool() {
+                        @Override
+                        public void callback(Boolean isOK) {
+
+                        }
+                    });
+                }
+                break;
+        }
+    }
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_create_default, menu);
@@ -211,63 +268,12 @@ public class TopicFragment extends Fragment {
             case R.id.menu_item_setup:
                 Log.i(TAG, "menu_item_setup");
                 View anchor = getActivity().findViewById(R.id.menu_item_setup);
+                popupWindow.setAnchorView(anchor);
                 if( currentRole instanceof ICanPopupMenu ) {
-                    ((ICanPopupMenu) currentRole).popupMenu(getContext(), anchor);
+                    ((ICanPopupMenu) currentRole).setUpPopupMenu(popupWindowAdapter);
                 }
+                popupWindow.show();
                 break;
-                /*
-            case R.id.menu_item_play:
-                Log.i(TAG, "menu_item_play");
-                if( currentRole instanceof ICanPlayTopic) {
-                    ((ICanPlayTopic) currentRole).playTopic();
-                }
-                break;
-            case R.id.menu_item_setting:
-                Log.i(TAG, "menu_item_setting");
-                if( currentRole instanceof ICanSetSetting) {
-                    ((ICanSetSetting) currentRole).setSetting(this);
-                }
-                break;
-            case R.id.menu_item_start:
-                Log.i(TAG, "menu_item_start");
-                if( currentRole instanceof ICanCreateTopic) {
-                    ((ICanCreateTopic) currentRole).createTopic(new IReturnBool() {
-                        @Override
-                        public void callback(Boolean status) {
-                            if(status) {
-                                ((CreateActivity) getActivity()).navigateUp();
-                            }
-                        }
-                    });
-                }
-                break;
-            case R.id.menu_item_publish:
-                Log.i(TAG, "menu_item_publish");
-                if( currentRole instanceof ICanPublishTopic) {
-                    ((ICanPublishTopic) currentRole).publishTopic(new IReturnBool() {
-                        @Override
-                        public void callback(Boolean status) {
-                            if(status) {
-                                ((CreateActivity)getActivity()).navigateUp();
-                            }
-                        }
-                    });
-                }
-                break;
-            case R.id.menu_item_close:
-                Log.i(TAG, "menu_item_close");
-                if(currentRole instanceof ICanCloseTopic) {
-                    ((ICanCloseTopic) currentRole).closeTopic(new IReturnBool() {
-                        @Override
-                        public void callback(Boolean isOK) {
-                            if(isOK) {
-                                ((CreateActivity)getActivity()).navigateUp();
-                            }
-                        }
-                    });
-                }
-                break;
-                */
         }
         return super.onOptionsItemSelected(item);
     }
