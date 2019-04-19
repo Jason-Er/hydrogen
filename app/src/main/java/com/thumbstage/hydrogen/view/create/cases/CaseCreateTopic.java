@@ -4,42 +4,42 @@ import android.net.Uri;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.HyFile;
 import com.thumbstage.hydrogen.model.Setting;
 import com.thumbstage.hydrogen.model.TopicType;
+import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
-import com.thumbstage.hydrogen.view.create.feature.ICanCreateOptionsMenu;
-import com.thumbstage.hydrogen.view.create.TopicSettingDialog;
+import com.thumbstage.hydrogen.view.common.HyMenuItem;
+import com.thumbstage.hydrogen.view.create.assist.TopicInfoSetupDialog;
+import com.thumbstage.hydrogen.view.create.assist.TopicMemberSelectDialog;
+import com.thumbstage.hydrogen.view.create.feature.ICanAddMember;
 import com.thumbstage.hydrogen.view.create.feature.ICanCreateTopic;
+import com.thumbstage.hydrogen.view.create.feature.ICanPopupMenu;
 import com.thumbstage.hydrogen.view.create.feature.ICanPublishTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanSetSetting;
+import com.thumbstage.hydrogen.view.create.fragment.PopupWindowAdapter;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
-public class CaseCreateTopic extends CaseBase implements ICanCreateTopic,
-        ICanPublishTopic, ICanSetSetting, ICanCreateOptionsMenu {
+public class CaseCreateTopic extends CaseBase implements ICanPopupMenu, ICanCreateTopic,
+        ICanPublishTopic, ICanSetSetting, ICanAddMember {
 
     final String TAG = "CaseCreateTopic";
     Uri imageUri;
 
     @Override
-    public void createOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_case_create, menu);
-    }
-
-    @Override
     public void setSetting(final Fragment fragment) {
 
-        TopicSettingDialog bottomDialog = new TopicSettingDialog();
-        bottomDialog.setIOnOK(new TopicSettingDialog.IOnOK() {
+        TopicInfoSetupDialog bottomDialog = new TopicInfoSetupDialog();
+        bottomDialog.setIOnOK(new TopicInfoSetupDialog.IOnOK() {
             @Override
-            public void callback(TopicSettingDialog.LocalData localData) {
+            public void callback(TopicInfoSetupDialog.LocalData localData) {
                 if(!TextUtils.isEmpty(localData.getName())) {
                     topicAdapter.getTopic().setName(localData.getName());
                 }
@@ -86,6 +86,28 @@ public class CaseCreateTopic extends CaseBase implements ICanCreateTopic,
         } else {
             topicViewModel.createTheTopic(TopicType.PUBLISHED, iReturnBool);
         }
+    }
+
+    @Override
+    public void addMember(Fragment fragment) {
+        TopicMemberSelectDialog bottomDialog = new TopicMemberSelectDialog();
+        bottomDialog.setIOnOK(new TopicMemberSelectDialog.IOnOK() {
+            @Override
+            public void callback(List<User> userList) {
+
+            }
+        });
+        bottomDialog.show(fragment.getFragmentManager(), "addMember");
+    }
+
+    @Override
+    public void setUpPopupMenu(PopupWindowAdapter adapter) {
+        List<HyMenuItem> itemList = new ArrayList<>();
+        itemList.add(new HyMenuItem(R.drawable.ic_menu_setting_b, HyMenuItem.CommandType.SETTING));
+        itemList.add(new HyMenuItem(R.drawable.ic_menu_account_plus, HyMenuItem.CommandType.ADD_MEMBER));
+        itemList.add(new HyMenuItem(R.drawable.ic_menu_start_g, HyMenuItem.CommandType.START));
+        itemList.add(new HyMenuItem(R.drawable.ic_menu_publish_g, HyMenuItem.CommandType.PUBLISH));
+        adapter.setItemList(itemList);
     }
 
 }

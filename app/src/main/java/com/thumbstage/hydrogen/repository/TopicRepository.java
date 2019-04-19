@@ -9,6 +9,7 @@ import com.thumbstage.hydrogen.database.ModelDB;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.TopicType;
+import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
 import com.thumbstage.hydrogen.model.callback.IReturnMic;
@@ -202,5 +203,40 @@ public class TopicRepository {
             }
         });
     }
+
+    public void updateMembers(final List<String> memberIds, final IReturnBool iReturnBool) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                final Mic mic = micLiveData.getValue();
+                if(!memberIds.contains(cloudAPI.getCurrentUser().getId())) {
+                    memberIds.add(cloudAPI.getCurrentUser().getId());
+                }
+                cloudAPI.getUsers(memberIds, new CloudAPI.IReturnUsers() {
+                    @Override
+                    public void callback(List<User> users) {
+                        mic.getTopic().setMembers(users);
+                        if(!TextUtils.isEmpty(mic.getId())) {
+                            cloudAPI.updateMicMembers(mic, new IReturnBool() {
+                                @Override
+                                public void callback(Boolean isOK) {
+                                    if(isOK) {
+                                        executor.execute(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                saveMic(mic);
+                                            }
+                                        });
+                                        iReturnBool.callback(true);
+                                    }
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        });
+    }
+
 
 }

@@ -1,20 +1,13 @@
 package com.thumbstage.hydrogen.view.create.cases;
 
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 
-import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
-import com.thumbstage.hydrogen.view.create.feature.ICanCreateOptionsMenu;
+import com.thumbstage.hydrogen.view.create.feature.ICanPopupMenu;
+import com.thumbstage.hydrogen.view.create.fragment.PopupWindowAdapter;
 
-public class CaseContinueTopic extends CaseBase implements ICanCreateOptionsMenu {
-
-    @Override
-    public void createOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_case_continue, menu);
-    }
+public class CaseContinueTopic extends CaseBase implements ICanPopupMenu {
 
     @Override
     protected void addLine(Line line) {
@@ -30,4 +23,8 @@ public class CaseContinueTopic extends CaseBase implements ICanCreateOptionsMenu
         });
     }
 
+    @Override
+    public void setUpPopupMenu(PopupWindowAdapter adapter) {
+
+    }
 }

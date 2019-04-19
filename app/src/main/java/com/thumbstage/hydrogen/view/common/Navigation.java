@@ -11,6 +11,7 @@ public class Navigation {
     public static void sign2Account(Context context) {
         Intent intent = new Intent();
         intent.setClass(context, AccountActivity.class);
+        intent.putExtra(AccountActivity.Type.class.getSimpleName(), AccountActivity.Type.PROFILE.name());
         context.startActivity(intent);
     }
 

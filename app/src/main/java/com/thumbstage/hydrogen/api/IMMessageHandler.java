@@ -27,29 +27,6 @@ public class IMMessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> 
             Log.d(TAG, "may be SDK Bug, message or message id is null");
             return;
         }
-
-        /*
-        if (CurrentUser.getInstance().getCurrentUserId() == null) {
-            Log.d(TAG,"selfId is null, please call LCChatKit.open!");
-            client.close(null);
-        } else {
-            if (!client.getClientId().equals(CurrentUser.getInstance().getCurrentUserId())) {
-                client.close(null);
-            } else {
-
-                if (LCIMNotificationUtils.isShowNotification(conversation.getConversationId())) {
-                    sendNotification(message, conversation);
-                }
-                LCIMConversationItemCache.getInstance().insertConversation(message.getConversationId());
-                if (!message.getFrom().equals(client.getClientId())) {
-                    sendEvent(message, conversation);
-                    if(callback != null) {
-                        callback.callBack();
-                    }
-                }
-            }
-        }
-        */
     }
 
     @Override
@@ -62,7 +39,6 @@ public class IMMessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> 
         IMIMTypeMessageEvent event = new IMIMTypeMessageEvent();
         event.message = message;
         event.conversation = conversation;
-        // EventBus.getDefault().post(event);
     }
 
     private void sendNotification(final AVIMTypedMessage message, final AVIMConversation conversation) {

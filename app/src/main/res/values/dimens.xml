@@ -30,4 +30,14 @@
     <dimen name="topic_item_horizontal_margin">15dp</dimen>
     <dimen name="topic_item_horizontal_big_margin">40dp</dimen>
     <dimen name="topic_item_imageview_width">150dp</dimen>
+
+    <dimen name="player_control_bar_size">48dp</dimen>
+
+    <!-- wave side bar -->
+    <dimen name="textSize_sidebar">10sp</dimen>
+    <dimen name="large_textSize_sidebar">32sp</dimen>
+    <dimen name="textSize_sidebar_choose">12sp</dimen>
+    <dimen name="textSize_sidebar_padding">20sp</dimen>
+    <dimen name="radius_sidebar">20dp</dimen>
+    <dimen name="ball_radius_sidebar">24dp</dimen>
 </resources>

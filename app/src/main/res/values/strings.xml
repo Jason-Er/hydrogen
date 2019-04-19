@@ -45,4 +45,9 @@
 
     <string name="topic_bottom_record_layout_pressToRecord">按住录音</string>
     <string name="action_close">close</string>
+
+    <string name="bottom_bar_pre">pre</string>
+    <string name="bottom_bar_play">play</string>
+    <string name="bottom_bar_next">next</string>
+    <string name="action_cancel">Cancel</string>
 </resources>

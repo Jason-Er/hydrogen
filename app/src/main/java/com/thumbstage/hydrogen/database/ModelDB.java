@@ -5,9 +5,9 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.thumbstage.hydrogen.database.entity.AtMeEntity;
+import com.thumbstage.hydrogen.database.entity.ContactEntity;
 import com.thumbstage.hydrogen.database.entity.LineEntity;
 import com.thumbstage.hydrogen.database.entity.MicEntity;
 import com.thumbstage.hydrogen.database.entity.TopicEntity;
@@ -40,7 +40,7 @@ public class ModelDB {
     private final HyDatabase database;
     private Executor executor;
 
-    private final int PER_PAGE_NUM = 15;
+    public final static int PER_PAGE_NUM = 15;
     private static int FRESH_TIMEOUT_IN_MINUTES = 1;
 
     // TODO: 4/4/2019 remember to use db roomDB.runInTransaction
@@ -56,6 +56,10 @@ public class ModelDB {
         } else {
             return database.topicDao().hasTopic(type.name(), started_by, isFinished, getMaxRefreshTime(new Date())) == null;
         }
+    }
+
+    public boolean isContactNeedFresh(String userId) {
+        return database.contractDao().hasContract(userId, getMaxRefreshTime(new Date())) == null;
     }
 
     private Date getMaxRefreshTime(Date currentDate){
@@ -195,10 +199,29 @@ public class ModelDB {
         List<UserEntity> userEntityList = new ArrayList<>();
         for(User user: userList) {
             if(user != null) {
-                saveUser(user);
+                UserEntity entity = new UserEntity();
+                entity.setName(user.getName());
+                entity.setAvatar(user.getAvatar());
+                entity.setId(user.getId());
+                entity.setLastRefresh(new Date());
+                userEntityList.add(entity);
             }
         }
         database.userDao().insert(userEntityList);
+    }
+
+    public void saveContacts(String userId, List<User> userList) {
+        List<ContactEntity> contractEntities = new ArrayList<>();
+        for(User user: userList) {
+            if(user != null) {
+                ContactEntity entity = new ContactEntity();
+                entity.setUserId(userId);
+                entity.setContractId(user.getId());
+                entity.setLastRefresh(new Date());
+                contractEntities.add(entity);
+            }
+        }
+        database.contractDao().insert(contractEntities);
     }
 
     // endregion
@@ -282,12 +305,34 @@ public class ModelDB {
     }
 
     public List<User> getMembers(String topicId) {
-        List<User> users = new ArrayList<>();
         List<UserEntity> userEntities = database.topicUserDao().get(topicId);
-        for(UserEntity entity: userEntities) {
+        return entity2User(userEntities);
+    }
+
+    private List<User> entity2User(List<UserEntity> userEntityList) {
+        List<User> users = new ArrayList<>();
+        for(UserEntity entity: userEntityList) {
             users.add(new User(entity.getId(), entity.getName(), entity.getAvatar()));
         }
         return users;
+    }
+
+    public LiveData<List<User>> getUsers(List<String> userIds) {
+        return Transformations.map(database.userDao().getLive(userIds), new Function<List<UserEntity>, List<User>>() {
+            @Override
+            public List<User> apply(List<UserEntity> input) {
+                return entity2User(input);
+            }
+        });
+    }
+
+    public LiveData<List<User>> getContact(String userId, int pageNum) {
+        return Transformations.map(database.contractDao().get(userId, PER_PAGE_NUM, pageNum * PER_PAGE_NUM), new Function<List<UserEntity>, List<User>>() {
+            @Override
+            public List<User> apply(List<UserEntity> input) {
+                return entity2User(input);
+            }
+        });
     }
 
     public User getUser(String userId) {

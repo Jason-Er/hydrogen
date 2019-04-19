@@ -12,4 +12,8 @@
 
     <color name="hy_bottom_bar_text_black">#3e3e39</color>
     <color name="hy_divider_line_color">#afafaf</color>
+
+    <color name="focused_true">#000000</color>
+    <color name="focused_false">#000000</color>
+    <color name="light_black">#504f4f</color>
 </resources>

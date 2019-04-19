@@ -1,24 +1,27 @@
 package com.thumbstage.hydrogen.view.create.cases;
 
-import android.view.Menu;
-import android.view.MenuInflater;
-
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.TopicType;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
-import com.thumbstage.hydrogen.view.create.feature.ICanCreateOptionsMenu;
+import com.thumbstage.hydrogen.view.common.HyMenuItem;
 import com.thumbstage.hydrogen.view.create.feature.ICanCreateTopic;
+import com.thumbstage.hydrogen.view.create.feature.ICanPopupMenu;
+import com.thumbstage.hydrogen.view.create.fragment.PopupWindowAdapter;
 
-public class CaseCopyTopic extends CaseBase implements ICanCreateTopic, ICanCreateOptionsMenu {
+import java.util.ArrayList;
+import java.util.List;
 
-    @Override
-    public void createOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_case_attend, menu);
-    }
+public class CaseCopyTopic extends CaseBase implements ICanCreateTopic, ICanPopupMenu {
 
     @Override
     public void createTopic(IReturnBool iReturnBool) {
         topicViewModel.createTheTopic(TopicType.PICK_UP, iReturnBool);
     }
 
+    @Override
+    public void setUpPopupMenu(PopupWindowAdapter adapter) {
+        List<HyMenuItem> itemList = new ArrayList<>();
+        itemList.add(new HyMenuItem(R.drawable.ic_menu_start_g, HyMenuItem.CommandType.START));
+        adapter.setItemList(itemList);
+    }
 }

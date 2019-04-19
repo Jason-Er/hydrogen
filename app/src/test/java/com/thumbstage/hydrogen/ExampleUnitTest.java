@@ -1,6 +1,7 @@
 package com.thumbstage.hydrogen;
 
 import com.thumbstage.hydrogen.model.LineType;
+import com.thumbstage.hydrogen.utils.PinyinUtils;
 import com.thumbstage.hydrogen.utils.StringUtil;
 
 import org.junit.Test;
@@ -35,5 +36,11 @@ public class ExampleUnitTest {
         Matcher matcher = p.matcher(email);
         boolean status =  matcher.find();
         assertTrue(status);
+    }
+
+    @Test
+    public void testPinyin() {
+        String first = PinyinUtils.getFirstSpell("你好");
+        assertEquals(first, "mike");
     }
 }

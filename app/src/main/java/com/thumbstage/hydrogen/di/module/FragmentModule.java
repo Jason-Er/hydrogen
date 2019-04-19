@@ -1,6 +1,8 @@
 package com.thumbstage.hydrogen.di.module;
 
 
+import com.thumbstage.hydrogen.view.account.AccountFragment;
+import com.thumbstage.hydrogen.view.account.ContactFragment;
 import com.thumbstage.hydrogen.view.browse.atme.AtMeFragment;
 import com.thumbstage.hydrogen.view.browse.mine.IAttendedClosedFragment;
 import com.thumbstage.hydrogen.view.browse.mine.IAttendedOpenedFragment;
@@ -11,7 +13,9 @@ import com.thumbstage.hydrogen.view.browse.mine.IStartedOpenedFragment;
 import com.thumbstage.hydrogen.view.browse.published.PublishedClosedFragment;
 import com.thumbstage.hydrogen.view.browse.published.PublishedOpenedFragment;
 import com.thumbstage.hydrogen.view.common.BasicBrowseFragment;
+import com.thumbstage.hydrogen.view.create.assist.TopicMemberSelectDialog;
 import com.thumbstage.hydrogen.view.create.fragment.TopicFragment;
+import com.thumbstage.hydrogen.view.show.fragment.ShowFragment;
 import com.thumbstage.hydrogen.view.sign.SignInFragment;
 import com.thumbstage.hydrogen.view.sign.SignUpFragment;
 
@@ -43,7 +47,16 @@ public abstract class FragmentModule {
     @ContributesAndroidInjector
     abstract TopicFragment contributeTopicFragment();
     @ContributesAndroidInjector
+    abstract ShowFragment contributeShowFragment();
+    @ContributesAndroidInjector
     abstract SignInFragment contributeSignInFragment();
     @ContributesAndroidInjector
     abstract SignUpFragment contributeSignUpFragment();
+    @ContributesAndroidInjector
+    abstract AccountFragment contributeAccountFragment();
+    @ContributesAndroidInjector
+    abstract ContactFragment contributeContactFragment();
+    @ContributesAndroidInjector
+    abstract TopicMemberSelectDialog contributeTopicMemberSelectDialog();
+
 }

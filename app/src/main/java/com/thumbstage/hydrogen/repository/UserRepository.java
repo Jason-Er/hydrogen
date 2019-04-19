@@ -9,6 +9,7 @@ import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.model.callback.IReturnUser;
 import com.thumbstage.hydrogen.utils.StringUtil;
 
+import java.util.List;
 import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
@@ -78,4 +79,36 @@ public class UserRepository {
         cloudAPI.signOut();
         userLiveData.setValue(defaultUser);
     }
+
+    public LiveData<List<User>> getContact(String userId, int pageNum) {
+        refreshContact(userId, pageNum);
+        return modelDB.getContact(userId, pageNum);
+    }
+
+    public LiveData<List<User>> getUsers(List<String> userIds) {
+        return modelDB.getUsers(userIds);
+    }
+
+    private void refreshContact(final String userId, final int pageNum) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                if( modelDB.isContactNeedFresh(userId) ) {
+                    cloudAPI.getContact(userId, pageNum, new CloudAPI.IReturnUsers() {
+                        @Override
+                        public void callback(final List<User> users) {
+                            executor.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    modelDB.saveUserList(users);
+                                    modelDB.saveContacts(userId, users);
+                                }
+                            });
+                        }
+                    });
+                }
+            }
+        });
+    }
+
 }

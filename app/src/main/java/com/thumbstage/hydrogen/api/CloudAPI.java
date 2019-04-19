@@ -26,6 +26,7 @@ import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
+import com.thumbstage.hydrogen.database.ModelDB;
 import com.thumbstage.hydrogen.model.HyFile;
 import com.thumbstage.hydrogen.model.Line;
 import com.thumbstage.hydrogen.model.LineType;
@@ -100,6 +101,28 @@ public class CloudAPI {
 
     public interface IReturnFile {
         void callback(File file);
+    }
+
+    public void updateMicMembers(final Mic mic, final IReturnBool iReturnBool) {
+        final String userId = AVUser.getCurrentUser().getObjectId();
+        AVIMClient client = AVIMClient.getInstance(userId);
+        client.open(new AVIMClientCallback() {
+            @Override
+            public void done(AVIMClient client, AVIMException e) {
+                if(e == null) {
+                    AVIMConversation conversation = client.getConversation(mic.getId());
+                    List<String> friendsList = users2Ids(mic.getTopic().getMembers());
+                    conversation.addMembers(friendsList, new AVIMConversationCallback() {
+                        @Override
+                        public void done(AVIMException e) {
+                            updateTopicMembers(mic.getTopic(), iReturnBool);
+                        }
+                    });
+                } else {
+                    iReturnBool.callback(false);
+                }
+            }
+        });
     }
 
     public void createMic(final Topic topic, final ICallBack iCallBack) {
@@ -274,7 +297,7 @@ public class CloudAPI {
         if( getCurrentUser()!=null && !topic.getMembers().contains(getCurrentUser()) ) {
             topic.getMembers().add(getCurrentUser());
         }
-        final AVObject avTopic = new AVObject(Topic.class.getSimpleName());
+        final AVObject avTopic = new AVObject(TableName.TABLE_TOPIC.name);
         avTopic.put(FieldName.FIELD_NAME.name, topic.getName());
         avTopic.put(FieldName.FIELD_BRIEF.name, topic.getBrief());
         avTopic.put(FieldName.FIELD_TYPE.name, topic.getType().name());
@@ -306,6 +329,22 @@ public class CloudAPI {
     public void copyTopic(Topic topic, final ICallBack iCallBack) {
         topic.setDerive_from(topic.getId());
         createTopic(topic, iCallBack);
+    }
+
+    private void updateTopicMembers(Topic topic,final IReturnBool iReturnBool) {
+        AVObject avTopic = AVObject.createWithoutData(TableName.TABLE_TOPIC.name, topic.getId());
+        avTopic.put(FieldName.FIELD_MEMBERS.name, users2Ids(topic.getMembers()));
+        avTopic.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                if(e==null) {
+                    iReturnBool.callback(true);
+                } else {
+                    iReturnBool.callback(false);
+                }
+            }
+        });
+
     }
 
     public void getMic(String micId, final IReturnMic iReturnMic) {
@@ -386,6 +425,34 @@ public class CloudAPI {
                 }
             }
         });
+    }
+
+    public void getContact(String userId, int pageNum, final IReturnUsers iReturnUsers) {
+        AVQuery<AVObject> avQuery = new AVQuery<>(TableName.TABLE_CONTACT.name);
+        avQuery.orderByDescending(FieldName.FIELD_CREATEDAT.name);
+        avQuery.include(FieldName.FIELD_CONTACT.name);
+        AVObject avWho = AVObject.createWithoutData(TableName.TABLE_USER.name, userId);
+        avQuery.whereEqualTo(FieldName.FIELD_WHO.name, avWho);
+        avQuery.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> avObjects, AVException e) {
+                if(e == null) {
+                    List<AVObject> avUsers = new ArrayList<>();
+                    for(AVObject avObject: avObjects) {
+                        avUsers.add(avObject.getAVObject(FieldName.FIELD_CONTACT.name));
+                    }
+                    iReturnUsers.callback(avObject2User(avUsers));
+                }
+            }
+        });
+    }
+
+    private List<String> users2Ids(List<User> users) {
+        List<String> userIds = new ArrayList<>();
+        for(User user :users) {
+            userIds.add(user.getId());
+        }
+        return userIds;
     }
 
     private User findUser(List<User> users, String userId) {
@@ -527,11 +594,7 @@ public class CloudAPI {
             @Override
             public void done(List<AVObject> avObjects, AVException avException) {
                 if(avException == null) {
-                    List<User> users = new ArrayList<>();
-                    for(AVObject avObject: avObjects) {
-                        User user = avObject2User(avObject);
-                        users.add(user);
-                    }
+                    List<User> users = avObject2User(avObjects);
                     iReturnUsers.callback(users);
                 } else {
                     avException.printStackTrace();
@@ -762,6 +825,15 @@ public class CloudAPI {
             return user;
         }
         return null;
+    }
+
+    private List<User> avObject2User(List<AVObject> list) {
+        List<User> users = new ArrayList<>();
+        for(AVObject avObject: list) {
+            User user = avObject2User(avObject);
+            users.add(user);
+        }
+        return users;
     }
 
     private User avObject2User(AVObject avObject) {

@@ -1,33 +1,35 @@
 package com.thumbstage.hydrogen.view.account;
 
-import android.arch.lifecycle.ViewModelProvider;
-import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.EditText;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.viewmodel.UserViewModel;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import dagger.android.AndroidInjection;
+import dagger.android.DispatchingAndroidInjector;
+import dagger.android.support.HasSupportFragmentInjector;
 
-public class AccountActivity extends AppCompatActivity {
+public class AccountActivity extends AppCompatActivity implements HasSupportFragmentInjector {
 
-    @BindView(R.id.activity_account_name)
-    EditText name;
+    public enum Type {
+        PROFILE, CONTACT, SELECT_MEMBER
+    }
 
     @Inject
-    ViewModelProvider.Factory viewModelFactory;
+    DispatchingAndroidInjector<Fragment> dispatchingAndroidInjector;
 
-    UserViewModel userViewModel;
+    @BindView(R.id.account_content)
+    ViewPager viewPager;
+
+    AccountPagerAdapter pagerAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,13 +43,22 @@ public class AccountActivity extends AppCompatActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setTitle(getResources().getString(R.string.profile));
 
-        userViewModel = ViewModelProviders.of(this, viewModelFactory).get(UserViewModel.class);
-        name.setText(userViewModel.getCurrentUser().getName());
+        pagerAdapter = new AccountPagerAdapter(getSupportFragmentManager());
+        viewPager.setAdapter(pagerAdapter);
 
-    }
+        String type = getIntent().getStringExtra(AccountActivity.Type.class.getSimpleName());
+        switch (AccountActivity.Type.valueOf(type)) {
+            case PROFILE:
+                viewPager.setCurrentItem(0);
+                break;
+            case CONTACT:
+                viewPager.setCurrentItem(1);
+                break;
+            case SELECT_MEMBER:
+                viewPager.setCurrentItem(1);
+                break;
+        }
 
-    private void configureDagger(){
-        AndroidInjection.inject(this);
     }
 
     @Override
@@ -56,10 +67,12 @@ public class AccountActivity extends AppCompatActivity {
         return super.onSupportNavigateUp();
     }
 
-    @OnClick(R.id.activity_account_signOut)
-    public void signOut(View view) {
-        userViewModel.signOut();
-        onSupportNavigateUp();
+    @Override
+    public DispatchingAndroidInjector<Fragment> supportFragmentInjector() {
+        return dispatchingAndroidInjector;
     }
 
+    private void configureDagger(){
+        AndroidInjection.inject(this);
+    }
 }
