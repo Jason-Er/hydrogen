@@ -10,6 +10,7 @@ import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
 import com.thumbstage.hydrogen.repository.TopicRepository;
 
 import java.io.File;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -54,6 +55,10 @@ public class TopicViewModel extends ViewModel {
 
     public void closeTheTopic(final IReturnBool iReturnBool) {
         topicRepository.closeTheMic(iReturnBool);
+    }
+
+    public void updateMembers(List<String> memberIds, IReturnBool iReturnBool) {
+        topicRepository.updateMembers(memberIds, iReturnBool);
     }
 
 

@@ -1,7 +1,6 @@
 package com.thumbstage.hydrogen.view.create.cases;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.Fragment;
@@ -17,6 +16,7 @@ import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
 import com.thumbstage.hydrogen.view.account.AccountActivity;
 import com.thumbstage.hydrogen.view.common.HyMenuItem;
+import com.thumbstage.hydrogen.view.common.RequestResultCode;
 import com.thumbstage.hydrogen.view.create.TopicSettingDialog;
 import com.thumbstage.hydrogen.view.create.feature.ICanAddMember;
 import com.thumbstage.hydrogen.view.create.feature.ICanCreateTopic;
@@ -91,10 +91,10 @@ public class CaseCreateTopic extends CaseBase implements ICanPopupMenu, ICanCrea
     }
 
     @Override
-    public void addMember(Activity activity) {
-        Intent intent = new Intent(activity, AccountActivity.class);
+    public void addMember(Fragment fragment) {
+        Intent intent = new Intent(fragment.getContext(), AccountActivity.class);
         intent.putExtra(AccountActivity.Type.class.getSimpleName(), AccountActivity.Type.SELECT_MEMBER.name());
-        activity.startActivityForResult(intent, AccountActivity.Type.SELECT_MEMBER.ordinal());
+        fragment.startActivityForResult(intent, RequestResultCode.SELECT_CONTACT_REQUEST_CODE);
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.thumbstage.hydrogen.view.account;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -27,6 +28,7 @@ import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.utils.PinyinComparator;
 import com.thumbstage.hydrogen.utils.PinyinUtils;
 import com.thumbstage.hydrogen.view.common.ClearEditText;
+import com.thumbstage.hydrogen.view.common.RequestResultCode;
 import com.thumbstage.hydrogen.view.common.TitleItemDecoration;
 import com.thumbstage.hydrogen.view.common.WaveSideBarView;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
@@ -175,11 +177,24 @@ public class ContactFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         String type = getActivity().getIntent().getStringExtra(AccountActivity.Type.class.getSimpleName());
         if(AccountActivity.Type.valueOf(type) == AccountActivity.Type.SELECT_MEMBER) {
-            menu.add(0,R.id.menu_item_start,0, "确定").setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            menu.add(0,R.id.menu_item_start,0, getResources().getString(R.string.action_ok)).setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
             selectMemberButton = menu.findItem(R.id.menu_item_start);
             selectMemberButton.setEnabled(false);
         }
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_item_start:
+                Intent intent = new Intent();
+                intent.putStringArrayListExtra(RequestResultCode.SelectContactKey, (ArrayList<String>) selectedUserId);
+                getActivity().setResult(RequestResultCode.SELECT_CONTACT_RESULT_CODE, intent);
+                ((AccountActivity)getActivity()).onSupportNavigateUp();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -197,10 +212,10 @@ public class ContactFragment extends Fragment {
         if( selectMemberButton != null) {
             if(selectedUserId.size() > 0) {
                 selectMemberButton.setEnabled(true);
-                selectMemberButton.setTitle("确定 (" + selectedUserId.size() + ") ");
+                selectMemberButton.setTitle(getResources().getString(R.string.action_ok)+" (" + selectedUserId.size() + ") ");
             } else {
                 selectMemberButton.setEnabled(false);
-                selectMemberButton.setTitle("确定");
+                selectMemberButton.setTitle(getResources().getString(R.string.action_ok));
             }
         }
     }
