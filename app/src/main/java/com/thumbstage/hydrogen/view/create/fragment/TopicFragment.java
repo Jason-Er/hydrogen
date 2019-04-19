@@ -95,6 +95,8 @@ public class TopicFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_topic, container, false);
         ButterKnife.bind(this, view);
+        setHasOptionsMenu(true);
+        EventBus.getDefault().register(this);
 
         refreshLayout.setEnabled(false);
         topicAdapter = new TopicAdapter();
@@ -107,9 +109,6 @@ public class TopicFragment extends Fragment {
             caseBase.setBackgroundView(background);
             caseBase.setRecyclerView(recyclerView);
         }
-
-        EventBus.getDefault().register(this);
-        setHasOptionsMenu(true);
 
         popupWindow = new ListPopupWindow(getContext());
         popupWindowAdapter = new PopupWindowAdapter();

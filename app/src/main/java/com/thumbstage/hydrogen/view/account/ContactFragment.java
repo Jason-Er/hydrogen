@@ -15,10 +15,14 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.event.SelectContactUserEvent;
 import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.utils.PinyinComparator;
 import com.thumbstage.hydrogen.utils.PinyinUtils;
@@ -26,6 +30,10 @@ import com.thumbstage.hydrogen.view.common.ClearEditText;
 import com.thumbstage.hydrogen.view.common.TitleItemDecoration;
 import com.thumbstage.hydrogen.view.common.WaveSideBarView;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -49,11 +57,12 @@ public class ContactFragment extends Fragment {
     ContactAdapter recyclerViewAdapter;
     LinearLayoutManager layoutManager;
     TitleItemDecoration itemDecoration;
+    MenuItem selectMemberButton;
     List<User> contacts;
+    List<String> selectedUserId;
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
-
     UserViewModel userViewModel;
 
 
@@ -62,6 +71,8 @@ public class ContactFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_contact, container, false);
         ButterKnife.bind(this, view);
+        setHasOptionsMenu(true);
+        EventBus.getDefault().register(this);
 
         sideBar.setOnTouchLetterChangeListener(new WaveSideBarView.OnTouchLetterChangeListener() {
             @Override
@@ -98,7 +109,14 @@ public class ContactFragment extends Fragment {
             }
         });
 
+        selectedUserId = new ArrayList<>();
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     private void filterData(String filterStr) {
@@ -151,7 +169,40 @@ public class ContactFragment extends Fragment {
                 break;
         }
 
+    }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        String type = getActivity().getIntent().getStringExtra(AccountActivity.Type.class.getSimpleName());
+        if(AccountActivity.Type.valueOf(type) == AccountActivity.Type.SELECT_MEMBER) {
+            menu.add(0,R.id.menu_item_start,0, "确定").setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+            selectMemberButton = menu.findItem(R.id.menu_item_start);
+            selectMemberButton.setEnabled(false);
+        }
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onResponseMessageEvent(final SelectContactUserEvent event) {
+        if(selectedUserId.contains(event.getUserId())) {
+            if(!event.isChecked()) {
+                selectedUserId.remove(event.getUserId());
+            }
+        } else {
+            if(event.isChecked()) {
+                selectedUserId.add(event.getUserId());
+            }
+        }
+
+        if( selectMemberButton != null) {
+            if(selectedUserId.size() > 0) {
+                selectMemberButton.setEnabled(true);
+                selectMemberButton.setTitle("确定 (" + selectedUserId.size() + ") ");
+            } else {
+                selectMemberButton.setEnabled(false);
+                selectMemberButton.setTitle("确定");
+            }
+        }
     }
 
 }
