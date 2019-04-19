@@ -49,4 +49,5 @@
     <string name="bottom_bar_pre">pre</string>
     <string name="bottom_bar_play">play</string>
     <string name="bottom_bar_next">next</string>
+    <string name="action_cancel">Cancel</string>
 </resources>

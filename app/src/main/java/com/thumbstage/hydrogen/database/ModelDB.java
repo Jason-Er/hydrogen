@@ -317,6 +317,15 @@ public class ModelDB {
         return users;
     }
 
+    public LiveData<List<User>> getUsers(List<String> userIds) {
+        return Transformations.map(database.userDao().getLive(userIds), new Function<List<UserEntity>, List<User>>() {
+            @Override
+            public List<User> apply(List<UserEntity> input) {
+                return entity2User(input);
+            }
+        });
+    }
+
     public LiveData<List<User>> getContact(String userId, int pageNum) {
         return Transformations.map(database.contractDao().get(userId, PER_PAGE_NUM, pageNum * PER_PAGE_NUM), new Function<List<UserEntity>, List<User>>() {
             @Override

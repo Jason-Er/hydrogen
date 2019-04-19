@@ -41,4 +41,8 @@ public class UserViewModel extends ViewModel {
         String userId = userRepository.getCurrentUser().getId();
         return userRepository.getContact(userId, pageNum);
     }
+
+    public LiveData<List<User>> getUsers(List<String> userIds) {
+        return userRepository.getUsers(userIds);
+    }
 }

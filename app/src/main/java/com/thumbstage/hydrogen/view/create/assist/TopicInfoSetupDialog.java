@@ -1,4 +1,4 @@
-package com.thumbstage.hydrogen.view.create;
+package com.thumbstage.hydrogen.view.create.assist;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -26,7 +26,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class TopicSettingDialog extends DialogFragment {
+public class TopicInfoSetupDialog extends DialogFragment {
 
     @BindView(R.id.dialog_topic_setting_name)
     EditText name;
@@ -65,7 +65,7 @@ public class TopicSettingDialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View contentView = inflater.inflate(R.layout.dialog_topic_setting, container);
+        View contentView = inflater.inflate(R.layout.fragment_dialog_topic_info_setup, container);
         ButterKnife.bind(this, contentView);
 
         /*

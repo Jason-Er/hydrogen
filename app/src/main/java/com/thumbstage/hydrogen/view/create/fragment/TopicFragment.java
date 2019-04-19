@@ -3,7 +3,6 @@ package com.thumbstage.hydrogen.view.create.fragment;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,7 +29,6 @@ import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.view.common.HyMenuItem;
-import com.thumbstage.hydrogen.view.common.RequestResultCode;
 import com.thumbstage.hydrogen.view.create.cases.CaseCreateTopic;
 import com.thumbstage.hydrogen.view.create.cases.CaseEditTopic;
 import com.thumbstage.hydrogen.view.create.cases.CaseCopyTopic;
@@ -50,7 +48,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -129,20 +126,6 @@ public class TopicFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         configureDagger();
         configureViewModel();
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if( requestCode == RequestResultCode.SELECT_CONTACT_REQUEST_CODE && resultCode == RequestResultCode.SELECT_CONTACT_RESULT_CODE ) {
-            List<String> memberIds = data.getExtras().getStringArrayList(RequestResultCode.SelectContactKey);
-            topicViewModel.updateMembers(memberIds, new IReturnBool() {
-                @Override
-                public void callback(Boolean isOK) {
-
-                }
-            });
-        }
     }
 
     private void configureDagger(){

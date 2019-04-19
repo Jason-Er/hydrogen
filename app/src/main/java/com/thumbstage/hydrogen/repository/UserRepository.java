@@ -85,6 +85,10 @@ public class UserRepository {
         return modelDB.getContact(userId, pageNum);
     }
 
+    public LiveData<List<User>> getUsers(List<String> userIds) {
+        return modelDB.getUsers(userIds);
+    }
+
     private void refreshContact(final String userId, final int pageNum) {
         executor.execute(new Runnable() {
             @Override

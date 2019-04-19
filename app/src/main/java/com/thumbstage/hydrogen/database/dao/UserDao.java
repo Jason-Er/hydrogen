@@ -1,5 +1,6 @@
 package com.thumbstage.hydrogen.database.dao;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -34,6 +35,9 @@ public interface UserDao {
 
     @Query("SELECT * FROM user WHERE id IN (:userIds)")
     List<UserEntity> get(List<String> userIds);
+
+    @Query("SELECT * FROM user WHERE id IN (:userIds)")
+    LiveData<List<UserEntity>> getLive(List<String> userIds);
 
     @Query("SELECT * FROM user LIMIT :num")
     List<UserEntity> get(int num);
