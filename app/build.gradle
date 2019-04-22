@@ -82,5 +82,8 @@ dependencies {
 
     def pinyin4j_version = '2.5.1'
     implementation "com.belerweb:pinyin4j:$pinyin4j_version"
+
+    def indicator_version = '1.0.4'
+    implementation "com.github.ronaldsmartin:Material-ViewPagerIndicator:$indicator_version"
 }
 
