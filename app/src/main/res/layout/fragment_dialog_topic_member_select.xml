@@ -26,13 +26,13 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:id="@+id/dialog_topic_setting_ok"
+            android:id="@+id/dialog_topic_select_ok"
             android:text="@string/button_ok"/>
         <Button
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:id="@+id/dialog_topic_setting_cancel"
+            android:id="@+id/dialog_topic_select_cancel"
             android:text="@string/action_cancel"/>
     </LinearLayout>
 

@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.view.Gravity;
@@ -19,12 +20,14 @@ import android.widget.ImageView;
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.User;
+import com.thumbstage.hydrogen.utils.CollectionsUtil;
 import com.thumbstage.hydrogen.utils.DensityUtil;
 import com.thumbstage.hydrogen.view.account.AccountActivity;
 import com.thumbstage.hydrogen.view.common.RequestResultCode;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
 
 import java.util.List;
+import java.util.zip.Inflater;
 
 import javax.inject.Inject;
 
@@ -50,6 +53,7 @@ public class TopicMemberSelectDialog extends DialogFragment {
 
     IOnOK iOnOK;
     List<User> userList;
+    List<String> memberIds;
 
     @Nullable
     @Override
@@ -76,21 +80,30 @@ public class TopicMemberSelectDialog extends DialogFragment {
         super.onActivityCreated(savedInstanceState);
         AndroidSupportInjection.inject(this);
         configureViewModel();
+
+        Bundle bundle = getArguments();
+        memberIds = bundle.getStringArrayList(RequestResultCode.MemberIds);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        showMemberAvatars(memberIds);
     }
 
     private void configureViewModel(){
         userViewModel = ViewModelProviders.of(this, viewModelFactory).get(UserViewModel.class);
     }
 
-    @OnClick(R.id.dialog_topic_setting_ok)
+    @OnClick(R.id.dialog_topic_select_ok)
     public void onOK(View view) {
-        if(iOnOK != null) {
+        if(iOnOK != null && userList != null) {
             iOnOK.callback(userList);
         }
         dismiss();
     }
 
-    @OnClick(R.id.dialog_topic_setting_cancel)
+    @OnClick(R.id.dialog_topic_select_cancel)
     public void onCancel(View view) {
         dismiss();
     }
@@ -111,22 +124,29 @@ public class TopicMemberSelectDialog extends DialogFragment {
         super.onActivityResult(requestCode, resultCode, data);
         if( requestCode == RequestResultCode.SELECT_CONTACT_REQUEST_CODE && resultCode == RequestResultCode.SELECT_CONTACT_RESULT_CODE ) {
             List<String> memberIds = data.getExtras().getStringArrayList(RequestResultCode.SelectContactKey);
+            this.memberIds.addAll(memberIds);
+            CollectionsUtil.removeDuplicate(this.memberIds);
+            showMemberAvatars(this.memberIds);
+        }
+    }
+
+    private void showMemberAvatars(@NonNull  List<String> memberIds) {
+        if(memberIds != null && !memberIds.isEmpty()) {
             userViewModel.getUsers(memberIds).observe(this, new Observer<List<User>>() {
                 @Override
                 public void onChanged(@Nullable List<User> users) {
                     userList = users;
                     container.removeAllViews();
                     for(User user: users) {
-                        ImageButton imageButton = new ImageButton(getContext());
-                        imageButton.setLayoutParams(new ViewGroup.LayoutParams(DensityUtil.dp2px(getContext(),48),
-                                DensityUtil.dp2px(getContext(),48)));
-                        imageButton.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                        container.addView(imageButton);
+                        View view = getLayoutInflater().inflate(R.layout.item_avatar, container, false);
+                        ImageButton imageButton = view.findViewById(R.id.member_avatar);
+                        container.addView(view);
                         Glide.with(container).load(user.getAvatar()).into(imageButton);
                     }
                     container.addView(plusMember);
                 }
             });
         }
+
     }
 }

@@ -14,6 +14,7 @@ import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
 import com.thumbstage.hydrogen.model.callback.IReturnMic;
 import com.thumbstage.hydrogen.model.callback.IReturnMicList;
+import com.thumbstage.hydrogen.utils.CollectionsUtil;
 
 import java.io.File;
 import java.util.List;
@@ -67,6 +68,7 @@ public class TopicRepository {
 
     public LiveData<Mic> createMic() {
         Mic mic = new Mic();
+        mic.getTopic().getMembers().add(cloudAPI.getCurrentUser());
         micLiveData.setValue(mic);
         return micLiveData;
     }
@@ -204,36 +206,34 @@ public class TopicRepository {
         });
     }
 
-    public void updateMembers(final List<String> memberIds, final IReturnBool iReturnBool) {
+    public void updateMembers(final List<User> users, final IReturnBool iReturnBool) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 final Mic mic = micLiveData.getValue();
-                if(!memberIds.contains(cloudAPI.getCurrentUser().getId())) {
-                    memberIds.add(cloudAPI.getCurrentUser().getId());
+                if(!users.contains(cloudAPI.getCurrentUser())) {
+                    users.add(cloudAPI.getCurrentUser());
                 }
-                cloudAPI.getUsers(memberIds, new CloudAPI.IReturnUsers() {
-                    @Override
-                    public void callback(List<User> users) {
-                        mic.getTopic().setMembers(users);
-                        if(!TextUtils.isEmpty(mic.getId())) {
-                            cloudAPI.updateMicMembers(mic, new IReturnBool() {
-                                @Override
-                                public void callback(Boolean isOK) {
-                                    if(isOK) {
-                                        executor.execute(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                saveMic(mic);
-                                            }
-                                        });
-                                        iReturnBool.callback(true);
+
+                mic.getTopic().setMembers(users);
+                if(!TextUtils.isEmpty(mic.getId())) {
+                    cloudAPI.updateMicMembers(mic, new IReturnBool() {
+                        @Override
+                        public void callback(Boolean isOK) {
+                            if(isOK) {
+                                executor.execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        saveMic(mic);
                                     }
-                                }
-                            });
+                                });
+                                iReturnBool.callback(true);
+                            }
                         }
-                    }
-                });
+                    });
+                } else {
+                    iReturnBool.callback(true);
+                }
             }
         });
     }

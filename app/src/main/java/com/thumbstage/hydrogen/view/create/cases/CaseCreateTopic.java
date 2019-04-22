@@ -1,6 +1,7 @@
 package com.thumbstage.hydrogen.view.create.cases;
 
 import android.net.Uri;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -13,7 +14,9 @@ import com.thumbstage.hydrogen.model.TopicType;
 import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
+import com.thumbstage.hydrogen.utils.DataConvertUtil;
 import com.thumbstage.hydrogen.view.common.HyMenuItem;
+import com.thumbstage.hydrogen.view.common.RequestResultCode;
 import com.thumbstage.hydrogen.view.create.assist.TopicInfoSetupDialog;
 import com.thumbstage.hydrogen.view.create.assist.TopicMemberSelectDialog;
 import com.thumbstage.hydrogen.view.create.feature.ICanAddMember;
@@ -90,11 +93,20 @@ public class CaseCreateTopic extends CaseBase implements ICanPopupMenu, ICanCrea
 
     @Override
     public void addMember(Fragment fragment) {
+        Bundle bundle = new Bundle();
+        bundle.putStringArrayList(RequestResultCode.MemberIds, (ArrayList<String>)DataConvertUtil.user2StringId(topicAdapter.getTopic().getMembers()));
         TopicMemberSelectDialog bottomDialog = new TopicMemberSelectDialog();
+        bottomDialog.setArguments(bundle);
         bottomDialog.setIOnOK(new TopicMemberSelectDialog.IOnOK() {
             @Override
-            public void callback(List<User> userList) {
-
+            public void callback(final List<User> userList) {
+                topicViewModel.updateMembers(userList, new IReturnBool() {
+                    @Override
+                    public void callback(Boolean isOK) {
+                        Log.i(TAG, "addMember ok");
+                        topicAdapter.getTopic().setMembers(userList);
+                    }
+                });
             }
         });
         bottomDialog.show(fragment.getFragmentManager(), "addMember");

@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModel;
 
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.TopicType;
+import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
 import com.thumbstage.hydrogen.repository.TopicRepository;
@@ -57,8 +58,8 @@ public class TopicViewModel extends ViewModel {
         topicRepository.closeTheMic(iReturnBool);
     }
 
-    public void updateMembers(List<String> memberIds, IReturnBool iReturnBool) {
-        topicRepository.updateMembers(memberIds, iReturnBool);
+    public void updateMembers(List<User> users, IReturnBool iReturnBool) {
+        topicRepository.updateMembers(users, iReturnBool);
     }
 
 
