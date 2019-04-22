@@ -50,4 +50,5 @@
     <string name="bottom_bar_play">play</string>
     <string name="bottom_bar_next">next</string>
     <string name="action_cancel">Cancel</string>
+    <string name="action_delete">Delete</string>
 </resources>

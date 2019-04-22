@@ -17,7 +17,7 @@ import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
 import com.thumbstage.hydrogen.utils.DataConvertUtil;
 import com.thumbstage.hydrogen.view.common.HyMenuItem;
 import com.thumbstage.hydrogen.view.common.RequestResultCode;
-import com.thumbstage.hydrogen.view.create.assist.TopicInfoSetupDialog;
+import com.thumbstage.hydrogen.view.create.assist.AssistDialog;
 import com.thumbstage.hydrogen.view.create.assist.TopicMemberSelectDialog;
 import com.thumbstage.hydrogen.view.create.feature.ICanAddMember;
 import com.thumbstage.hydrogen.view.create.feature.ICanCreateTopic;
@@ -39,6 +39,12 @@ public class CaseCreateTopic extends CaseBase implements ICanPopupMenu, ICanCrea
     @Override
     public void setSetting(final Fragment fragment) {
 
+        Bundle bundle = new Bundle();
+        bundle.putString(RequestResultCode.BottomSheetTab.class.getName(), RequestResultCode.BottomSheetTab.INFO.name());
+        AssistDialog dialog = new AssistDialog();
+        dialog.setArguments(bundle);
+        dialog.show(fragment.getChildFragmentManager(), "hello");
+        /*
         TopicInfoSetupDialog bottomDialog = new TopicInfoSetupDialog();
         bottomDialog.setIOnOK(new TopicInfoSetupDialog.IOnOK() {
             @Override
@@ -54,6 +60,7 @@ public class CaseCreateTopic extends CaseBase implements ICanPopupMenu, ICanCrea
             }
         });
         bottomDialog.show(fragment.getFragmentManager(), "hello");
+        */
 
     }
 
@@ -94,6 +101,12 @@ public class CaseCreateTopic extends CaseBase implements ICanPopupMenu, ICanCrea
     @Override
     public void addMember(Fragment fragment) {
         Bundle bundle = new Bundle();
+        bundle.putString(RequestResultCode.BottomSheetTab.class.getName(), RequestResultCode.BottomSheetTab.MEMBER.name());
+        AssistDialog dialog = new AssistDialog();
+        dialog.setArguments(bundle);
+        dialog.show(fragment.getChildFragmentManager(), "hello");
+        /*
+        Bundle bundle = new Bundle();
         bundle.putStringArrayList(RequestResultCode.MemberIds, (ArrayList<String>)DataConvertUtil.user2StringId(topicAdapter.getTopic().getMembers()));
         TopicMemberSelectDialog bottomDialog = new TopicMemberSelectDialog();
         bottomDialog.setArguments(bundle);
@@ -110,6 +123,7 @@ public class CaseCreateTopic extends CaseBase implements ICanPopupMenu, ICanCrea
             }
         });
         bottomDialog.show(fragment.getFragmentManager(), "addMember");
+        */
     }
 
     @Override

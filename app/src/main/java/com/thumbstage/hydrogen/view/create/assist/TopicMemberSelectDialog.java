@@ -10,12 +10,15 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
@@ -130,6 +133,40 @@ public class TopicMemberSelectDialog extends DialogFragment {
         }
     }
 
+    private PopupMenu.OnMenuItemClickListener menuItemClickListener = new PopupMenu.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.menu_member_delete:
+
+                    break;
+            }
+            return false;
+        }
+    };
+
+    private void popUpMenu(View view) {
+        PopupMenu popupMenu = new PopupMenu(getContext(), view);
+        MenuInflater inflater = popupMenu.getMenuInflater();
+        inflater.inflate(R.menu.crop_image_menu, popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(menuItemClickListener);
+        popupMenu.show();
+    }
+
+    private View.OnClickListener clickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            popUpMenu(v);
+        }
+    };
+
+    private View.OnLongClickListener longClickListener = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            return true;
+        }
+    };
+
     private void showMemberAvatars(@NonNull  List<String> memberIds) {
         if(memberIds != null && !memberIds.isEmpty()) {
             userViewModel.getUsers(memberIds).observe(this, new Observer<List<User>>() {
@@ -141,6 +178,8 @@ public class TopicMemberSelectDialog extends DialogFragment {
                         View view = getLayoutInflater().inflate(R.layout.item_avatar, container, false);
                         ImageButton imageButton = view.findViewById(R.id.member_avatar);
                         container.addView(view);
+                        view.setOnClickListener(clickListener);
+                        view.setOnLongClickListener(longClickListener);
                         Glide.with(container).load(user.getAvatar()).into(imageButton);
                     }
                     container.addView(plusMember);
