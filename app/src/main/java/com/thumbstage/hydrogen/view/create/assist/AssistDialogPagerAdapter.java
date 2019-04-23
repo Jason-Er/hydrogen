@@ -7,15 +7,15 @@ import android.support.v4.app.FragmentPagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AssistPagerAdapter extends FragmentPagerAdapter {
+public class AssistDialogPagerAdapter extends FragmentPagerAdapter {
 
     List<Fragment> fragmentList;
 
-    public AssistPagerAdapter(FragmentManager fm) {
+    public AssistDialogPagerAdapter(FragmentManager fm) {
         super(fm);
         fragmentList=new ArrayList<>();
-        fragmentList.add(new TopicInfo());
-        fragmentList.add(new TopicMember());
+        fragmentList.add(new TopicInfoFragment());
+        fragmentList.add(new TopicMemberFragment());
     }
 
     @Override

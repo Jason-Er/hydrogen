@@ -119,6 +119,10 @@ public class TopicRepository {
         return micLiveData;
     }
 
+    public LiveData<Mic> getTheMic() {
+        return micLiveData;
+    }
+
     public void flushMicBuf(IReturnBool iReturnBool) {
         Mic mic = micLiveData.getValue();
         sendMicBuf(mic, iReturnBool);

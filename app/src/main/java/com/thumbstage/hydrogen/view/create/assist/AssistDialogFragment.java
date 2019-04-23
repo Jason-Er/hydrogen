@@ -10,15 +10,16 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.view.common.RequestResultCode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class AssistDialog extends BottomSheetDialogFragment {
+public class AssistDialogFragment extends BottomSheetDialogFragment {
 
     @BindView(R.id.fragment_dialog_assist_viewpager)
     ViewPager viewPager;
-    AssistPagerAdapter pagerAdapter;
+    AssistDialogPagerAdapter pagerAdapter;
 
     @Nullable
     @Override
@@ -26,8 +27,18 @@ public class AssistDialog extends BottomSheetDialogFragment {
         View contentView = inflater.inflate(R.layout.fragment_dialog_assist, container);
         ButterKnife.bind(this, contentView);
 
-        pagerAdapter = new AssistPagerAdapter(getChildFragmentManager());
+        pagerAdapter = new AssistDialogPagerAdapter(getChildFragmentManager());
         viewPager.setAdapter(pagerAdapter);
+        Bundle bundle = getArguments();
+        RequestResultCode.BottomSheetTab type = RequestResultCode.BottomSheetTab.valueOf(bundle.getString(RequestResultCode.BottomSheetTab.class.getName()));
+        switch (type) {
+            case INFO:
+                viewPager.setCurrentItem(0);
+                break;
+            case MEMBER:
+                viewPager.setCurrentItem(1);
+                break;
+        }
         return contentView;
     }
 

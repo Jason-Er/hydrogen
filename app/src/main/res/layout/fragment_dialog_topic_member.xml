@@ -1,25 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="match_parent">
 
-    <com.thumbstage.hydrogen.view.common.AutoGridLayout
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/fragment_dialog_member_container"
-        app:columnWidth="48dp">
-        <ImageButton
-            android:id="@+id/fragment_dialog_member_plus"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/ic_button_plus"/>
-    </com.thumbstage.hydrogen.view.common.AutoGridLayout>
+        android:layout_height="200dp"
+        android:id="@+id/fragment_dialog_member_recycler">
+    </android.support.v7.widget.RecyclerView>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
         <Button
             android:layout_width="0dp"
             android:layout_weight="1"
@@ -34,4 +28,4 @@
             android:text="@string/action_cancel"/>
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

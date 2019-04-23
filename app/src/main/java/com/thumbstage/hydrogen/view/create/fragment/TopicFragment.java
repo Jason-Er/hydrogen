@@ -138,8 +138,8 @@ public class TopicFragment extends Fragment {
         if(TextUtils.isEmpty(handleType)) {
             throw new IllegalArgumentException("No TopicHandleType found!");
         }
-        topicViewModel = ViewModelProviders.of(this, viewModelFactory).get(TopicViewModel.class);
-        userViewModel = ViewModelProviders.of(this, viewModelFactory).get(UserViewModel.class);
+        topicViewModel = ViewModelProviders.of(getActivity(), viewModelFactory).get(TopicViewModel.class);
+        userViewModel = ViewModelProviders.of(getActivity(), viewModelFactory).get(UserViewModel.class);
 
         topicAdapter.setUser(userViewModel.getCurrentUser());
         for(CaseBase caseBase: roleMap.values()) {

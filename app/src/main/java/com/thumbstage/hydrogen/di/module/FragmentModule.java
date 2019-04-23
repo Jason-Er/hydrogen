@@ -13,7 +13,7 @@ import com.thumbstage.hydrogen.view.browse.mine.IStartedOpenedFragment;
 import com.thumbstage.hydrogen.view.browse.published.PublishedClosedFragment;
 import com.thumbstage.hydrogen.view.browse.published.PublishedOpenedFragment;
 import com.thumbstage.hydrogen.view.common.BasicBrowseFragment;
-import com.thumbstage.hydrogen.view.create.assist.TopicMemberSelectDialog;
+import com.thumbstage.hydrogen.view.create.assist.TopicMemberFragment;
 import com.thumbstage.hydrogen.view.create.fragment.TopicFragment;
 import com.thumbstage.hydrogen.view.show.fragment.ShowFragment;
 import com.thumbstage.hydrogen.view.sign.SignInFragment;
@@ -57,6 +57,6 @@ public abstract class FragmentModule {
     @ContributesAndroidInjector
     abstract ContactFragment contributeContactFragment();
     @ContributesAndroidInjector
-    abstract TopicMemberSelectDialog contributeTopicMemberSelectDialog();
+    abstract TopicMemberFragment contributeTopicMemberFragment();
 
 }

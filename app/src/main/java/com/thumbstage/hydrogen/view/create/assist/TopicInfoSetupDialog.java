@@ -65,7 +65,7 @@ public class TopicInfoSetupDialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View contentView = inflater.inflate(R.layout.fragment_dialog_topic_info_setup, container);
+        View contentView = inflater.inflate(R.layout.fragment_dialog_topic_info, container);
         ButterKnife.bind(this, contentView);
 
         /*

@@ -3,22 +3,17 @@ package com.thumbstage.hydrogen.view.create.cases;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.util.Log;
 
-import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.HyFile;
 import com.thumbstage.hydrogen.model.Setting;
 import com.thumbstage.hydrogen.model.TopicType;
-import com.thumbstage.hydrogen.model.User;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
-import com.thumbstage.hydrogen.utils.DataConvertUtil;
 import com.thumbstage.hydrogen.view.common.HyMenuItem;
 import com.thumbstage.hydrogen.view.common.RequestResultCode;
-import com.thumbstage.hydrogen.view.create.assist.AssistDialog;
-import com.thumbstage.hydrogen.view.create.assist.TopicMemberSelectDialog;
+import com.thumbstage.hydrogen.view.create.assist.AssistDialogFragment;
 import com.thumbstage.hydrogen.view.create.feature.ICanAddMember;
 import com.thumbstage.hydrogen.view.create.feature.ICanCreateTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanPopupMenu;
@@ -41,7 +36,7 @@ public class CaseCreateTopic extends CaseBase implements ICanPopupMenu, ICanCrea
 
         Bundle bundle = new Bundle();
         bundle.putString(RequestResultCode.BottomSheetTab.class.getName(), RequestResultCode.BottomSheetTab.INFO.name());
-        AssistDialog dialog = new AssistDialog();
+        AssistDialogFragment dialog = new AssistDialogFragment();
         dialog.setArguments(bundle);
         dialog.show(fragment.getChildFragmentManager(), "hello");
         /*
@@ -102,7 +97,7 @@ public class CaseCreateTopic extends CaseBase implements ICanPopupMenu, ICanCrea
     public void addMember(Fragment fragment) {
         Bundle bundle = new Bundle();
         bundle.putString(RequestResultCode.BottomSheetTab.class.getName(), RequestResultCode.BottomSheetTab.MEMBER.name());
-        AssistDialog dialog = new AssistDialog();
+        AssistDialogFragment dialog = new AssistDialogFragment();
         dialog.setArguments(bundle);
         dialog.show(fragment.getChildFragmentManager(), "hello");
         /*

@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.PopupMenu;
 
 import com.bumptech.glide.Glide;
@@ -30,7 +29,6 @@ import com.thumbstage.hydrogen.view.common.RequestResultCode;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
 
 import java.util.List;
-import java.util.zip.Inflater;
 
 import javax.inject.Inject;
 
@@ -41,9 +39,9 @@ import dagger.android.support.AndroidSupportInjection;
 
 public class TopicMemberSelectDialog extends DialogFragment {
 
-    @BindView(R.id.fragment_dialog_member_container)
+    @BindView(R.id.fragment_dialog_member_recycler)
     ViewGroup container;
-    @BindView(R.id.fragment_dialog_member_plus)
+    // @BindView(R.id.fragment_dialog_member_plus)
     ImageButton plusMember;
 
     @Inject
@@ -61,7 +59,7 @@ public class TopicMemberSelectDialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View contentView = inflater.inflate(R.layout.fragment_dialog_topic_member_select, container);
+        View contentView = inflater.inflate(R.layout.fragment_dialog_topic_member, container);
         ButterKnife.bind(this, contentView);
 
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -115,7 +113,8 @@ public class TopicMemberSelectDialog extends DialogFragment {
         this.iOnOK = iOnOK;
     }
 
-    @OnClick(R.id.fragment_dialog_member_plus)
+
+    //@OnClick(R.id.fragment_dialog_member_plus)
     public void memberPlus(View view) {
         Intent intent = new Intent(getContext(), AccountActivity.class);
         intent.putExtra(AccountActivity.Type.class.getSimpleName(), AccountActivity.Type.SELECT_MEMBER.name());
@@ -175,8 +174,8 @@ public class TopicMemberSelectDialog extends DialogFragment {
                     userList = users;
                     container.removeAllViews();
                     for(User user: users) {
-                        View view = getLayoutInflater().inflate(R.layout.item_avatar, container, false);
-                        ImageButton imageButton = view.findViewById(R.id.member_avatar);
+                        View view = getLayoutInflater().inflate(R.layout.item_member_added, container, false);
+                        ImageButton imageButton = view.findViewById(R.id.item_member_added_avatar);
                         container.addView(view);
                         view.setOnClickListener(clickListener);
                         view.setOnLongClickListener(longClickListener);
