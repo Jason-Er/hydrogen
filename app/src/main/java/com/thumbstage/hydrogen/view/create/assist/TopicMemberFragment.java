@@ -3,22 +3,30 @@ package com.thumbstage.hydrogen.view.create.assist;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.event.TopicMemberEvent;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.User;
-import com.thumbstage.hydrogen.utils.DensityUtil;
+import com.thumbstage.hydrogen.utils.CollectionsUtil;
+import com.thumbstage.hydrogen.utils.DataConvertUtil;
+import com.thumbstage.hydrogen.view.account.AccountActivity;
+import com.thumbstage.hydrogen.view.common.RequestResultCode;
 import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,6 +61,7 @@ public class TopicMemberFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(recyclerViewAdapter);
 
+        EventBus.getDefault().register(this);
         return view;
     }
 
@@ -63,17 +72,48 @@ public class TopicMemberFragment extends Fragment {
         configureViewModel();
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onResponseMessageEvent(final TopicMemberEvent event) {
+        switch (event.getMessage()) {
+            case "Plus":
+                Intent intent = new Intent(getContext(), AccountActivity.class);
+                intent.putExtra(AccountActivity.Type.class.getSimpleName(), AccountActivity.Type.SELECT_MEMBER.name());
+                startActivityForResult(intent, RequestResultCode.SELECT_CONTACT_REQUEST_CODE);
+                break;
+            case "Added":
+                break;
+        }
+    }
+
+    List<User> userList;
     private void configureViewModel(){
         userViewModel = ViewModelProviders.of(getActivity(), viewModelFactory).get(UserViewModel.class);
         topicViewModel = ViewModelProviders.of(getActivity(), viewModelFactory).get(TopicViewModel.class);
         topicViewModel.getTheTopic().observe(this, new Observer<Mic>() {
             @Override
             public void onChanged(@Nullable Mic mic) {
-                List<User> members = new ArrayList<>();
-                members.addAll(mic.getTopic().getMembers());
-                recyclerViewAdapter.setUsers(members);
+                userList = mic.getTopic().getMembers();
+                recyclerViewAdapter.setUsers(userList);
             }
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if( requestCode == RequestResultCode.SELECT_CONTACT_REQUEST_CODE && resultCode == RequestResultCode.SELECT_CONTACT_RESULT_CODE ) {
+            List<String> memberIds = data.getExtras().getStringArrayList(RequestResultCode.SelectContactKey);
+            List<String> userIds = DataConvertUtil.user2StringId(userList);
+            memberIds.addAll(userIds);
+            CollectionsUtil.removeDuplicate(memberIds);
+            showMemberAvatars(memberIds);
+        }
     }
 
     private void showMemberAvatars(@NonNull List<String> memberIds) {
@@ -81,7 +121,8 @@ public class TopicMemberFragment extends Fragment {
             userViewModel.getUsers(memberIds).observe(this, new Observer<List<User>>() {
                 @Override
                 public void onChanged(@Nullable List<User> users) {
-
+                    userList = users;
+                    recyclerViewAdapter.setUsers(users);
                 }
             });
         }
