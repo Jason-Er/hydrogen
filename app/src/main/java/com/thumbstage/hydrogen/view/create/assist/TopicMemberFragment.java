@@ -16,9 +16,11 @@ import android.view.ViewGroup;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.Mic;
 import com.thumbstage.hydrogen.model.User;
+import com.thumbstage.hydrogen.utils.DensityUtil;
 import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -33,7 +35,7 @@ public class TopicMemberFragment extends Fragment {
     RecyclerView recyclerView;
 
     TopicMemberAdapter recyclerViewAdapter;
-    GridLayoutManager layoutManager;
+    GridAutoFitLayoutManager layoutManager;
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
@@ -46,7 +48,7 @@ public class TopicMemberFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_dialog_topic_member, container, false);
         ButterKnife.bind(this, view);
 
-        layoutManager = new GridLayoutManager(getContext(), 3);
+        layoutManager = new GridAutoFitLayoutManager(getContext(), 50);
         recyclerViewAdapter = new TopicMemberAdapter();
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(recyclerViewAdapter);
@@ -67,7 +69,9 @@ public class TopicMemberFragment extends Fragment {
         topicViewModel.getTheTopic().observe(this, new Observer<Mic>() {
             @Override
             public void onChanged(@Nullable Mic mic) {
-                recyclerViewAdapter.setUsers(mic.getTopic().getMembers());
+                List<User> members = new ArrayList<>();
+                members.addAll(mic.getTopic().getMembers());
+                recyclerViewAdapter.setUsers(members);
             }
         });
     }
