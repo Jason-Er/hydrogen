@@ -26,7 +26,7 @@ public class TopicMemberPlusViewHolder extends RecyclerView.ViewHolder {
     }
 
     @OnClick(R.id.item_member_plus)
-    public void plus(View view) {
+    public void plusClick(View view) {
         EventBus.getDefault().post(new TopicMemberEvent("Plus"));
     }
 

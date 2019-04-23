@@ -10,8 +10,11 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.TopicMemberEvent;
@@ -49,6 +52,7 @@ public class TopicMemberFragment extends Fragment {
     ViewModelProvider.Factory viewModelFactory;
     UserViewModel userViewModel;
     TopicViewModel topicViewModel;
+    Mic mic;
 
     @Nullable
     @Override
@@ -87,19 +91,38 @@ public class TopicMemberFragment extends Fragment {
                 startActivityForResult(intent, RequestResultCode.SELECT_CONTACT_REQUEST_CODE);
                 break;
             case "Added":
+                popUpMenu(event);
                 break;
         }
     }
 
-    List<User> userList;
+    private void popUpMenu(final TopicMemberEvent event) {
+        PopupMenu popupMenu = new PopupMenu(getContext(), event.getView());
+        MenuInflater inflater = popupMenu.getMenuInflater();
+        inflater.inflate(R.menu.menu_member_popup, popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                if(item.getItemId() == R.id.menu_member_delete) {
+                    if(!userViewModel.getCurrentUser().equals(event.getUser())) {
+                        mic.getTopic().getMembers().remove(event.getUser());
+                        recyclerViewAdapter.setUsers(mic.getTopic().getMembers());
+                    }
+                }
+                return false;
+            }
+        });
+        popupMenu.show();
+    }
+
     private void configureViewModel(){
         userViewModel = ViewModelProviders.of(getActivity(), viewModelFactory).get(UserViewModel.class);
         topicViewModel = ViewModelProviders.of(getActivity(), viewModelFactory).get(TopicViewModel.class);
         topicViewModel.getTheTopic().observe(this, new Observer<Mic>() {
             @Override
-            public void onChanged(@Nullable Mic mic) {
-                userList = mic.getTopic().getMembers();
-                recyclerViewAdapter.setUsers(userList);
+            public void onChanged(@Nullable Mic miclcal) {
+                mic = miclcal;
+                recyclerViewAdapter.setUsers(mic.getTopic().getMembers());
             }
         });
     }
@@ -109,7 +132,7 @@ public class TopicMemberFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         if( requestCode == RequestResultCode.SELECT_CONTACT_REQUEST_CODE && resultCode == RequestResultCode.SELECT_CONTACT_RESULT_CODE ) {
             List<String> memberIds = data.getExtras().getStringArrayList(RequestResultCode.SelectContactKey);
-            List<String> userIds = DataConvertUtil.user2StringId(userList);
+            List<String> userIds = DataConvertUtil.user2StringId(mic.getTopic().getMembers());
             memberIds.addAll(userIds);
             CollectionsUtil.removeDuplicate(memberIds);
             showMemberAvatars(memberIds);
@@ -117,11 +140,11 @@ public class TopicMemberFragment extends Fragment {
     }
 
     private void showMemberAvatars(@NonNull List<String> memberIds) {
-        if(memberIds != null && !memberIds.isEmpty()) {
+        if(!memberIds.isEmpty()) {
             userViewModel.getUsers(memberIds).observe(this, new Observer<List<User>>() {
                 @Override
                 public void onChanged(@Nullable List<User> users) {
-                    userList = users;
+                    mic.getTopic().setMembers(users);
                     recyclerViewAdapter.setUsers(users);
                 }
             });
