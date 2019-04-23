@@ -158,7 +158,7 @@ public class TopicInfoSetupDialog extends DialogFragment {
         this.iOnOK = iOnOK;
     }
 
-    @OnClick(R.id.dialog_topic_setting_select)
+    // @OnClick(R.id.dialog_topic_setting_select)
     public void onSelectPic(View view) {
         imagePicker.startGallery(this, new ImagePicker.Callback() {
             @Override

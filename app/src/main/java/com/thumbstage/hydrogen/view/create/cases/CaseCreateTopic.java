@@ -1,6 +1,5 @@
 package com.thumbstage.hydrogen.view.create.cases;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -29,41 +28,21 @@ public class CaseCreateTopic extends CaseBase implements ICanPopupMenu, ICanCrea
         ICanPublishTopic, ICanSetSetting, ICanAddMember {
 
     final String TAG = "CaseCreateTopic";
-    Uri imageUri;
 
     @Override
     public void setSetting(final Fragment fragment) {
-
         Bundle bundle = new Bundle();
         bundle.putString(RequestResultCode.BottomSheetTab.class.getName(), RequestResultCode.BottomSheetTab.INFO.name());
         AssistDialogFragment dialog = new AssistDialogFragment();
         dialog.setArguments(bundle);
         dialog.show(fragment.getChildFragmentManager(), "hello");
-        /*
-        TopicInfoSetupDialog bottomDialog = new TopicInfoSetupDialog();
-        bottomDialog.setIOnOK(new TopicInfoSetupDialog.IOnOK() {
-            @Override
-            public void callback(TopicInfoSetupDialog.LocalData localData) {
-                if(!TextUtils.isEmpty(localData.getName())) {
-                    topicAdapter.getTopic().setName(localData.getName());
-                }
-                if(!TextUtils.isEmpty(localData.getBrief())) {
-                    topicAdapter.getTopic().setBrief(localData.getBrief());
-                }
-                imageUri = localData.getImageUri();
-                Glide.with(backgroundView).load(imageUri).into(backgroundView);
-            }
-        });
-        bottomDialog.show(fragment.getFragmentManager(), "hello");
-        */
-
     }
 
     @Override
     public void createTopic(final IReturnBool iReturnBool) {
         Log.i(TAG, "createTopic");
-        if(imageUri != null) {
-            File file = new File(imageUri.getPath());
+        if(topicAdapter.getTopic().getSetting() != null) {
+            File file = new File(topicAdapter.getTopic().getSetting().getUrl());
             topicViewModel.saveFile(file, new IReturnHyFile() {
                 @Override
                 public void callback(HyFile hyFile) {
@@ -79,8 +58,8 @@ public class CaseCreateTopic extends CaseBase implements ICanPopupMenu, ICanCrea
     @Override
     public void publishTopic(final IReturnBool iReturnBool) {
         Log.i(TAG, "publishTopic");
-        if(imageUri != null) {
-            File file = new File(imageUri.getPath());
+        if(topicAdapter.getTopic().getSetting() != null) {
+            File file = new File(topicAdapter.getTopic().getSetting().getUrl());
             topicViewModel.saveFile(file, new IReturnHyFile() {
                 @Override
                 public void callback(HyFile hyFile) {
@@ -100,25 +79,6 @@ public class CaseCreateTopic extends CaseBase implements ICanPopupMenu, ICanCrea
         AssistDialogFragment dialog = new AssistDialogFragment();
         dialog.setArguments(bundle);
         dialog.show(fragment.getChildFragmentManager(), "hello");
-        /*
-        Bundle bundle = new Bundle();
-        bundle.putStringArrayList(RequestResultCode.MemberIds, (ArrayList<String>)DataConvertUtil.user2StringId(topicAdapter.getTopic().getMembers()));
-        TopicMemberSelectDialog bottomDialog = new TopicMemberSelectDialog();
-        bottomDialog.setArguments(bundle);
-        bottomDialog.setIOnOK(new TopicMemberSelectDialog.IOnOK() {
-            @Override
-            public void callback(final List<User> userList) {
-                topicViewModel.updateMembers(userList, new IReturnBool() {
-                    @Override
-                    public void callback(Boolean isOK) {
-                        Log.i(TAG, "addMember ok");
-                        topicAdapter.getTopic().setMembers(userList);
-                    }
-                });
-            }
-        });
-        bottomDialog.show(fragment.getFragmentManager(), "addMember");
-        */
     }
 
     @Override
