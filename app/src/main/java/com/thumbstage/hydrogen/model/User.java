@@ -31,9 +31,7 @@ public class User {
         }
         User user = (User) obj;
         boolean status = name.equals(user.name)
-                && id.equals(user.id)
-                && avatar.equals(user.avatar)
-                && privileges.equals(user.privileges);
+                && id.equals(user.id);
         return status;
     }
 
