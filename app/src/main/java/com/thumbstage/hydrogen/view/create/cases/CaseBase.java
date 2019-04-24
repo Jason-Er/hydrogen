@@ -6,11 +6,10 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
-import com.thumbstage.hydrogen.model.Line;
-import com.thumbstage.hydrogen.model.Setting;
-import com.thumbstage.hydrogen.model.User;
+import com.thumbstage.hydrogen.model.bo.Line;
+import com.thumbstage.hydrogen.model.bo.Setting;
+import com.thumbstage.hydrogen.model.bo.User;
 import com.thumbstage.hydrogen.view.create.fragment.ITopicFragmentFunction;
-import com.thumbstage.hydrogen.view.create.fragment.PopupWindowAdapter;
 import com.thumbstage.hydrogen.view.create.fragment.TopicAdapter;
 import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
 

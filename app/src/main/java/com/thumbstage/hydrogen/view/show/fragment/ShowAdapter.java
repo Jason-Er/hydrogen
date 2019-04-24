@@ -1,7 +1,7 @@
 package com.thumbstage.hydrogen.view.show.fragment;
 
-import com.thumbstage.hydrogen.model.Mic;
-import com.thumbstage.hydrogen.model.Topic;
+import com.thumbstage.hydrogen.model.bo.Mic;
+import com.thumbstage.hydrogen.model.bo.Topic;
 import com.thumbstage.hydrogen.view.common.ListDelegationAdapter;
 
 public class ShowAdapter extends ListDelegationAdapter {

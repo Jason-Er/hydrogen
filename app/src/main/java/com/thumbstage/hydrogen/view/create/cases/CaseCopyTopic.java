@@ -1,7 +1,7 @@
 package com.thumbstage.hydrogen.view.create.cases;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.model.TopicType;
+import com.thumbstage.hydrogen.model.bo.TopicType;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.view.common.HyMenuItem;
 import com.thumbstage.hydrogen.view.create.feature.ICanCreateTopic;

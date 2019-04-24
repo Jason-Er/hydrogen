@@ -6,15 +6,14 @@ import android.text.TextUtils;
 
 import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.database.ModelDB;
-import com.thumbstage.hydrogen.model.Line;
-import com.thumbstage.hydrogen.model.Mic;
-import com.thumbstage.hydrogen.model.TopicType;
-import com.thumbstage.hydrogen.model.User;
+import com.thumbstage.hydrogen.model.bo.Line;
+import com.thumbstage.hydrogen.model.bo.Mic;
+import com.thumbstage.hydrogen.model.bo.TopicType;
+import com.thumbstage.hydrogen.model.bo.User;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
 import com.thumbstage.hydrogen.model.callback.IReturnMic;
 import com.thumbstage.hydrogen.model.callback.IReturnMicList;
-import com.thumbstage.hydrogen.utils.CollectionsUtil;
 
 import java.io.File;
 import java.util.List;

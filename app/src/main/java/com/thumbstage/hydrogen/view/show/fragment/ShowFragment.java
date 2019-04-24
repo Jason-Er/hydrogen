@@ -27,7 +27,7 @@ import android.widget.ViewSwitcher;
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.PlayerControlEvent;
-import com.thumbstage.hydrogen.model.Mic;
+import com.thumbstage.hydrogen.model.bo.Mic;
 import com.thumbstage.hydrogen.utils.DensityUtil;
 import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
 

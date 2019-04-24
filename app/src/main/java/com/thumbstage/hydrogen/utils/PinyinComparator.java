@@ -1,6 +1,6 @@
 package com.thumbstage.hydrogen.utils;
 
-import com.thumbstage.hydrogen.model.User;
+import com.thumbstage.hydrogen.model.bo.User;
 
 import java.util.Comparator;
 

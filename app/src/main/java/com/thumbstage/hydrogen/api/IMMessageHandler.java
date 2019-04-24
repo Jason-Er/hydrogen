@@ -8,7 +8,6 @@ import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 import com.avos.avoscloud.im.v2.AVIMTypedMessageHandler;
 import com.thumbstage.hydrogen.database.ModelDB;
-import com.thumbstage.hydrogen.event.IMIMTypeMessageEvent;
 
 public class IMMessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> {
     final String TAG = "IMMessageHandler";
@@ -23,10 +22,7 @@ public class IMMessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> 
     @Override
     public void onMessage(AVIMTypedMessage message, AVIMConversation conversation, AVIMClient client) {
         Log.i(TAG, "callBack");
-        if (message == null || message.getMessageId() == null) {
-            Log.d(TAG, "may be SDK Bug, message or message id is null");
-            return;
-        }
+        message.getFrom();
     }
 
     @Override
@@ -34,12 +30,14 @@ public class IMMessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> 
         super.onMessageReceipt(message, conversation, client);
     }
 
+    /*
     private void sendEvent(AVIMTypedMessage message, AVIMConversation conversation) {
         Log.i(TAG, "sendEvent");
         IMIMTypeMessageEvent event = new IMIMTypeMessageEvent();
         event.message = message;
         event.conversation = conversation;
     }
+    */
 
     private void sendNotification(final AVIMTypedMessage message, final AVIMConversation conversation) {
         if (null != conversation && null != message) {

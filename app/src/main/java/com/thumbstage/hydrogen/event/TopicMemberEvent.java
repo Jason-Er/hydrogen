@@ -2,7 +2,7 @@ package com.thumbstage.hydrogen.event;
 
 import android.view.View;
 
-import com.thumbstage.hydrogen.model.User;
+import com.thumbstage.hydrogen.model.bo.User;
 
 public class TopicMemberEvent extends BaseEvent {
 

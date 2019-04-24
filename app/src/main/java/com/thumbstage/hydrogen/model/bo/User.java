@@ -1,4 +1,4 @@
-package com.thumbstage.hydrogen.model;
+package com.thumbstage.hydrogen.model.bo;
 
 import java.util.LinkedHashSet;
 import java.util.Set;

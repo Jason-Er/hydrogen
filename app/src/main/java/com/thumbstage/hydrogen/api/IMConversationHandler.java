@@ -8,9 +8,9 @@ import com.avos.avoscloud.im.v2.AVIMConversationEventHandler;
 import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.thumbstage.hydrogen.database.ModelDB;
-import com.thumbstage.hydrogen.model.AtMe;
-import com.thumbstage.hydrogen.model.Mic;
-import com.thumbstage.hydrogen.model.User;
+import com.thumbstage.hydrogen.model.bo.AtMe;
+import com.thumbstage.hydrogen.model.bo.Mic;
+import com.thumbstage.hydrogen.model.bo.User;
 import com.thumbstage.hydrogen.model.callback.IReturnMic;
 
 import java.util.Date;

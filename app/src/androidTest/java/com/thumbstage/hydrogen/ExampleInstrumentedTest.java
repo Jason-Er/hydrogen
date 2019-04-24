@@ -18,8 +18,8 @@ import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.thumbstage.hydrogen.api.CloudAPI;
-import com.thumbstage.hydrogen.model.Mic;
-import com.thumbstage.hydrogen.model.TopicType;
+import com.thumbstage.hydrogen.model.bo.Mic;
+import com.thumbstage.hydrogen.model.bo.TopicType;
 import com.thumbstage.hydrogen.utils.StringUtil;
 
 import org.junit.Before;
@@ -170,10 +170,10 @@ public class ExampleInstrumentedTest {
                         String brief = (String) avObject.get("brief");
                         List<Map> dialogue_av = avObject.getList("dialogue");
                         List<String> members = avObject.getList("members");
-                        List<com.thumbstage.hydrogen.model.Line> dialouge = new ArrayList<>();
+                        List<com.thumbstage.hydrogen.model.bo.Line> dialouge = new ArrayList<>();
                         for(Map map: dialogue_av) {
                             Date date = AVUtils.dateFromString((String)map.get("when"));
-                            dialouge.add(new com.thumbstage.hydrogen.model.Line(
+                            dialouge.add(new com.thumbstage.hydrogen.model.bo.Line(
                                     (String) map.get("who"),
                                     date,
                                     (String) map.get("what"),

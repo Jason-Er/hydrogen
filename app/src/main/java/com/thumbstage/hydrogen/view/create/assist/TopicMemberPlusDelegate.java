@@ -7,8 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.model.Mic;
-import com.thumbstage.hydrogen.view.browse.published.PublishedOpenedViewHolder;
 import com.thumbstage.hydrogen.view.common.IAdapterDelegate;
 
 import java.util.List;

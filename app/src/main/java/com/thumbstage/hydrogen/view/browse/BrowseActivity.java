@@ -17,9 +17,15 @@ import android.view.MenuItem;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.api.IMService;
+import com.thumbstage.hydrogen.event.IMMessageEvent;
 import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.view.common.Navigation;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.NoSubscriberEvent;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import javax.inject.Inject;
 
@@ -115,6 +121,21 @@ public class BrowseActivity extends AppCompatActivity
             }
         };
         viewPager.addOnPageChangeListener(pageChangeListener);
+
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onResponseMessageEvent(final NoSubscriberEvent event) {
+        if(event.originalEvent instanceof IMMessageEvent) {
+
+        }
     }
 
     @Override

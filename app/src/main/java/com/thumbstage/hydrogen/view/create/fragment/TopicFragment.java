@@ -25,7 +25,8 @@ import android.widget.ProgressBar;
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.HyMenuItemEvent;
-import com.thumbstage.hydrogen.model.Mic;
+import com.thumbstage.hydrogen.event.IMMessageEvent;
+import com.thumbstage.hydrogen.model.bo.Mic;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.view.common.HyMenuItem;
@@ -44,6 +45,7 @@ import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.NoSubscriberEvent;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -208,6 +210,13 @@ public class TopicFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onResponseMessageEvent(final IMMessageEvent event) {
+        if(!event.getMicId().equals(topicAdapter.getMic().getId())) {
+            EventBus.getDefault().post(new NoSubscriberEvent(EventBus.getDefault(), event));
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

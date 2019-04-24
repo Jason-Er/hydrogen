@@ -7,8 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.model.Line;
-import com.thumbstage.hydrogen.utils.StringUtil;
+import com.thumbstage.hydrogen.model.bo.Line;
 import com.thumbstage.hydrogen.view.common.IAdapterDelegate;
 import com.thumbstage.hydrogen.view.create.type.LineTextLeft;
 
