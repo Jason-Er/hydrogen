@@ -31,4 +31,8 @@ public class AtMeViewModel extends ViewModel {
     public void haveReadAtMe(AtMe atMe) {
         atMeRepository.haveRead(atMe);
     }
+
+    public void saveAtMe(AtMe atMe) {
+        atMeRepository.saveAtMe(atMe);
+    }
 }

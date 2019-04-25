@@ -1,13 +1,8 @@
 package com.thumbstage.hydrogen.api;
 
-import android.content.Context;
-
 import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMMessageManager;
 import com.avos.avoscloud.im.v2.AVIMTypedMessage;
-import com.thumbstage.hydrogen.database.ModelDB;
-
-import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -19,12 +14,12 @@ public class IMService {
     private IMConversationHandler imConversationHandler;
 
     @Inject
-    public IMService(Context context, CloudAPI cloudAPI, ModelDB modelDB, Executor executor) {
+    public IMService() {
         imMessageHandler = new IMMessageHandler();
         AVIMMessageManager.registerMessageHandler(AVIMTypedMessage.class, imMessageHandler);
 
         // 和 Conversation 相关的事件的 handler
-        imConversationHandler = new IMConversationHandler(cloudAPI, modelDB, executor);
+        imConversationHandler = new IMConversationHandler();
         AVIMMessageManager.setConversationEventHandler(imConversationHandler);
         AVIMClient.setUnreadNotificationEnabled(true);
     }

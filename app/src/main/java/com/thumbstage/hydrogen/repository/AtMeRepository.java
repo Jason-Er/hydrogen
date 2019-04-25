@@ -36,4 +36,13 @@ public class AtMeRepository {
         });
     }
 
+    public void saveAtMe(final AtMe atMe) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                modelDB.saveAtMe(atMe);
+            }
+        });
+    }
+
 }
