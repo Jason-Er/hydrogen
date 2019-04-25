@@ -29,6 +29,7 @@ import com.thumbstage.hydrogen.event.IMMessageEvent;
 import com.thumbstage.hydrogen.model.bo.Mic;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
+import com.thumbstage.hydrogen.model.dto.IMMessage;
 import com.thumbstage.hydrogen.view.common.HyMenuItem;
 import com.thumbstage.hydrogen.view.create.cases.CaseCreateTopic;
 import com.thumbstage.hydrogen.view.create.cases.CaseEditTopic;
@@ -214,8 +215,13 @@ public class TopicFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onResponseMessageEvent(final IMMessageEvent event) {
-        if(!event.getMicId().equals(topicAdapter.getMic().getId())) {
-            EventBus.getDefault().post(new NoSubscriberEvent(EventBus.getDefault(), event));
+        if(event.getMessage().equals("onMessage")) {
+            IMMessage imMessage = (IMMessage) event.getData();
+            if( !imMessage.getMicId().equals(topicAdapter.getMic().getId()) ) {
+                EventBus.getDefault().post(new NoSubscriberEvent(EventBus.getDefault(), event));
+            } else {
+                topicViewModel.refreshTheTopic();
+            }
         }
     }
 

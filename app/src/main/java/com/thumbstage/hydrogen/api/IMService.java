@@ -20,7 +20,7 @@ public class IMService {
 
     @Inject
     public IMService(Context context, CloudAPI cloudAPI, ModelDB modelDB, Executor executor) {
-        imMessageHandler = new IMMessageHandler(context, modelDB);
+        imMessageHandler = new IMMessageHandler();
         AVIMMessageManager.registerMessageHandler(AVIMTypedMessage.class, imMessageHandler);
 
         // 和 Conversation 相关的事件的 handler

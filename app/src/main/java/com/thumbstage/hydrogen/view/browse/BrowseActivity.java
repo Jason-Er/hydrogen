@@ -2,6 +2,7 @@ package com.thumbstage.hydrogen.view.browse;
 
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -18,8 +19,13 @@ import android.view.MenuItem;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.api.IMService;
 import com.thumbstage.hydrogen.event.IMMessageEvent;
+import com.thumbstage.hydrogen.model.bo.Mic;
+import com.thumbstage.hydrogen.model.dto.IMMessage;
+import com.thumbstage.hydrogen.utils.NotificationUtils;
 import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.view.common.Navigation;
+import com.thumbstage.hydrogen.view.create.CreateActivity;
+import com.thumbstage.hydrogen.view.create.fragment.TopicHandleType;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
 
 import org.greenrobot.eventbus.EventBus;
@@ -134,7 +140,12 @@ public class BrowseActivity extends AppCompatActivity
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onResponseMessageEvent(final NoSubscriberEvent event) {
         if(event.originalEvent instanceof IMMessageEvent) {
-
+            Intent intent = new Intent(this, CreateActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            IMMessage imMessage = (IMMessage) ((IMMessageEvent) event.originalEvent).getData();
+            intent.putExtra(Mic.class.getSimpleName(), imMessage.getMicId());
+            intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.EDIT.name());
+            NotificationUtils.showNotification(this, "userName", "say what", intent);
         }
     }
 

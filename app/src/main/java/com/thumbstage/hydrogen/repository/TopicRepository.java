@@ -38,11 +38,11 @@ public class TopicRepository {
     }
 
     public LiveData<List<Mic>> getMic(TopicType type, String started_by, boolean isFinished, int pageNum) {
-        refreshMic(type, started_by, isFinished, pageNum);
+        refreshMicList(type, started_by, isFinished, pageNum);
         return modelDB.getMic(type, started_by, isFinished, pageNum);
     }
 
-    private void refreshMic(final TopicType type, final String started_by, final boolean isFinished, final int pageNum) {
+    private void refreshMicList(final TopicType type, final String started_by, final boolean isFinished, final int pageNum) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -89,37 +89,36 @@ public class TopicRepository {
     }
 
     public LiveData<Mic> pickUpMic(final String micId) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                cloudAPI.getMic(micId, new IReturnMic() {
-                    @Override
-                    public void callback(Mic mic) {
-                        micLiveData.setValue(mic);
-                    }
-                });
-            }
-        });
+        refreshMic(micLiveData, micId);
         return micLiveData;
     }
 
     public LiveData<Mic> editMic(final String micId) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                cloudAPI.getMic(micId, new IReturnMic() {
-                    @Override
-                    public void callback(Mic mic) {
-                        micLiveData.setValue(mic);
-                    }
-                });
-            }
-        });
+        refreshMic(micLiveData, micId);
         return micLiveData;
     }
 
     public LiveData<Mic> getTheMic() {
         return micLiveData;
+    }
+
+    public void refreshTheMic() {
+        refreshMic(micLiveData, micLiveData.getValue().getId());
+    }
+
+    private void refreshMic(final MutableLiveData<Mic> liveData, final String micId) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                cloudAPI.getMic(micId, new IReturnMic() {
+                    @Override
+                    public void callback(final Mic mic) {
+                        saveMic2DB(mic);
+                        liveData.setValue(mic);
+                    }
+                });
+            }
+        });
     }
 
     public void flushMicBuf(IReturnBool iReturnBool) {
@@ -161,7 +160,7 @@ public class TopicRepository {
                             @Override
                             public void callback(Boolean status) {
                                 moveLineBuf2Dialogue(mic);
-                                saveMic(mic);
+                                saveMic2DB(mic);
                                 iReturnBool.callback(status);
                             }
                         });
@@ -189,7 +188,7 @@ public class TopicRepository {
                     @Override
                     public void callback(String objectID) {
                         if(!TextUtils.isEmpty(objectID)) {
-                            saveMic(mic);
+                            saveMic2DB(mic);
                             iReturnBool.callback(true);
                         } else {
                             iReturnBool.callback(false);
@@ -200,7 +199,7 @@ public class TopicRepository {
         });
     }
 
-    private void saveMic(final Mic mic) {
+    private void saveMic2DB(final Mic mic) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -227,7 +226,7 @@ public class TopicRepository {
                                 executor.execute(new Runnable() {
                                     @Override
                                     public void run() {
-                                        saveMic(mic);
+                                        saveMic2DB(mic);
                                     }
                                 });
                                 iReturnBool.callback(true);
