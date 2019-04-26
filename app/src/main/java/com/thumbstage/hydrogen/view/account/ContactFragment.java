@@ -24,7 +24,7 @@ import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.SelectContactUserEvent;
-import com.thumbstage.hydrogen.model.User;
+import com.thumbstage.hydrogen.model.bo.User;
 import com.thumbstage.hydrogen.utils.PinyinComparator;
 import com.thumbstage.hydrogen.utils.PinyinUtils;
 import com.thumbstage.hydrogen.view.common.ClearEditText;

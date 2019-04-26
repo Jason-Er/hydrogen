@@ -3,7 +3,7 @@ package com.thumbstage.hydrogen.view.create.fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.thumbstage.hydrogen.model.Line;
+import com.thumbstage.hydrogen.model.bo.Line;
 
 import butterknife.ButterKnife;
 

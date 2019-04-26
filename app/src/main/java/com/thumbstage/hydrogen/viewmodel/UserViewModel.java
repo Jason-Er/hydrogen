@@ -3,7 +3,7 @@ package com.thumbstage.hydrogen.viewmodel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
-import com.thumbstage.hydrogen.model.User;
+import com.thumbstage.hydrogen.model.bo.User;
 import com.thumbstage.hydrogen.repository.UserRepository;
 
 import java.util.List;
@@ -44,5 +44,9 @@ public class UserViewModel extends ViewModel {
 
     public LiveData<List<User>> getUsers(List<String> userIds) {
         return userRepository.getUsers(userIds);
+    }
+
+    public void addContact(User user) {
+        userRepository.addContact(user);
     }
 }

@@ -65,7 +65,7 @@ public class TopicInfoSetupDialog extends DialogFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View contentView = inflater.inflate(R.layout.fragment_dialog_topic_info_setup, container);
+        View contentView = inflater.inflate(R.layout.fragment_dialog_topic_info, container);
         ButterKnife.bind(this, contentView);
 
         /*
@@ -158,7 +158,7 @@ public class TopicInfoSetupDialog extends DialogFragment {
         this.iOnOK = iOnOK;
     }
 
-    @OnClick(R.id.dialog_topic_setting_select)
+    // @OnClick(R.id.dialog_topic_setting_select)
     public void onSelectPic(View view) {
         imagePicker.startGallery(this, new ImagePicker.Callback() {
             @Override

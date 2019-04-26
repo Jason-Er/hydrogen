@@ -2,7 +2,7 @@ package com.thumbstage.hydrogen.database.converter;
 
 import android.arch.persistence.room.TypeConverter;
 
-import com.thumbstage.hydrogen.model.LineType;
+import com.thumbstage.hydrogen.model.bo.LineType;
 
 public class LineTypeConverter {
     @TypeConverter

@@ -2,7 +2,7 @@ package com.thumbstage.hydrogen.view.create.cases;
 
 import android.util.Log;
 
-import com.thumbstage.hydrogen.model.Line;
+import com.thumbstage.hydrogen.model.bo.Line;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.view.create.feature.ICanPopupMenu;
 import com.thumbstage.hydrogen.view.create.fragment.PopupWindowAdapter;

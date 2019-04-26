@@ -18,8 +18,9 @@ import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.thumbstage.hydrogen.api.CloudAPI;
-import com.thumbstage.hydrogen.model.Mic;
-import com.thumbstage.hydrogen.model.TopicType;
+import com.thumbstage.hydrogen.model.bo.Mic;
+import com.thumbstage.hydrogen.model.bo.TopicType;
+import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.utils.StringUtil;
 
 import org.junit.Before;
@@ -170,10 +171,10 @@ public class ExampleInstrumentedTest {
                         String brief = (String) avObject.get("brief");
                         List<Map> dialogue_av = avObject.getList("dialogue");
                         List<String> members = avObject.getList("members");
-                        List<com.thumbstage.hydrogen.model.Line> dialouge = new ArrayList<>();
+                        List<com.thumbstage.hydrogen.model.bo.Line> dialouge = new ArrayList<>();
                         for(Map map: dialogue_av) {
                             Date date = AVUtils.dateFromString((String)map.get("when"));
-                            dialouge.add(new com.thumbstage.hydrogen.model.Line(
+                            dialouge.add(new com.thumbstage.hydrogen.model.bo.Line(
                                     (String) map.get("who"),
                                     date,
                                     (String) map.get("what"),
@@ -381,6 +382,7 @@ public class ExampleInstrumentedTest {
 
     @Test
     public void testCloudAPI() {
+        /*
         CloudAPI cloudAPI = new CloudAPI();
         cloudAPI.getMic(TopicType.PUBLISHED, "", false, 0, new CloudAPI.IReturnMicList() {
             @Override
@@ -388,6 +390,7 @@ public class ExampleInstrumentedTest {
                 Log.i("testCloudAPI","");
             }
         });
+        */
         sleep(10);
     }
 
@@ -422,6 +425,19 @@ public class ExampleInstrumentedTest {
             @Override
             public void done(AVIMClient client, AVIMException e) {
                 Log.i("testIMOpen","testIMOpen open ok");
+            }
+        });
+        sleep(10);
+    }
+
+    @Test
+    public void testAddContact() {
+        Context appContext = InstrumentationRegistry.getTargetContext();
+        CloudAPI cloudAPI = new CloudAPI(appContext);
+        cloudAPI.addContact("5c500df444d904004dc13f71", "5c63b5f344d90419c1acd242", new IReturnBool() {
+            @Override
+            public void callback(Boolean isOK) {
+
             }
         });
         sleep(10);

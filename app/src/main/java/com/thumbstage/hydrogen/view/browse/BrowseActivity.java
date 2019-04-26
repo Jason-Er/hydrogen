@@ -1,8 +1,11 @@
 package com.thumbstage.hydrogen.view.browse;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -17,9 +20,25 @@ import android.view.MenuItem;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.api.IMService;
+import com.thumbstage.hydrogen.event.IMMessageEvent;
+import com.thumbstage.hydrogen.event.IMMicEvent;
+import com.thumbstage.hydrogen.model.bo.AtMe;
+import com.thumbstage.hydrogen.model.bo.Mic;
+import com.thumbstage.hydrogen.model.dto.IMMessage;
+import com.thumbstage.hydrogen.utils.BoUtil;
+import com.thumbstage.hydrogen.utils.NotificationUtils;
 import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.view.common.Navigation;
+import com.thumbstage.hydrogen.view.create.CreateActivity;
+import com.thumbstage.hydrogen.view.create.fragment.TopicHandleType;
+import com.thumbstage.hydrogen.viewmodel.AtMeViewModel;
+import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.NoSubscriberEvent;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import javax.inject.Inject;
 
@@ -46,7 +65,9 @@ public class BrowseActivity extends AppCompatActivity
     ViewPager viewPager;
     BrowseFragmentPagerAdapter pagerAdapter;
 
+    TopicViewModel topicViewModel;
     UserViewModel userViewModel;
+    AtMeViewModel atMeViewModel;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
@@ -57,7 +78,8 @@ public class BrowseActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse);
-        configureDagger();
+
+
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         fab.hide();
@@ -89,7 +111,10 @@ public class BrowseActivity extends AppCompatActivity
             }
         });
 
+        AndroidInjection.inject(this);
         userViewModel = ViewModelProviders.of(this, viewModelFactory).get(UserViewModel.class);
+        topicViewModel = ViewModelProviders.of(this, viewModelFactory).get(TopicViewModel.class);
+        atMeViewModel = ViewModelProviders.of(this, viewModelFactory).get(AtMeViewModel.class);
 
         pagerAdapter = new BrowseFragmentPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
@@ -115,15 +140,50 @@ public class BrowseActivity extends AppCompatActivity
             }
         };
         viewPager.addOnPageChangeListener(pageChangeListener);
+
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onResponseMessageEvent(final IMMicEvent event) {
+        if(event.getMessage().equals("onUnreadMessage")) {
+            final IMMessage imMessage = (IMMessage) event.getData();
+            topicViewModel.pickUpTopic(imMessage.getMicId()).observe(this, new Observer<Mic>() {
+                @Override
+                public void onChanged(@Nullable Mic mic) {
+                    AtMe atMe = new AtMe();
+                    atMe.setMic(mic);
+                    atMe.setWhat(imMessage.getWhat());
+                    atMe.setWho(BoUtil.findById(mic.getTopic().getMembers(), imMessage.getWhoId()));
+                    atMe.setMe(userViewModel.getCurrentUser());
+                    atMe.setWhen(imMessage.getWhen());
+                    atMeViewModel.saveAtMe(atMe);
+                }
+            });
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onResponseMessageEvent(final NoSubscriberEvent event) {
+        if(event.originalEvent instanceof IMMessageEvent) {
+            Intent intent = new Intent(this, CreateActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            IMMessage imMessage = (IMMessage) ((IMMessageEvent) event.originalEvent).getData();
+            intent.putExtra(Mic.class.getSimpleName(), imMessage.getMicId());
+            intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.EDIT.name());
+            NotificationUtils.showNotification(this, "userName", "say what", intent);
+        }
     }
 
     @Override
     public DispatchingAndroidInjector<Fragment> supportFragmentInjector() {
         return dispatchingAndroidInjector;
-    }
-
-    private void configureDagger(){
-        AndroidInjection.inject(this);
     }
 
     @Override

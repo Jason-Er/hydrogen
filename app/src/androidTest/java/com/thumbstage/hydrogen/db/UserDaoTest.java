@@ -5,14 +5,12 @@ import android.util.Log;
 
 import com.thumbstage.hydrogen.database.entity.TopicEntity;
 import com.thumbstage.hydrogen.database.entity.UserEntity;
-import com.thumbstage.hydrogen.model.Line;
-import com.thumbstage.hydrogen.model.Mic;
+import com.thumbstage.hydrogen.model.bo.Mic;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 

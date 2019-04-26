@@ -26,16 +26,15 @@ import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
-import com.thumbstage.hydrogen.database.ModelDB;
-import com.thumbstage.hydrogen.model.HyFile;
-import com.thumbstage.hydrogen.model.Line;
-import com.thumbstage.hydrogen.model.LineType;
-import com.thumbstage.hydrogen.model.Mic;
-import com.thumbstage.hydrogen.model.Privilege;
-import com.thumbstage.hydrogen.model.Setting;
-import com.thumbstage.hydrogen.model.Topic;
-import com.thumbstage.hydrogen.model.TopicType;
-import com.thumbstage.hydrogen.model.User;
+import com.thumbstage.hydrogen.model.bo.HyFile;
+import com.thumbstage.hydrogen.model.bo.Line;
+import com.thumbstage.hydrogen.model.bo.LineType;
+import com.thumbstage.hydrogen.model.bo.Mic;
+import com.thumbstage.hydrogen.model.bo.Privilege;
+import com.thumbstage.hydrogen.model.bo.Setting;
+import com.thumbstage.hydrogen.model.bo.Topic;
+import com.thumbstage.hydrogen.model.bo.TopicType;
+import com.thumbstage.hydrogen.model.bo.User;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
 import com.thumbstage.hydrogen.model.callback.IReturnLine;
@@ -55,6 +54,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -425,6 +425,35 @@ public class CloudAPI {
                 }
             }
         });
+    }
+
+    public void addContact(String whoId, String contactId, final IReturnBool iReturnBool) {
+        AVQuery<AVObject> avQuery = new AVQuery<>(TableName.TABLE_CONTACT.name);
+        final AVObject avWho = AVObject.createWithoutData(TableName.TABLE_USER.name, whoId);
+        final AVObject avContact = AVObject.createWithoutData(TableName.TABLE_USER.name, contactId);
+        avQuery.whereEqualTo(FieldName.FIELD_WHO.name, avWho);
+        avQuery.whereEqualTo(FieldName.FIELD_CONTACT.name, avContact);
+        avQuery.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> avObjects, AVException e) {
+                if(e==null) {
+                    if(avObjects.size() == 0) {
+                        AVObject contact = new AVObject(TableName.TABLE_CONTACT.name);
+                        contact.put(FieldName.FIELD_WHO.name, avWho);
+                        contact.put(FieldName.FIELD_CONTACT.name, avContact);
+                        contact.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(AVException e) {
+                                if(e == null) {
+                                    iReturnBool.callback(true);
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
     }
 
     public void getContact(String userId, int pageNum, final IReturnUsers iReturnUsers) {

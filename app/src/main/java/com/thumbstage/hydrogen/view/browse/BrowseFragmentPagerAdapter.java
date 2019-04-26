@@ -5,7 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.thumbstage.hydrogen.model.Privilege;
+import com.thumbstage.hydrogen.model.bo.Privilege;
 import com.thumbstage.hydrogen.view.browse.atme.AtMeFragment;
 import com.thumbstage.hydrogen.view.browse.mine.IAttendedFragment;
 import com.thumbstage.hydrogen.view.browse.mine.IStartedFragment;

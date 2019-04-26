@@ -1,6 +1,6 @@
 package com.thumbstage.hydrogen.model.callback;
 
-import com.thumbstage.hydrogen.model.Line;
+import com.thumbstage.hydrogen.model.bo.Line;
 
 public interface IReturnLine {
     void callback(Line line);

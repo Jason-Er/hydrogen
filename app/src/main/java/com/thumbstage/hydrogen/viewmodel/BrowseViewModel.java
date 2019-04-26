@@ -3,10 +3,8 @@ package com.thumbstage.hydrogen.viewmodel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
-import com.thumbstage.hydrogen.model.AtMe;
-import com.thumbstage.hydrogen.model.Mic;
-import com.thumbstage.hydrogen.model.TopicType;
-import com.thumbstage.hydrogen.repository.AtMeRepository;
+import com.thumbstage.hydrogen.model.bo.Mic;
+import com.thumbstage.hydrogen.model.bo.TopicType;
 import com.thumbstage.hydrogen.repository.TopicRepository;
 import com.thumbstage.hydrogen.repository.UserRepository;
 
@@ -19,15 +17,13 @@ import javax.inject.Singleton;
 public class BrowseViewModel extends ViewModel {
 
     private TopicRepository topicRepository;
-    private AtMeRepository atMeRepository;
     private UserRepository userRepository;
 
     final String TAG = "BrowseViewModel";
 
     @Inject
-    public BrowseViewModel(TopicRepository topicRepository, AtMeRepository atMeRepository, UserRepository userRepository) {
+    public BrowseViewModel(TopicRepository topicRepository, UserRepository userRepository) {
         this.topicRepository = topicRepository;
-        this.atMeRepository = atMeRepository;
         this.userRepository = userRepository;
     }
 
@@ -68,17 +64,5 @@ public class BrowseViewModel extends ViewModel {
         String userId = userRepository.getCurrentUser().getId();
         return topicRepository.getMic(TopicType.UNPUBLISHED, userId, true, pageNum);
     }
-
-    // region atMe
-    public LiveData<List<AtMe>> getAtMeByPageNum(int pageNum) {
-        String userId = userRepository.getCurrentUser().getId();
-        return atMeRepository.getAtMeByPageNum(userId, pageNum);
-    }
-
-    public void haveReadAtMe(AtMe atMe) {
-        atMeRepository.haveRead(atMe);
-    }
-
-    // endregion
 
 }

@@ -25,9 +25,14 @@ import android.widget.ProgressBar;
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.HyMenuItemEvent;
-import com.thumbstage.hydrogen.model.Mic;
+import com.thumbstage.hydrogen.event.IMMessageEvent;
+import com.thumbstage.hydrogen.event.PopupMenuEvent;
+import com.thumbstage.hydrogen.model.bo.Mic;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
+import com.thumbstage.hydrogen.model.bo.User;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
+import com.thumbstage.hydrogen.model.dto.IMMessage;
+import com.thumbstage.hydrogen.utils.DensityUtil;
 import com.thumbstage.hydrogen.view.common.HyMenuItem;
 import com.thumbstage.hydrogen.view.create.cases.CaseCreateTopic;
 import com.thumbstage.hydrogen.view.create.cases.CaseEditTopic;
@@ -44,6 +49,7 @@ import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.NoSubscriberEvent;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -112,7 +118,7 @@ public class TopicFragment extends Fragment {
         popupWindow = new ListPopupWindow(getContext());
         popupWindowAdapter = new PopupWindowAdapter();
         popupWindow.setAdapter(popupWindowAdapter);
-        popupWindow.setWidth(300);
+        popupWindow.setWidth(DensityUtil.dp2px(getContext(),200));
         popupWindow.setHeight(ListPopupWindow.WRAP_CONTENT);
         popupWindow.setModal(true);
 
@@ -138,8 +144,8 @@ public class TopicFragment extends Fragment {
         if(TextUtils.isEmpty(handleType)) {
             throw new IllegalArgumentException("No TopicHandleType found!");
         }
-        topicViewModel = ViewModelProviders.of(this, viewModelFactory).get(TopicViewModel.class);
-        userViewModel = ViewModelProviders.of(this, viewModelFactory).get(UserViewModel.class);
+        topicViewModel = ViewModelProviders.of(getActivity(), viewModelFactory).get(TopicViewModel.class);
+        userViewModel = ViewModelProviders.of(getActivity(), viewModelFactory).get(UserViewModel.class);
 
         topicAdapter.setUser(userViewModel.getCurrentUser());
         for(CaseBase caseBase: roleMap.values()) {
@@ -208,6 +214,29 @@ public class TopicFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onResponseMessageEvent(final PopupMenuEvent event) {
+        switch (event.getMessage()) {
+            case "addUser":
+                User user = (User) event.getData();
+                userViewModel.addContact(user);
+                break;
+        }
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onResponseMessageEvent(final IMMessageEvent event) {
+        if(event.getMessage().equals("onMessage")) {
+            IMMessage imMessage = (IMMessage) event.getData();
+            if( !imMessage.getMicId().equals(topicAdapter.getMic().getId()) ) {
+                EventBus.getDefault().post(new NoSubscriberEvent(EventBus.getDefault(), event));
+            } else {
+                topicViewModel.refreshTheTopic();
+            }
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

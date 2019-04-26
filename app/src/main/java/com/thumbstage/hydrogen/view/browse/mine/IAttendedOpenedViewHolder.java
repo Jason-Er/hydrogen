@@ -9,9 +9,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.model.Mic;
-import com.thumbstage.hydrogen.model.Topic;
-import com.thumbstage.hydrogen.model.User;
+import com.thumbstage.hydrogen.model.bo.Mic;
+import com.thumbstage.hydrogen.model.bo.Topic;
+import com.thumbstage.hydrogen.model.bo.User;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
 import com.thumbstage.hydrogen.view.create.fragment.TopicHandleType;
 

@@ -3,9 +3,9 @@ package com.thumbstage.hydrogen.utils;
 import com.avos.avoscloud.im.v2.AVIMMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMAudioMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
-import com.thumbstage.hydrogen.model.Line;
-import com.thumbstage.hydrogen.model.LineType;
-import com.thumbstage.hydrogen.model.User;
+import com.thumbstage.hydrogen.model.bo.Line;
+import com.thumbstage.hydrogen.model.bo.LineType;
+import com.thumbstage.hydrogen.model.bo.User;
 
 import java.util.ArrayList;
 import java.util.Date;

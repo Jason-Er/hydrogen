@@ -27,7 +27,8 @@ import android.widget.ViewSwitcher;
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.PlayerControlEvent;
-import com.thumbstage.hydrogen.model.Mic;
+import com.thumbstage.hydrogen.model.bo.Line;
+import com.thumbstage.hydrogen.model.bo.Mic;
 import com.thumbstage.hydrogen.utils.DensityUtil;
 import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
 
@@ -58,6 +59,8 @@ public class ShowFragment extends Fragment implements TextToSpeech.OnInitListene
     TopicViewModel topicViewModel;
 
     TextToSpeech textToSpeech;
+    Mic mic;
+    int currentIndex = 0;
 
     @Nullable
     @Override
@@ -102,13 +105,11 @@ public class ShowFragment extends Fragment implements TextToSpeech.OnInitListene
         switch (event.getMessage()) {
             case "STOP":
                 textToSpeech.shutdown();
+                currentIndex = 0;
                 break;
             case "PLAY":
-                if(textToSpeech !=null && !textToSpeech.isSpeaking()) {
-                    subtitle.setText("Hello world");
-                    textToSpeech.setPitch(0.5f);
-                    textToSpeech.setSpeechRate(1.5f);
-                    textToSpeech.speak("hello", TextToSpeech.QUEUE_FLUSH, null, null);
+                if(textToSpeech !=null && !textToSpeech.isSpeaking() && mic.getTopic().getDialogue().size() > 0) {
+                    speakAtIndex(currentIndex);
                 }
                 break;
             case "PAUSE":
@@ -132,7 +133,8 @@ public class ShowFragment extends Fragment implements TextToSpeech.OnInitListene
         topicViewModel = ViewModelProviders.of(this, viewModelFactory).get(TopicViewModel.class);
         topicViewModel.pickUpTopic(micId).observe(this, new Observer<Mic>() {
             @Override
-            public void onChanged(@Nullable Mic mic) {
+            public void onChanged(@Nullable Mic micl) {
+                mic = micl;
                 if(mic.getTopic().getSetting() != null) {
                     Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
                 }
@@ -144,7 +146,7 @@ public class ShowFragment extends Fragment implements TextToSpeech.OnInitListene
     @Override
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
-            int result = textToSpeech.setLanguage(Locale.ENGLISH);
+            int result = textToSpeech.setLanguage(Locale.SIMPLIFIED_CHINESE);
             if (result == TextToSpeech.LANG_MISSING_DATA
                     || result == TextToSpeech.LANG_NOT_SUPPORTED) {
                 Toast.makeText(getContext(), "数据丢失或不支持", Toast.LENGTH_SHORT).show();
@@ -158,6 +160,9 @@ public class ShowFragment extends Fragment implements TextToSpeech.OnInitListene
                     @Override
                     public void onDone(String utteranceId) {
                         Log.i("textToSpeech onDone","utteranceId: "+ utteranceId);
+                        currentIndex = Integer.parseInt(utteranceId);
+                        currentIndex++;
+                        speakAtIndex(currentIndex);
                     }
 
                     @Override
@@ -167,6 +172,14 @@ public class ShowFragment extends Fragment implements TextToSpeech.OnInitListene
                 });
             }
 
+        }
+    }
+
+    private void speakAtIndex(int index) {
+        if(mic.getTopic().getDialogue().size() > index) {
+            Line line = mic.getTopic().getDialogue().get(index);
+            subtitle.setText(line.getWhat());
+            textToSpeech.speak(line.getWhat(), TextToSpeech.QUEUE_FLUSH, null, String.valueOf(index));
         }
     }
 }

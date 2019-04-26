@@ -1,8 +1,7 @@
 package com.thumbstage.hydrogen;
 
-import com.thumbstage.hydrogen.model.LineType;
+import com.thumbstage.hydrogen.model.bo.LineType;
 import com.thumbstage.hydrogen.utils.PinyinUtils;
-import com.thumbstage.hydrogen.utils.StringUtil;
 
 import org.junit.Test;
 

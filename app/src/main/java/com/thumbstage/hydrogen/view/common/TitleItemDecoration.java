@@ -10,7 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.View;
 
-import com.thumbstage.hydrogen.model.User;
+import com.thumbstage.hydrogen.model.bo.User;
 import com.thumbstage.hydrogen.utils.PinyinUtils;
 
 import java.util.List;

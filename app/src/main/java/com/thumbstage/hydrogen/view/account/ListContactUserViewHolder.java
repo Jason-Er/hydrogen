@@ -4,12 +4,11 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.model.User;
+import com.thumbstage.hydrogen.model.bo.User;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
