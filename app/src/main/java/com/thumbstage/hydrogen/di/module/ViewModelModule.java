@@ -4,6 +4,7 @@ import android.arch.lifecycle.ViewModel;
 import android.arch.lifecycle.ViewModelProvider;
 
 import com.thumbstage.hydrogen.di.key.ViewModelKey;
+import com.thumbstage.hydrogen.viewmodel.AtMeViewModel;
 import com.thumbstage.hydrogen.viewmodel.BrowseViewModel;
 import com.thumbstage.hydrogen.viewmodel.FactoryViewModel;
 import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
@@ -31,6 +32,11 @@ public abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(UserViewModel.class)
     abstract ViewModel bindUserViewModel(UserViewModel userViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AtMeViewModel.class)
+    abstract ViewModel bindAtMeViewModel(AtMeViewModel atMeViewModel);
 
     @Binds
     abstract ViewModelProvider.Factory bindViewModelFactory(FactoryViewModel factory);
