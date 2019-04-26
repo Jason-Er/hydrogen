@@ -54,6 +54,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -424,6 +425,35 @@ public class CloudAPI {
                 }
             }
         });
+    }
+
+    public void addContact(String whoId, String contactId, final IReturnBool iReturnBool) {
+        AVQuery<AVObject> avQuery = new AVQuery<>(TableName.TABLE_CONTACT.name);
+        final AVObject avWho = AVObject.createWithoutData(TableName.TABLE_USER.name, whoId);
+        final AVObject avContact = AVObject.createWithoutData(TableName.TABLE_USER.name, contactId);
+        avQuery.whereEqualTo(FieldName.FIELD_WHO.name, avWho);
+        avQuery.whereEqualTo(FieldName.FIELD_CONTACT.name, avContact);
+        avQuery.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> avObjects, AVException e) {
+                if(e==null) {
+                    if(avObjects.size() == 0) {
+                        AVObject contact = new AVObject(TableName.TABLE_CONTACT.name);
+                        contact.put(FieldName.FIELD_WHO.name, avWho);
+                        contact.put(FieldName.FIELD_CONTACT.name, avContact);
+                        contact.saveInBackground(new SaveCallback() {
+                            @Override
+                            public void done(AVException e) {
+                                if(e == null) {
+                                    iReturnBool.callback(true);
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
+
     }
 
     public void getContact(String userId, int pageNum, final IReturnUsers iReturnUsers) {

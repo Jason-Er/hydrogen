@@ -98,7 +98,7 @@ public class TopicMemberFragment extends Fragment {
     private void popUpMenu(final TopicMemberEvent event) {
         PopupMenu popupMenu = new PopupMenu(getContext(), event.getView());
         MenuInflater inflater = popupMenu.getMenuInflater();
-        inflater.inflate(R.menu.menu_member_popup, popupMenu.getMenu());
+        inflater.inflate(R.menu.menu_popup_member_delete, popupMenu.getMenu());
         popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {

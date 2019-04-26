@@ -26,8 +26,10 @@ import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.HyMenuItemEvent;
 import com.thumbstage.hydrogen.event.IMMessageEvent;
+import com.thumbstage.hydrogen.event.PopupMenuEvent;
 import com.thumbstage.hydrogen.model.bo.Mic;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
+import com.thumbstage.hydrogen.model.bo.User;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.dto.IMMessage;
 import com.thumbstage.hydrogen.utils.DensityUtil;
@@ -212,6 +214,17 @@ public class TopicFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onResponseMessageEvent(final PopupMenuEvent event) {
+        switch (event.getMessage()) {
+            case "addUser":
+                User user = (User) event.getData();
+                userViewModel.addContact(user);
+                break;
+        }
+
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

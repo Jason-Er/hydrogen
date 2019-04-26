@@ -6,9 +6,11 @@ import android.arch.lifecycle.MutableLiveData;
 import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.database.ModelDB;
 import com.thumbstage.hydrogen.model.bo.User;
+import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnUser;
 import com.thumbstage.hydrogen.utils.StringUtil;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executor;
 
@@ -78,6 +80,23 @@ public class UserRepository {
     public void signOut() {
         cloudAPI.signOut();
         userLiveData.setValue(defaultUser);
+    }
+
+    public void addContact(final User user) {
+        final User who = cloudAPI.getCurrentUser();
+        if(who != null) {
+            cloudAPI.addContact(who.getId(), user.getId(), new IReturnBool() {
+                @Override
+                public void callback(Boolean isOK) {
+                    executor.execute(new Runnable() {
+                        @Override
+                        public void run() {
+                            modelDB.saveContacts(who.getId(), Arrays.asList(user));
+                        }
+                    });
+                }
+            });
+        }
     }
 
     public LiveData<List<User>> getContact(String userId, int pageNum) {

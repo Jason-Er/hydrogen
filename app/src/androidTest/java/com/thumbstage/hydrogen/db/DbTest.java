@@ -36,7 +36,7 @@ abstract public class DbTest {
         db = Room.databaseBuilder(InstrumentationRegistry.getTargetContext(),
                 HyDatabase.class, "HyDatabase.db")
                 .build();
-        converter = new ModelDB(db);
+        // converter = new ModelDB(db);
         /*
         db = Room.inMemoryDatabaseBuilder(InstrumentationRegistry.getContext(),
                 HyDatabase.class).build();
