@@ -84,7 +84,7 @@ public class CaseCreateTopic extends CaseBase implements ICanPopupMenu, ICanCrea
     @Override
     public void setUpPopupMenu(PopupWindowAdapter adapter) {
         List<HyMenuItem> itemList = new ArrayList<>();
-        itemList.add(new HyMenuItem(R.drawable.ic_menu_setting_b, HyMenuItem.CommandType.SETTING));
+        itemList.add(new HyMenuItem(R.drawable.ic_menu_setting_g, HyMenuItem.CommandType.SETTING));
         itemList.add(new HyMenuItem(R.drawable.ic_menu_account_plus, HyMenuItem.CommandType.ADD_MEMBER));
         itemList.add(new HyMenuItem(R.drawable.ic_menu_start_g, HyMenuItem.CommandType.START));
         itemList.add(new HyMenuItem(R.drawable.ic_menu_publish_g, HyMenuItem.CommandType.PUBLISH));

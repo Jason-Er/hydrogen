@@ -160,8 +160,11 @@ public class BrowseActivity extends AppCompatActivity
         switch (event.getMessage()) {
             case "PublishedOpenedViewHolder":
                 intent.setClass(this, CreateActivity.class);
-                intent.putExtra(TopicHandleType.class.getSimpleName(),
-                        TopicHandleType.ATTEND.name());
+                if(mic.getTopic().getStarted_by().equals(userViewModel.getCurrentUser())) {
+                    intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.EDIT.name());
+                } else {
+                    intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.ATTEND.name());
+                }
                 break;
             case "IStartedClosedViewHolder":
             case "IPublishedClosedViewHolder":
@@ -172,13 +175,11 @@ public class BrowseActivity extends AppCompatActivity
             case "IPublishedOpenedViewHolder":
             case "IStartedOpenedViewHolder":
                 intent.setClass(this, CreateActivity.class);
-                intent.putExtra(TopicHandleType.class.getSimpleName(),
-                        TopicHandleType.EDIT.name());
+                intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.EDIT.name());
                 break;
             case "IAttendedOpenedViewHolder":
                 intent.setClass(this, CreateActivity.class);
-                intent.putExtra(TopicHandleType.class.getSimpleName(),
-                        TopicHandleType.CONTINUE.name());
+                intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.CONTINUE.name());
                 break;
         }
         startActivity(intent);

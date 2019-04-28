@@ -35,8 +35,8 @@ public class CaseEditTopic extends CaseBase implements ICanPopupMenu,
     @Override
     public void setUpPopupMenu(PopupWindowAdapter adapter) {
         List<HyMenuItem> itemList = new ArrayList<>();
-        itemList.add(new HyMenuItem(R.drawable.ic_menu_setting_b, HyMenuItem.CommandType.SETTING));
-        itemList.add(new HyMenuItem(R.drawable.ic_menu_publish_g, HyMenuItem.CommandType.PUBLISH));
+        itemList.add(new HyMenuItem(R.drawable.ic_menu_setting_g, HyMenuItem.CommandType.SETTING));
+        itemList.add(new HyMenuItem(R.drawable.ic_menu_transcribe_close_g, HyMenuItem.CommandType.CLOSE));
         adapter.setItemList(itemList);
     }
 }
