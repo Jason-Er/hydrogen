@@ -20,6 +20,7 @@ import android.view.MenuItem;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.api.IMService;
+import com.thumbstage.hydrogen.event.BrowseItemEvent;
 import com.thumbstage.hydrogen.event.IMMessageEvent;
 import com.thumbstage.hydrogen.event.IMMicEvent;
 import com.thumbstage.hydrogen.model.bo.AtMe;
@@ -31,6 +32,7 @@ import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.view.common.Navigation;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
 import com.thumbstage.hydrogen.view.create.fragment.TopicHandleType;
+import com.thumbstage.hydrogen.view.show.ShowActivity;
 import com.thumbstage.hydrogen.viewmodel.AtMeViewModel;
 import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
@@ -148,6 +150,38 @@ public class BrowseActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onResponseMessageEvent(final BrowseItemEvent event) {
+        Mic mic = (Mic) event.getData();
+        Intent intent = new Intent();
+        intent.putExtra(Mic.class.getSimpleName(), mic.getId());
+        switch (event.getMessage()) {
+            case "PublishedOpenedViewHolder":
+                intent.setClass(this, CreateActivity.class);
+                intent.putExtra(TopicHandleType.class.getSimpleName(),
+                        TopicHandleType.ATTEND.name());
+                break;
+            case "IStartedClosedViewHolder":
+            case "IPublishedClosedViewHolder":
+            case "IAttendedClosedViewHolder":
+            case "PublishedClosedViewHolder":
+                intent.setClass(this, ShowActivity.class);
+                break;
+            case "IPublishedOpenedViewHolder":
+            case "IStartedOpenedViewHolder":
+                intent.setClass(this, CreateActivity.class);
+                intent.putExtra(TopicHandleType.class.getSimpleName(),
+                        TopicHandleType.EDIT.name());
+                break;
+            case "IAttendedOpenedViewHolder":
+                intent.setClass(this, CreateActivity.class);
+                intent.putExtra(TopicHandleType.class.getSimpleName(),
+                        TopicHandleType.CONTINUE.name());
+                break;
+        }
+        startActivity(intent);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -1,6 +1,5 @@
 package com.thumbstage.hydrogen.view.browse.mine;
 
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -9,11 +8,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.event.BrowseItemEvent;
 import com.thumbstage.hydrogen.model.bo.Mic;
 import com.thumbstage.hydrogen.model.bo.Topic;
 import com.thumbstage.hydrogen.model.bo.User;
-import com.thumbstage.hydrogen.view.create.CreateActivity;
-import com.thumbstage.hydrogen.view.create.fragment.TopicHandleType;
+
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,11 +37,7 @@ public class IStartedOpenedViewHolder extends RecyclerView.ViewHolder {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), CreateActivity.class);
-                intent.putExtra(Mic.class.getSimpleName(), mic.getId());
-                intent.putExtra(TopicHandleType.class.getSimpleName(),
-                        TopicHandleType.EDIT.name());
-                v.getContext().startActivity(intent);
+                EventBus.getDefault().post(new BrowseItemEvent(mic, IStartedOpenedViewHolder.class.getSimpleName()));
             }
         });
     }
