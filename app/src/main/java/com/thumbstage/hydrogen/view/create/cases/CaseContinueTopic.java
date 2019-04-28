@@ -5,7 +5,6 @@ import android.util.Log;
 import com.thumbstage.hydrogen.model.bo.Line;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.view.create.feature.ICanPopupMenu;
-import com.thumbstage.hydrogen.view.create.fragment.PopupWindowAdapter;
 
 public class CaseContinueTopic extends CaseBase implements ICanPopupMenu {
 
@@ -24,7 +23,7 @@ public class CaseContinueTopic extends CaseBase implements ICanPopupMenu {
     }
 
     @Override
-    public void setUpPopupMenu(PopupWindowAdapter adapter) {
+    public void setUpPopupMenu() {
 
     }
 }

@@ -20,6 +20,7 @@ public class Topic implements Cloneable {
         name = "";
         brief = "";
         derive_from = "";
+        type = TopicType.UNDEFINED;
         dialogue = new ArrayList<>();
         members = new ArrayList<>();
     }

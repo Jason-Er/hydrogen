@@ -54,6 +54,11 @@ public class PopupWindowAdapter extends BaseAdapter {
         return view;
     }
 
+    public void removeItem(HyMenuItem item) {
+        itemList.remove(item);
+        notifyDataSetChanged();
+    }
+
     public List<HyMenuItem> getItemList() {
         return itemList;
     }

@@ -143,8 +143,8 @@ public class TopicRepository {
                     }
                 });
             }
-            iReturnBool.callback(true);
         }
+        iReturnBool.callback(true);
     }
 
     public void createTheMic(final TopicType type, final IReturnBool iReturnBool) {

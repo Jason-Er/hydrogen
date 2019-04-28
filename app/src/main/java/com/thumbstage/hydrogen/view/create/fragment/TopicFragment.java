@@ -108,12 +108,6 @@ public class TopicFragment extends Fragment {
         layoutManager = new LinearLayoutManager( getActivity() );
         recyclerView.setLayoutManager( layoutManager );
         recyclerView.setAdapter(topicAdapter);
-        for(CaseBase caseBase: roleMap.values()) {
-            caseBase.setLayoutManager(layoutManager);
-            caseBase.setTopicAdapter(topicAdapter);
-            caseBase.setBackgroundView(background);
-            caseBase.setRecyclerView(recyclerView);
-        }
 
         popupWindow = new ListPopupWindow(getContext());
         popupWindowAdapter = new PopupWindowAdapter();
@@ -123,6 +117,14 @@ public class TopicFragment extends Fragment {
         popupWindow.setModal(true);
 
         spinner.setVisibility(View.VISIBLE);
+
+        for(CaseBase caseBase: roleMap.values()) {
+            caseBase.setLayoutManager(layoutManager)
+                    .setTopicAdapter(topicAdapter)
+                    .setBackgroundView(background)
+                    .setRecyclerView(recyclerView)
+                    .setPopupWindowAdapter(popupWindowAdapter);
+        }
 
         return view;
     }
@@ -286,7 +288,7 @@ public class TopicFragment extends Fragment {
                 }
                 popupWindow.dismiss();
                 break;
-            case ADD_MEMBER:
+            case MEMBERS:
                 if(currentRole instanceof ICanAddMember) {
                     ((ICanAddMember) currentRole).addMember(this);
                 }
@@ -309,7 +311,7 @@ public class TopicFragment extends Fragment {
                 View anchor = getActivity().findViewById(R.id.menu_item_setup);
                 popupWindow.setAnchorView(anchor);
                 if( currentRole instanceof ICanPopupMenu ) {
-                    ((ICanPopupMenu) currentRole).setUpPopupMenu(popupWindowAdapter);
+                    ((ICanPopupMenu) currentRole).setUpPopupMenu();
                 }
                 popupWindow.show();
                 break;
