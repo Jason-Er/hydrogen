@@ -279,7 +279,7 @@ public class CloudAPI {
 
     private void closeTopic(@NonNull final Topic topic, final ICallBack iCallBack) {
         AVObject avTopic = AVObject.createWithoutData(TableName.TABLE_TOPIC.name, topic.getId());
-        avTopic.put(FieldName.FIELD_IS_FINISHED.name, true);
+        avTopic.put(FieldName.FIELD_IS_FINISHED.name, topic.isFinished());
         avTopic.saveInBackground(new SaveCallback() {
             @Override
             public void done(AVException e) {

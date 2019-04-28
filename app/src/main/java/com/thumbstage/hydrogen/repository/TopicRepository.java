@@ -184,6 +184,7 @@ public class TopicRepository {
             @Override
             public void run() {
                 final Mic mic = micLiveData.getValue();
+                mic.getTopic().setFinished(true);
                 cloudAPI.closeMic(mic, new CloudAPI.ICallBack() {
                     @Override
                     public void callback(String objectID) {
