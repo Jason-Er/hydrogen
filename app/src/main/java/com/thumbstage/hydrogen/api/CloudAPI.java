@@ -22,6 +22,7 @@ import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMConversation;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.AVIMMessage;
+import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
@@ -46,7 +47,6 @@ import com.thumbstage.hydrogen.repository.FieldName;
 import com.thumbstage.hydrogen.repository.TableName;
 import com.thumbstage.hydrogen.utils.DataConvertUtil;
 import com.thumbstage.hydrogen.utils.StringUtil;
-import com.thumbstage.hydrogen.view.create.feature.ICanAddMember;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -55,7 +55,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -107,21 +106,12 @@ public class CloudAPI {
     public void updateMicMembers(final Mic mic, final IReturnBool iReturnBool) {
         final String userId = AVUser.getCurrentUser().getObjectId();
         AVIMClient client = AVIMClient.getInstance(userId);
-        client.open(new AVIMClientCallback() {
+        AVIMConversation conversation = client.getConversation(mic.getId());
+        List<String> friendsList = users2Ids(mic.getTopic().getMembers());
+        conversation.addMembers(friendsList, new AVIMConversationCallback() {
             @Override
-            public void done(AVIMClient client, AVIMException e) {
-                if(e == null) {
-                    AVIMConversation conversation = client.getConversation(mic.getId());
-                    List<String> friendsList = users2Ids(mic.getTopic().getMembers());
-                    conversation.addMembers(friendsList, new AVIMConversationCallback() {
-                        @Override
-                        public void done(AVIMException e) {
-                            updateTopicMembers(mic.getTopic(), iReturnBool);
-                        }
-                    });
-                } else {
-                    iReturnBool.callback(false);
-                }
+            public void done(AVIMException e) {
+                updateTopicMembers(mic.getTopic(), iReturnBool);
             }
         });
     }
@@ -129,29 +119,19 @@ public class CloudAPI {
     public void createMic(final Topic topic, final ICallBack iCallBack) {
         String userId = AVUser.getCurrentUser().getObjectId();
         AVIMClient client = AVIMClient.getInstance(userId);
-        client.open(new AVIMClientCallback() {
+        client.createConversation(DataConvertUtil.user2StringId(topic.getMembers()), topic.getName(), null, new AVIMConversationCreatedCallback() {
             @Override
-            public void done(AVIMClient client, AVIMException e) {
+            public void done(final AVIMConversation conversation, AVIMException e) {
                 if(e == null) {
-                    Log.i(TAG, "client open ok");
-                    client.createConversation(DataConvertUtil.user2StringId(topic.getMembers()), topic.getName(), null, new AVIMConversationCreatedCallback() {
+                    Log.i(TAG, "createTopic ok");
+                    AVObject avMic = AVObject.createWithoutData(TableName.TABLE_MIC.name, conversation.getConversationId());// 构建对象
+                    AVObject avTopic = AVObject.createWithoutData(TableName.TABLE_TOPIC.name, topic.getId());
+                    avMic.put(FieldName.FIELD_TOPIC.name, avTopic);
+                    avMic.saveInBackground(new SaveCallback() {
                         @Override
-                        public void done(final AVIMConversation conversation, AVIMException e) {
+                        public void done(AVException e) {
                             if(e == null) {
-                                Log.i(TAG, "createTopic ok");
-                                AVObject avMic = AVObject.createWithoutData(TableName.TABLE_MIC.name, conversation.getConversationId());// 构建对象
-                                AVObject avTopic = AVObject.createWithoutData(TableName.TABLE_TOPIC.name, topic.getId());
-                                avMic.put(FieldName.FIELD_TOPIC.name, avTopic);
-                                avMic.saveInBackground(new SaveCallback() {
-                                    @Override
-                                    public void done(AVException e) {
-                                        if(e == null) {
-                                            iCallBack.callback(conversation.getConversationId());
-                                        }
-                                    }
-                                });
-                            } else {
-                                e.printStackTrace();
+                                iCallBack.callback(conversation.getConversationId());
                             }
                         }
                     });
@@ -216,23 +196,15 @@ public class CloudAPI {
 
     public void sendLine(final Mic mic, final Line line, final IReturnBool iReturnBool) {
         AVIMClient client = AVIMClient.getInstance(AVUser.getCurrentUser());
-        client.open(new AVIMClientCallback() {
+        AVIMConversation avMic = client.getConversation(mic.getId());
+        AVIMTypedMessage msg = line2Message(line);
+        avMic.sendMessage(msg, new AVIMConversationCallback() {
             @Override
-            public void done(AVIMClient client, AVIMException e) {
+            public void done(AVIMException e) {
                 if(e == null) {
-                    AVIMConversation avMic = client.getConversation(mic.getId());
-                    AVIMTextMessage msg = new AVIMTextMessage();
-                    msg.setText(line.getWhat());
-                    avMic.sendMessage(msg, new AVIMConversationCallback() {
-                        @Override
-                        public void done(AVIMException e) {
-                            if(e == null) {
-                                addTopicOneLine(mic.getTopic(), line, iReturnBool);
-                            } else {
-                                iReturnBool.callback(false);
-                            }
-                        }
-                    });
+                    addTopicOneLine(mic.getTopic(), line, iReturnBool);
+                } else {
+                    iReturnBool.callback(false);
                 }
             }
         });
@@ -703,32 +675,14 @@ public class CloudAPI {
         });
     }
 
-    /*
-    public void sendLine(final Mic mic, final Line line, final IReturnBool icallback) {
-        AVIMConversation conversation = getConversation(mic.getId());
-        if( !StringUtil.isUrl(line.getWhat()) ) { // must be a text
-            AVIMTextMessage message = new AVIMTextMessage();
-            message.setText(line.getWhat());
-            Map<String, Object> attributes = new HashMap<>();
-            attributes.put("type", line.getLineType().name());
-            message.setAttrs(attributes);
-
-            AVIMMessageOption option = new AVIMMessageOption();
-            option.setReceipt(true);
-
-            conversation.sendMessage(message, new AVIMConversationCallback() {
-                @Override
-                public void done(AVIMException e) {
-                    if( e == null ) {
-                        addTopicOneLine(mic, line, icallback); // TODO: 2/28/2019 may this function add to server
-                    } else {
-                        icallback.callback(false);
-                    }
-                }
-            });
-        }
+    private AVIMTypedMessage line2Message(Line line) {
+        AVIMTextMessage message = null;
+        message.setText(line.getWhat());
+        Map<String, Object> attributes = new HashMap<>();
+        attributes.put("type", line.getLineType().name());
+        message.setAttrs(attributes);
+        return message;
     }
-    */
 
     private Line message2Line(AVIMMessage message) {
         Line line = null;
