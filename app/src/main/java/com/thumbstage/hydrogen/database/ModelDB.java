@@ -244,6 +244,7 @@ public class ModelDB {
                             atMe.setWhat(entity.getWhat());
                             atMe.setWhen(entity.getWhen());
                             atMe.setWho(getUser(entity.getWho()));
+                            atMe.setBrowsed(entity.getBrowsed());
                             list.add(atMe);
                         }
                         atMeListLive.postValue(list);

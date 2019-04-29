@@ -55,6 +55,9 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
         }
         message.setText(atMe.getWho().getName()+":"+atMe.getWhat());
         timeView.setText(StringUtil.date2String4Show(atMe.getWhen()));
+        if(atMe.isBrowsed()) {
+            unreadView.setVisibility(View.GONE);
+        }
     }
 
 }
