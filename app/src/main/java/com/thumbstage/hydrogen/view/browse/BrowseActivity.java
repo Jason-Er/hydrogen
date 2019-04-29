@@ -17,7 +17,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.api.IMService;
 import com.thumbstage.hydrogen.event.AtMeEvent;
@@ -26,6 +30,8 @@ import com.thumbstage.hydrogen.event.IMMessageEvent;
 import com.thumbstage.hydrogen.event.IMMicEvent;
 import com.thumbstage.hydrogen.model.bo.AtMe;
 import com.thumbstage.hydrogen.model.bo.Mic;
+import com.thumbstage.hydrogen.model.bo.Privilege;
+import com.thumbstage.hydrogen.model.bo.User;
 import com.thumbstage.hydrogen.model.dto.IMMessage;
 import com.thumbstage.hydrogen.utils.BoUtil;
 import com.thumbstage.hydrogen.utils.NotificationUtils;
@@ -42,6 +48,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.NoSubscriberEvent;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -72,6 +80,8 @@ public class BrowseActivity extends AppCompatActivity
     UserViewModel userViewModel;
     AtMeViewModel atMeViewModel;
 
+    @BindView(R.id.nav_view)
+    BrowseNavigationView navigationView;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.fab)
@@ -93,7 +103,6 @@ public class BrowseActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         //
@@ -250,7 +259,9 @@ public class BrowseActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         pagerAdapter.updateFragmentsBy(userViewModel.getCurrentUser().getPrivileges());
+        navigationView.updateStateBy(userViewModel.getCurrentUser(), pagerAdapter);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
