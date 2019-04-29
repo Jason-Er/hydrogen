@@ -676,7 +676,7 @@ public class CloudAPI {
     }
 
     private AVIMTypedMessage line2Message(Line line) {
-        AVIMTextMessage message = null;
+        AVIMTextMessage message = new AVIMTextMessage();
         message.setText(line.getWhat());
         Map<String, Object> attributes = new HashMap<>();
         attributes.put("type", line.getLineType().name());

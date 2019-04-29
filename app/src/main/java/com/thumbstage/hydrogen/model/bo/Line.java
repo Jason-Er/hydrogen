@@ -9,6 +9,7 @@ public class Line {
     protected LineType lineType;
 
     public Line() {
+        lineType = LineType.LT_DIALOGUE;
     }
 
     public Line(User who, Date when, String what, LineType lineType) {

@@ -395,7 +395,7 @@ public class ModelDB {
     // endregion
 
     public void updateAtMe(AtMe atMe) {
-        database.atMeDao().updateAtMe(atMe.getMic().getId(), atMe.getMe().getId(), atMe.isBrowsed(), new Date());
+        database.atMeDao().updateAtMe(atMe.getMic().getId(), atMe.getMe().getId(), atMe.isBrowsed()? 1:0, new Date());
     }
 
 

@@ -31,7 +31,7 @@ public class AtMeRepository {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                modelDB.deleteAtMe(atMe);
+                modelDB.updateAtMe(atMe);
             }
         });
     }

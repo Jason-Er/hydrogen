@@ -1,6 +1,5 @@
 package com.thumbstage.hydrogen.view.browse.atme;
 
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -11,11 +10,8 @@ import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.AtMeEvent;
 import com.thumbstage.hydrogen.model.bo.AtMe;
-import com.thumbstage.hydrogen.model.bo.Mic;
 import com.thumbstage.hydrogen.utils.GlideUtil;
 import com.thumbstage.hydrogen.utils.StringUtil;
-import com.thumbstage.hydrogen.view.create.CreateActivity;
-import com.thumbstage.hydrogen.view.create.fragment.TopicHandleType;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -45,12 +41,7 @@ public class AtMeViewHolder extends RecyclerView.ViewHolder {
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                Intent intent = new Intent(v.getContext(), CreateActivity.class);
-                intent.putExtra(Mic.class.getSimpleName(), atMe.getMic().getId());
-                intent.putExtra(TopicHandleType.class.getSimpleName(),
-                        TopicHandleType.CONTINUE.name());
                 EventBus.getDefault().post(new AtMeEvent(atMe, "click"));
-                v.getContext().startActivity(intent);
             }
         });
     }

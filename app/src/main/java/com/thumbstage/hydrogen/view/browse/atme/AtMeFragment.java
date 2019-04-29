@@ -105,6 +105,7 @@ public class AtMeFragment extends Fragment implements IBrowseCustomize, IAdapter
     public void handleEvent(AtMeEvent messageEvent) {
         switch (messageEvent.getMessage()) {
             case "click":
+                ((AtMe) messageEvent.getData()).setBrowsed(true);
                 viewModel.haveReadAtMe((AtMe) messageEvent.getData());
                 break;
         }

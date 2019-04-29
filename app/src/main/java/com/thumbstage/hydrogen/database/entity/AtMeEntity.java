@@ -32,7 +32,9 @@ public class AtMeEntity {
     @NonNull
     private Date when;
     private String what;
-    
+
+    @ColumnInfo(name = "is_browsed")
+    private Boolean isBrowsed = false;
     @ColumnInfo(name = "last_refresh")
     private Date lastRefresh;
 
@@ -86,5 +88,13 @@ public class AtMeEntity {
 
     public void setWhen(@NonNull Date when) {
         this.when = when;
+    }
+
+    public Boolean getBrowsed() {
+        return isBrowsed;
+    }
+
+    public void setBrowsed(Boolean browsed) {
+        isBrowsed = browsed;
     }
 }
