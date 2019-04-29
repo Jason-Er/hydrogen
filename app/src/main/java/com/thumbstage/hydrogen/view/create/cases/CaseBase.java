@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -11,6 +12,7 @@ import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
 import com.thumbstage.hydrogen.model.bo.HyFile;
 import com.thumbstage.hydrogen.model.bo.Line;
+import com.thumbstage.hydrogen.model.bo.Mic;
 import com.thumbstage.hydrogen.model.bo.Setting;
 import com.thumbstage.hydrogen.model.bo.TopicType;
 import com.thumbstage.hydrogen.model.bo.User;
@@ -108,35 +110,43 @@ public abstract class CaseBase implements ITopicFragmentFunction {
         dialog.show(fragment.getChildFragmentManager(), "CaseBase");
     }
 
-    void publishTopic(final IReturnBool iReturnBool) {
+    void publishTopic(IReturnBool iReturnBool) {
         Log.i(TAG, "publishTopic");
-        if(topicAdapter.getTopic().getSetting() != null) {
-            File file = new File(topicAdapter.getTopic().getSetting().getUrl());
-            topicViewModel.saveFile(file, new IReturnHyFile() {
-                @Override
-                public void callback(HyFile hyFile) {
-                    topicAdapter.getTopic().setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
-                    topicViewModel.createTheTopic(TopicType.PUBLISHED, iReturnBool);
-                }
-            });
-        } else {
-            topicViewModel.createTheTopic(TopicType.PUBLISHED, iReturnBool);
-        }
+        topicAdapter.getTopic().setType(TopicType.PUBLISHED);
+        saveOrUpdate(topicAdapter.getMic(), topicViewModel, iReturnBool);
     }
 
-    void createTopic(final IReturnBool iReturnBool) {
+    void createTopic(IReturnBool iReturnBool) {
         Log.i(TAG, "createTopic");
-        if(topicAdapter.getTopic().getSetting() != null) {
-            File file = new File(topicAdapter.getTopic().getSetting().getUrl());
+        topicAdapter.getTopic().setType(TopicType.UNPUBLISHED);
+        saveOrUpdate(topicAdapter.getMic(), topicViewModel, iReturnBool);
+    }
+
+    void closeTopic(IReturnBool iReturnBool) {
+        topicAdapter.getTopic().setFinished(true);
+        topicViewModel.closeTheTopic(iReturnBool);
+    }
+
+    private void saveOrUpdate(final Mic mic, final TopicViewModel topicViewModel, final IReturnBool iReturnBool) {
+        if(mic.getTopic().getSetting() != null) {
+            File file = new File(mic.getTopic().getSetting().getUrl());
             topicViewModel.saveFile(file, new IReturnHyFile() {
                 @Override
                 public void callback(HyFile hyFile) {
-                    topicAdapter.getTopic().setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
-                    topicViewModel.createTheTopic(TopicType.UNPUBLISHED, iReturnBool);
+                    mic.getTopic().setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
+                    if(TextUtils.isEmpty(mic.getId())) {
+                        topicViewModel.createTheTopic(iReturnBool);
+                    } else {
+                        topicViewModel.updateTheTopic(iReturnBool);
+                    }
                 }
             });
         } else {
-            topicViewModel.createTheTopic(TopicType.UNPUBLISHED, iReturnBool);
+            if(TextUtils.isEmpty(mic.getId())) {
+                topicViewModel.createTheTopic(iReturnBool);
+            } else {
+                topicViewModel.updateTheTopic(iReturnBool);
+            }
         }
     }
 

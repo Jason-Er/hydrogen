@@ -20,7 +20,7 @@ public class CaseEditTopic extends CaseBase implements ICanPopupMenu,
 
     @Override
     public void closeTopic(IReturnBool iReturnBool) {
-        topicViewModel.closeTheTopic(iReturnBool);
+        super.closeTopic(iReturnBool);
     }
 
     @Override

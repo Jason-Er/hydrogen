@@ -13,7 +13,7 @@ public class CaseCopyTopic extends CaseBase implements ICanCreateTopic, ICanPopu
 
     @Override
     public void createTopic(final IReturnBool iReturnBool) {
-        topicViewModel.createTheTopic(TopicType.PICK_UP, iReturnBool);
+        super.createTopic(iReturnBool);
     }
 
     @Override

@@ -46,6 +46,7 @@ import com.thumbstage.hydrogen.repository.FieldName;
 import com.thumbstage.hydrogen.repository.TableName;
 import com.thumbstage.hydrogen.utils.DataConvertUtil;
 import com.thumbstage.hydrogen.utils.StringUtil;
+import com.thumbstage.hydrogen.view.create.feature.ICanAddMember;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -237,6 +238,26 @@ public class CloudAPI {
         });
     }
 
+    public void updateMic(final Mic mic, final ICallBack iCallBack) {
+        updateTopic(mic.getTopic(), new ICallBack() {
+            @Override
+            public void callback(String objectID) {
+                AVObject avMic = AVObject.createWithoutData(TableName.TABLE_MIC.name, mic.getId());
+                avMic.put(FieldName.FIELD_TOPIC.name, mic.getTopic());
+                avMic.put("m", mic.getTopic().getMembers());
+                avMic.put("name",mic.getTopic().getName());
+                avMic.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(AVException e) {
+                        if(e == null) {
+                            iCallBack.callback(mic.getId());
+                        }
+                    }
+                });
+            }
+        });
+    }
+
     public void createMic(@NonNull final Mic mic, final ICallBack iCallBack) {
         createTopic(mic.getTopic(), new ICallBack() {
             @Override
@@ -287,6 +308,56 @@ public class CloudAPI {
                     iCallBack.callback(topic.getId());
                 } else {
                     iCallBack.callback(null);
+                }
+            }
+        });
+    }
+
+    private void updateTopicType(final Topic topic, final ICallBack iCallBack) {
+        AVObject avTopic = AVObject.createWithoutData(TableName.TABLE_TOPIC.name, topic.getId());
+        avTopic.put(FieldName.FIELD_TYPE.name, topic.getType().name());
+        avTopic.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                if(e == null) {
+                    iCallBack.callback(topic.getId());
+                } else {
+                    iCallBack.callback(null);
+                }
+            }
+        });
+
+    }
+
+    public void updateTopic(final Topic topic, final ICallBack iCallBack) {
+        topic.setStarted_by(getCurrentUser());
+        if( getCurrentUser()!=null && !topic.getMembers().contains(getCurrentUser()) ) {
+            topic.getMembers().add(getCurrentUser());
+        }
+        final AVObject avTopic = AVObject.createWithoutData(TableName.TABLE_TOPIC.name, topic.getId());
+        avTopic.put(FieldName.FIELD_NAME.name, topic.getName());
+        avTopic.put(FieldName.FIELD_BRIEF.name, topic.getBrief());
+        avTopic.put(FieldName.FIELD_TYPE.name, topic.getType().name());
+        avTopic.put(FieldName.FIELD_STARTED_BY.name, AVUser.getCurrentUser());
+        if( !TextUtils.isEmpty( topic.getDerive_from() ) ) {
+            AVObject avDeriveFrom = AVObject.createWithoutData(TableName.TABLE_TOPIC.name, topic.getDerive_from());
+            avTopic.put(FieldName.FIELD_DERIVE_FROM.name, avDeriveFrom);
+        }
+        if(topic.getSetting() != null) {
+            AVObject avObject = AVObject.createWithoutData(TableName.TABLE_FILE.name, topic.getSetting().getId());
+            avTopic.put(FieldName.FIELD_SETTING.name, avObject);
+        }
+        avTopic.put(FieldName.FIELD_MEMBERS.name, DataConvertUtil.user2StringId(topic.getMembers()));
+        List<Map> list = DataConvertUtil.convert2AVObject(topic.getDialogue());
+        avTopic.put(FieldName.FIELD_DIALOGUE.name, list);
+        avTopic.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                if(e == null) {
+                    Log.i(TAG, "createTopic ok");
+                    iCallBack.callback(avTopic.getObjectId());
+                } else {
+                    e.printStackTrace();
                 }
             }
         });

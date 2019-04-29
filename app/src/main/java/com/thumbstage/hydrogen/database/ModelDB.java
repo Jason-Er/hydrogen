@@ -394,7 +394,9 @@ public class ModelDB {
 
     // endregion
 
-    public void deleteAtMe(AtMe atMe) {
-        database.atMeDao().deleteAtMeByKey(atMe.getMic().getId(), atMe.getMe().getId());
+    public void updateAtMe(AtMe atMe) {
+        database.atMeDao().updateAtMe(atMe.getMic().getId(), atMe.getMe().getId(), atMe.isBrowsed(), new Date());
     }
+
+
 }

@@ -4,7 +4,6 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
 import com.thumbstage.hydrogen.model.bo.Mic;
-import com.thumbstage.hydrogen.model.bo.TopicType;
 import com.thumbstage.hydrogen.model.bo.User;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
@@ -54,8 +53,12 @@ public class TopicViewModel extends ViewModel {
         topicRepository.saveFile(file, iReturnHyFile);
     }
 
-    public void createTheTopic(TopicType type, IReturnBool iReturnBool) {
-        topicRepository.createTheMic(type, iReturnBool);
+    public void createTheTopic(IReturnBool iReturnBool) {
+        topicRepository.createTheMic(iReturnBool);
+    }
+
+    public void updateTheTopic(IReturnBool iReturnBool) {
+        topicRepository.updateTheMic(iReturnBool);
     }
 
     public void flushMicBuf(IReturnBool iReturnBool) {

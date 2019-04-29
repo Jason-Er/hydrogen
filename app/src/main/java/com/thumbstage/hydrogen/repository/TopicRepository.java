@@ -147,12 +147,32 @@ public class TopicRepository {
         iReturnBool.callback(true);
     }
 
-    public void createTheMic(final TopicType type, final IReturnBool iReturnBool) {
+    public void updateTheMic(final IReturnBool iReturnBool) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 final Mic mic = micLiveData.getValue();
-                mic.getTopic().setType(type);
+                cloudAPI.updateMic(mic, new CloudAPI.ICallBack() {
+                    @Override
+                    public void callback(String objectID) {
+                        if(objectID.equals(mic.getId())) {
+                            modelDB.saveMic(mic);
+                            iReturnBool.callback(true);
+                        } else {
+                            iReturnBool.callback(false);
+                        }
+                    }
+                });
+            }
+        });
+
+    }
+
+    public void createTheMic(final IReturnBool iReturnBool) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                final Mic mic = micLiveData.getValue();
                 cloudAPI.createMic(mic, new CloudAPI.ICallBack() {
                     @Override
                     public void callback(String objectID) {
@@ -184,7 +204,6 @@ public class TopicRepository {
             @Override
             public void run() {
                 final Mic mic = micLiveData.getValue();
-                mic.getTopic().setFinished(true);
                 cloudAPI.closeMic(mic, new CloudAPI.ICallBack() {
                     @Override
                     public void callback(String objectID) {

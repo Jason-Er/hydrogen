@@ -20,6 +20,7 @@ import android.view.MenuItem;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.api.IMService;
+import com.thumbstage.hydrogen.event.AtMeEvent;
 import com.thumbstage.hydrogen.event.BrowseItemEvent;
 import com.thumbstage.hydrogen.event.IMMessageEvent;
 import com.thumbstage.hydrogen.event.IMMicEvent;
@@ -150,6 +151,20 @@ public class BrowseActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onResponseMessageEvent(final AtMeEvent event) {
+        switch (event.getMessage()) {
+            case "click":
+                AtMe atMe = (AtMe) event.getData();
+                Intent intent = new Intent(this, CreateActivity.class);
+                intent.putExtra(Mic.class.getSimpleName(), atMe.getMic().getId());
+                intent.putExtra(TopicHandleType.class.getSimpleName(),
+                        TopicHandleType.CONTINUE.name());
+                startActivity(intent);
+                break;
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
