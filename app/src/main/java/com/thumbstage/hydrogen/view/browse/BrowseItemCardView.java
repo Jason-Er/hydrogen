@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.model.bo.Topic;
+import com.thumbstage.hydrogen.model.vo.Topic;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

@@ -6,10 +6,10 @@ import android.text.TextUtils;
 
 import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.database.ModelDB;
-import com.thumbstage.hydrogen.model.bo.Line;
-import com.thumbstage.hydrogen.model.bo.Mic;
+import com.thumbstage.hydrogen.model.vo.Line;
+import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.bo.TopicType;
-import com.thumbstage.hydrogen.model.bo.User;
+import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
 import com.thumbstage.hydrogen.model.callback.IReturnMic;
@@ -143,16 +143,36 @@ public class TopicRepository {
                     }
                 });
             }
-            iReturnBool.callback(true);
         }
+        iReturnBool.callback(true);
     }
 
-    public void createTheMic(final TopicType type, final IReturnBool iReturnBool) {
+    public void updateTheMic(final IReturnBool iReturnBool) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 final Mic mic = micLiveData.getValue();
-                mic.getTopic().setType(type);
+                cloudAPI.updateMic(mic, new CloudAPI.ICallBack() {
+                    @Override
+                    public void callback(String objectID) {
+                        if(objectID.equals(mic.getId())) {
+                            modelDB.saveMic(mic);
+                            iReturnBool.callback(true);
+                        } else {
+                            iReturnBool.callback(false);
+                        }
+                    }
+                });
+            }
+        });
+
+    }
+
+    public void createTheMic(final IReturnBool iReturnBool) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                final Mic mic = micLiveData.getValue();
                 cloudAPI.createMic(mic, new CloudAPI.ICallBack() {
                     @Override
                     public void callback(String objectID) {

@@ -1,6 +1,6 @@
 package com.thumbstage.hydrogen.model.callback;
 
-import com.thumbstage.hydrogen.model.bo.Mic;
+import com.thumbstage.hydrogen.model.vo.Mic;
 
 import java.util.List;
 

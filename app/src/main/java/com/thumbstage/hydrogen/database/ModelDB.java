@@ -7,20 +7,22 @@ import android.arch.lifecycle.Transformations;
 import android.text.TextUtils;
 
 import com.thumbstage.hydrogen.database.entity.AtMeEntity;
+import com.thumbstage.hydrogen.database.entity.CanOnMicEntity;
 import com.thumbstage.hydrogen.database.entity.ContactEntity;
 import com.thumbstage.hydrogen.database.entity.LineEntity;
 import com.thumbstage.hydrogen.database.entity.MicEntity;
 import com.thumbstage.hydrogen.database.entity.TopicEntity;
 import com.thumbstage.hydrogen.database.entity.TopicUserEntity;
 import com.thumbstage.hydrogen.database.entity.UserEntity;
-import com.thumbstage.hydrogen.model.bo.AtMe;
-import com.thumbstage.hydrogen.model.bo.Line;
+import com.thumbstage.hydrogen.model.bo.CanOnMic;
+import com.thumbstage.hydrogen.model.vo.AtMe;
+import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.bo.LineType;
-import com.thumbstage.hydrogen.model.bo.Mic;
-import com.thumbstage.hydrogen.model.bo.Setting;
-import com.thumbstage.hydrogen.model.bo.Topic;
+import com.thumbstage.hydrogen.model.vo.Mic;
+import com.thumbstage.hydrogen.model.vo.Setting;
+import com.thumbstage.hydrogen.model.vo.Topic;
 import com.thumbstage.hydrogen.model.bo.TopicType;
-import com.thumbstage.hydrogen.model.bo.User;
+import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.utils.DataConvertUtil;
 
 import java.util.ArrayList;
@@ -244,6 +246,7 @@ public class ModelDB {
                             atMe.setWhat(entity.getWhat());
                             atMe.setWhen(entity.getWhen());
                             atMe.setWho(getUser(entity.getWho()));
+                            atMe.setBrowsed(entity.getBrowsed());
                             list.add(atMe);
                         }
                         atMeListLive.postValue(list);
@@ -335,6 +338,19 @@ public class ModelDB {
         });
     }
 
+    public LiveData<List<CanOnMic>> getCanOnMic(String userId, String micId) {
+        return Transformations.map(database.canOnMicDao().getCanOnMic(userId, micId), new Function<List<CanOnMicEntity>, List<CanOnMic>>() {
+            @Override
+            public List<CanOnMic> apply(List<CanOnMicEntity> input) {
+                List<CanOnMic> list = new ArrayList<>();
+                for(CanOnMicEntity entity: input) {
+                    list.add(CanOnMic.valueOf(entity.getCan()));
+                }
+                return list;
+            }
+        });
+    }
+
     public User getUser(String userId) {
         UserEntity entity = database.userDao().get(userId);
         User user = new User(entity.getId(), entity.getName(), entity.getAvatar());
@@ -394,7 +410,9 @@ public class ModelDB {
 
     // endregion
 
-    public void deleteAtMe(AtMe atMe) {
-        database.atMeDao().deleteAtMeByKey(atMe.getMic().getId(), atMe.getMe().getId());
+    public void updateAtMe(AtMe atMe) {
+        database.atMeDao().updateAtMe(atMe.getMic().getId(), atMe.getMe().getId(), atMe.isBrowsed()? 1:0, new Date());
     }
+
+
 }

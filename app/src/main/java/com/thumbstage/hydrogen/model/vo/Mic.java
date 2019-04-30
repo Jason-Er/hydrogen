@@ -1,4 +1,4 @@
-package com.thumbstage.hydrogen.model.bo;
+package com.thumbstage.hydrogen.model.vo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,9 +53,6 @@ public class Mic implements Cloneable {
             e.printStackTrace();
         }
         mic.topic = (Topic) topic.clone();
-        mic.topic.setDerive_from(topic.getId());
-        mic.topic.setId("");
-        mic.topic.setStarted_by(null);
         mic.setId("");
         return mic;
     }

@@ -1,4 +1,4 @@
-package com.thumbstage.hydrogen.model.bo;
+package com.thumbstage.hydrogen.model.vo;
 
 import java.util.Date;
 
@@ -8,6 +8,7 @@ public class AtMe {
     Date when;
     String what;
     User me;
+    boolean isBrowsed;
 
     public User getWho() {
         return who;
@@ -47,5 +48,13 @@ public class AtMe {
 
     public void setMe(User me) {
         this.me = me;
+    }
+
+    public boolean isBrowsed() {
+        return isBrowsed;
+    }
+
+    public void setBrowsed(boolean browsed) {
+        isBrowsed = browsed;
     }
 }

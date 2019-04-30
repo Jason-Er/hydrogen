@@ -3,7 +3,7 @@ package com.thumbstage.hydrogen.repository;
 import android.arch.lifecycle.LiveData;
 
 import com.thumbstage.hydrogen.database.ModelDB;
-import com.thumbstage.hydrogen.model.bo.AtMe;
+import com.thumbstage.hydrogen.model.vo.AtMe;
 
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -31,7 +31,7 @@ public class AtMeRepository {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                modelDB.deleteAtMe(atMe);
+                modelDB.updateAtMe(atMe);
             }
         });
     }

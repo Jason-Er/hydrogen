@@ -1,5 +1,5 @@
 package com.thumbstage.hydrogen.model.bo;
 
 public enum TopicType {
-    PUBLISHED, UNPUBLISHED, PICK_UP
+    UNDEFINED, PUBLISHED, UNPUBLISHED, PICK_UP
 }

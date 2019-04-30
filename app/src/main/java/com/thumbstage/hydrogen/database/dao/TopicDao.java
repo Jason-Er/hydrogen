@@ -7,6 +7,7 @@ import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
 import com.thumbstage.hydrogen.database.entity.TopicEntity;
+import com.thumbstage.hydrogen.database.entity.UserEntity;
 
 import java.util.Date;
 import java.util.List;
@@ -39,4 +40,5 @@ public interface TopicDao {
 
     @Query("SELECT * FROM topic WHERE type = :type AND started_by =:started_by AND is_finished =:isFinished AND last_refresh > :lastRefreshMax LIMIT 1")
     TopicEntity hasTopic(String type, String started_by, boolean isFinished, Date lastRefreshMax);
+
 }

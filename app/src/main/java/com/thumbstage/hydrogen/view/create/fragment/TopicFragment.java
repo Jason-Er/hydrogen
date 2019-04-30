@@ -27,9 +27,10 @@ import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.HyMenuItemEvent;
 import com.thumbstage.hydrogen.event.IMMessageEvent;
 import com.thumbstage.hydrogen.event.PopupMenuEvent;
-import com.thumbstage.hydrogen.model.bo.Mic;
+import com.thumbstage.hydrogen.model.bo.CanOnMic;
+import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
-import com.thumbstage.hydrogen.model.bo.User;
+import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.dto.IMMessage;
 import com.thumbstage.hydrogen.utils.DensityUtil;
@@ -54,6 +55,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -108,12 +110,6 @@ public class TopicFragment extends Fragment {
         layoutManager = new LinearLayoutManager( getActivity() );
         recyclerView.setLayoutManager( layoutManager );
         recyclerView.setAdapter(topicAdapter);
-        for(CaseBase caseBase: roleMap.values()) {
-            caseBase.setLayoutManager(layoutManager);
-            caseBase.setTopicAdapter(topicAdapter);
-            caseBase.setBackgroundView(background);
-            caseBase.setRecyclerView(recyclerView);
-        }
 
         popupWindow = new ListPopupWindow(getContext());
         popupWindowAdapter = new PopupWindowAdapter();
@@ -123,6 +119,14 @@ public class TopicFragment extends Fragment {
         popupWindow.setModal(true);
 
         spinner.setVisibility(View.VISIBLE);
+
+        for(CaseBase caseBase: roleMap.values()) {
+            caseBase.setLayoutManager(layoutManager)
+                    .setTopicAdapter(topicAdapter)
+                    .setBackgroundView(background)
+                    .setRecyclerView(recyclerView)
+                    .setPopupWindowAdapter(popupWindowAdapter);
+        }
 
         return view;
     }
@@ -191,6 +195,12 @@ public class TopicFragment extends Fragment {
                             Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
                         }
                         spinner.setVisibility(View.GONE);
+                    }
+                });
+                userViewModel.getCanOnMic(micId, userViewModel.getCurrentUser().getId()).observe(this, new Observer<List<CanOnMic>>() {
+                    @Override
+                    public void onChanged(@Nullable List<CanOnMic> canOnMics) {
+
                     }
                 });
                 break;
@@ -286,7 +296,7 @@ public class TopicFragment extends Fragment {
                 }
                 popupWindow.dismiss();
                 break;
-            case ADD_MEMBER:
+            case MEMBERS:
                 if(currentRole instanceof ICanAddMember) {
                     ((ICanAddMember) currentRole).addMember(this);
                 }
@@ -309,7 +319,7 @@ public class TopicFragment extends Fragment {
                 View anchor = getActivity().findViewById(R.id.menu_item_setup);
                 popupWindow.setAnchorView(anchor);
                 if( currentRole instanceof ICanPopupMenu ) {
-                    ((ICanPopupMenu) currentRole).setUpPopupMenu(popupWindowAdapter);
+                    ((ICanPopupMenu) currentRole).setUpPopupMenu();
                 }
                 popupWindow.show();
                 break;

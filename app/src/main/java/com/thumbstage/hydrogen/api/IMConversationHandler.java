@@ -29,7 +29,12 @@ public class IMConversationHandler extends AVIMConversationEventHandler {
         imMessage.setWhoId(message.getFrom());
         if(message instanceof AVIMTextMessage) {
             imMessage.setWhat(((AVIMTextMessage) message).getText());
-            LineType type = LineType.valueOf((String) ((AVIMTextMessage) message).getAttrs().get("type"));
+            LineType type = LineType.LT_DIALOGUE;
+            try {
+                 type = LineType.valueOf((String) ((AVIMTextMessage) message).getAttrs().get("type"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             imMessage.setLineType(type);
         }
         IMMicEvent event = new IMMicEvent(imMessage, "onUnreadMessage");

@@ -8,7 +8,7 @@ import android.widget.ImageButton;
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.TopicMemberEvent;
-import com.thumbstage.hydrogen.model.bo.User;
+import com.thumbstage.hydrogen.model.vo.User;
 
 import org.greenrobot.eventbus.EventBus;
 

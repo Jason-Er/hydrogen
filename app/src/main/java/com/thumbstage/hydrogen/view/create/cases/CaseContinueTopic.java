@@ -2,12 +2,17 @@ package com.thumbstage.hydrogen.view.create.cases;
 
 import android.util.Log;
 
-import com.thumbstage.hydrogen.model.bo.Line;
+import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
+import com.thumbstage.hydrogen.view.common.HyMenuItem;
+import com.thumbstage.hydrogen.view.create.feature.ICanCloseTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanPopupMenu;
-import com.thumbstage.hydrogen.view.create.fragment.PopupWindowAdapter;
 
-public class CaseContinueTopic extends CaseBase implements ICanPopupMenu {
+import java.util.ArrayList;
+import java.util.List;
+
+public class CaseContinueTopic extends CaseBase implements ICanPopupMenu,
+        ICanCloseTopic {
 
     @Override
     protected void addLine(Line line) {
@@ -24,7 +29,20 @@ public class CaseContinueTopic extends CaseBase implements ICanPopupMenu {
     }
 
     @Override
-    public void setUpPopupMenu(PopupWindowAdapter adapter) {
-
+    public void closeTopic(IReturnBool iReturnBool) {
+        super.closeTopic(iReturnBool);
     }
+
+    @Override
+    public void setUpPopupMenu() {
+
+        List<HyMenuItem> itemList = new ArrayList<>();
+        switch (topicAdapter.getTopic().getType()) {
+            case PICK_UP:
+
+                break;
+        }
+        popupWindowAdapter.setItemList(itemList);
+    }
+
 }

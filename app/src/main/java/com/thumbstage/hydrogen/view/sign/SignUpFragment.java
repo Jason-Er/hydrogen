@@ -16,7 +16,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.model.bo.User;
+import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
 

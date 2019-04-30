@@ -25,7 +25,7 @@ public interface AtMeDao {
     @Delete
     void delete(AtMeEntity... atMeEntities);
 
-    @Query("SELECT * FROM at_me WHERE me =:meId ORDER BY last_refresh DESC LIMIT :perPageNum OFFSET :offset")
+    @Query("SELECT * FROM at_me WHERE me =:meId ORDER BY is_browsed ASC, last_refresh DESC LIMIT :perPageNum OFFSET :offset")
     LiveData<List<AtMeEntity>> get(String meId, int perPageNum, int offset);
 
     @Query("SELECT * FROM at_me WHERE me = :meId AND last_refresh > :lastRefreshMax LIMIT 1")
@@ -33,6 +33,9 @@ public interface AtMeDao {
 
     @Query("DELETE FROM at_me WHERE mic_id = :micId AND me = :meId")
     void deleteAtMeByKey(String micId, String meId);
+
+    @Query("UPDATE at_me SET is_browsed =:isBrowsed, last_refresh =:lastRefresh WHERE mic_id = :micId AND me = :meId")
+    void updateAtMe(String micId, String meId, int isBrowsed, Date lastRefresh);
 
 
 }

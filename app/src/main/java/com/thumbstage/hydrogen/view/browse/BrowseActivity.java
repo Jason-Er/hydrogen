@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -20,17 +19,22 @@ import android.view.MenuItem;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.api.IMService;
+import com.thumbstage.hydrogen.event.AtMeEvent;
+import com.thumbstage.hydrogen.event.BrowseItemEvent;
 import com.thumbstage.hydrogen.event.IMMessageEvent;
 import com.thumbstage.hydrogen.event.IMMicEvent;
-import com.thumbstage.hydrogen.model.bo.AtMe;
-import com.thumbstage.hydrogen.model.bo.Mic;
+import com.thumbstage.hydrogen.event.NaviViewEvent;
+import com.thumbstage.hydrogen.model.vo.AtMe;
+import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.dto.IMMessage;
 import com.thumbstage.hydrogen.utils.BoUtil;
 import com.thumbstage.hydrogen.utils.NotificationUtils;
 import com.thumbstage.hydrogen.utils.StringUtil;
+import com.thumbstage.hydrogen.view.account.AccountActivity;
 import com.thumbstage.hydrogen.view.common.Navigation;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
 import com.thumbstage.hydrogen.view.create.fragment.TopicHandleType;
+import com.thumbstage.hydrogen.view.show.ShowActivity;
 import com.thumbstage.hydrogen.viewmodel.AtMeViewModel;
 import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
@@ -49,7 +53,7 @@ import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 
 public class BrowseActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener, HasSupportFragmentInjector {
+        implements HasSupportFragmentInjector {
 
     private final String TAG = "BrowseActivity";
 
@@ -69,6 +73,10 @@ public class BrowseActivity extends AppCompatActivity
     UserViewModel userViewModel;
     AtMeViewModel atMeViewModel;
 
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawer;
+    @BindView(R.id.nav_view)
+    BrowseNavigationView navigationView;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.fab)
@@ -90,9 +98,6 @@ public class BrowseActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-
         //
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
@@ -100,11 +105,7 @@ public class BrowseActivity extends AppCompatActivity
                 int menuItemId = item.getItemId();
                 switch (menuItemId) {
                     case R.id.menu_browse_sign:
-                        if( userViewModel.getCurrentUser().getId().equals(StringUtil.DEFAULT_USERID) ) {
-                            Navigation.sign2SignIn(BrowseActivity.this);
-                        } else {
-                            Navigation.sign2Account(BrowseActivity.this);
-                        }
+                        navi2AccountOrSignIn();
                         break;
                 }
                 return false;
@@ -148,6 +149,75 @@ public class BrowseActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onResponseMessageEvent(final NaviViewEvent event) {
+        switch (event.getMessage()) {
+            case "userAvatar":
+                navi2AccountOrSignIn();
+                break;
+            case "userContact":
+                Intent intent = new Intent(this, AccountActivity.class);
+                intent.putExtra(AccountActivity.Type.class.getSimpleName(), AccountActivity.Type.CONTACT.name());
+                startActivity(intent);
+                break;
+        }
+    }
+
+    private void navi2AccountOrSignIn() {
+        if( userViewModel.getCurrentUser().getId().equals(StringUtil.DEFAULT_USERID) ) {
+            Navigation.sign2SignIn(BrowseActivity.this);
+        } else {
+            Navigation.sign2Account(BrowseActivity.this);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onResponseMessageEvent(final AtMeEvent event) {
+        switch (event.getMessage()) {
+            case "click":
+                AtMe atMe = (AtMe) event.getData();
+                Intent intent = new Intent(this, CreateActivity.class);
+                intent.putExtra(Mic.class.getSimpleName(), atMe.getMic().getId());
+                intent.putExtra(TopicHandleType.class.getSimpleName(),
+                        TopicHandleType.CONTINUE.name());
+                startActivity(intent);
+                break;
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onResponseMessageEvent(final BrowseItemEvent event) {
+        Mic mic = (Mic) event.getData();
+        Intent intent = new Intent();
+        intent.putExtra(Mic.class.getSimpleName(), mic.getId());
+        switch (event.getMessage()) {
+            case "PublishedOpenedViewHolder":
+                intent.setClass(this, CreateActivity.class);
+                if(mic.getTopic().getStarted_by().equals(userViewModel.getCurrentUser())) {
+                    intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.EDIT.name());
+                } else {
+                    intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.ATTEND.name());
+                }
+                break;
+            case "IStartedClosedViewHolder":
+            case "IPublishedClosedViewHolder":
+            case "IAttendedClosedViewHolder":
+            case "PublishedClosedViewHolder":
+                intent.setClass(this, ShowActivity.class);
+                break;
+            case "IPublishedOpenedViewHolder":
+            case "IStartedOpenedViewHolder":
+                intent.setClass(this, CreateActivity.class);
+                intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.EDIT.name());
+                break;
+            case "IAttendedOpenedViewHolder":
+                intent.setClass(this, CreateActivity.class);
+                intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.CONTINUE.name());
+                break;
+        }
+        startActivity(intent);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -200,7 +270,9 @@ public class BrowseActivity extends AppCompatActivity
     protected void onResume() {
         super.onResume();
         pagerAdapter.updateFragmentsBy(userViewModel.getCurrentUser().getPrivileges());
+        navigationView.updateStateBy(userViewModel.getCurrentUser(), viewPager, drawer);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -225,29 +297,5 @@ public class BrowseActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
-    @Override
-    public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
-        int id = item.getItemId();
-
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
-
-        } else if (id == R.id.nav_slideshow) {
-
-        } else if (id == R.id.nav_manage) {
-
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {
-
-        }
-
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
-        return true;
-    }
 
 }

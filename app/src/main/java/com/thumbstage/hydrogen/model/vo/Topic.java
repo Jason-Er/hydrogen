@@ -1,4 +1,6 @@
-package com.thumbstage.hydrogen.model.bo;
+package com.thumbstage.hydrogen.model.vo;
+
+import com.thumbstage.hydrogen.model.bo.TopicType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +22,7 @@ public class Topic implements Cloneable {
         name = "";
         brief = "";
         derive_from = "";
+        type = TopicType.UNDEFINED;
         dialogue = new ArrayList<>();
         members = new ArrayList<>();
     }
@@ -116,6 +119,10 @@ public class Topic implements Cloneable {
         Topic topic = null;
         try{
             topic = (Topic) super.clone();
+            topic.setDerive_from(topic.getId());
+            topic.setType(TopicType.UNDEFINED);
+            topic.setId("");
+            topic.setStarted_by(null);
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }

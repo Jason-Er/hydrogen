@@ -3,7 +3,7 @@ package com.thumbstage.hydrogen.viewmodel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
-import com.thumbstage.hydrogen.model.bo.AtMe;
+import com.thumbstage.hydrogen.model.vo.AtMe;
 import com.thumbstage.hydrogen.repository.AtMeRepository;
 import com.thumbstage.hydrogen.repository.UserRepository;
 

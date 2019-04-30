@@ -18,8 +18,8 @@ import android.widget.PopupMenu;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.TopicMemberEvent;
-import com.thumbstage.hydrogen.model.bo.Mic;
-import com.thumbstage.hydrogen.model.bo.User;
+import com.thumbstage.hydrogen.model.vo.Mic;
+import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.utils.CollectionsUtil;
 import com.thumbstage.hydrogen.utils.DataConvertUtil;
 import com.thumbstage.hydrogen.view.account.AccountActivity;

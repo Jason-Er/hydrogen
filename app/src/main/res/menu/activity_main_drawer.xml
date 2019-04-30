@@ -3,33 +3,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
+    <group android:checkableBehavior="single"
+        android:id="@+id/nav_menu_group">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/nav_publishedOpened"
             android:icon="@drawable/ic_menu_camera"
             android:name="Import" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_publishedOpenedClosed"
             android:icon="@drawable/ic_menu_gallery"
             android:name="Gallery" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:name="Slideshow" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:name="Tools" />
     </group>
 
     <item android:name="Communicate">
         <menu>
             <item
-                android:id="@+id/nav_share"
+                android:id="@+id/nav_atMe"
+                android:icon="@drawable/ic_menu_slideshow"
+                android:name="Slideshow" />
+            <item
+                android:id="@+id/nav_iContact"
+                android:icon="@drawable/ic_menu_manage"
+                android:name="Tools" />
+            <item
+                android:id="@+id/nav_iStarted"
                 android:icon="@drawable/ic_menu_share"
                 android:name="Share" />
             <item
-                android:id="@+id/nav_send"
+                android:id="@+id/nav_iAttended"
                 android:icon="@drawable/ic_menu_send"
                 android:name="Send" />
         </menu>

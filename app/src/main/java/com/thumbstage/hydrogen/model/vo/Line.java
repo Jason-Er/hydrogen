@@ -1,4 +1,6 @@
-package com.thumbstage.hydrogen.model.bo;
+package com.thumbstage.hydrogen.model.vo;
+
+import com.thumbstage.hydrogen.model.bo.LineType;
 
 import java.util.Date;
 
@@ -9,6 +11,7 @@ public class Line {
     protected LineType lineType;
 
     public Line() {
+        lineType = LineType.LT_DIALOGUE;
     }
 
     public Line(User who, Date when, String what, LineType lineType) {
