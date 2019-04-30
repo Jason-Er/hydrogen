@@ -2,10 +2,10 @@ package com.thumbstage.hydrogen.view.create.fragment;
 
 import android.webkit.URLUtil;
 
-import com.thumbstage.hydrogen.model.bo.Line;
-import com.thumbstage.hydrogen.model.bo.Mic;
-import com.thumbstage.hydrogen.model.bo.Topic;
-import com.thumbstage.hydrogen.model.bo.User;
+import com.thumbstage.hydrogen.model.vo.Line;
+import com.thumbstage.hydrogen.model.vo.Mic;
+import com.thumbstage.hydrogen.model.vo.Topic;
+import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.view.common.ListDelegationAdapter;
 import com.thumbstage.hydrogen.view.create.type.LineTextLeft;
 import com.thumbstage.hydrogen.view.create.type.LineTextRight;

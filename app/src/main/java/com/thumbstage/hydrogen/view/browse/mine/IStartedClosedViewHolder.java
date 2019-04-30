@@ -9,9 +9,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.BrowseItemEvent;
-import com.thumbstage.hydrogen.model.bo.Mic;
-import com.thumbstage.hydrogen.model.bo.Topic;
-import com.thumbstage.hydrogen.model.bo.User;
+import com.thumbstage.hydrogen.model.vo.Mic;
+import com.thumbstage.hydrogen.model.vo.Topic;
+import com.thumbstage.hydrogen.model.vo.User;
 
 import org.greenrobot.eventbus.EventBus;
 

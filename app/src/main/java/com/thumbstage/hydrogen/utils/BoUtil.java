@@ -1,6 +1,6 @@
 package com.thumbstage.hydrogen.utils;
 
-import com.thumbstage.hydrogen.model.bo.User;
+import com.thumbstage.hydrogen.model.vo.User;
 
 import java.util.List;
 

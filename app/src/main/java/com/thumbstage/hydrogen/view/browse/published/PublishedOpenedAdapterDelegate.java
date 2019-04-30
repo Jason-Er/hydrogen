@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.model.bo.Mic;
+import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.view.common.IAdapterDelegate;
 
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.thumbstage.hydrogen.view.account;
 
-import com.thumbstage.hydrogen.model.bo.User;
+import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.utils.PinyinUtils;
 import com.thumbstage.hydrogen.view.common.ListDelegationAdapter;
 

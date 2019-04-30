@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.PopupMenuEvent;
-import com.thumbstage.hydrogen.model.bo.Line;
+import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.utils.GlideUtil;
 import com.thumbstage.hydrogen.utils.StringUtil;
 

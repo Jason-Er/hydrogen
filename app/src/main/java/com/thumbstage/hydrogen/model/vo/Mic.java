@@ -1,4 +1,4 @@
-package com.thumbstage.hydrogen.model.bo;
+package com.thumbstage.hydrogen.model.vo;
 
 import java.util.ArrayList;
 import java.util.List;

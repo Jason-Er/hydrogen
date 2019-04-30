@@ -21,7 +21,7 @@ import android.widget.ProgressBar;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.AtMeEvent;
 import com.thumbstage.hydrogen.model.bo.Privilege;
-import com.thumbstage.hydrogen.model.bo.AtMe;
+import com.thumbstage.hydrogen.model.vo.AtMe;
 import com.thumbstage.hydrogen.view.browse.IAdapterFunction;
 import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
 import com.thumbstage.hydrogen.viewmodel.AtMeViewModel;

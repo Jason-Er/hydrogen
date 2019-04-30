@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.thumbstage.hydrogen.database.entity.TopicEntity;
 import com.thumbstage.hydrogen.database.entity.UserEntity;
-import com.thumbstage.hydrogen.model.bo.Mic;
+import com.thumbstage.hydrogen.model.vo.Mic;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

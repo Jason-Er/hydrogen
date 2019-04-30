@@ -1,6 +1,6 @@
 package com.thumbstage.hydrogen.view.create.type;
 
-import com.thumbstage.hydrogen.model.bo.Line;
+import com.thumbstage.hydrogen.model.vo.Line;
 
 public class LineTextRight extends Line {
     public LineTextRight(Line line) {

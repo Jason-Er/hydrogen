@@ -9,7 +9,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.AtMeEvent;
-import com.thumbstage.hydrogen.model.bo.AtMe;
+import com.thumbstage.hydrogen.model.vo.AtMe;
 import com.thumbstage.hydrogen.utils.GlideUtil;
 import com.thumbstage.hydrogen.utils.StringUtil;
 
