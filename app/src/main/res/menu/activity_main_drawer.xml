@@ -26,7 +26,7 @@
                 android:icon="@drawable/ic_menu_manage"
                 android:name="Tools" />
             <item
-                android:id="@+id/nav_iStartedOpened"
+                android:id="@+id/nav_iStarted"
                 android:icon="@drawable/ic_menu_share"
                 android:name="Share" />
             <item
