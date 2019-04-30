@@ -48,15 +48,15 @@ public class BrowseNavigationView extends NavigationView implements NavigationVi
         // update menu
         Menu menu = getMenu();
         menu.clear();
-        SubMenu subMenu = menu.addSubMenu("mine");
+        SubMenu subMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, 200, "mine");
         for(Privilege pr : user.getPrivileges()) {
             switch (pr) {
                 case BROWSE_PUBLISHEDOPENED:
-                    menu.add(R.id.nav_menu_group, R.id.nav_publishedOpened, Menu.NONE, "BROWSE_PUBLISHEDOPENED")
+                    menu.add(R.id.nav_menu_group, R.id.nav_publishedOpened, 100, "BROWSE_PUBLISHEDOPENED")
                             .setIcon(R.drawable.ic_menu_publish);
                     break;
                 case BROWSE_PUBLISHEDCLOSED:
-                    menu.add(R.id.nav_menu_group, R.id.nav_publishedOpenedClosed, Menu.NONE, "BROWSE_PUBLISHEDCLOSED")
+                    menu.add(R.id.nav_menu_group, R.id.nav_publishedOpenedClosed, 100, "BROWSE_PUBLISHEDCLOSED")
                             .setIcon(R.drawable.ic_menu_transcribe_close);
                     break;
                 case BROWSE_AT_ME:
