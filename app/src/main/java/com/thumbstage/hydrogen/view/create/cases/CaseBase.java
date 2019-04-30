@@ -122,6 +122,12 @@ public abstract class CaseBase implements ITopicFragmentFunction {
         saveOrUpdate(topicAdapter.getMic(), topicViewModel, iReturnBool);
     }
 
+    void copyTopic(IReturnBool iReturnBool) {
+        Log.i(TAG, "copyTopic");
+        topicAdapter.getTopic().setType(TopicType.PICK_UP);
+        saveOrUpdate(topicAdapter.getMic(), topicViewModel, iReturnBool);
+    }
+
     void closeTopic(IReturnBool iReturnBool) {
         topicAdapter.getTopic().setFinished(true);
         topicViewModel.closeTheTopic(iReturnBool);
