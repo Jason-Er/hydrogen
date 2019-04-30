@@ -9,7 +9,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -17,25 +16,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.api.IMService;
 import com.thumbstage.hydrogen.event.AtMeEvent;
 import com.thumbstage.hydrogen.event.BrowseItemEvent;
 import com.thumbstage.hydrogen.event.IMMessageEvent;
 import com.thumbstage.hydrogen.event.IMMicEvent;
+import com.thumbstage.hydrogen.event.NaviViewEvent;
 import com.thumbstage.hydrogen.model.bo.AtMe;
 import com.thumbstage.hydrogen.model.bo.Mic;
-import com.thumbstage.hydrogen.model.bo.Privilege;
-import com.thumbstage.hydrogen.model.bo.User;
 import com.thumbstage.hydrogen.model.dto.IMMessage;
 import com.thumbstage.hydrogen.utils.BoUtil;
 import com.thumbstage.hydrogen.utils.NotificationUtils;
 import com.thumbstage.hydrogen.utils.StringUtil;
+import com.thumbstage.hydrogen.view.account.AccountActivity;
 import com.thumbstage.hydrogen.view.common.Navigation;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
 import com.thumbstage.hydrogen.view.create.fragment.TopicHandleType;
@@ -48,8 +43,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.NoSubscriberEvent;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -112,11 +105,7 @@ public class BrowseActivity extends AppCompatActivity
                 int menuItemId = item.getItemId();
                 switch (menuItemId) {
                     case R.id.menu_browse_sign:
-                        if( userViewModel.getCurrentUser().getId().equals(StringUtil.DEFAULT_USERID) ) {
-                            Navigation.sign2SignIn(BrowseActivity.this);
-                        } else {
-                            Navigation.sign2Account(BrowseActivity.this);
-                        }
+                        navi2AccountOrSignIn();
                         break;
                 }
                 return false;
@@ -160,6 +149,28 @@ public class BrowseActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onResponseMessageEvent(final NaviViewEvent event) {
+        switch (event.getMessage()) {
+            case "userAvatar":
+                navi2AccountOrSignIn();
+                break;
+            case "userContact":
+                Intent intent = new Intent(this, AccountActivity.class);
+                intent.putExtra(AccountActivity.Type.class.getSimpleName(), AccountActivity.Type.CONTACT.name());
+                startActivity(intent);
+                break;
+        }
+    }
+
+    private void navi2AccountOrSignIn() {
+        if( userViewModel.getCurrentUser().getId().equals(StringUtil.DEFAULT_USERID) ) {
+            Navigation.sign2SignIn(BrowseActivity.this);
+        } else {
+            Navigation.sign2Account(BrowseActivity.this);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

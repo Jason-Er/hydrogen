@@ -16,8 +16,11 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.event.NaviViewEvent;
 import com.thumbstage.hydrogen.model.bo.Privilege;
 import com.thumbstage.hydrogen.model.bo.User;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,10 +44,21 @@ public class BrowseNavigationView extends NavigationView implements NavigationVi
         View headerView = getHeaderView(0);
         ImageView userAvatar = headerView.findViewById(R.id.nav_account_avatar);
         TextView userName = headerView.findViewById(R.id.nav_account_name);
-        TextView contact = headerView.findViewById(R.id.nav_account_contact);
+        ImageView contact = headerView.findViewById(R.id.nav_account_contact);
         Glide.with(userAvatar).load(user.getAvatar()).into(userAvatar);
         userName.setText(user.getName());
-
+        userAvatar.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventBus.getDefault().post(new NaviViewEvent("userAvatar"));
+            }
+        });
+        contact.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventBus.getDefault().post(new NaviViewEvent("userContact"));
+            }
+        });
         // update menu
         Menu menu = getMenu();
         menu.clear();
