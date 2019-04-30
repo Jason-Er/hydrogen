@@ -28,6 +28,7 @@ import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.thumbstage.hydrogen.model.bo.HyFile;
+import com.thumbstage.hydrogen.model.callback.IReturnCanOnMic;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.bo.LineType;
 import com.thumbstage.hydrogen.model.vo.Mic;
@@ -655,6 +656,20 @@ public class CloudAPI {
                     // TODO: 3/1/2019 toast something wrong
                     e.printStackTrace();
                 }
+            }
+        });
+    }
+
+    public void getCanOnMic(String userId, String micId, IReturnCanOnMic iReturnCanOnMic) {
+        AVQuery<AVObject> query = new AVQuery<>(TableName.TABLE_CANONMIC.name);
+        AVObject avMic = AVObject.createWithoutData(TableName.TABLE_MIC.name, micId);
+        AVObject avUser = AVObject.createWithoutData(TableName.TABLE_USER.name, userId);
+        query.whereEqualTo("user", avUser);
+        query.whereEqualTo("mic", avMic);
+        query.findInBackground(new FindCallback<AVObject>() {
+            @Override
+            public void done(List<AVObject> avObjects, AVException avException) {
+
             }
         });
     }

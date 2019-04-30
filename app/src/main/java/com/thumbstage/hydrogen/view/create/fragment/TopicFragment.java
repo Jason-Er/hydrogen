@@ -27,6 +27,7 @@ import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.HyMenuItemEvent;
 import com.thumbstage.hydrogen.event.IMMessageEvent;
 import com.thumbstage.hydrogen.event.PopupMenuEvent;
+import com.thumbstage.hydrogen.model.bo.CanOnMic;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
 import com.thumbstage.hydrogen.model.vo.User;
@@ -54,6 +55,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -193,6 +195,12 @@ public class TopicFragment extends Fragment {
                             Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
                         }
                         spinner.setVisibility(View.GONE);
+                    }
+                });
+                userViewModel.getCanOnMic(micId, userViewModel.getCurrentUser().getId()).observe(this, new Observer<List<CanOnMic>>() {
+                    @Override
+                    public void onChanged(@Nullable List<CanOnMic> canOnMics) {
+
                     }
                 });
                 break;

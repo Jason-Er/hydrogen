@@ -7,12 +7,14 @@ import android.arch.lifecycle.Transformations;
 import android.text.TextUtils;
 
 import com.thumbstage.hydrogen.database.entity.AtMeEntity;
+import com.thumbstage.hydrogen.database.entity.CanOnMicEntity;
 import com.thumbstage.hydrogen.database.entity.ContactEntity;
 import com.thumbstage.hydrogen.database.entity.LineEntity;
 import com.thumbstage.hydrogen.database.entity.MicEntity;
 import com.thumbstage.hydrogen.database.entity.TopicEntity;
 import com.thumbstage.hydrogen.database.entity.TopicUserEntity;
 import com.thumbstage.hydrogen.database.entity.UserEntity;
+import com.thumbstage.hydrogen.model.bo.CanOnMic;
 import com.thumbstage.hydrogen.model.vo.AtMe;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.bo.LineType;
@@ -332,6 +334,19 @@ public class ModelDB {
             @Override
             public List<User> apply(List<UserEntity> input) {
                 return entity2User(input);
+            }
+        });
+    }
+
+    public LiveData<List<CanOnMic>> getCanOnMic(String userId, String micId) {
+        return Transformations.map(database.canOnMicDao().getCanOnMic(userId, micId), new Function<List<CanOnMicEntity>, List<CanOnMic>>() {
+            @Override
+            public List<CanOnMic> apply(List<CanOnMicEntity> input) {
+                List<CanOnMic> list = new ArrayList<>();
+                for(CanOnMicEntity entity: input) {
+                    list.add(CanOnMic.valueOf(entity.getCan()));
+                }
+                return list;
             }
         });
     }

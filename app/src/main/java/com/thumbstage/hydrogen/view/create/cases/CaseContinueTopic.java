@@ -35,6 +35,7 @@ public class CaseContinueTopic extends CaseBase implements ICanPopupMenu,
 
     @Override
     public void setUpPopupMenu() {
+
         List<HyMenuItem> itemList = new ArrayList<>();
         switch (topicAdapter.getTopic().getType()) {
             case PICK_UP:
