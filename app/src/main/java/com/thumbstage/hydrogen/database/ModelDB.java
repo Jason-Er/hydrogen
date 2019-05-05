@@ -29,8 +29,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
@@ -338,17 +340,32 @@ public class ModelDB {
         });
     }
 
-    public LiveData<List<CanOnMic>> getCanOnMic(String userId, String micId) {
-        return Transformations.map(database.canOnMicDao().getCanOnMic(userId, micId), new Function<List<CanOnMicEntity>, List<CanOnMic>>() {
+    public boolean isCanOnMicNeedFresh(String userId, String micId) {
+        return database.canOnMicDao().hasEntity(userId, micId, getMaxRefreshTime(new Date())) == null;
+    }
+
+    public LiveData<Set<CanOnMic>> getCanOnMic(String userId, String micId) {
+        return Transformations.map(database.canOnMicDao().getCanOnMic(userId, micId), new Function<List<CanOnMicEntity>, Set<CanOnMic>>() {
             @Override
-            public List<CanOnMic> apply(List<CanOnMicEntity> input) {
-                List<CanOnMic> list = new ArrayList<>();
+            public Set<CanOnMic> apply(List<CanOnMicEntity> input) {
+                Set<CanOnMic> list = new LinkedHashSet<>();
                 for(CanOnMicEntity entity: input) {
                     list.add(CanOnMic.valueOf(entity.getCan()));
                 }
                 return list;
             }
         });
+    }
+
+    public void saveCanOnMic(String userId, String micId, Set<CanOnMic> canOnMicSet) {
+        List<CanOnMicEntity> entities = new ArrayList<>();
+        for(CanOnMic canOnMic: canOnMicSet) {
+            CanOnMicEntity entity = new CanOnMicEntity();
+            entity.setUserId(userId);
+            entity.setMicId(micId);
+            entity.setCan(canOnMic.name());
+        }
+        database.canOnMicDao().insert(entities);
     }
 
     public User getUser(String userId) {

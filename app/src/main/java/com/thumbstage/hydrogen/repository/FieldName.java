@@ -18,7 +18,10 @@ public enum FieldName {
     FIELD_CONTACT("contact"),
     FIELD_CREATEDAT("createdAt"),
     FIELD_WHO("who"),
+    FIELD_USER("user"),
+    FIELD_MIC("mic"),
     FIELD_TYPE("type");
+
 
     final public String name;
     FieldName(String name) {

@@ -7,6 +7,8 @@ import android.arch.persistence.room.Index;
 import android.support.annotation.NonNull;
 
 
+import java.util.Date;
+
 import static android.arch.persistence.room.ForeignKey.CASCADE;
 
 @Entity(tableName = "can_on_mic",
@@ -29,6 +31,9 @@ public class CanOnMicEntity {
     String micId;
     @NonNull
     String can;
+    @NonNull
+    @ColumnInfo(name = "last_refresh")
+    Date lastRefresh;
 
     @NonNull
     public String getUserId() {
@@ -55,5 +60,14 @@ public class CanOnMicEntity {
 
     public void setCan(@NonNull String can) {
         this.can = can;
+    }
+
+    @NonNull
+    public Date getLastRefresh() {
+        return lastRefresh;
+    }
+
+    public void setLastRefresh(@NonNull Date lastRefresh) {
+        this.lastRefresh = lastRefresh;
     }
 }

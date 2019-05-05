@@ -14,6 +14,7 @@ import com.thumbstage.hydrogen.utils.StringUtil;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
@@ -132,7 +133,7 @@ public class UserRepository {
         });
     }
 
-    public LiveData<List<CanOnMic>> getCanOnMic(String userId, String micId) {
+    public LiveData<Set<CanOnMic>> getCanOnMic(String userId, String micId) {
         refreshCanOnMic(userId, micId);
         return modelDB.getCanOnMic(userId, micId);
     }
@@ -141,12 +142,14 @@ public class UserRepository {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                cloudAPI.getCanOnMic(userId, micId, new IReturnCanOnMic() {
-                    @Override
-                    public void callback(List<CanOnMic> canOnMicList) {
-
-                    }
-                });
+                if(modelDB.isCanOnMicNeedFresh(userId, micId)) {
+                    cloudAPI.getCanOnMic(userId, micId, new IReturnCanOnMic() {
+                        @Override
+                        public void callback(Set<CanOnMic> canOnMicList) {
+                            modelDB.saveCanOnMic(userId, micId, canOnMicList);
+                        }
+                    });
+                }
             }
         });
     }

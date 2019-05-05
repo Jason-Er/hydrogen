@@ -10,6 +10,7 @@ import android.arch.persistence.room.Update;
 
 import com.thumbstage.hydrogen.database.entity.CanOnMicEntity;
 
+import java.util.Date;
 import java.util.List;
 
 @Dao
@@ -17,6 +18,9 @@ public interface CanOnMicDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(CanOnMicEntity entity);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insert(List<CanOnMicEntity> canOnMicList);
 
     @Update
     void update(CanOnMicEntity... atMeEntities);
@@ -26,4 +30,7 @@ public interface CanOnMicDao {
 
     @Query("SELECT * FROM can_on_mic WHERE user_id =:userId AND mic_id =:micId")
     LiveData<List<CanOnMicEntity>> getCanOnMic(String userId, String micId);
+
+    @Query("SELECT * FROM can_on_mic WHERE user_id = :userId AND mic_id =:micId AND last_refresh > :lastRefreshMax LIMIT 1")
+    CanOnMicEntity hasEntity(String userId, String micId, Date lastRefreshMax);
 }

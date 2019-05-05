@@ -57,6 +57,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -76,6 +77,8 @@ public class TopicFragment extends Fragment {
     SwipeRefreshLayout refreshLayout;
     @BindView(R.id.loading_spinner)
     ProgressBar spinner;
+
+    String micId;
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
@@ -143,7 +146,7 @@ public class TopicFragment extends Fragment {
     }
 
     private void configureViewModel(){
-        final String micId = getActivity().getIntent().getStringExtra(Mic.class.getSimpleName());
+        micId = getActivity().getIntent().getStringExtra(Mic.class.getSimpleName());
         String handleType = getActivity().getIntent().getStringExtra(TopicHandleType.class.getSimpleName());
         if(TextUtils.isEmpty(handleType)) {
             throw new IllegalArgumentException("No TopicHandleType found!");
@@ -197,12 +200,6 @@ public class TopicFragment extends Fragment {
                         spinner.setVisibility(View.GONE);
                     }
                 });
-                userViewModel.getCanOnMic(micId, userViewModel.getCurrentUser().getId()).observe(this, new Observer<List<CanOnMic>>() {
-                    @Override
-                    public void onChanged(@Nullable List<CanOnMic> canOnMics) {
-
-                    }
-                });
                 break;
             case EDIT:
                 currentRole = roleMap.get(TopicHandleType.EDIT);
@@ -218,6 +215,7 @@ public class TopicFragment extends Fragment {
                 });
                 break;
         }
+
     }
 
     @Override
@@ -308,6 +306,19 @@ public class TopicFragment extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_create_default, menu);
+        final MenuItem menuItemSetup = menu.findItem(R.id.menu_item_setup);
+        userViewModel.getCanOnMic(micId, userViewModel.getCurrentUser().getId()).observe(this, new Observer<Set<CanOnMic>>() {
+            @Override
+            public void onChanged(@Nullable Set<CanOnMic> canOnMics) {
+                Log.i(TAG, "can");
+                if (canOnMics.size() > 0) {
+                    menuItemSetup.setVisible(true);
+                    // popupWindowAdapter.setItemList(null);
+                } else {
+                    menuItemSetup.setVisible(false);
+                }
+            }
+        });
         super.onCreateOptionsMenu(menu, inflater);
     }
 

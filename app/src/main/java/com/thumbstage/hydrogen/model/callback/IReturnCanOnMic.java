@@ -2,8 +2,8 @@ package com.thumbstage.hydrogen.model.callback;
 
 import com.thumbstage.hydrogen.model.bo.CanOnMic;
 
-import java.util.List;
+import java.util.Set;
 
 public interface IReturnCanOnMic {
-    void callback(List<CanOnMic> canOnMicList);
+    void callback(Set<CanOnMic> canOnMicList);
 }

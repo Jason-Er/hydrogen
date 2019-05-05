@@ -27,6 +27,7 @@ import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
+import com.thumbstage.hydrogen.model.bo.CanOnMic;
 import com.thumbstage.hydrogen.model.bo.HyFile;
 import com.thumbstage.hydrogen.model.callback.IReturnCanOnMic;
 import com.thumbstage.hydrogen.model.vo.Line;
@@ -660,16 +661,31 @@ public class CloudAPI {
         });
     }
 
-    public void getCanOnMic(String userId, String micId, IReturnCanOnMic iReturnCanOnMic) {
+    public void getCanOnMic(String userId, String micId, final IReturnCanOnMic iReturnCanOnMic) {
         AVQuery<AVObject> query = new AVQuery<>(TableName.TABLE_CANONMIC.name);
         AVObject avMic = AVObject.createWithoutData(TableName.TABLE_MIC.name, micId);
         AVObject avUser = AVObject.createWithoutData(TableName.TABLE_USER.name, userId);
-        query.whereEqualTo("user", avUser);
-        query.whereEqualTo("mic", avMic);
-        query.findInBackground(new FindCallback<AVObject>() {
+        query.whereEqualTo(FieldName.FIELD_USER.name, avUser);
+        query.whereEqualTo(FieldName.FIELD_MIC.name, avMic);
+        query.getFirstInBackground(new GetCallback<AVObject>() {
             @Override
-            public void done(List<AVObject> avObjects, AVException avException) {
-
+            public void done(AVObject object, AVException e) {
+                if (e == null && object != null) {
+                    List<String> prilist = object.getList(FieldName.FIELD_PRIVILEGE.name);
+                    Set<CanOnMic> privileges = new LinkedHashSet<>();
+                    if (prilist != null) {
+                        for (String str : prilist) {
+                            privileges.add(CanOnMic.valueOf(str));
+                        }
+                    } else {
+                        privileges = new LinkedHashSet<CanOnMic>() {
+                            {
+                                add(CanOnMic.PRIVATE);
+                            }
+                        };
+                    }
+                    iReturnCanOnMic.callback(privileges);
+                }
             }
         });
     }
