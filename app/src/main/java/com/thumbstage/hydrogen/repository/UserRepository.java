@@ -156,25 +156,4 @@ public class UserRepository {
         });
     }
 
-    public LiveData<List<Mic>> getUserAttend(String userId, boolean isFinished, int pageNum) {
-        refreshUserAttend(userId, isFinished, pageNum);
-        return modelDB.getUserAttend(userId, isFinished, pageNum);
-    }
-
-    private void refreshUserAttend(final String userId, final boolean isFinished, final int pageNum) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                if(modelDB.isUserAttendNeedFresh(userId, isFinished)) {
-                    cloudAPI.getUserAttendMic(userId, isFinished, pageNum, new IReturnMicList() {
-                        @Override
-                        public void callback(List<Mic> micList) {
-                            modelDB.saveMicList(micList);
-                        }
-                    });
-                }
-            }
-        });
-    }
-
 }

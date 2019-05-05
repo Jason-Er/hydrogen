@@ -358,24 +358,6 @@ public class ModelDB {
         });
     }
 
-    public boolean isUserAttendNeedFresh(String userId, boolean isFinished) {
-        return database.userAttendDao().hasEntity(userId, getMaxRefreshTime(new Date())) == null;
-    }
-
-    public LiveData<List<Mic>> getUserAttend(String userId, boolean isFinished, int pageNum) {
-        return Transformations.map(database.userAttendDao().getUserAttend(userId, isFinished, PER_PAGE_NUM, pageNum * PER_PAGE_NUM), new Function<List<MicEntity>, List<Mic>>() {
-            @Override
-            public List<Mic> apply(List<MicEntity> input) {
-                List<Mic> micList = new ArrayList<>();
-                for(MicEntity entity: input) {
-                    Mic mic = getMic(entity.getId());
-                    micList.add(mic);
-                }
-                return micList;
-            }
-        });
-    }
-
     public void saveCanOnMic(String userId, String micId, Set<CanOnMic> canOnMicSet) {
         List<CanOnMicEntity> entities = new ArrayList<>();
         for(CanOnMic canOnMic: canOnMicSet) {
