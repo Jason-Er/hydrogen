@@ -1,5 +1,6 @@
 package com.thumbstage.hydrogen.view.create.cases;
 
+import com.thumbstage.hydrogen.model.bo.CanOnMic;
 import com.thumbstage.hydrogen.model.bo.TopicType;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.view.common.HyMenuItem;
@@ -8,6 +9,7 @@ import com.thumbstage.hydrogen.view.create.feature.ICanPopupMenu;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class CaseCopyTopic extends CaseBase implements ICanCreateTopic, ICanPopupMenu {
 
@@ -17,7 +19,7 @@ public class CaseCopyTopic extends CaseBase implements ICanCreateTopic, ICanPopu
     }
 
     @Override
-    public void setUpPopupMenu() {
+    public void setUpPopupMenu(Set<CanOnMic> canOnMics) {
         List<HyMenuItem> itemList = new ArrayList<>();
         if(topicAdapter.getTopic().getType() != TopicType.PICK_UP) {
             itemList.add(startItem);

@@ -7,6 +7,8 @@ import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.database.ModelDB;
 import com.thumbstage.hydrogen.model.bo.CanOnMic;
 import com.thumbstage.hydrogen.model.callback.IReturnCanOnMic;
+import com.thumbstage.hydrogen.model.callback.IReturnMicList;
+import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnUser;
@@ -147,6 +149,27 @@ public class UserRepository {
                         @Override
                         public void callback(Set<CanOnMic> canOnMicList) {
                             modelDB.saveCanOnMic(userId, micId, canOnMicList);
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    public LiveData<List<Mic>> getUserAttend(String userId, boolean isFinished, int pageNum) {
+        refreshUserAttend(userId, isFinished, pageNum);
+        return modelDB.getUserAttend(userId, isFinished, pageNum);
+    }
+
+    private void refreshUserAttend(final String userId, final boolean isFinished, final int pageNum) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                if(modelDB.isUserAttendNeedFresh(userId, isFinished)) {
+                    cloudAPI.getUserAttendMic(userId, isFinished, pageNum, new IReturnMicList() {
+                        @Override
+                        public void callback(List<Mic> micList) {
+                            modelDB.saveMicList(micList);
                         }
                     });
                 }

@@ -12,6 +12,7 @@ import com.thumbstage.hydrogen.database.dao.LineDao;
 import com.thumbstage.hydrogen.database.dao.MicDao;
 import com.thumbstage.hydrogen.database.dao.TopicDao;
 import com.thumbstage.hydrogen.database.dao.TopicUserDao;
+import com.thumbstage.hydrogen.database.dao.UserAttendDao;
 import com.thumbstage.hydrogen.database.dao.UserDao;
 import com.thumbstage.hydrogen.database.entity.AtMeEntity;
 import com.thumbstage.hydrogen.database.entity.CanOnMicEntity;
@@ -20,6 +21,7 @@ import com.thumbstage.hydrogen.database.entity.LineEntity;
 import com.thumbstage.hydrogen.database.entity.MicEntity;
 import com.thumbstage.hydrogen.database.entity.TopicEntity;
 import com.thumbstage.hydrogen.database.entity.TopicUserEntity;
+import com.thumbstage.hydrogen.database.entity.UserAttendEntity;
 import com.thumbstage.hydrogen.database.entity.UserEntity;
 
 @Database(entities = {
@@ -30,6 +32,7 @@ import com.thumbstage.hydrogen.database.entity.UserEntity;
         MicEntity.class,
         AtMeEntity.class,
         ContactEntity.class,
+        UserAttendEntity.class,
         CanOnMicEntity.class}, version = 1, exportSchema = false)
 @TypeConverters({DateConverter.class})
 public abstract class HyDatabase extends RoomDatabase {
@@ -46,4 +49,5 @@ public abstract class HyDatabase extends RoomDatabase {
     public abstract AtMeDao atMeDao();
     public abstract ContactDao contractDao();
     public abstract CanOnMicDao canOnMicDao();
+    public abstract UserAttendDao userAttendDao();
 }

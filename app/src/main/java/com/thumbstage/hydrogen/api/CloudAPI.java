@@ -424,6 +424,18 @@ public class CloudAPI {
         });
     }
 
+    public void getUserAttendMic(String userId, boolean isFinished, int pageNum, final IReturnMicList iReturnMicList) {
+
+        AVQuery<AVObject> avQuery = new AVQuery<>(TableName.TABLE_MIC.name);
+        avQuery.include(FieldName.FIELD_TOPIC.name);
+        avQuery.include(FieldName.FIELD_TOPIC.name+"."+FieldName.FIELD_STARTED_BY.name);
+        AVQuery<AVObject> avTopic = new AVQuery<>(TableName.TABLE_TOPIC.name);
+        avTopic.whereEqualTo(FieldName.FIELD_IS_FINISHED.name, isFinished);
+        avTopic.whereEqualTo(FieldName.FIELD_MEMBERS.name, userId);
+        avQuery.whereMatchesQuery(FieldName.FIELD_TOPIC.name, avTopic);
+
+    }
+
     public void getMic(TopicType type, String start_by, boolean isFinished, int pageNum, final IReturnMicList callBack) {
         AVQuery<AVObject> avQuery = new AVQuery<>(TableName.TABLE_MIC.name);
         avQuery.include(FieldName.FIELD_TOPIC.name);
@@ -447,6 +459,7 @@ public class CloudAPI {
         AVQuery<AVObject> avQueryInner = AVQuery.and(andQuery);
         avQuery.whereMatchesQuery(FieldName.FIELD_TOPIC.name, avQueryInner);
         avQuery.limit(15);
+        avQuery.skip(0);
         avQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(final List<AVObject> avObjects, AVException avException) {

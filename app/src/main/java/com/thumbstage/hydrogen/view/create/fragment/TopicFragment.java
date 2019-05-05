@@ -54,6 +54,7 @@ import org.greenrobot.eventbus.NoSubscriberEvent;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -313,7 +314,9 @@ public class TopicFragment extends Fragment {
                 Log.i(TAG, "can");
                 if (canOnMics.size() > 0) {
                     menuItemSetup.setVisible(true);
-                    // popupWindowAdapter.setItemList(null);
+                    if( currentRole instanceof ICanPopupMenu ) {
+                        ((ICanPopupMenu) currentRole).setUpPopupMenu(canOnMics);
+                    }
                 } else {
                     menuItemSetup.setVisible(false);
                 }
@@ -329,9 +332,6 @@ public class TopicFragment extends Fragment {
                 Log.i(TAG, "menu_item_setup");
                 View anchor = getActivity().findViewById(R.id.menu_item_setup);
                 popupWindow.setAnchorView(anchor);
-                if( currentRole instanceof ICanPopupMenu ) {
-                    ((ICanPopupMenu) currentRole).setUpPopupMenu();
-                }
                 popupWindow.show();
                 break;
         }
