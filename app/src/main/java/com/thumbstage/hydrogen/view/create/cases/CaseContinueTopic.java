@@ -2,15 +2,12 @@ package com.thumbstage.hydrogen.view.create.cases;
 
 import android.util.Log;
 
-import com.thumbstage.hydrogen.model.bo.CanOnMic;
+import com.thumbstage.hydrogen.model.bo.PrivilegeOnTopic;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
-import com.thumbstage.hydrogen.view.common.HyMenuItem;
 import com.thumbstage.hydrogen.view.create.feature.ICanCloseTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanPopupMenu;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 public class CaseContinueTopic extends CaseBase implements ICanPopupMenu,
@@ -36,7 +33,8 @@ public class CaseContinueTopic extends CaseBase implements ICanPopupMenu,
     }
 
     @Override
-    public void setUpPopupMenu(Set<CanOnMic> canOnMics) {
+    public void setUpPopupMenu() {
+        /*
         List<HyMenuItem> itemList = new ArrayList<>();
         for(CanOnMic canOnMic: canOnMics) {
             switch (canOnMic) {
@@ -48,6 +46,7 @@ public class CaseContinueTopic extends CaseBase implements ICanPopupMenu,
             }
         }
         popupWindowAdapter.setItemList(itemList);
+        */
     }
 
 }

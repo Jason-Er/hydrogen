@@ -7,14 +7,12 @@ import android.arch.lifecycle.Transformations;
 import android.text.TextUtils;
 
 import com.thumbstage.hydrogen.database.entity.AtMeEntity;
-import com.thumbstage.hydrogen.database.entity.CanOnMicEntity;
 import com.thumbstage.hydrogen.database.entity.ContactEntity;
 import com.thumbstage.hydrogen.database.entity.LineEntity;
 import com.thumbstage.hydrogen.database.entity.MicEntity;
 import com.thumbstage.hydrogen.database.entity.TopicEntity;
 import com.thumbstage.hydrogen.database.entity.TopicUserEntity;
 import com.thumbstage.hydrogen.database.entity.UserEntity;
-import com.thumbstage.hydrogen.model.bo.CanOnMic;
 import com.thumbstage.hydrogen.model.vo.AtMe;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.bo.LineType;
@@ -25,15 +23,12 @@ import com.thumbstage.hydrogen.model.bo.TopicType;
 import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.utils.DataConvertUtil;
 
-import java.security.Permission;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
@@ -345,6 +340,7 @@ public class ModelDB {
         return database.canOnMicDao().hasEntity(userId, micId, getMaxRefreshTime(new Date())) == null;
     }
 
+    /*
     public LiveData<Set<CanOnMic>> getCanOnMic(String userId, String micId) {
         return Transformations.map(database.canOnMicDao().getCanOnMic(userId, micId), new Function<List<CanOnMicEntity>, Set<CanOnMic>>() {
             @Override
@@ -368,6 +364,7 @@ public class ModelDB {
         }
         database.canOnMicDao().insert(entities);
     }
+    */
 
     public User getUser(String userId) {
         UserEntity entity = database.userDao().get(userId);

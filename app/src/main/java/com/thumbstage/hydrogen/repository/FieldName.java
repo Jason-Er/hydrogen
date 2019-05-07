@@ -11,7 +11,7 @@ public enum FieldName {
     FIELD_DERIVE_FROM("derive_from"),
     FIELD_SETTING("setting"),
     FIELD_MIC_MEMBERS("m"),
-    FIELD_MEMBERS("members"),
+    FIELD_MEMBER("member"),
     FIELD_DIALOGUE("dialogue"),
     FIELD_TOPIC("topic"),
     FIELD_PRIVILEGE("privilege"),

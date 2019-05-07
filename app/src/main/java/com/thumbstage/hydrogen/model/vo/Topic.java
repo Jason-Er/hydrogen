@@ -122,7 +122,6 @@ public class Topic implements Cloneable {
             topic.setDerive_from(topic.getId());
             topic.setType(TopicType.UNDEFINED);
             topic.setId("");
-            topic.setStarted_by(null);
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }

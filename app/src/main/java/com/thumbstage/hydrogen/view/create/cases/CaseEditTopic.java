@@ -3,7 +3,6 @@ package com.thumbstage.hydrogen.view.create.cases;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
-import com.thumbstage.hydrogen.model.bo.CanOnMic;
 import com.thumbstage.hydrogen.model.bo.TopicType;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.view.common.HyMenuItem;
@@ -41,7 +40,7 @@ public class CaseEditTopic extends CaseBase implements ICanPopupMenu,
     }
 
     @Override
-    public void setUpPopupMenu(Set<CanOnMic> canOnMics) {
+    public void setUpPopupMenu() {
         List<HyMenuItem> itemList = new ArrayList<>();
         itemList.add(settingItem);
         itemList.add(membersItem);

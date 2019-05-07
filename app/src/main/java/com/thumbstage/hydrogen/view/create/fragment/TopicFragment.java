@@ -27,7 +27,6 @@ import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.HyMenuItemEvent;
 import com.thumbstage.hydrogen.event.IMMessageEvent;
 import com.thumbstage.hydrogen.event.PopupMenuEvent;
-import com.thumbstage.hydrogen.model.bo.CanOnMic;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
 import com.thumbstage.hydrogen.model.vo.User;
@@ -54,9 +53,7 @@ import org.greenrobot.eventbus.NoSubscriberEvent;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -308,6 +305,7 @@ public class TopicFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_create_default, menu);
         final MenuItem menuItemSetup = menu.findItem(R.id.menu_item_setup);
+        /*
         userViewModel.getCanOnMic(micId, userViewModel.getCurrentUser().getId()).observe(this, new Observer<Set<CanOnMic>>() {
             @Override
             public void onChanged(@Nullable Set<CanOnMic> canOnMics) {
@@ -315,13 +313,14 @@ public class TopicFragment extends Fragment {
                 if (canOnMics.size() > 0) {
                     menuItemSetup.setVisible(true);
                     if( currentRole instanceof ICanPopupMenu ) {
-                        ((ICanPopupMenu) currentRole).setUpPopupMenu(canOnMics);
+                        ((ICanPopupMenu) currentRole).setUpPopupMenu();
                     }
                 } else {
                     menuItemSetup.setVisible(false);
                 }
             }
         });
+        */
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -332,6 +331,9 @@ public class TopicFragment extends Fragment {
                 Log.i(TAG, "menu_item_setup");
                 View anchor = getActivity().findViewById(R.id.menu_item_setup);
                 popupWindow.setAnchorView(anchor);
+                if( currentRole instanceof ICanPopupMenu ) {
+                    ((ICanPopupMenu) currentRole).setUpPopupMenu();
+                }
                 popupWindow.show();
                 break;
         }

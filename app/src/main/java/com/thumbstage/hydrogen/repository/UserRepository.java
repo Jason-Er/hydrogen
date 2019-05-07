@@ -5,10 +5,6 @@ import android.arch.lifecycle.MutableLiveData;
 
 import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.database.ModelDB;
-import com.thumbstage.hydrogen.model.bo.CanOnMic;
-import com.thumbstage.hydrogen.model.callback.IReturnCanOnMic;
-import com.thumbstage.hydrogen.model.callback.IReturnMicList;
-import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnUser;
@@ -16,7 +12,6 @@ import com.thumbstage.hydrogen.utils.StringUtil;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
@@ -135,6 +130,7 @@ public class UserRepository {
         });
     }
 
+    /*
     public LiveData<Set<CanOnMic>> getCanOnMic(String userId, String micId) {
         refreshCanOnMic(userId, micId);
         return modelDB.getCanOnMic(userId, micId);
@@ -155,5 +151,6 @@ public class UserRepository {
             }
         });
     }
+    */
 
 }

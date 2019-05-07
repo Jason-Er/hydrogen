@@ -1,5 +1,5 @@
 package com.thumbstage.hydrogen.model.bo;
 
-public enum CanOnMic {
+public enum PrivilegeOnTopic {
     PRIVATE, PUBLISH, OPEN, CLOSE, DELETE
 }

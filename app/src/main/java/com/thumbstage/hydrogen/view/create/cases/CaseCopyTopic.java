@@ -1,6 +1,6 @@
 package com.thumbstage.hydrogen.view.create.cases;
 
-import com.thumbstage.hydrogen.model.bo.CanOnMic;
+import com.thumbstage.hydrogen.model.bo.PrivilegeOnTopic;
 import com.thumbstage.hydrogen.model.bo.TopicType;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.view.common.HyMenuItem;
@@ -19,7 +19,7 @@ public class CaseCopyTopic extends CaseBase implements ICanCreateTopic, ICanPopu
     }
 
     @Override
-    public void setUpPopupMenu(Set<CanOnMic> canOnMics) {
+    public void setUpPopupMenu() {
         List<HyMenuItem> itemList = new ArrayList<>();
         if(topicAdapter.getTopic().getType() != TopicType.PICK_UP) {
             itemList.add(startItem);
