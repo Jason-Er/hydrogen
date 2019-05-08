@@ -6,12 +6,8 @@ import com.thumbstage.hydrogen.view.account.ContactFragment;
 import com.thumbstage.hydrogen.view.browse.atme.AtMeFragment;
 import com.thumbstage.hydrogen.view.browse.mine.IAttendedClosedFragment;
 import com.thumbstage.hydrogen.view.browse.mine.IAttendedOpenedFragment;
-import com.thumbstage.hydrogen.view.browse.mine.IPublishedClosedFragment;
-import com.thumbstage.hydrogen.view.browse.mine.IPublishedOpenedFragment;
-import com.thumbstage.hydrogen.view.browse.mine.IStartedClosedFragment;
-import com.thumbstage.hydrogen.view.browse.mine.IStartedOpenedFragment;
-import com.thumbstage.hydrogen.view.browse.published.PublishedClosedFragment;
-import com.thumbstage.hydrogen.view.browse.published.PublishedOpenedFragment;
+import com.thumbstage.hydrogen.view.browse.published.CommunityShowFragment;
+import com.thumbstage.hydrogen.view.browse.published.CommunityTopicFragment;
 import com.thumbstage.hydrogen.view.common.BasicBrowseFragment;
 import com.thumbstage.hydrogen.view.create.assist.TopicInfoFragment;
 import com.thumbstage.hydrogen.view.create.assist.TopicMemberFragment;
@@ -28,17 +24,9 @@ public abstract class FragmentModule {
     @ContributesAndroidInjector
     abstract BasicBrowseFragment contributeBasicBrowseFragment();
     @ContributesAndroidInjector
-    abstract PublishedOpenedFragment contributePublishedOpenedFragment();
+    abstract CommunityTopicFragment contributePublishedOpenedFragment();
     @ContributesAndroidInjector
-    abstract PublishedClosedFragment contributePublishedClosedFragment();
-    @ContributesAndroidInjector
-    abstract IPublishedOpenedFragment contributeIPublishedOpenedFragment();
-    @ContributesAndroidInjector
-    abstract IPublishedClosedFragment contributeIPublishedClosedFragment();
-    @ContributesAndroidInjector
-    abstract IStartedOpenedFragment contributeIStartedOpenedFragment();
-    @ContributesAndroidInjector
-    abstract IStartedClosedFragment contributeIStartedClosedFragment();
+    abstract CommunityShowFragment contributePublishedClosedFragment();
     @ContributesAndroidInjector
     abstract IAttendedOpenedFragment contributeIAttendedOpenedFragment();
     @ContributesAndroidInjector

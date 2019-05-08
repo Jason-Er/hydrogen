@@ -193,7 +193,7 @@ public class BrowseActivity extends AppCompatActivity
         Intent intent = new Intent();
         intent.putExtra(Mic.class.getSimpleName(), mic.getId());
         switch (event.getMessage()) {
-            case "PublishedOpenedViewHolder":
+            case "CommunityTopicViewHolder":
                 intent.setClass(this, CreateActivity.class);
                 if(mic.getTopic().getStarted_by().equals(userViewModel.getCurrentUser())) {
                     intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.EDIT.name());
@@ -204,7 +204,7 @@ public class BrowseActivity extends AppCompatActivity
             case "IStartedClosedViewHolder":
             case "IPublishedClosedViewHolder":
             case "IAttendedClosedViewHolder":
-            case "PublishedClosedViewHolder":
+            case "CommunityShowViewHolder":
                 intent.setClass(this, ShowActivity.class);
                 break;
             case "IPublishedOpenedViewHolder":

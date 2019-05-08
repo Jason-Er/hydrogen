@@ -18,7 +18,7 @@ import org.greenrobot.eventbus.EventBus;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class PublishedOpenedViewHolder extends RecyclerView.ViewHolder {
+public class CommunityShowViewHolder extends RecyclerView.ViewHolder {
 
     Mic mic;
 
@@ -31,13 +31,13 @@ public class PublishedOpenedViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.item_browse_topic_avatar)
     ImageView avatar;
 
-    public PublishedOpenedViewHolder(@NonNull View itemView) {
+    public CommunityShowViewHolder(@NonNull View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EventBus.getDefault().post(new BrowseItemEvent(mic, PublishedOpenedViewHolder.class.getSimpleName()));
+                EventBus.getDefault().post(new BrowseItemEvent(mic, CommunityShowViewHolder.class.getSimpleName()));
             }
         });
     }

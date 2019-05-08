@@ -943,7 +943,7 @@ public class CloudAPI {
             } else {
                 privileges = new LinkedHashSet<Privilege>() {
                     {
-                        add(Privilege.BROWSE_PUBLISHEDCLOSED);
+                        add(Privilege.BROWSE_COMMUNITY_SHOW);
                     }
                 };
             }

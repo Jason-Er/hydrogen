@@ -89,7 +89,7 @@ public class IAttendedFragment extends Fragment implements IBrowseCustomize, IAd
     // region implement of interface IAdapterFunction
     @Override
     public long getItemId() {
-        return Privilege.BROWSE_IATTENDED.ordinal();
+        return Privilege.BROWSE_I_ATTENDED.ordinal();
     }
     // endregion
 }

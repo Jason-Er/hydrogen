@@ -1,4 +1,4 @@
-package com.thumbstage.hydrogen.view.browse.mine;
+package com.thumbstage.hydrogen.view.browse.published;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -12,11 +12,11 @@ import com.thumbstage.hydrogen.view.common.IAdapterDelegate;
 
 import java.util.List;
 
-public class IStartedOpenedAdapterDelegate implements IAdapterDelegate<List> {
+public class CommunityTopicAdapterDelegate implements IAdapterDelegate<List> {
 
     private int viewType;
 
-    public IStartedOpenedAdapterDelegate(int viewType) {
+    public CommunityTopicAdapterDelegate(int viewType) {
         this.viewType = viewType;
     }
 
@@ -34,12 +34,13 @@ public class IStartedOpenedAdapterDelegate implements IAdapterDelegate<List> {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_topic_browse_with_unread, parent, false);
-        return new IStartedOpenedViewHolder(view);
+                .inflate(R.layout.item_topic_browse, parent, false);
+        return new CommunityTopicViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull List items, int position, @NonNull RecyclerView.ViewHolder holder) {
-        ((IStartedOpenedViewHolder)holder).setMic((Mic) items.get(position));
+        ((CommunityTopicViewHolder)holder).setMic((Mic) items.get(position));
     }
+    
 }
