@@ -382,7 +382,7 @@ public class ExampleInstrumentedTest {
     public void testCloudAPI() {
         /*
         CloudAPI cloudAPI = new CloudAPI();
-        cloudAPI.getMic(TopicType.PUBLISHED, "", false, 0, new CloudAPI.IReturnMicList() {
+        cloudAPI.getMic(TopicTag.PUBLISHED, "", false, 0, new CloudAPI.IReturnMicList() {
             @Override
             public void callback(List<Mic> micList) {
                 Log.i("testCloudAPI","");

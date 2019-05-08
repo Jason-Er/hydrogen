@@ -3,7 +3,7 @@ package com.thumbstage.hydrogen.view.create.cases;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 
-import com.thumbstage.hydrogen.model.bo.TopicType;
+import com.thumbstage.hydrogen.model.bo.TopicTag;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.view.common.HyMenuItem;
 import com.thumbstage.hydrogen.view.create.feature.ICanAddMember;
@@ -14,7 +14,6 @@ import com.thumbstage.hydrogen.view.create.feature.ICanSetSetting;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class CaseEditTopic extends CaseBase implements ICanPopupMenu,
         ICanSetSetting, ICanAddMember, ICanPublishTopic, ICanCloseTopic {
@@ -44,9 +43,11 @@ public class CaseEditTopic extends CaseBase implements ICanPopupMenu,
         List<HyMenuItem> itemList = new ArrayList<>();
         itemList.add(settingItem);
         itemList.add(membersItem);
-        if(topicAdapter.getTopic().getType() == TopicType.UNPUBLISHED) {
+        /*
+        if(topicAdapter.getTopic().getTags() == TopicTag.UNPUBLISHED) {
             itemList.add(publishItem);
         }
+        */
         if(!topicAdapter.getTopic().isFinished()) {
             itemList.add(closeItem);
         }

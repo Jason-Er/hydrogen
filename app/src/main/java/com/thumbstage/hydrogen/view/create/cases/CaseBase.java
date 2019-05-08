@@ -11,10 +11,10 @@ import android.widget.ImageView;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
 import com.thumbstage.hydrogen.model.bo.HyFile;
+import com.thumbstage.hydrogen.model.bo.TopicTag;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.Setting;
-import com.thumbstage.hydrogen.model.bo.TopicType;
 import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
@@ -112,19 +112,19 @@ public abstract class CaseBase implements ITopicFragmentFunction {
 
     void publishTopic(IReturnBool iReturnBool) {
         Log.i(TAG, "publishTopic");
-        topicAdapter.getTopic().setType(TopicType.PUBLISHED);
+        // topicAdapter.getTopic().setTags(TopicTag.PUBLISHED);
         saveOrUpdate(topicAdapter.getMic(), topicViewModel, iReturnBool);
     }
 
     void createTopic(IReturnBool iReturnBool) {
         Log.i(TAG, "createTopic");
-        topicAdapter.getTopic().setType(TopicType.UNPUBLISHED);
+        // topicAdapter.getTopic().setTags(TopicTag.UNPUBLISHED);
         saveOrUpdate(topicAdapter.getMic(), topicViewModel, iReturnBool);
     }
 
     void copyTopic(IReturnBool iReturnBool) {
         Log.i(TAG, "copyTopic");
-        topicAdapter.getTopic().setType(TopicType.PICK_UP);
+        // topicAdapter.getTopic().setTags(TopicTag.PICK_UP);
         saveOrUpdate(topicAdapter.getMic(), topicViewModel, iReturnBool);
     }
 

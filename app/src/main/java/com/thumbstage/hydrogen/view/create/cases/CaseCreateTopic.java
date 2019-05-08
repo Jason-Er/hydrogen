@@ -43,7 +43,8 @@ public class CaseCreateTopic extends CaseBase implements ICanPopupMenu, ICanCrea
         List<HyMenuItem> itemList = new ArrayList<>();
         itemList.add(settingItem);
         itemList.add(membersItem);
-        switch (topicAdapter.getTopic().getType()) {
+        /*
+        switch (topicAdapter.getTopic().getTags()) {
             case UNDEFINED:
                 itemList.add(startItem);
                 itemList.add(publishItem);
@@ -56,6 +57,7 @@ public class CaseCreateTopic extends CaseBase implements ICanPopupMenu, ICanCrea
             case PICK_UP:
                 break;
         }
+        */
         popupWindowAdapter.setItemList(itemList);
     }
 

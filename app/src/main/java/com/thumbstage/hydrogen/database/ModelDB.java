@@ -13,13 +13,13 @@ import com.thumbstage.hydrogen.database.entity.MicEntity;
 import com.thumbstage.hydrogen.database.entity.TopicEntity;
 import com.thumbstage.hydrogen.database.entity.TopicUserEntity;
 import com.thumbstage.hydrogen.database.entity.UserEntity;
+import com.thumbstage.hydrogen.model.bo.TopicTag;
 import com.thumbstage.hydrogen.model.vo.AtMe;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.bo.LineType;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.Setting;
 import com.thumbstage.hydrogen.model.vo.Topic;
-import com.thumbstage.hydrogen.model.bo.TopicType;
 import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.utils.DataConvertUtil;
 
@@ -50,7 +50,7 @@ public class ModelDB {
         this.executor = executor;
     }
 
-    public boolean isTopicNeedFresh(TopicType type, final String started_by, final boolean isFinished) {
+    public boolean isTopicNeedFresh(TopicTag type, final String started_by, final boolean isFinished) {
         if(TextUtils.isEmpty(started_by)) {
             return database.topicDao().hasTopic(type.name(), isFinished, getMaxRefreshTime(new Date())) == null;
         } else {
@@ -87,7 +87,7 @@ public class ModelDB {
                     entity.setSetting_url(topic.getSetting().getUrl());
                 }
                 entity.setLastRefresh(new Date());
-                entity.setType(topic.getType().name());
+                // entity.setType(topic.getTags().name());
                 database.topicDao().insert(entity);
                 saveMembers(DataConvertUtil.user2StringId(topic.getMembers()), topic.getId());
                 saveLineList(topic.getDialogue(), topic.getId());
@@ -256,7 +256,7 @@ public class ModelDB {
     }
 
     private Map<String, MutableLiveData<List<Mic>>> liveDataMap = new HashMap<>();
-    public LiveData<List<Mic>> getMic(TopicType type, String started_by, boolean isFinished, int pageNum) {
+    public LiveData<List<Mic>> getMic(TopicTag type, String started_by, boolean isFinished, int pageNum) {
 
         final MutableLiveData<List<Mic>> micListLive;
         String key = type.name()+isFinished;
@@ -394,7 +394,7 @@ public class ModelDB {
         TopicEntity entity = database.topicDao().get(id);
         Topic topic = new Topic();
         topic.setId(entity.getId());
-        topic.setType(TopicType.valueOf(entity.getType()));
+        // topic.setTags(TopicTag.valueOf(entity.getType()));
         topic.setName(entity.getName());
         topic.setBrief(entity.getName());
         topic.setSetting(new Setting("", entity.getSetting_url(), true));

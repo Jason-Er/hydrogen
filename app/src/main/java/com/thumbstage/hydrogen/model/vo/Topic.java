@@ -1,6 +1,6 @@
 package com.thumbstage.hydrogen.model.vo;
 
-import com.thumbstage.hydrogen.model.bo.TopicType;
+import com.thumbstage.hydrogen.model.bo.TopicTag;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,19 +10,19 @@ public class Topic implements Cloneable {
     String id;
     String name;
     String brief;
-    TopicType type;
     Setting setting;
     User started_by;
     String derive_from; // topic id
     List<Line> dialogue;
     List<User> members;
+    List<TopicTag> tags;
     boolean isFinished;
 
     public Topic() {
         name = "";
         brief = "";
         derive_from = "";
-        type = TopicType.UNDEFINED;
+        tags = new ArrayList<>();
         dialogue = new ArrayList<>();
         members = new ArrayList<>();
     }
@@ -60,14 +60,13 @@ public class Topic implements Cloneable {
         this.derive_from = derive_from;
     }
 
-    public void setType(TopicType type) {
-        this.type = type;
-    }
-
     public void setFinished(boolean finished) {
         isFinished = finished;
     }
 
+    public void setTags(List<TopicTag> tags) {
+        this.tags = tags;
+    }
     // endregion
 
     // region getter
@@ -104,12 +103,12 @@ public class Topic implements Cloneable {
         return derive_from;
     }
 
-    public TopicType getType() {
-        return type;
-    }
-
     public boolean isFinished() {
         return isFinished;
+    }
+
+    public List<TopicTag> getTags() {
+        return tags;
     }
     // endregion
 
@@ -120,7 +119,6 @@ public class Topic implements Cloneable {
         try{
             topic = (Topic) super.clone();
             topic.setDerive_from(topic.getId());
-            topic.setType(TopicType.UNDEFINED);
             topic.setId("");
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
