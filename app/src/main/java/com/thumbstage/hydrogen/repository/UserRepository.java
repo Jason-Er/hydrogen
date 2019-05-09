@@ -119,6 +119,7 @@ public class UserRepository {
                             executor.execute(new Runnable() {
                                 @Override
                                 public void run() {
+                                    modelDB.saveUser(cloudAPI.getCurrentUser());
                                     modelDB.saveUserList(users);
                                     modelDB.saveContacts(userId, users);
                                 }
@@ -129,28 +130,5 @@ public class UserRepository {
             }
         });
     }
-
-    /*
-    public LiveData<Set<CanOnMic>> getCanOnMic(String userId, String micId) {
-        refreshCanOnMic(userId, micId);
-        return modelDB.getCanOnMic(userId, micId);
-    }
-
-    private void refreshCanOnMic(final String userId, final String micId) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                if(modelDB.isCanOnMicNeedFresh(userId, micId)) {
-                    cloudAPI.getCanOnMic(userId, micId, new IReturnCanOnMic() {
-                        @Override
-                        public void callback(Set<CanOnMic> canOnMicList) {
-                            modelDB.saveCanOnMic(userId, micId, canOnMicList);
-                        }
-                    });
-                }
-            }
-        });
-    }
-    */
 
 }
