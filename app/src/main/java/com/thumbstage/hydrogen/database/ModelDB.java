@@ -268,11 +268,11 @@ public class ModelDB {
     }
 
     private Map<String, MutableLiveData<List<Mic>>> liveDataMap = new HashMap<>();
-    public LiveData<List<Mic>> getMic(TopicTag tag, String sponsor, boolean isFinished, int pageNum) {
+    public LiveData<List<Mic>> getMic(TopicTag tag, String userId, boolean isFinished, int pageNum) {
 
         final MutableLiveData<List<Mic>> micListLive;
         String key = tag.name()+isFinished;
-        if(!TextUtils.isEmpty(sponsor)) {
+        if(!TextUtils.isEmpty(userId)) {
             key += "personal";
         }
         if(liveDataMap.containsKey(key)) {
@@ -283,10 +283,10 @@ public class ModelDB {
         }
 
         LiveData<List<MicEntity>> liveData;
-        if(TextUtils.isEmpty(sponsor)) {
+        if(TextUtils.isEmpty(userId)) {
             liveData = database.micDao().get(tag.name(), isFinished, PER_PAGE_NUM, pageNum * PER_PAGE_NUM);
         } else {
-            liveData = database.micDao().get(tag.name(), sponsor, isFinished, PER_PAGE_NUM, pageNum*PER_PAGE_NUM);
+            liveData = database.micDao().get(tag.name(), userId, isFinished, PER_PAGE_NUM, pageNum*PER_PAGE_NUM);
         }
         return Transformations.switchMap(liveData, new Function<List<MicEntity>, LiveData<List<Mic>>>() {
             @Override
