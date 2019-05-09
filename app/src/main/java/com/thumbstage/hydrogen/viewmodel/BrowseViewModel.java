@@ -29,40 +29,20 @@ public class BrowseViewModel extends ViewModel {
 
     public LiveData<List<Mic>> getIAttendedOpenedByPageNum(int pageNum) {
         String userId = userRepository.getCurrentUser().getId();
-        return null;//topicRepository.getMic(TopicTag.PICK_UP, userId, false, pageNum);
+        return topicRepository.getMic(TopicTag.SEMINAR, userId, false, pageNum);
     }
 
     public LiveData<List<Mic>> getIAttendedClosedByPageNum(int pageNum) {
         String userId = userRepository.getCurrentUser().getId();
-        return null;//topicRepository.getMic(TopicTag.PICK_UP, userId, true, pageNum);
+        return topicRepository.getMic(TopicTag.SEMINAR, userId, true, pageNum);
     }
 
-    public LiveData<List<Mic>> getPublishedOpenedByPageNum(int pageNum) {
-        return null;// topicRepository.getMic(TopicTag.PUBLISHED, "", false, pageNum);
+    public LiveData<List<Mic>> getCommunityTopicByPageNum(int pageNum) {
+        return topicRepository.getMic(TopicTag.LITERAL, "", false, pageNum);
     }
 
-    public LiveData<List<Mic>> getPublishedClosedByPageNum(int pageNum) {
-        return null;//topicRepository.getMic(TopicTag.PUBLISHED, "", true, pageNum);
-    }
-
-    public LiveData<List<Mic>> getIPublishedOpenedByPageNum(int pageNum) {
-        String userId = userRepository.getCurrentUser().getId();
-        return null;//topicRepository.getMic(TopicTag.PUBLISHED, userId, false, pageNum);
-    }
-
-    public LiveData<List<Mic>> getIPublishedClosedByPageNum(int pageNum) {
-        String userId = userRepository.getCurrentUser().getId();
-        return null;//topicRepository.getMic(TopicTag.PUBLISHED, userId, true, pageNum);
-    }
-
-    public LiveData<List<Mic>> getIStartedOpenedByPageNum(int pageNum) {
-        String userId = userRepository.getCurrentUser().getId();
-        return null;//topicRepository.getMic(TopicTag.UNPUBLISHED, userId, false, pageNum);
-    }
-
-    public LiveData<List<Mic>> getIStartedClosedByPageNum(int pageNum) {
-        String userId = userRepository.getCurrentUser().getId();
-        return null;//topicRepository.getMic(TopicTag.UNPUBLISHED, userId, true, pageNum);
+    public LiveData<List<Mic>> getCommunityShowByPageNum(int pageNum) {
+        return topicRepository.getMic(TopicTag.SELECTED, "", true, pageNum);
     }
 
 }

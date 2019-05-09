@@ -37,17 +37,17 @@ public class TopicRepository {
         this.executor = executor;
     }
 
-    public LiveData<List<Mic>> getMic(TopicTag type, String started_by, boolean isFinished, int pageNum) {
-        refreshMicList(type, started_by, isFinished, pageNum);
-        return modelDB.getMic(type, started_by, isFinished, pageNum);
+    public LiveData<List<Mic>> getMic(TopicTag tag, String sponsor, boolean isFinished, int pageNum) {
+        refreshMicList(tag, sponsor, isFinished, pageNum);
+        return modelDB.getMic(tag, sponsor, isFinished, pageNum);
     }
 
-    private void refreshMicList(final TopicTag type, final String started_by, final boolean isFinished, final int pageNum) {
+    private void refreshMicList(final TopicTag tag, final String sponsor, final boolean isFinished, final int pageNum) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                if( modelDB.isTopicNeedFresh(type, started_by, isFinished) ) {
-                    cloudAPI.getMic(type, started_by, isFinished, pageNum, new IReturnMicList() {
+                if( modelDB.isTopicNeedFresh(tag, sponsor, isFinished) ) {
+                    cloudAPI.getMic(tag, sponsor, isFinished, pageNum, new IReturnMicList() {
                         @Override
                         public void callback(final List<Mic> micList) {
                             executor.execute(new Runnable() {

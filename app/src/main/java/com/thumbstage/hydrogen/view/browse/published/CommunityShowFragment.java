@@ -34,7 +34,7 @@ public class CommunityShowFragment extends BasicBrowseFragment implements IBrows
 
     @Override
     public void customObserve() {
-        viewModel.getPublishedClosedByPageNum(0).observe(this, new Observer<List<Mic>>() {
+        viewModel.getCommunityShowByPageNum(0).observe(this, new Observer<List<Mic>>() {
             @Override
             public void onChanged(@Nullable List<Mic> micList) {
                 recyclerViewAdapter.setItems(micList);

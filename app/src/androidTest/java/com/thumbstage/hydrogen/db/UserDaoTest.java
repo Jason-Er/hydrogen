@@ -1,10 +1,14 @@
 package com.thumbstage.hydrogen.db;
 
+import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
+import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.database.entity.TopicEntity;
+import com.thumbstage.hydrogen.database.entity.TopicTagEntity;
 import com.thumbstage.hydrogen.database.entity.UserEntity;
+import com.thumbstage.hydrogen.model.bo.TopicTag;
 import com.thumbstage.hydrogen.model.vo.Mic;
 
 import org.junit.Test;
@@ -49,7 +53,7 @@ public class UserDaoTest extends DbTest {
         topicEntity.setBrief("123");
         topicEntity.setId("3");
         topicEntity.setDerive_from("");
-        topicEntity.setStarted_by("1");
+        topicEntity.setSponsor("1");
 
         db.topicDao().insert(topicEntity);
 
@@ -98,4 +102,17 @@ public class UserDaoTest extends DbTest {
         converter.saveMicList(micList);
 
     }
+
+    @Test
+    public void testSaveTopicTagList() {
+        List<TopicTagEntity> entities = new ArrayList<>();
+        TopicTagEntity entity = new TopicTagEntity();
+        entity.setTopicId("5cd126687b968a0072e3df6d");
+        entity.setTag("LITERAL");
+        entities.add(entity);
+        db.topicTagDao().insert(entities);
+        List<TopicTagEntity> list = db.topicTagDao().get("5cd126687b968a0072e3df6d");
+        Log.i("testSaveTopicTagList","ok");
+    }
+
 }
