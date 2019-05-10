@@ -27,19 +27,16 @@ import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.HyMenuItemEvent;
 import com.thumbstage.hydrogen.event.IMMessageEvent;
 import com.thumbstage.hydrogen.event.PopupMenuEvent;
-import com.thumbstage.hydrogen.model.bo.CanOnTopic;
-import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
-import com.thumbstage.hydrogen.model.vo.Topic;
-import com.thumbstage.hydrogen.model.vo.User;
+import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.dto.IMMessage;
+import com.thumbstage.hydrogen.model.vo.Mic;
+import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.utils.DensityUtil;
 import com.thumbstage.hydrogen.view.common.HyMenuItem;
-import com.thumbstage.hydrogen.view.create.cases.CaseContinueTopic;
-import com.thumbstage.hydrogen.view.create.cases.CaseCreateTopic;
-import com.thumbstage.hydrogen.view.create.cases.CaseAttendTopic;
 import com.thumbstage.hydrogen.view.create.cases.CaseBase;
+import com.thumbstage.hydrogen.view.create.cases.CaseContinueTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanAddMember;
 import com.thumbstage.hydrogen.view.create.feature.ICanCloseTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanCreateTopic;
@@ -86,8 +83,8 @@ public class TopicFragment extends Fragment {
 
     Map<TopicHandleType, CaseBase> roleMap = new HashMap<TopicHandleType, CaseBase>(){
         {
-            put(TopicHandleType.CREATE, new CaseCreateTopic());
-            put(TopicHandleType.ATTEND, new CaseAttendTopic());
+            put(TopicHandleType.CREATE, new CaseBase());
+            put(TopicHandleType.ATTEND, new CaseBase());
             put(TopicHandleType.CONTINUE, new CaseContinueTopic());
         }
     };
@@ -300,6 +297,9 @@ public class TopicFragment extends Fragment {
             if(userCan != null && userCan.containsKey(userViewModel.getCurrentUser().getId())) {
                 if(userCan.get(userViewModel.getCurrentUser().getId()).size() > 0) {
                     menuItemSetup.setVisible(true);
+                    if( currentRole instanceof ICanPopupMenu ) {
+                        ((ICanPopupMenu) currentRole).setUpPopupMenu();
+                    }
                 }
             }
         }
@@ -318,9 +318,6 @@ public class TopicFragment extends Fragment {
                 Log.i(TAG, "menu_item_setup");
                 View anchor = getActivity().findViewById(R.id.menu_item_setup);
                 popupWindow.setAnchorView(anchor);
-                if( currentRole instanceof ICanPopupMenu ) {
-                    ((ICanPopupMenu) currentRole).setUpPopupMenu();
-                }
                 popupWindow.show();
                 break;
         }

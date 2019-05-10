@@ -7,8 +7,7 @@ import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.view.create.feature.ICanCloseTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanPopupMenu;
 
-public class CaseContinueTopic extends CaseBase implements ICanPopupMenu,
-        ICanCloseTopic {
+public class CaseContinueTopic extends CaseBase {
 
     @Override
     protected void addLine(Line line) {
@@ -22,28 +21,6 @@ public class CaseContinueTopic extends CaseBase implements ICanPopupMenu,
                 }
             }
         });
-    }
-
-    @Override
-    public void closeTopic(IReturnBool iReturnBool) {
-        super.closeTopic(iReturnBool);
-    }
-
-    @Override
-    public void setUpPopupMenu() {
-        /*
-        List<HyMenuItem> itemList = new ArrayList<>();
-        for(CanOnMic canOnMic: canOnMics) {
-            switch (canOnMic) {
-                case OPEN:
-                    break;
-                case CLOSE:
-                    itemList.add(closeItem);
-                    break;
-            }
-        }
-        popupWindowAdapter.setItemList(itemList);
-        */
     }
 
 }
