@@ -46,7 +46,7 @@ public class TopicAdapter extends ListDelegationAdapter {
     }
 
     public Topic getTopic() {
-        return mic.getTopic();
+        return mic==null? null: mic.getTopic();
     }
 
     public void addLine(Line line) {

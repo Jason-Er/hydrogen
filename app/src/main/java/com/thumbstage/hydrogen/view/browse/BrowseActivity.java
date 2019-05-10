@@ -195,26 +195,15 @@ public class BrowseActivity extends AppCompatActivity
         switch (event.getMessage()) {
             case "CommunityTopicViewHolder":
                 intent.setClass(this, CreateActivity.class);
-                if(mic.getTopic().getStarted_by().equals(userViewModel.getCurrentUser())) {
-                    intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.EDIT.name());
-                } else {
-                    intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.ATTEND.name());
-                }
-                break;
-            case "IStartedClosedViewHolder":
-            case "IPublishedClosedViewHolder":
-            case "IAttendedClosedViewHolder":
-            case "CommunityShowViewHolder":
-                intent.setClass(this, ShowActivity.class);
-                break;
-            case "IPublishedOpenedViewHolder":
-            case "IStartedOpenedViewHolder":
-                intent.setClass(this, CreateActivity.class);
-                intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.EDIT.name());
+                intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.ATTEND.name());
                 break;
             case "IAttendedOpenedViewHolder":
                 intent.setClass(this, CreateActivity.class);
                 intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.CONTINUE.name());
+                break;
+            case "CommunityShowViewHolder":
+            case "IAttendedClosedViewHolder":
+                intent.setClass(this, ShowActivity.class);
                 break;
         }
         startActivity(intent);
@@ -246,7 +235,7 @@ public class BrowseActivity extends AppCompatActivity
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             IMMessage imMessage = (IMMessage) ((IMMessageEvent) event.originalEvent).getData();
             intent.putExtra(Mic.class.getSimpleName(), imMessage.getMicId());
-            intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.EDIT.name());
+            intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.CONTINUE.name());
             NotificationUtils.showNotification(this, "userName", "say what", intent);
         }
     }

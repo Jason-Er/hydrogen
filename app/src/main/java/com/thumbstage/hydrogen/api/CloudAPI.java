@@ -651,8 +651,15 @@ public class CloudAPI {
                     });
                     Map<String, Set<CanOnTopic>> userCans = new HashMap<>();
                     for(Object key: userCanMap.keySet()) {
-                        JSONArray arr = (JSONArray) userCanMap.get(key);
-                        List<String> pris = JSONObject.parseArray(arr.toJSONString(), String.class);
+                        List<String> pris = new ArrayList<>();
+                        if(userCanMap.get(key) instanceof JSONArray) {
+                            JSONArray arr = (JSONArray) userCanMap.get(key);
+                            pris = JSONObject.parseArray(arr.toJSONString(), String.class);
+                        } else if(userCanMap.get(key) instanceof ArrayList){
+                            pris = (List<String>) userCanMap.get(key);
+                        } else {
+
+                        }
                         Set<CanOnTopic> cans = new LinkedHashSet<>();
                         for(String str: pris) {
                             cans.add(CanOnTopic.valueOf(str));
