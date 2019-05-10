@@ -12,9 +12,12 @@ import com.thumbstage.hydrogen.database.entity.LineEntity;
 import com.thumbstage.hydrogen.database.entity.MicEntity;
 import com.thumbstage.hydrogen.database.entity.TopicEntity;
 import com.thumbstage.hydrogen.database.entity.TopicTagEntity;
+import com.thumbstage.hydrogen.database.entity.TopicUserCanEntity;
 import com.thumbstage.hydrogen.database.entity.TopicUserEntity;
 import com.thumbstage.hydrogen.database.entity.UserEntity;
+import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.model.bo.TopicTag;
+import com.thumbstage.hydrogen.model.bo.UserCan;
 import com.thumbstage.hydrogen.model.vo.AtMe;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.bo.LineType;
@@ -28,8 +31,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
@@ -90,10 +95,25 @@ public class ModelDB {
                 entity.setLastRefresh(new Date());
                 database.topicDao().insert(entity);
                 saveTag(topic.getId(), topic.getTags());
+                saveUserCan(topic.getId(),topic.getUserCan());
                 saveMembers(DataConvertUtil.user2StringId(topic.getMembers()), topic.getId());
                 saveLineList(topic.getDialogue(), topic.getId());
             }
         });
+    }
+
+    private void saveUserCan(String topicId, Map<String, Set<CanOnTopic>> userCanMap) {
+        List<TopicUserCanEntity> entities = new ArrayList<>();
+        for(String userId: userCanMap.keySet()) {
+            for (CanOnTopic can : userCanMap.get(userId)) {
+                TopicUserCanEntity entity = new TopicUserCanEntity();
+                entity.setTopicId(topicId);
+                entity.setUserId(userId);
+                entity.setCan(can.name());
+                entities.add(entity);
+            }
+        }
+        database.topicUserCanDao().insert(entities);
     }
 
     private void saveTag(String topicId, List<TopicTag> tags) {
@@ -377,6 +397,7 @@ public class ModelDB {
         Topic topic = new Topic();
         topic.setId(entity.getId());
         topic.setTags(getTags(id));
+        topic.setUserCan(getUserCan(id));
         topic.setName(entity.getName());
         topic.setBrief(entity.getName());
         topic.setSetting(new Setting("", entity.getSetting_url(), true));
@@ -385,6 +406,21 @@ public class ModelDB {
         topic.setStarted_by(getUser(entity.getSponsor()));
         topic.setMembers(getMembers(entity.getId()));
         return topic;
+    }
+
+    private Map<String, Set<CanOnTopic>> getUserCan(String topicId) {
+        Map<String, Set<CanOnTopic>> userCans = new HashMap<>();
+        List<TopicUserCanEntity> entities = database.topicUserCanDao().get(topicId);
+        for(TopicUserCanEntity entity: entities) {
+            if(userCans.containsKey(entity.getUserId())) {
+                userCans.get(entity.getUserId()).add(CanOnTopic.valueOf(entity.getCan()));
+            } else {
+                Set<CanOnTopic> set = new LinkedHashSet<>();
+                set.add(CanOnTopic.valueOf(entity.getCan()));
+                userCans.put(entity.getUserId(), set);
+            }
+        }
+        return userCans;
     }
 
     private List<TopicTag> getTags(String topicId) {

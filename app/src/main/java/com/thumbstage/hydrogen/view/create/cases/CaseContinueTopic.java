@@ -2,13 +2,10 @@ package com.thumbstage.hydrogen.view.create.cases;
 
 import android.util.Log;
 
-import com.thumbstage.hydrogen.model.bo.PrivilegeOnTopic;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.view.create.feature.ICanCloseTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanPopupMenu;
-
-import java.util.Set;
 
 public class CaseContinueTopic extends CaseBase implements ICanPopupMenu,
         ICanCloseTopic {

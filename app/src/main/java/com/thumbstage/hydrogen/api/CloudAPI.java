@@ -28,8 +28,9 @@ import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.thumbstage.hydrogen.model.bo.HyFile;
-import com.thumbstage.hydrogen.model.bo.PrivilegeOnTopic;
+import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.model.bo.TopicTag;
+import com.thumbstage.hydrogen.model.bo.UserCan;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.bo.LineType;
 import com.thumbstage.hydrogen.model.vo.Mic;
@@ -361,11 +362,11 @@ public class CloudAPI {
         // default privilege for one member on topic
         if(avTopic.get(FieldName.FIELD_DERIVE_FROM.name) !=null ) {
             if(originUser != null) {
-                String[] privileges = {PrivilegeOnTopic.CLOSE.name(), PrivilegeOnTopic.PUBLISH.name()};
+                String[] privileges = {CanOnTopic.CLOSE.name(), CanOnTopic.PUBLISH.name()};
                 setMemberPrivilege2Topic(avTopic, originUser.getId(), privileges);
             }
         } else {
-            String[] privileges = {PrivilegeOnTopic.CLOSE.name(), PrivilegeOnTopic.PUBLISH.name()};
+            String[] privileges = {CanOnTopic.CLOSE.name(), CanOnTopic.PUBLISH.name()};
             setMemberPrivilege2Topic(avTopic, getCurrentUserId(), privileges);
         }
 
@@ -613,6 +614,7 @@ public class CloudAPI {
             final List<String> tags = avTopic.getList(FieldName.FIELD_TAG.name);
             final String brief = (String) avTopic.get(FieldName.FIELD_BRIEF.name);
             final List<Map> datalist = avTopic.getList(FieldName.FIELD_DIALOGUE.name);
+            final Map<String, String[]> userCanMap = avTopic.getMap(FieldName.FIELD_PRIVILEGE.name);
             final List<String> membersIds = avTopic.getList(FieldName.FIELD_MEMBER.name);
             final boolean isFinished = avTopic.getBoolean(FieldName.FIELD_IS_FINISHED.name);
             getUsers(membersIds, new IReturnUsers() {
@@ -646,12 +648,22 @@ public class CloudAPI {
 
                         }
                     });
+                    Map<String, Set<CanOnTopic>> userCans = new HashMap<>();
+                    for(Object key: userCanMap.keySet()) {
+                        String [] pris = userCanMap.get(key);
+                        Set<CanOnTopic> cans = new LinkedHashSet<>();
+                        for(String str: pris) {
+                            cans.add(CanOnTopic.valueOf(str));
+                        }
+                        userCans.put((String) key, cans);
+                    }
 
                     Topic topic = new Topic();
                     topic.setTags(convert2TopicTag(tags));
                     topic.setId(id);
                     topic.setBrief(brief);
                     topic.setName(name);
+                    topic.setUserCan(userCans);
                     topic.setDialogue(dialogue);
                     topic.setMembers(users);
                     topic.setStarted_by(user);
