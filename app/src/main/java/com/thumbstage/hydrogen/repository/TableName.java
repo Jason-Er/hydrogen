@@ -6,8 +6,7 @@ public enum TableName {
     TABLE_FILE("_File"),
     TABLE_CONTACT("Contact"),
     TABLE_TOPIC("Topic"),
-    TABLE_CANONMIC("CanOnMic"),
-    TABLE_USERATTEND("UserAttend");
+    TABLE_USER_PRIVILEGE("UserPrivilege");
 
     public final String name;
     TableName(String name) {

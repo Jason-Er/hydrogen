@@ -11,8 +11,11 @@ import com.thumbstage.hydrogen.database.entity.ContactEntity;
 import com.thumbstage.hydrogen.database.entity.LineEntity;
 import com.thumbstage.hydrogen.database.entity.MicEntity;
 import com.thumbstage.hydrogen.database.entity.TopicEntity;
+import com.thumbstage.hydrogen.database.entity.TopicTagEntity;
+import com.thumbstage.hydrogen.database.entity.TopicUserCanEntity;
 import com.thumbstage.hydrogen.database.entity.TopicUserEntity;
 import com.thumbstage.hydrogen.database.entity.UserEntity;
+import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.model.bo.TopicTag;
 import com.thumbstage.hydrogen.model.vo.AtMe;
 import com.thumbstage.hydrogen.model.vo.Line;
@@ -27,8 +30,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.Executor;
 
 import javax.inject.Inject;
@@ -50,11 +55,11 @@ public class ModelDB {
         this.executor = executor;
     }
 
-    public boolean isTopicNeedFresh(TopicTag type, final String started_by, final boolean isFinished) {
-        if(TextUtils.isEmpty(started_by)) {
-            return database.topicDao().hasTopic(type.name(), isFinished, getMaxRefreshTime(new Date())) == null;
+    public boolean isTopicNeedFresh(TopicTag tag, final String sponsor, final boolean isFinished) {
+        if(TextUtils.isEmpty(sponsor)) {
+            return database.topicDao().hasTopic(tag.name(), isFinished, getMaxRefreshTime(new Date())) == null;
         } else {
-            return database.topicDao().hasTopic(type.name(), started_by, isFinished, getMaxRefreshTime(new Date())) == null;
+            return database.topicDao().hasTopic(tag.name(), sponsor, isFinished, getMaxRefreshTime(new Date())) == null;
         }
     }
 
@@ -81,18 +86,44 @@ public class ModelDB {
                 entity.setName(topic.getName());
                 entity.setBrief(topic.getBrief());
                 entity.setDerive_from(topic.getDerive_from());
-                entity.setStarted_by(topic.getStarted_by().getId());
+                entity.setSponsor(topic.getStarted_by().getId());
                 entity.setFinished(topic.isFinished());
                 if( topic.getSetting()!=null ) {
                     entity.setSetting_url(topic.getSetting().getUrl());
                 }
                 entity.setLastRefresh(new Date());
-                // entity.setType(topic.getTags().name());
                 database.topicDao().insert(entity);
+                saveTag(topic.getId(), topic.getTags());
+                saveUserCan(topic.getId(),topic.getUserCan());
                 saveMembers(DataConvertUtil.user2StringId(topic.getMembers()), topic.getId());
                 saveLineList(topic.getDialogue(), topic.getId());
             }
         });
+    }
+
+    private void saveUserCan(String topicId, Map<String, Set<CanOnTopic>> userCanMap) {
+        List<TopicUserCanEntity> entities = new ArrayList<>();
+        for(String userId: userCanMap.keySet()) {
+            for (CanOnTopic can : userCanMap.get(userId)) {
+                TopicUserCanEntity entity = new TopicUserCanEntity();
+                entity.setTopicId(topicId);
+                entity.setUserId(userId);
+                entity.setCan(can.name());
+                entities.add(entity);
+            }
+        }
+        database.topicUserCanDao().insert(entities);
+    }
+
+    private void saveTag(String topicId, List<TopicTag> tags) {
+        List<TopicTagEntity> entities = new ArrayList<>();
+        for(TopicTag tag: tags) {
+            TopicTagEntity entity = new TopicTagEntity();
+            entity.setTopicId(topicId);
+            entity.setTag(tag.name());
+            entities.add(entity);
+        }
+        database.topicTagDao().insert(entities);
     }
 
     public void saveMembers(List<String> members, String topicId) {
@@ -210,7 +241,7 @@ public class ModelDB {
         database.userDao().insert(userEntityList);
     }
 
-    public void saveContacts(String userId, List<User> userList) {
+    public void saveContacts(final String userId, final List<User> userList) {
         List<ContactEntity> contractEntities = new ArrayList<>();
         for(User user: userList) {
             if(user != null) {
@@ -256,11 +287,11 @@ public class ModelDB {
     }
 
     private Map<String, MutableLiveData<List<Mic>>> liveDataMap = new HashMap<>();
-    public LiveData<List<Mic>> getMic(TopicTag type, String started_by, boolean isFinished, int pageNum) {
+    public LiveData<List<Mic>> getMic(TopicTag tag, String userId, boolean isFinished, int pageNum) {
 
         final MutableLiveData<List<Mic>> micListLive;
-        String key = type.name()+isFinished;
-        if(!TextUtils.isEmpty(started_by)) {
+        String key = tag.name()+isFinished;
+        if(!TextUtils.isEmpty(userId)) {
             key += "personal";
         }
         if(liveDataMap.containsKey(key)) {
@@ -271,10 +302,10 @@ public class ModelDB {
         }
 
         LiveData<List<MicEntity>> liveData;
-        if(TextUtils.isEmpty(started_by)) {
-            liveData = database.micDao().get(type.name(), isFinished, PER_PAGE_NUM, pageNum * PER_PAGE_NUM);
+        if(TextUtils.isEmpty(userId)) {
+            liveData = database.micDao().get(tag.name(), isFinished, PER_PAGE_NUM, pageNum * PER_PAGE_NUM);
         } else {
-            liveData = database.micDao().get(type.name(), started_by, isFinished, PER_PAGE_NUM, pageNum*PER_PAGE_NUM);
+            liveData = database.micDao().get(tag.name(), userId, isFinished, PER_PAGE_NUM, pageNum*PER_PAGE_NUM);
         }
         return Transformations.switchMap(liveData, new Function<List<MicEntity>, LiveData<List<Mic>>>() {
             @Override
@@ -336,36 +367,6 @@ public class ModelDB {
         });
     }
 
-    public boolean isCanOnMicNeedFresh(String userId, String micId) {
-        return database.canOnMicDao().hasEntity(userId, micId, getMaxRefreshTime(new Date())) == null;
-    }
-
-    /*
-    public LiveData<Set<CanOnMic>> getCanOnMic(String userId, String micId) {
-        return Transformations.map(database.canOnMicDao().getCanOnMic(userId, micId), new Function<List<CanOnMicEntity>, Set<CanOnMic>>() {
-            @Override
-            public Set<CanOnMic> apply(List<CanOnMicEntity> input) {
-                Set<CanOnMic> list = new LinkedHashSet<>();
-                for(CanOnMicEntity entity: input) {
-                    list.add(CanOnMic.valueOf(entity.getCan()));
-                }
-                return list;
-            }
-        });
-    }
-
-    public void saveCanOnMic(String userId, String micId, Set<CanOnMic> canOnMicSet) {
-        List<CanOnMicEntity> entities = new ArrayList<>();
-        for(CanOnMic canOnMic: canOnMicSet) {
-            CanOnMicEntity entity = new CanOnMicEntity();
-            entity.setUserId(userId);
-            entity.setMicId(micId);
-            entity.setCan(canOnMic.name());
-        }
-        database.canOnMicDao().insert(entities);
-    }
-    */
-
     public User getUser(String userId) {
         UserEntity entity = database.userDao().get(userId);
         User user = new User(entity.getId(), entity.getName(), entity.getAvatar());
@@ -390,19 +391,44 @@ public class ModelDB {
         return mics;
     }
 
-    public Topic getTopic(String id) {
+    private Topic getTopic(String id) {
         TopicEntity entity = database.topicDao().get(id);
         Topic topic = new Topic();
         topic.setId(entity.getId());
-        // topic.setTags(TopicTag.valueOf(entity.getType()));
+        topic.setTags(getTags(id));
+        topic.setUserCan(getUserCan(id));
         topic.setName(entity.getName());
         topic.setBrief(entity.getName());
         topic.setSetting(new Setting("", entity.getSetting_url(), true));
         topic.setDerive_from(entity.getDerive_from());
         topic.setDialogue(getLine(entity.getId()));
-        topic.setStarted_by(getUser(entity.getStarted_by()));
+        topic.setStarted_by(getUser(entity.getSponsor()));
         topic.setMembers(getMembers(entity.getId()));
         return topic;
+    }
+
+    private Map<String, Set<CanOnTopic>> getUserCan(String topicId) {
+        Map<String, Set<CanOnTopic>> userCans = new HashMap<>();
+        List<TopicUserCanEntity> entities = database.topicUserCanDao().get(topicId);
+        for(TopicUserCanEntity entity: entities) {
+            if(userCans.containsKey(entity.getUserId())) {
+                userCans.get(entity.getUserId()).add(CanOnTopic.valueOf(entity.getCan()));
+            } else {
+                Set<CanOnTopic> set = new LinkedHashSet<>();
+                set.add(CanOnTopic.valueOf(entity.getCan()));
+                userCans.put(entity.getUserId(), set);
+            }
+        }
+        return userCans;
+    }
+
+    private List<TopicTag> getTags(String topicId) {
+        List<TopicTag> tags = new ArrayList<>();
+        List<TopicTagEntity> entities = database.topicTagDao().get(topicId);
+        for(TopicTagEntity entity: entities) {
+            tags.add(TopicTag.valueOf(entity.getTag()));
+        }
+        return tags;
     }
 
     public List<Topic> getTopic(List<String> ids) {
@@ -416,7 +442,7 @@ public class ModelDB {
             topic.setSetting(new Setting("", entity.getSetting_url(), true));
             topic.setDerive_from(entity.getDerive_from());
             topic.setDialogue(getLine(entity.getId()));
-            topic.setStarted_by(getUser(entity.getStarted_by()));
+            topic.setStarted_by(getUser(entity.getSponsor()));
             topic.setMembers(getMembers(entity.getId()));
         }
         return topics;

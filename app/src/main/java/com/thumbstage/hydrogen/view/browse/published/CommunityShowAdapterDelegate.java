@@ -12,11 +12,11 @@ import com.thumbstage.hydrogen.view.common.IAdapterDelegate;
 
 import java.util.List;
 
-public class PublishedClosedAdapterDelegate implements IAdapterDelegate<List> {
+public class CommunityShowAdapterDelegate implements IAdapterDelegate<List> {
 
     private int viewType;
 
-    public PublishedClosedAdapterDelegate(int viewType) {
+    public CommunityShowAdapterDelegate(int viewType) {
         this.viewType = viewType;
     }
 
@@ -35,12 +35,12 @@ public class PublishedClosedAdapterDelegate implements IAdapterDelegate<List> {
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_topic_browse, parent, false);
-        return new PublishedClosedViewHolder(view);
+        return new CommunityShowViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull List items, int position, @NonNull RecyclerView.ViewHolder holder) {
-        ((PublishedClosedViewHolder)holder).setMic((Mic) items.get(position));
+        ((CommunityShowViewHolder)holder).setMic((Mic) items.get(position));
     }
     
 }

@@ -21,6 +21,7 @@ import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.api.IMService;
 import com.thumbstage.hydrogen.event.AtMeEvent;
 import com.thumbstage.hydrogen.event.BrowseItemEvent;
+import com.thumbstage.hydrogen.event.FabEvent;
 import com.thumbstage.hydrogen.event.IMMessageEvent;
 import com.thumbstage.hydrogen.event.IMMicEvent;
 import com.thumbstage.hydrogen.event.NaviViewEvent;
@@ -129,7 +130,7 @@ public class BrowseActivity extends AppCompatActivity
             public void onPageSelected(int position) {
                 if ( pagerAdapter.getItem(position) instanceof IBrowseCustomize) {
                     ((IBrowseCustomize) pagerAdapter.getItem(position)).customizeToolbar(toolbar);
-                    ((IBrowseCustomize) pagerAdapter.getItem(position)).customizeFab(fab);
+                    ((IBrowseCustomize) pagerAdapter.getItem(position)).customizeFab(fab, userViewModel.getCurrentUser().getPrivileges());
                 } else {
                     // default function
                 }
@@ -149,6 +150,16 @@ public class BrowseActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onResponseMessageEvent(final FabEvent event) {
+        if(event.getMessage().equals("plus")) {
+            Intent intent = new Intent(this, CreateActivity.class);
+            intent.putExtra(TopicHandleType.class.getSimpleName(),
+                    TopicHandleType.CREATE.name());
+            startActivity(intent);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -193,28 +204,17 @@ public class BrowseActivity extends AppCompatActivity
         Intent intent = new Intent();
         intent.putExtra(Mic.class.getSimpleName(), mic.getId());
         switch (event.getMessage()) {
-            case "PublishedOpenedViewHolder":
+            case "CommunityTopicViewHolder":
                 intent.setClass(this, CreateActivity.class);
-                if(mic.getTopic().getStarted_by().equals(userViewModel.getCurrentUser())) {
-                    intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.EDIT.name());
-                } else {
-                    intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.ATTEND.name());
-                }
-                break;
-            case "IStartedClosedViewHolder":
-            case "IPublishedClosedViewHolder":
-            case "IAttendedClosedViewHolder":
-            case "PublishedClosedViewHolder":
-                intent.setClass(this, ShowActivity.class);
-                break;
-            case "IPublishedOpenedViewHolder":
-            case "IStartedOpenedViewHolder":
-                intent.setClass(this, CreateActivity.class);
-                intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.EDIT.name());
+                intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.ATTEND.name());
                 break;
             case "IAttendedOpenedViewHolder":
                 intent.setClass(this, CreateActivity.class);
                 intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.CONTINUE.name());
+                break;
+            case "CommunityShowViewHolder":
+            case "IAttendedClosedViewHolder":
+                intent.setClass(this, ShowActivity.class);
                 break;
         }
         startActivity(intent);
@@ -246,7 +246,7 @@ public class BrowseActivity extends AppCompatActivity
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
             IMMessage imMessage = (IMMessage) ((IMMessageEvent) event.originalEvent).getData();
             intent.putExtra(Mic.class.getSimpleName(), imMessage.getMicId());
-            intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.EDIT.name());
+            intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.CONTINUE.name());
             NotificationUtils.showNotification(this, "userName", "say what", intent);
         }
     }

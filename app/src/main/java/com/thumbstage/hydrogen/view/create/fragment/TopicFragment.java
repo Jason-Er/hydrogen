@@ -27,16 +27,14 @@ import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.HyMenuItemEvent;
 import com.thumbstage.hydrogen.event.IMMessageEvent;
 import com.thumbstage.hydrogen.event.PopupMenuEvent;
-import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
-import com.thumbstage.hydrogen.model.vo.User;
+import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.dto.IMMessage;
+import com.thumbstage.hydrogen.model.vo.Mic;
+import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.utils.DensityUtil;
 import com.thumbstage.hydrogen.view.common.HyMenuItem;
-import com.thumbstage.hydrogen.view.create.cases.CaseCreateTopic;
-import com.thumbstage.hydrogen.view.create.cases.CaseEditTopic;
-import com.thumbstage.hydrogen.view.create.cases.CaseCopyTopic;
 import com.thumbstage.hydrogen.view.create.cases.CaseBase;
 import com.thumbstage.hydrogen.view.create.cases.CaseContinueTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanAddMember;
@@ -76,8 +74,6 @@ public class TopicFragment extends Fragment {
     @BindView(R.id.loading_spinner)
     ProgressBar spinner;
 
-    String micId;
-
     @Inject
     ViewModelProvider.Factory viewModelFactory;
     TopicViewModel topicViewModel;
@@ -87,10 +83,9 @@ public class TopicFragment extends Fragment {
 
     Map<TopicHandleType, CaseBase> roleMap = new HashMap<TopicHandleType, CaseBase>(){
         {
-            put(TopicHandleType.CREATE, new CaseCreateTopic());
-            put(TopicHandleType.ATTEND, new CaseCopyTopic());
+            put(TopicHandleType.CREATE, new CaseBase());
+            put(TopicHandleType.ATTEND, new CaseBase());
             put(TopicHandleType.CONTINUE, new CaseContinueTopic());
-            put(TopicHandleType.EDIT, new CaseEditTopic());
         }
     };
 
@@ -144,7 +139,7 @@ public class TopicFragment extends Fragment {
     }
 
     private void configureViewModel(){
-        micId = getActivity().getIntent().getStringExtra(Mic.class.getSimpleName());
+        String micId = getActivity().getIntent().getStringExtra(Mic.class.getSimpleName());
         String handleType = getActivity().getIntent().getStringExtra(TopicHandleType.class.getSimpleName());
         if(TextUtils.isEmpty(handleType)) {
             throw new IllegalArgumentException("No TopicHandleType found!");
@@ -169,6 +164,7 @@ public class TopicFragment extends Fragment {
                     public void onChanged(@Nullable Mic mic) {
                         topicAdapter.setMic(mic);
                         spinner.setVisibility(View.GONE);
+                        getActivity().invalidateOptionsMenu();
                     }
                 });
                 break;
@@ -182,6 +178,7 @@ public class TopicFragment extends Fragment {
                             Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
                         }
                         spinner.setVisibility(View.GONE);
+                        getActivity().invalidateOptionsMenu();
                     }
                 });
                 break;
@@ -196,19 +193,7 @@ public class TopicFragment extends Fragment {
                             Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
                         }
                         spinner.setVisibility(View.GONE);
-                    }
-                });
-                break;
-            case EDIT:
-                currentRole = roleMap.get(TopicHandleType.EDIT);
-                topicViewModel.editTopic(micId).observe(this, new Observer<Mic>() {
-                    @Override
-                    public void onChanged(@Nullable Mic mic) {
-                        topicAdapter.setMic(mic);
-                        if(mic.getTopic().getSetting() != null) {
-                            Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
-                        }
-                        spinner.setVisibility(View.GONE);
+                        getActivity().invalidateOptionsMenu();
                     }
                 });
                 break;
@@ -301,26 +286,28 @@ public class TopicFragment extends Fragment {
         }
     }
 
+
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_create_default, menu);
-        final MenuItem menuItemSetup = menu.findItem(R.id.menu_item_setup);
-        /*
-        userViewModel.getCanOnMic(micId, userViewModel.getCurrentUser().getId()).observe(this, new Observer<Set<CanOnMic>>() {
-            @Override
-            public void onChanged(@Nullable Set<CanOnMic> canOnMics) {
-                Log.i(TAG, "can");
-                if (canOnMics.size() > 0) {
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        MenuItem menuItemSetup = menu.findItem(R.id.menu_item_setup);
+        menuItemSetup.setVisible(false);
+        if(topicAdapter.getTopic()!=null) {
+            Map<String, Set<CanOnTopic>> userCan = topicAdapter.getTopic().getUserCan();
+            if(userCan != null && userCan.containsKey(userViewModel.getCurrentUser().getId())) {
+                if(userCan.get(userViewModel.getCurrentUser().getId()).size() > 0) {
                     menuItemSetup.setVisible(true);
                     if( currentRole instanceof ICanPopupMenu ) {
                         ((ICanPopupMenu) currentRole).setUpPopupMenu();
                     }
-                } else {
-                    menuItemSetup.setVisible(false);
                 }
             }
-        });
-        */
+        }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_create_default, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -331,9 +318,6 @@ public class TopicFragment extends Fragment {
                 Log.i(TAG, "menu_item_setup");
                 View anchor = getActivity().findViewById(R.id.menu_item_setup);
                 popupWindow.setAnchorView(anchor);
-                if( currentRole instanceof ICanPopupMenu ) {
-                    ((ICanPopupMenu) currentRole).setUpPopupMenu();
-                }
                 popupWindow.show();
                 break;
         }
