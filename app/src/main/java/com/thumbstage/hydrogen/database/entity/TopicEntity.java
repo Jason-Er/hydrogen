@@ -10,11 +10,11 @@ import android.support.annotation.NonNull;
 import java.util.Date;
 
 @Entity(tableName = "topic",
-        indices = {@Index("started_by")},
+        indices = {@Index("sponsor")},
         foreignKeys = {
                 @ForeignKey(entity = UserEntity.class,
                         parentColumns = "id",
-                        childColumns = "started_by")})
+                        childColumns = "sponsor")})
 public class TopicEntity {
 
     @PrimaryKey
@@ -29,10 +29,9 @@ public class TopicEntity {
     @ColumnInfo(name = "derive_from")
     private String derive_from;
 
-    @ColumnInfo(name = "started_by")
-    private String started_by;
+    @ColumnInfo(name = "sponsor")
+    private String sponsor;
 
-    private String type;
     @ColumnInfo(name = "is_finished")
     private Boolean isFinished = false;
 
@@ -90,20 +89,12 @@ public class TopicEntity {
         this.lastRefresh = lastRefresh;
     }
 
-    public String getStarted_by() {
-        return started_by;
+    public String getSponsor() {
+        return sponsor;
     }
 
-    public void setStarted_by(String started_by) {
-        this.started_by = started_by;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
+    public void setSponsor(String sponsor) {
+        this.sponsor = sponsor;
     }
 
     public Boolean getFinished() {

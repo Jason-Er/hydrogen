@@ -3,11 +3,11 @@ package com.thumbstage.hydrogen.viewmodel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
-import com.thumbstage.hydrogen.model.bo.CanOnMic;
 import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.repository.UserRepository;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
@@ -45,10 +45,6 @@ public class UserViewModel extends ViewModel {
 
     public LiveData<List<User>> getUsers(List<String> userIds) {
         return userRepository.getUsers(userIds);
-    }
-
-    public LiveData<List<CanOnMic>> getCanOnMic(String userId, String micId) {
-        return userRepository.getCanOnMic(userId, micId);
     }
 
     public void addContact(User user) {

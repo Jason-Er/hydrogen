@@ -1,118 +1,123 @@
 package com.thumbstage.hydrogen.model.vo;
 
-import com.thumbstage.hydrogen.model.bo.TopicType;
+import com.thumbstage.hydrogen.model.bo.CanOnTopic;
+import com.thumbstage.hydrogen.model.bo.TopicTag;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class Topic implements Cloneable {
 
     String id;
     String name;
     String brief;
-    TopicType type;
     Setting setting;
     User started_by;
     String derive_from; // topic id
     List<Line> dialogue;
     List<User> members;
+    List<TopicTag> tags;
+    Map<String, Set<CanOnTopic>> userCan; // current user can
     boolean isFinished;
 
     public Topic() {
         name = "";
         brief = "";
         derive_from = "";
-        type = TopicType.UNDEFINED;
+        tags = new ArrayList<>();
         dialogue = new ArrayList<>();
         members = new ArrayList<>();
     }
 
-    // region setter
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setBrief(String brief) {
-        this.brief = brief;
-    }
-
-    public void setSetting(Setting setting) {
-        this.setting = setting;
-    }
-
-    public void setStarted_by(User started_by) {
-        this.started_by = started_by;
-    }
-
-    public void setDialogue(List<Line> dialogue) {
-        this.dialogue = dialogue;
-    }
-
-    public void setMembers(List<User> members) {
-        this.members = members;
-    }
-
-    public void setDerive_from(String derive_from) {
-        this.derive_from = derive_from;
-    }
-
-    public void setType(TopicType type) {
-        this.type = type;
-    }
-
-    public void setFinished(boolean finished) {
-        isFinished = finished;
-    }
-
-    // endregion
-
-    // region getter
-
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getBrief() {
         return brief;
+    }
+
+    public void setBrief(String brief) {
+        this.brief = brief;
     }
 
     public Setting getSetting() {
         return setting;
     }
 
+    public void setSetting(Setting setting) {
+        this.setting = setting;
+    }
+
     public User getStarted_by() {
         return started_by;
     }
 
-    public List<User> getMembers() {
-        return members;
+    public void setStarted_by(User started_by) {
+        this.started_by = started_by;
     }
 
     public List<Line> getDialogue() {
         return dialogue;
     }
 
+    public void setDialogue(List<Line> dialogue) {
+        this.dialogue = dialogue;
+    }
+
+    public List<User> getMembers() {
+        return members;
+    }
+
+    public void setMembers(List<User> members) {
+        this.members = members;
+    }
+
     public String getDerive_from() {
         return derive_from;
     }
 
-    public TopicType getType() {
-        return type;
+    public void setDerive_from(String derive_from) {
+        this.derive_from = derive_from;
     }
 
     public boolean isFinished() {
         return isFinished;
     }
-    // endregion
 
+    public void setFinished(boolean finished) {
+        isFinished = finished;
+    }
+
+    public List<TopicTag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<TopicTag> tags) {
+        this.tags = tags;
+    }
+
+    public Map<String, Set<CanOnTopic>> getUserCan() {
+        return userCan;
+    }
+
+    public void setUserCan(Map<String, Set<CanOnTopic>> userCan) {
+        this.userCan = userCan;
+    }
 
     @Override
     public Object clone() {
@@ -120,9 +125,7 @@ public class Topic implements Cloneable {
         try{
             topic = (Topic) super.clone();
             topic.setDerive_from(topic.getId());
-            topic.setType(TopicType.UNDEFINED);
             topic.setId("");
-            topic.setStarted_by(null);
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }

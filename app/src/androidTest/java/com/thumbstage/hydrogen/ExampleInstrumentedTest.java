@@ -18,7 +18,10 @@ import com.avos.avoscloud.im.v2.AVIMClient;
 import com.avos.avoscloud.im.v2.AVIMException;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.thumbstage.hydrogen.api.CloudAPI;
+import com.thumbstage.hydrogen.model.bo.TopicTag;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
+import com.thumbstage.hydrogen.model.callback.IReturnMicList;
+import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.utils.StringUtil;
 
 import org.junit.Before;
@@ -185,7 +188,7 @@ public class ExampleInstrumentedTest {
                                 .setName(name)
                                 .setMembers(members)
                                 .setDialogue(dialouge)
-                                .setStarted_by(started_by.getObjectId())
+                                .setSponsor(started_by.getObjectId())
                                 .setSetting_id(setting_url);
                         topics.add(topic);
                     }
@@ -231,7 +234,7 @@ public class ExampleInstrumentedTest {
         Topic topic = new Topic();
         topic.setName("testSaveIStartedOpenedTopic");
         topic.setSetting_id("5c629287303f390047c13726");
-        topic.setStarted_by(AVUser.getCurrentUser().getObjectId());
+        topic.setSponsor(AVUser.getCurrentUser().getObjectId());
         topic.getMembers().add(AVUser.getCurrentUser().getObjectId());
         CloudAPI.saveTopic2StartedOpened(topic);
         sleep(5);
@@ -276,7 +279,7 @@ public class ExampleInstrumentedTest {
         topic.setId("5c6ba28a303f39004749baa1");
         topic.setName("testCopyPublishedOpenedTopic");
         topic.setSetting_id("5c629287303f390047c13726");
-        topic.setStarted_by(AVUser.getCurrentUser().getObjectId());
+        topic.setSponsor(AVUser.getCurrentUser().getObjectId());
         topic.getMembers().add(AVUser.getCurrentUser().getObjectId());
         CloudAPI.copyTopicFromPublishedOpened(topic, new CloudAPI.ICallBack() {
             @Override
@@ -292,7 +295,7 @@ public class ExampleInstrumentedTest {
         final String userId = "5c500dbc303f394f8283eadc";
         Topic topic = new Topic();
         topic.setName("hello world");
-        topic.setStarted_by(userId);
+        topic.setSponsor(userId);
         topic.setSetting_id("5c629287303f390047c13726");
         topic.setDialogue(null);
         topic.setDerive_from("5c6b6969a91c9300548c51a4");
@@ -382,7 +385,7 @@ public class ExampleInstrumentedTest {
     public void testCloudAPI() {
         /*
         CloudAPI cloudAPI = new CloudAPI();
-        cloudAPI.getMic(TopicType.PUBLISHED, "", false, 0, new CloudAPI.IReturnMicList() {
+        cloudAPI.getMic(TopicTag.PUBLISHED, "", false, 0, new CloudAPI.IReturnMicList() {
             @Override
             public void callback(List<Mic> micList) {
                 Log.i("testCloudAPI","");
@@ -441,5 +444,17 @@ public class ExampleInstrumentedTest {
         sleep(10);
     }
 
+    @Test
+    public void testGetMic() {
+        Context appContext = InstrumentationRegistry.getTargetContext();
+        CloudAPI cloudAPI = new CloudAPI(appContext);
+        cloudAPI.getMic(TopicTag.LITERAL,  "", false, 0, new IReturnMicList() {
+            @Override
+            public void callback(List<Mic> micList) {
+                Log.i("testGetMic", "");
+            }
+        });
+        sleep(10);
+    }
 
 }

@@ -6,9 +6,9 @@ import android.text.TextUtils;
 
 import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.database.ModelDB;
+import com.thumbstage.hydrogen.model.bo.TopicTag;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
-import com.thumbstage.hydrogen.model.bo.TopicType;
 import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
@@ -37,17 +37,17 @@ public class TopicRepository {
         this.executor = executor;
     }
 
-    public LiveData<List<Mic>> getMic(TopicType type, String started_by, boolean isFinished, int pageNum) {
-        refreshMicList(type, started_by, isFinished, pageNum);
-        return modelDB.getMic(type, started_by, isFinished, pageNum);
+    public LiveData<List<Mic>> getMic(TopicTag tag, String userId, boolean isFinished, int pageNum) {
+        refreshMicList(tag, userId, isFinished, pageNum);
+        return modelDB.getMic(tag, userId, isFinished, pageNum);
     }
 
-    private void refreshMicList(final TopicType type, final String started_by, final boolean isFinished, final int pageNum) {
+    private void refreshMicList(final TopicTag tag, final String userId, final boolean isFinished, final int pageNum) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                if( modelDB.isTopicNeedFresh(type, started_by, isFinished) ) {
-                    cloudAPI.getMic(type, started_by, isFinished, pageNum, new IReturnMicList() {
+                if( modelDB.isTopicNeedFresh(tag, userId, isFinished) ) {
+                    cloudAPI.getMic(tag, userId, isFinished, pageNum, new IReturnMicList() {
                         @Override
                         public void callback(final List<Mic> micList) {
                             executor.execute(new Runnable() {

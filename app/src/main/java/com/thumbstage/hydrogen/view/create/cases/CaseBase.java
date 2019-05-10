@@ -10,26 +10,35 @@ import android.widget.ImageView;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
+import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.model.bo.HyFile;
+import com.thumbstage.hydrogen.model.bo.TopicTag;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.Setting;
-import com.thumbstage.hydrogen.model.bo.TopicType;
 import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
 import com.thumbstage.hydrogen.view.common.HyMenuItem;
 import com.thumbstage.hydrogen.view.common.RequestResultCode;
 import com.thumbstage.hydrogen.view.create.assist.AssistDialogFragment;
+import com.thumbstage.hydrogen.view.create.feature.ICanAddMember;
+import com.thumbstage.hydrogen.view.create.feature.ICanCloseTopic;
+import com.thumbstage.hydrogen.view.create.feature.ICanCreateTopic;
+import com.thumbstage.hydrogen.view.create.feature.ICanPopupMenu;
+import com.thumbstage.hydrogen.view.create.feature.ICanSetSetting;
 import com.thumbstage.hydrogen.view.create.fragment.ITopicFragmentFunction;
 import com.thumbstage.hydrogen.view.create.fragment.PopupWindowAdapter;
 import com.thumbstage.hydrogen.view.create.fragment.TopicAdapter;
 import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
-public abstract class CaseBase implements ITopicFragmentFunction {
+public class CaseBase implements ITopicFragmentFunction,
+        ICanCreateTopic, ICanCloseTopic, ICanSetSetting, ICanAddMember, ICanPopupMenu {
 
     final String TAG = "CaseBase";
 
@@ -94,7 +103,8 @@ public abstract class CaseBase implements ITopicFragmentFunction {
         }
     }
 
-    void setSetting(Fragment fragment) {
+    @Override
+    public void setSetting(Fragment fragment) {
         Bundle bundle = new Bundle();
         bundle.putString(RequestResultCode.BottomSheetTab.class.getName(), RequestResultCode.BottomSheetTab.INFO.name());
         AssistDialogFragment dialog = new AssistDialogFragment();
@@ -102,7 +112,8 @@ public abstract class CaseBase implements ITopicFragmentFunction {
         dialog.show(fragment.getChildFragmentManager(), "CaseBase");
     }
 
-    void addMember(Fragment fragment) {
+    @Override
+    public void addMember(Fragment fragment) {
         Bundle bundle = new Bundle();
         bundle.putString(RequestResultCode.BottomSheetTab.class.getName(), RequestResultCode.BottomSheetTab.MEMBER.name());
         AssistDialogFragment dialog = new AssistDialogFragment();
@@ -112,23 +123,25 @@ public abstract class CaseBase implements ITopicFragmentFunction {
 
     void publishTopic(IReturnBool iReturnBool) {
         Log.i(TAG, "publishTopic");
-        topicAdapter.getTopic().setType(TopicType.PUBLISHED);
+        // topicAdapter.getTopic().setTags(TopicTag.PUBLISHED);
         saveOrUpdate(topicAdapter.getMic(), topicViewModel, iReturnBool);
     }
 
-    void createTopic(IReturnBool iReturnBool) {
+    @Override
+    public void createTopic(IReturnBool iReturnBool) {
         Log.i(TAG, "createTopic");
-        topicAdapter.getTopic().setType(TopicType.UNPUBLISHED);
+        // topicAdapter.getTopic().setTags(TopicTag.UNPUBLISHED);
         saveOrUpdate(topicAdapter.getMic(), topicViewModel, iReturnBool);
     }
 
     void copyTopic(IReturnBool iReturnBool) {
         Log.i(TAG, "copyTopic");
-        topicAdapter.getTopic().setType(TopicType.PICK_UP);
+        // topicAdapter.getTopic().setTags(TopicTag.PICK_UP);
         saveOrUpdate(topicAdapter.getMic(), topicViewModel, iReturnBool);
     }
 
-    void closeTopic(IReturnBool iReturnBool) {
+    @Override
+    public void closeTopic(IReturnBool iReturnBool) {
         topicAdapter.getTopic().setFinished(true);
         topicViewModel.closeTheTopic(iReturnBool);
     }
@@ -164,6 +177,43 @@ public abstract class CaseBase implements ITopicFragmentFunction {
 
     protected void addLines2Adapter(List<Line> lines) {
         topicAdapter.setItems(lines);
+    }
+
+    protected Set<CanOnTopic> getUserCan() {
+        Set<CanOnTopic> userCan = null;
+        if(topicAdapter.getTopic().getUserCan()!= null) {
+            if(topicAdapter.getTopic().getUserCan().containsKey(user.getId())) {
+                userCan = topicAdapter.getTopic().getUserCan().get(user.getId());
+            }
+        }
+        return userCan;
+    }
+
+    @Override
+    public void setUpPopupMenu() {
+        List<HyMenuItem> itemList = new ArrayList<>();
+        Set<CanOnTopic> userCan = getUserCan();
+        if(userCan != null) {
+            for(CanOnTopic can: userCan) {
+                switch (can) {
+                    case PUBLISH:
+                        itemList.add(publishItem);
+                        break;
+                    case CLOSE:
+                        itemList.add(closeItem);
+                        break;
+                    case DELETE:
+                        break;
+                    case ADD_MEMBER:
+                        itemList.add(membersItem);
+                        break;
+                    case SETUP_INFO:
+                        itemList.add(settingItem);
+                        break;
+                }
+            }
+        }
+        popupWindowAdapter.setItemList(itemList);
     }
 
 }
