@@ -12,9 +12,14 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.event.FabEvent;
 import com.thumbstage.hydrogen.model.bo.Privilege;
 import com.thumbstage.hydrogen.view.browse.IAdapterFunction;
 import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
+
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -42,27 +47,6 @@ public class IAttendedFragment extends Fragment implements IBrowseCustomize, IAd
             tabLayout.addTab(tabLayout.newTab().setText(title));
         }
         viewPager.setAdapter(pagerAdapter);
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if ( pagerAdapter.getItem(position) instanceof IBrowseCustomize) {
-                    ((IBrowseCustomize) pagerAdapter.getItem(position)).customizeToolbar(toolbar);
-                    ((IBrowseCustomize) pagerAdapter.getItem(position)).customizeFab(fab);
-                } else {
-                    // default function
-                }
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
         return view;
     }
 
@@ -77,12 +61,16 @@ public class IAttendedFragment extends Fragment implements IBrowseCustomize, IAd
     }
 
     @Override
-    public void customizeFab(FloatingActionButton fab) {
+    public void customizeFab(FloatingActionButton fab, Set<Privilege> userPrivileges) {
         this.fab = fab;
-        fab.hide();
-        if( pagerAdapter.getItem(viewPager.getCurrentItem()) instanceof IBrowseCustomize){
-            ((IBrowseCustomize) pagerAdapter.getItem(viewPager.getCurrentItem())).customizeFab(fab);
-        }
+        fab.show();
+        fab.setImageResource(R.drawable.ic_button_plus);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventBus.getDefault().post(new FabEvent("plus"));
+            }
+        });
     }
     // endregion
 

@@ -21,6 +21,7 @@ import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.api.IMService;
 import com.thumbstage.hydrogen.event.AtMeEvent;
 import com.thumbstage.hydrogen.event.BrowseItemEvent;
+import com.thumbstage.hydrogen.event.FabEvent;
 import com.thumbstage.hydrogen.event.IMMessageEvent;
 import com.thumbstage.hydrogen.event.IMMicEvent;
 import com.thumbstage.hydrogen.event.NaviViewEvent;
@@ -129,7 +130,7 @@ public class BrowseActivity extends AppCompatActivity
             public void onPageSelected(int position) {
                 if ( pagerAdapter.getItem(position) instanceof IBrowseCustomize) {
                     ((IBrowseCustomize) pagerAdapter.getItem(position)).customizeToolbar(toolbar);
-                    ((IBrowseCustomize) pagerAdapter.getItem(position)).customizeFab(fab);
+                    ((IBrowseCustomize) pagerAdapter.getItem(position)).customizeFab(fab, userViewModel.getCurrentUser().getPrivileges());
                 } else {
                     // default function
                 }
@@ -149,6 +150,16 @@ public class BrowseActivity extends AppCompatActivity
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onResponseMessageEvent(final FabEvent event) {
+        if(event.getMessage().equals("plus")) {
+            Intent intent = new Intent(this, CreateActivity.class);
+            intent.putExtra(TopicHandleType.class.getSimpleName(),
+                    TopicHandleType.CREATE.name());
+            startActivity(intent);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

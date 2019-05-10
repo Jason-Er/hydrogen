@@ -18,6 +18,7 @@ import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
 import com.thumbstage.hydrogen.view.common.BasicBrowseFragment;
 
 import java.util.List;
+import java.util.Set;
 
 public class CommunityShowFragment extends BasicBrowseFragment implements IBrowseCustomize, IAdapterFunction {
 
@@ -50,7 +51,7 @@ public class CommunityShowFragment extends BasicBrowseFragment implements IBrows
     }
 
     @Override
-    public void customizeFab(FloatingActionButton fab) {
+    public void customizeFab(FloatingActionButton fab, Set<Privilege> userPrivileges) {
         fab.hide();
     }
     // endregion
