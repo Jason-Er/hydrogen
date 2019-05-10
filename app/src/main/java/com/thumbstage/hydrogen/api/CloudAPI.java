@@ -5,6 +5,8 @@ import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.avos.avoscloud.AVACL;
 import com.avos.avoscloud.AVException;
 import com.avos.avoscloud.AVFile;
@@ -30,7 +32,6 @@ import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.thumbstage.hydrogen.model.bo.HyFile;
 import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.model.bo.TopicTag;
-import com.thumbstage.hydrogen.model.bo.UserCan;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.bo.LineType;
 import com.thumbstage.hydrogen.model.vo.Mic;
@@ -614,7 +615,7 @@ public class CloudAPI {
             final List<String> tags = avTopic.getList(FieldName.FIELD_TAG.name);
             final String brief = (String) avTopic.get(FieldName.FIELD_BRIEF.name);
             final List<Map> datalist = avTopic.getList(FieldName.FIELD_DIALOGUE.name);
-            final Map<String, String[]> userCanMap = avTopic.getMap(FieldName.FIELD_PRIVILEGE.name);
+            final Map userCanMap = avTopic.getMap(FieldName.FIELD_PRIVILEGE.name);
             final List<String> membersIds = avTopic.getList(FieldName.FIELD_MEMBER.name);
             final boolean isFinished = avTopic.getBoolean(FieldName.FIELD_IS_FINISHED.name);
             getUsers(membersIds, new IReturnUsers() {
@@ -650,7 +651,8 @@ public class CloudAPI {
                     });
                     Map<String, Set<CanOnTopic>> userCans = new HashMap<>();
                     for(Object key: userCanMap.keySet()) {
-                        String [] pris = userCanMap.get(key);
+                        JSONArray arr = (JSONArray) userCanMap.get(key);
+                        List<String> pris = JSONObject.parseArray(arr.toJSONString(), String.class);
                         Set<CanOnTopic> cans = new LinkedHashSet<>();
                         for(String str: pris) {
                             cans.add(CanOnTopic.valueOf(str));
