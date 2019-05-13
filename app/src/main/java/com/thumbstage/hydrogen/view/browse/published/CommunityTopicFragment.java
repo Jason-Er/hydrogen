@@ -51,7 +51,7 @@ public class CommunityTopicFragment extends BasicBrowseFragment implements IBrow
     }
 
     @Override
-    public void customizeFab(FloatingActionButton fab, Set<Privilege> userPrivileges) {
+    public void customizeFab(FloatingActionButton fab) {
         fab.hide();
     }
     // endregion

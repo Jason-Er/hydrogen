@@ -130,7 +130,7 @@ public class BrowseActivity extends AppCompatActivity
             public void onPageSelected(int position) {
                 if ( pagerAdapter.getItem(position) instanceof IBrowseCustomize) {
                     ((IBrowseCustomize) pagerAdapter.getItem(position)).customizeToolbar(toolbar);
-                    ((IBrowseCustomize) pagerAdapter.getItem(position)).customizeFab(fab, userViewModel.getCurrentUser().getPrivileges());
+                    ((IBrowseCustomize) pagerAdapter.getItem(position)).customizeFab(fab);
                 } else {
                     // default function
                 }

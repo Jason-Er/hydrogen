@@ -9,5 +9,5 @@ import java.util.Set;
 
 public interface IBrowseCustomize {
     void customizeToolbar(Toolbar toolbar);
-    void customizeFab(FloatingActionButton fab, Set<Privilege> userPrivileges);
+    void customizeFab(FloatingActionButton fab);
 }
