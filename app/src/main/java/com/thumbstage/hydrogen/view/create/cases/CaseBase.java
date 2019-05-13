@@ -23,8 +23,9 @@ import com.thumbstage.hydrogen.view.common.RequestResultCode;
 import com.thumbstage.hydrogen.view.create.assist.AssistDialogFragment;
 import com.thumbstage.hydrogen.view.create.feature.ICanAddMember;
 import com.thumbstage.hydrogen.view.create.feature.ICanCloseTopic;
-import com.thumbstage.hydrogen.view.create.feature.ICanCreateTopic;
+import com.thumbstage.hydrogen.view.create.feature.ICanOpenTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanPopupMenu;
+import com.thumbstage.hydrogen.view.create.feature.ICanPublishTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanSetSetting;
 import com.thumbstage.hydrogen.view.create.fragment.ITopicFragmentFunction;
 import com.thumbstage.hydrogen.view.create.fragment.PopupWindowAdapter;
@@ -37,7 +38,7 @@ import java.util.List;
 import java.util.Set;
 
 public class CaseBase implements ITopicFragmentFunction,
-        ICanCreateTopic, ICanCloseTopic, ICanSetSetting, ICanAddMember, ICanPopupMenu {
+        ICanOpenTopic, ICanCloseTopic, ICanSetSetting, ICanAddMember, ICanPublishTopic, ICanPopupMenu {
 
     final String TAG = "CaseBase";
 
@@ -51,7 +52,7 @@ public class CaseBase implements ITopicFragmentFunction,
 
     HyMenuItem settingItem = new HyMenuItem(R.drawable.ic_menu_setting_g, HyMenuItem.CommandType.SETTING);
     HyMenuItem membersItem = new HyMenuItem(R.drawable.ic_menu_account_plus, HyMenuItem.CommandType.MEMBERS);
-    HyMenuItem openItem = new HyMenuItem(R.drawable.ic_menu_start_g, HyMenuItem.CommandType.START);
+    HyMenuItem openItem = new HyMenuItem(R.drawable.ic_menu_start_g, HyMenuItem.CommandType.OPEN);
     HyMenuItem publishItem = new HyMenuItem(R.drawable.ic_menu_publish_g, HyMenuItem.CommandType.PUBLISH);
     HyMenuItem closeItem = new HyMenuItem(R.drawable.ic_menu_transcribe_close_g, HyMenuItem.CommandType.CLOSE);
 
@@ -120,15 +121,16 @@ public class CaseBase implements ITopicFragmentFunction,
         dialog.show(fragment.getChildFragmentManager(), "CaseBase");
     }
 
-    void publishTopic(IReturnBool iReturnBool) {
+    @Override
+    public void publishTopic(IReturnBool iReturnBool) {
         Log.i(TAG, "publishTopic");
         // topicAdapter.getTopic().setTags(TopicTag.PUBLISHED);
         saveOrUpdate(topicAdapter.getMic(), topicViewModel, iReturnBool);
     }
 
     @Override
-    public void createTopic(IReturnBool iReturnBool) {
-        Log.i(TAG, "createTopic");
+    public void openTopic(IReturnBool iReturnBool) {
+        Log.i(TAG, "openTopic");
         // topicAdapter.getTopic().setTags(TopicTag.UNPUBLISHED);
         saveOrUpdate(topicAdapter.getMic(), topicViewModel, iReturnBool);
     }

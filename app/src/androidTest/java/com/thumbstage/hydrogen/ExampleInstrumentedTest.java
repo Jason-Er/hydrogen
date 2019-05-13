@@ -207,7 +207,7 @@ public class ExampleInstrumentedTest {
             @Override
             public void done(AVIMClient client, AVIMException e) {
                 if(e == null) {
-                    client.createTopic(Arrays.asList("Jerry"), "testConversation", null, new AVIMConversationCreatedCallback() {
+                    client.openTopic(Arrays.asList("Jerry"), "testConversation", null, new AVIMConversationCreatedCallback() {
                         @Override
                         public void done(AVIMConversation conversation, AVIMException e) {
                             if(e == null) {

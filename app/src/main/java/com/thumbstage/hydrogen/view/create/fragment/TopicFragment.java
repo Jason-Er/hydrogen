@@ -40,7 +40,7 @@ import com.thumbstage.hydrogen.view.create.cases.CaseBase;
 import com.thumbstage.hydrogen.view.create.cases.CaseContinueTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanAddMember;
 import com.thumbstage.hydrogen.view.create.feature.ICanCloseTopic;
-import com.thumbstage.hydrogen.view.create.feature.ICanCreateTopic;
+import com.thumbstage.hydrogen.view.create.feature.ICanOpenTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanPopupMenu;
 import com.thumbstage.hydrogen.view.create.feature.ICanPublishTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanSetSetting;
@@ -267,9 +267,9 @@ public class TopicFragment extends Fragment {
                 }
                 popupWindow.dismiss();
                 break;
-            case START:
-                if( currentRole instanceof ICanCreateTopic) {
-                    ((ICanCreateTopic) currentRole).createTopic(new IReturnBool() {
+            case OPEN:
+                if( currentRole instanceof ICanOpenTopic) {
+                    ((ICanOpenTopic) currentRole).openTopic(new IReturnBool() {
                         @Override
                         public void callback(Boolean status) {
 
