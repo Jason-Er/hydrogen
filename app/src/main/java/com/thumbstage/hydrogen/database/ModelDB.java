@@ -79,14 +79,14 @@ public class ModelDB {
         database.runInTransaction(new Runnable() {
             @Override
             public void run() {
-                User user = topic.getStarted_by();
+                User user = topic.getSponsor();
                 saveUser(user);
                 TopicEntity entity = new TopicEntity();
                 entity.setId(topic.getId());
                 entity.setName(topic.getName());
                 entity.setBrief(topic.getBrief());
                 entity.setDerive_from(topic.getDerive_from());
-                entity.setSponsor(topic.getStarted_by().getId());
+                entity.setSponsor(topic.getSponsor().getId());
                 entity.setFinished(topic.isFinished());
                 if( topic.getSetting()!=null ) {
                     entity.setSetting_url(topic.getSetting().getUrl());
@@ -402,7 +402,7 @@ public class ModelDB {
         topic.setSetting(new Setting("", entity.getSetting_url(), true));
         topic.setDerive_from(entity.getDerive_from());
         topic.setDialogue(getLine(entity.getId()));
-        topic.setStarted_by(getUser(entity.getSponsor()));
+        topic.setSponsor(getUser(entity.getSponsor()));
         topic.setMembers(getMembers(entity.getId()));
         return topic;
     }
@@ -442,7 +442,7 @@ public class ModelDB {
             topic.setSetting(new Setting("", entity.getSetting_url(), true));
             topic.setDerive_from(entity.getDerive_from());
             topic.setDialogue(getLine(entity.getId()));
-            topic.setStarted_by(getUser(entity.getSponsor()));
+            topic.setSponsor(getUser(entity.getSponsor()));
             topic.setMembers(getMembers(entity.getId()));
         }
         return topics;

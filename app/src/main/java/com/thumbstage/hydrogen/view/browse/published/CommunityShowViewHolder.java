@@ -50,7 +50,7 @@ public class CommunityShowViewHolder extends RecyclerView.ViewHolder {
         if(topic.getSetting() != null) {
             Glide.with(setting).load(topic.getSetting().getUrl()).into(setting);
         }
-        User user = topic.getStarted_by();
+        User user = topic.getSponsor();
         if(user != null) {
             Glide.with(avatar).load(user.getAvatar()).into(avatar);
         }

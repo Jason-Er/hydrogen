@@ -121,34 +121,6 @@ public class TopicRepository {
         });
     }
 
-    /*
-    public void flushMicBuf(IReturnBool iReturnBool) {
-        Mic mic = micLiveData.getValue();
-        sendMicBuf(mic, iReturnBool);
-        moveLineBuf2Dialogue(mic);
-    }
-
-    private void moveLineBuf2Dialogue(Mic mic) {
-        mic.getTopic().getDialogue().addAll(mic.getLineBuffer());
-        mic.getLineBuffer().clear();
-    }
-
-    private void sendMicBuf(final Mic mic, final IReturnBool iReturnBool) {
-        if(mic.getLineBuffer()!= null && mic.getLineBuffer().size()>0) {
-            for(final Line line: mic.getLineBuffer()) {
-                cloudAPI.sendLine(mic, line, new IReturnBool() {
-                    @Override
-                    public void callback(Boolean status) {
-                        if (status) {
-                        }
-                    }
-                });
-            }
-        }
-        iReturnBool.callback(true);
-    }
-    */
-
     public void updateTheMic(final IReturnBool iReturnBool) {
         executor.execute(new Runnable() {
             @Override
@@ -178,14 +150,8 @@ public class TopicRepository {
                 cloudAPI.createMic(mic, new CloudAPI.ICallBack() {
                     @Override
                     public void callback(String objectID) {
-                        //sendMicBuf(mic, new IReturnBool() {
-                        //    @Override
-                        //    public void callback(Boolean status) {
-                        //      moveLineBuf2Dialogue(mic);
-                                saveMic2DB(mic);
-                        //        iReturnBool.callback(status);
-                        //    }
-                        //});
+                        saveMic2DB(mic);
+                        iReturnBool.callback(true);
                     }
                 });
             }

@@ -15,7 +15,7 @@ public class Topic implements Cloneable {
     String name;
     String brief;
     Setting setting;
-    User started_by;
+    User sponsor;
     String derive_from; // topic id
     List<Line> dialogue;
     List<User> members;
@@ -64,12 +64,12 @@ public class Topic implements Cloneable {
         this.setting = setting;
     }
 
-    public User getStarted_by() {
-        return started_by;
+    public User getSponsor() {
+        return sponsor;
     }
 
-    public void setStarted_by(User started_by) {
-        this.started_by = started_by;
+    public void setSponsor(User sponsor) {
+        this.sponsor = sponsor;
     }
 
     public List<Line> getDialogue() {
