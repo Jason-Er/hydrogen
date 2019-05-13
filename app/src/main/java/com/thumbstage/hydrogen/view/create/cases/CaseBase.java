@@ -174,6 +174,7 @@ public class CaseBase implements ITopicFragmentFunction,
 
     protected void addLine(Line line) {
         line.setWho(user);
+        // speak one line if mic id is not empty
         topicAdapter.addLine(line);
         recyclerView.smoothScrollToPosition(topicAdapter.getItemCount()-1);
     }

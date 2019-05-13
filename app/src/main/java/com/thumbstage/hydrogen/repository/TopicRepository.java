@@ -121,6 +121,7 @@ public class TopicRepository {
         });
     }
 
+    /*
     public void flushMicBuf(IReturnBool iReturnBool) {
         Mic mic = micLiveData.getValue();
         sendMicBuf(mic, iReturnBool);
@@ -146,6 +147,7 @@ public class TopicRepository {
         }
         iReturnBool.callback(true);
     }
+    */
 
     public void updateTheMic(final IReturnBool iReturnBool) {
         executor.execute(new Runnable() {

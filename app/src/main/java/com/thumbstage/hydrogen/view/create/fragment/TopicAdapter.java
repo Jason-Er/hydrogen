@@ -51,7 +51,7 @@ public class TopicAdapter extends ListDelegationAdapter {
 
     public void addLine(Line line) {
         addItem(generateLine(line));// for show
-        mic.speak(line);
+        mic.getTopic().getDialogue().add(line);
     }
 
     public void setDialogue(List<Line> lines) {

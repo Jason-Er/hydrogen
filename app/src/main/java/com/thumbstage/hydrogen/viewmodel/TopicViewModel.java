@@ -61,9 +61,11 @@ public class TopicViewModel extends ViewModel {
         topicRepository.updateTheMic(iReturnBool);
     }
 
+    /*
     public void flushMicBuf(IReturnBool iReturnBool) {
         topicRepository.flushMicBuf(iReturnBool);
     }
+    */
 
     public void closeTheTopic(final IReturnBool iReturnBool) {
         topicRepository.closeTheMic(iReturnBool);

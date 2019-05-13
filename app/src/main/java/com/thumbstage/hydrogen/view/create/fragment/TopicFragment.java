@@ -37,7 +37,6 @@ import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.utils.DensityUtil;
 import com.thumbstage.hydrogen.view.common.HyMenuItem;
 import com.thumbstage.hydrogen.view.create.cases.CaseBase;
-import com.thumbstage.hydrogen.view.create.cases.CaseContinueTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanAddMember;
 import com.thumbstage.hydrogen.view.create.feature.ICanCloseTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanOpenTopic;
@@ -87,7 +86,7 @@ public class TopicFragment extends Fragment {
         {
             put(TopicHandleType.CREATE, new CaseBase());
             put(TopicHandleType.ATTEND, new CaseBase());
-            put(TopicHandleType.CONTINUE, new CaseContinueTopic());
+            put(TopicHandleType.CONTINUE, new CaseBase());
         }
     };
 
