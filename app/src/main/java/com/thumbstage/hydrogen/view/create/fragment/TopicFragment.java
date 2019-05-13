@@ -29,6 +29,7 @@ import com.thumbstage.hydrogen.event.IMMessageEvent;
 import com.thumbstage.hydrogen.event.PopupMenuEvent;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
 import com.thumbstage.hydrogen.model.bo.CanOnTopic;
+import com.thumbstage.hydrogen.model.bo.Privilege;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.dto.IMMessage;
 import com.thumbstage.hydrogen.model.vo.Mic;
@@ -52,6 +53,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -164,6 +166,7 @@ public class TopicFragment extends Fragment {
                     public void onChanged(@Nullable Mic mic) {
                         topicAdapter.setMic(mic);
                         spinner.setVisibility(View.GONE);
+                        topicAdapter.getTopic().setUserCan(setupDefaultCanOnTopic(userViewModel.getCurrentUser().getPrivileges()));
                         getActivity().invalidateOptionsMenu();
                     }
                 });
@@ -198,7 +201,27 @@ public class TopicFragment extends Fragment {
                 });
                 break;
         }
+    }
 
+    private Map<String, Set<CanOnTopic>> setupDefaultCanOnTopic(Set<Privilege> userPrivileges) {
+        Map<String, Set<CanOnTopic>> setMap = new HashMap<>();
+        Set<CanOnTopic> onTopics = new LinkedHashSet<>();
+        for(Privilege privilege: userPrivileges) {
+            switch (privilege) {
+                case CREATE_SEMINAR:
+                    onTopics.add(CanOnTopic.ADD_MEMBER);
+                    onTopics.add(CanOnTopic.SETUP_INFO);
+                    onTopics.add(CanOnTopic.OPEN);
+                    break;
+                case CREATE_TOPIC:
+                    onTopics.add(CanOnTopic.ADD_MEMBER);
+                    onTopics.add(CanOnTopic.SETUP_INFO);
+                    onTopics.add(CanOnTopic.PUBLISH);
+                    break;
+            }
+        }
+        setMap.put(userViewModel.getCurrentUser().getId(), onTopics);
+        return setMap;
     }
 
     @Override

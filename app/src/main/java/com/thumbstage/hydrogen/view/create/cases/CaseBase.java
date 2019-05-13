@@ -12,7 +12,6 @@ import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
 import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.model.bo.HyFile;
-import com.thumbstage.hydrogen.model.bo.TopicTag;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.Setting;
@@ -52,7 +51,7 @@ public class CaseBase implements ITopicFragmentFunction,
 
     HyMenuItem settingItem = new HyMenuItem(R.drawable.ic_menu_setting_g, HyMenuItem.CommandType.SETTING);
     HyMenuItem membersItem = new HyMenuItem(R.drawable.ic_menu_account_plus, HyMenuItem.CommandType.MEMBERS);
-    HyMenuItem startItem = new HyMenuItem(R.drawable.ic_menu_start_g, HyMenuItem.CommandType.START);
+    HyMenuItem openItem = new HyMenuItem(R.drawable.ic_menu_start_g, HyMenuItem.CommandType.START);
     HyMenuItem publishItem = new HyMenuItem(R.drawable.ic_menu_publish_g, HyMenuItem.CommandType.PUBLISH);
     HyMenuItem closeItem = new HyMenuItem(R.drawable.ic_menu_transcribe_close_g, HyMenuItem.CommandType.CLOSE);
 
@@ -198,6 +197,9 @@ public class CaseBase implements ITopicFragmentFunction,
                 switch (can) {
                     case PUBLISH:
                         itemList.add(publishItem);
+                        break;
+                    case OPEN:
+                        itemList.add(openItem);
                         break;
                     case CLOSE:
                         itemList.add(closeItem);
