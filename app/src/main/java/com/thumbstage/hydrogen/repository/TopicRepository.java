@@ -228,5 +228,11 @@ public class TopicRepository {
         });
     }
 
+    public void speakLine(Line line, IReturnBool iReturnBool) {
+        final Mic mic = micLiveData.getValue();
+        if(!TextUtils.isEmpty(mic.getId())) {
+            cloudAPI.sendLine(mic, line, iReturnBool);
+        }
+    }
 
 }

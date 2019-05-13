@@ -205,6 +205,7 @@ public class CloudAPI {
             @Override
             public void done(AVIMException e) {
                 if(e == null) {
+                    // TODO: 5/13/2019 addTopicOneLine may remove to server sometime
                     addTopicOneLine(mic.getTopic(), line, iReturnBool);
                 } else {
                     iReturnBool.callback(false);
@@ -768,37 +769,6 @@ public class CloudAPI {
             }
         });
     }
-
-    /*
-    public void getCanOnMic(String userId, String micId, final IReturnCanOnMic iReturnCanOnMic) {
-        AVQuery<AVObject> query = new AVQuery<>(TableName.TABLE_CANONMIC.name);
-        AVObject avMic = AVObject.createWithoutData(TableName.TABLE_MIC.name, micId);
-        AVObject avUser = AVObject.createWithoutData(TableName.TABLE_USER.name, userId);
-        query.whereEqualTo(FieldName.FIELD_USER.name, avUser);
-        query.whereEqualTo(FieldName.FIELD_MIC.name, avMic);
-        query.getFirstInBackground(new GetCallback<AVObject>() {
-            @Override
-            public void done(AVObject object, AVException e) {
-                if (e == null && object != null) {
-                    List<String> prilist = object.getList(FieldName.FIELD_PRIVILEGE.name);
-                    Set<CanOnMic> privileges = new LinkedHashSet<>();
-                    if (prilist != null) {
-                        for (String str : prilist) {
-                            privileges.add(CanOnMic.valueOf(str));
-                        }
-                    } else {
-                        privileges = new LinkedHashSet<CanOnMic>() {
-                            {
-                                add(CanOnMic.PRIVATE);
-                            }
-                        };
-                    }
-                    iReturnCanOnMic.callback(privileges);
-                }
-            }
-        });
-    }
-    */
 
     public void getUsers(List<String> membersId, final IReturnUsers iReturnUsers) {
         AVQuery<AVObject> query = new AVQuery<>(TableName.TABLE_USER.name);

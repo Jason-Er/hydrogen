@@ -36,6 +36,7 @@ import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.utils.DensityUtil;
 import com.thumbstage.hydrogen.view.common.HyMenuItem;
+import com.thumbstage.hydrogen.view.create.cases.CaseAttendTopic;
 import com.thumbstage.hydrogen.view.create.cases.CaseBase;
 import com.thumbstage.hydrogen.view.create.feature.ICanAddMember;
 import com.thumbstage.hydrogen.view.create.feature.ICanCloseTopic;
@@ -85,7 +86,7 @@ public class TopicFragment extends Fragment {
     Map<TopicHandleType, CaseBase> roleMap = new HashMap<TopicHandleType, CaseBase>(){
         {
             put(TopicHandleType.CREATE, new CaseBase());
-            put(TopicHandleType.ATTEND, new CaseBase());
+            put(TopicHandleType.ATTEND, new CaseAttendTopic());
             put(TopicHandleType.CONTINUE, new CaseBase());
         }
     };
@@ -122,6 +123,7 @@ public class TopicFragment extends Fragment {
                     .setTopicAdapter(topicAdapter)
                     .setBackgroundView(background)
                     .setRecyclerView(recyclerView)
+                    .setSpinner(spinner)
                     .setPopupWindowAdapter(popupWindowAdapter);
         }
 

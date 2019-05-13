@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
@@ -51,6 +52,7 @@ public class CaseBase implements ITopicFragmentFunction,
     RecyclerView recyclerView;
     User user;
     PopupWindowAdapter popupWindowAdapter;
+    ProgressBar spinner;
 
     HyMenuItem settingItem = new HyMenuItem(R.drawable.ic_menu_setting_g, HyMenuItem.CommandType.SETTING);
     HyMenuItem membersItem = new HyMenuItem(R.drawable.ic_menu_account_plus, HyMenuItem.CommandType.MEMBERS);
@@ -86,6 +88,11 @@ public class CaseBase implements ITopicFragmentFunction,
 
     public CaseBase setRecyclerView(RecyclerView recyclerView) {
         this.recyclerView = recyclerView;
+        return this;
+    }
+
+    public CaseBase setSpinner(ProgressBar spinner) {
+        this.spinner = spinner;
         return this;
     }
 
@@ -139,7 +146,7 @@ public class CaseBase implements ITopicFragmentFunction,
 
     void copyTopic(IReturnBool iReturnBool) {
         Log.i(TAG, "copyTopic");
-        // topicAdapter.getTopic().setTags(TopicTag.PICK_UP);
+        topicAdapter.getTopic().setTags(new HashSet<TopicTag>(){{add(TopicTag.SEMINAR);add(TopicTag.FOLLOW);}});
         saveOrUpdate(topicAdapter.getMic(), topicViewModel, iReturnBool);
     }
 
@@ -174,7 +181,13 @@ public class CaseBase implements ITopicFragmentFunction,
 
     protected void addLine(Line line) {
         line.setWho(user);
-        // speak one line if mic id is not empty
+        // speak one line
+        topicViewModel.speakLine(line, new IReturnBool() {
+            @Override
+            public void callback(Boolean isOK) {
+
+            }
+        });
         topicAdapter.addLine(line);
         recyclerView.smoothScrollToPosition(topicAdapter.getItemCount()-1);
     }
