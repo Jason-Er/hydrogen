@@ -115,7 +115,7 @@ public class ModelDB {
         database.topicUserCanDao().insert(entities);
     }
 
-    private void saveTag(String topicId, List<TopicTag> tags) {
+    private void saveTag(String topicId, Set<TopicTag> tags) {
         List<TopicTagEntity> entities = new ArrayList<>();
         for(TopicTag tag: tags) {
             TopicTagEntity entity = new TopicTagEntity();
@@ -422,8 +422,8 @@ public class ModelDB {
         return userCans;
     }
 
-    private List<TopicTag> getTags(String topicId) {
-        List<TopicTag> tags = new ArrayList<>();
+    private Set<TopicTag> getTags(String topicId) {
+        Set<TopicTag> tags = new LinkedHashSet<>();
         List<TopicTagEntity> entities = database.topicTagDao().get(topicId);
         for(TopicTagEntity entity: entities) {
             tags.add(TopicTag.valueOf(entity.getTag()));

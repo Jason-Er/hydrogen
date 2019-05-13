@@ -176,14 +176,14 @@ public class TopicRepository {
                 cloudAPI.createMic(mic, new CloudAPI.ICallBack() {
                     @Override
                     public void callback(String objectID) {
-                        sendMicBuf(mic, new IReturnBool() {
-                            @Override
-                            public void callback(Boolean status) {
-                                moveLineBuf2Dialogue(mic);
+                        //sendMicBuf(mic, new IReturnBool() {
+                        //    @Override
+                        //    public void callback(Boolean status) {
+                        //      moveLineBuf2Dialogue(mic);
                                 saveMic2DB(mic);
-                                iReturnBool.callback(status);
-                            }
-                        });
+                        //        iReturnBool.callback(status);
+                        //    }
+                        //});
                     }
                 });
             }

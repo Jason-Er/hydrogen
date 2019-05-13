@@ -684,15 +684,15 @@ public class CloudAPI {
         }
     }
 
-    private List<TopicTag> convert2TopicTag(List<String> tags) {
-        List<TopicTag> list = new ArrayList<>();
+    private Set<TopicTag> convert2TopicTag(List<String> tags) {
+        Set<TopicTag> list = new LinkedHashSet<>();
         for(String tag: tags) {
             list.add(TopicTag.valueOf(tag));
         }
         return list;
     }
 
-    private List<String> convert2String(List<TopicTag> tags) {
+    private List<String> convert2String(Set<TopicTag> tags) {
         List<String> list = new ArrayList<>();
         for(TopicTag tag: tags) {
             list.add(tag.name());

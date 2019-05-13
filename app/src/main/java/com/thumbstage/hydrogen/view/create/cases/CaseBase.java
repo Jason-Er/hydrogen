@@ -12,6 +12,7 @@ import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
 import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.model.bo.HyFile;
+import com.thumbstage.hydrogen.model.bo.TopicTag;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.Setting;
@@ -34,6 +35,7 @@ import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -124,7 +126,7 @@ public class CaseBase implements ITopicFragmentFunction,
     @Override
     public void publishTopic(IReturnBool iReturnBool) {
         Log.i(TAG, "publishTopic");
-        // topicAdapter.getTopic().setTags(TopicTag.PUBLISHED);
+        topicAdapter.getTopic().setTags(new HashSet<TopicTag>(){{add(TopicTag.LITERAL);}});
         saveOrUpdate(topicAdapter.getMic(), topicViewModel, iReturnBool);
     }
 
