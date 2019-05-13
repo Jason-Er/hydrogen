@@ -133,7 +133,7 @@ public class CaseBase implements ITopicFragmentFunction,
     @Override
     public void openTopic(IReturnBool iReturnBool) {
         Log.i(TAG, "openTopic");
-        // topicAdapter.getTopic().setTags(TopicTag.UNPUBLISHED);
+        topicAdapter.getTopic().setTags(new HashSet<TopicTag>(){{add(TopicTag.SEMINAR);}});
         saveOrUpdate(topicAdapter.getMic(), topicViewModel, iReturnBool);
     }
 
