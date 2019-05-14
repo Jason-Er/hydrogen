@@ -206,7 +206,11 @@ public class BrowseActivity extends AppCompatActivity
         switch (event.getMessage()) {
             case "CommunityTopicViewHolder":
                 intent.setClass(this, CreateActivity.class);
-                intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.ATTEND.name());
+                if(mic.getTopic().getSponsor().equals(userViewModel.getCurrentUser())) {
+                    intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.CONTINUE.name());
+                } else {
+                    intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.ATTEND.name());
+                }
                 break;
             case "IAttendedOpenedViewHolder":
                 intent.setClass(this, CreateActivity.class);

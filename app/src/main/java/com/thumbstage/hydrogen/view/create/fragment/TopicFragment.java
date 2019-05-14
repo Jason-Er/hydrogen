@@ -43,6 +43,7 @@ import com.thumbstage.hydrogen.view.create.feature.ICanOpenTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanPopupMenu;
 import com.thumbstage.hydrogen.view.create.feature.ICanPublishTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanSetSetting;
+import com.thumbstage.hydrogen.view.create.feature.ICanUpdateTopic;
 import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
 
@@ -303,6 +304,17 @@ public class TopicFragment extends Fragment {
             case PARTICIPANT:
                 if(currentRole instanceof ICanAddMember) {
                     ((ICanAddMember) currentRole).addMember(this);
+                }
+                popupWindow.dismiss();
+                break;
+            case UPDATE:
+                if(currentRole instanceof ICanUpdateTopic) {
+                    ((ICanUpdateTopic) currentRole).updateTopic(new IReturnBool() {
+                        @Override
+                        public void callback(Boolean isOK) {
+
+                        }
+                    });
                 }
                 popupWindow.dismiss();
                 break;

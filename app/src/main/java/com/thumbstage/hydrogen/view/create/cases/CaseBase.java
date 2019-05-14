@@ -29,6 +29,7 @@ import com.thumbstage.hydrogen.view.create.feature.ICanOpenTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanPopupMenu;
 import com.thumbstage.hydrogen.view.create.feature.ICanPublishTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanSetSetting;
+import com.thumbstage.hydrogen.view.create.feature.ICanUpdateTopic;
 import com.thumbstage.hydrogen.view.create.fragment.ITopicFragmentFunction;
 import com.thumbstage.hydrogen.view.create.fragment.PopupWindowAdapter;
 import com.thumbstage.hydrogen.view.create.fragment.TopicAdapter;
@@ -41,7 +42,7 @@ import java.util.List;
 import java.util.Set;
 
 public class CaseBase implements ITopicFragmentFunction,
-        ICanOpenTopic, ICanCloseTopic, ICanSetSetting, ICanAddMember, ICanPublishTopic, ICanPopupMenu {
+        ICanOpenTopic, ICanCloseTopic, ICanUpdateTopic, ICanSetSetting, ICanAddMember, ICanPublishTopic, ICanPopupMenu {
 
     final String TAG = "CaseBase";
 
@@ -155,6 +156,11 @@ public class CaseBase implements ITopicFragmentFunction,
     public void closeTopic(IReturnBool iReturnBool) {
         topicAdapter.getTopic().setFinished(true);
         topicViewModel.closeTheTopic(iReturnBool);
+    }
+
+    @Override
+    public void updateTopic(IReturnBool iReturnBool) {
+        saveOrUpdate(topicAdapter.getMic(), topicViewModel, iReturnBool);
     }
 
     private void saveOrUpdate(final Mic mic, final TopicViewModel topicViewModel, final IReturnBool iReturnBool) {
