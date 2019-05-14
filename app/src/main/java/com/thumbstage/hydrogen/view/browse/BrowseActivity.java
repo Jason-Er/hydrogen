@@ -25,7 +25,6 @@ import com.thumbstage.hydrogen.event.FabEvent;
 import com.thumbstage.hydrogen.event.IMMessageEvent;
 import com.thumbstage.hydrogen.event.IMMicEvent;
 import com.thumbstage.hydrogen.event.NaviViewEvent;
-import com.thumbstage.hydrogen.model.vo.AtMe;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.dto.IMMessage;
 import com.thumbstage.hydrogen.utils.BoUtil;
@@ -36,8 +35,7 @@ import com.thumbstage.hydrogen.view.common.Navigation;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
 import com.thumbstage.hydrogen.view.create.fragment.TopicHandleType;
 import com.thumbstage.hydrogen.view.show.ShowActivity;
-import com.thumbstage.hydrogen.viewmodel.AtMeViewModel;
-import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
+import com.thumbstage.hydrogen.viewmodel.BrowseViewModel;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
 
 import org.greenrobot.eventbus.EventBus;
@@ -70,9 +68,8 @@ public class BrowseActivity extends AppCompatActivity
     ViewPager viewPager;
     BrowseFragmentPagerAdapter pagerAdapter;
 
-    TopicViewModel topicViewModel;
     UserViewModel userViewModel;
-    AtMeViewModel atMeViewModel;
+    BrowseViewModel browseViewModel;
 
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
@@ -115,8 +112,7 @@ public class BrowseActivity extends AppCompatActivity
 
         AndroidInjection.inject(this);
         userViewModel = ViewModelProviders.of(this, viewModelFactory).get(UserViewModel.class);
-        topicViewModel = ViewModelProviders.of(this, viewModelFactory).get(TopicViewModel.class);
-        atMeViewModel = ViewModelProviders.of(this, viewModelFactory).get(AtMeViewModel.class);
+        browseViewModel = ViewModelProviders.of(this, viewModelFactory).get(BrowseViewModel.class);
 
         pagerAdapter = new BrowseFragmentPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
@@ -185,20 +181,6 @@ public class BrowseActivity extends AppCompatActivity
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onResponseMessageEvent(final AtMeEvent event) {
-        switch (event.getMessage()) {
-            case "click":
-                AtMe atMe = (AtMe) event.getData();
-                Intent intent = new Intent(this, CreateActivity.class);
-                intent.putExtra(Mic.class.getSimpleName(), atMe.getMic().getId());
-                intent.putExtra(TopicHandleType.class.getSimpleName(),
-                        TopicHandleType.CONTINUE.name());
-                startActivity(intent);
-                break;
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onResponseMessageEvent(final BrowseItemEvent event) {
         Mic mic = (Mic) event.getData();
         Intent intent = new Intent();
@@ -228,18 +210,8 @@ public class BrowseActivity extends AppCompatActivity
     public void onResponseMessageEvent(final IMMicEvent event) {
         if(event.getMessage().equals("onUnreadMessage")) {
             final IMMessage imMessage = (IMMessage) event.getData();
-            topicViewModel.pickUpTopic(imMessage.getMicId()).observe(this, new Observer<Mic>() {
-                @Override
-                public void onChanged(@Nullable Mic mic) {
-                    AtMe atMe = new AtMe();
-                    atMe.setMic(mic);
-                    atMe.setWhat(imMessage.getWhat());
-                    atMe.setWho(BoUtil.findById(mic.getTopic().getMembers(), imMessage.getWhoId()));
-                    atMe.setMe(userViewModel.getCurrentUser());
-                    atMe.setWhen(imMessage.getWhen());
-                    atMeViewModel.saveAtMe(atMe);
-                }
-            });
+            imMessage.setMeId(userViewModel.getCurrentUser().getId());
+            browseViewModel.saveIMMessage(imMessage);
         }
     }
 

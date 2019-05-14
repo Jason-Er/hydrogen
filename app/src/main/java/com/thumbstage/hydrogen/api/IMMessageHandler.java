@@ -24,6 +24,7 @@ public class IMMessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> 
         IMMessage imMessage = new IMMessage();
         imMessage.setWhen(new Date(message.getTimestamp()));
         imMessage.setWhoId(message.getFrom());
+        imMessage.setRead(false);
         if(message instanceof AVIMTextMessage) {
             imMessage.setWhat(((AVIMTextMessage) message).getText());
             LineType type = LineType.valueOf((String) ((AVIMTextMessage) message).getAttrs().get("type"));

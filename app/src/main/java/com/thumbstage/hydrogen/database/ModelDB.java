@@ -6,7 +6,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.text.TextUtils;
 
-import com.thumbstage.hydrogen.database.entity.AtMeEntity;
+import com.thumbstage.hydrogen.database.entity.IMMessageEntity;
 import com.thumbstage.hydrogen.database.entity.ContactEntity;
 import com.thumbstage.hydrogen.database.entity.LineEntity;
 import com.thumbstage.hydrogen.database.entity.MicEntity;
@@ -17,7 +17,7 @@ import com.thumbstage.hydrogen.database.entity.TopicUserEntity;
 import com.thumbstage.hydrogen.database.entity.UserEntity;
 import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.model.bo.TopicTag;
-import com.thumbstage.hydrogen.model.vo.AtMe;
+import com.thumbstage.hydrogen.model.dto.IMMessage;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.bo.LineType;
 import com.thumbstage.hydrogen.model.vo.Mic;
@@ -175,19 +175,18 @@ public class ModelDB {
         database.lineDao().insert(lineEntities);
     }
 
-    public void saveAtMe(final AtMe atMe) {
+    public void saveIMMessage(final IMMessage imMessage) {
         database.runInTransaction(new Runnable() {
             @Override
             public void run() {
-                saveMic(atMe.getMic());
-                AtMeEntity entity = new AtMeEntity();
-                entity.setMicId(atMe.getMic().getId());
-                entity.setWhen(atMe.getWhen());
-                entity.setWho(atMe.getWho().getId());
-                entity.setWhat(atMe.getWhat());
-                entity.setMe(atMe.getMe().getId());
+                IMMessageEntity entity = new IMMessageEntity();
+                entity.setMicId(imMessage.getMicId());
+                entity.setWhen(imMessage.getWhen());
+                entity.setWho(imMessage.getWhoId());
+                entity.setWhat(imMessage.getWhat());
+                entity.setMe(imMessage.getMeId());
                 entity.setLastRefresh(new Date());
-                database.atMeDao().insert(entity);
+                database.immessageDao().insert(entity);
             }
         });
     }
@@ -258,34 +257,6 @@ public class ModelDB {
     // endregion
 
     // region getter
-    private MutableLiveData<List<AtMe>> atMeListLive = new MutableLiveData<>();
-    public LiveData<List<AtMe>> getAtMeByPageNum(String meId, int pageNum) {
-        return Transformations.switchMap(database.atMeDao().get(meId, 15, pageNum * 15), new Function<List<AtMeEntity>, LiveData<List<AtMe>>>() {
-            @Override
-            public LiveData<List<AtMe>> apply(final List<AtMeEntity> input) {
-                executor.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        List<AtMe> list = new ArrayList<>();
-                        for(AtMeEntity entity:input) {
-                            AtMe atMe = new AtMe();
-                            Mic mic = getMic(entity.getMicId());
-                            atMe.setMe(getUser(entity.getMe()));
-                            atMe.setMic(mic);
-                            atMe.setWhat(entity.getWhat());
-                            atMe.setWhen(entity.getWhen());
-                            atMe.setWho(getUser(entity.getWho()));
-                            atMe.setBrowsed(entity.getBrowsed());
-                            list.add(atMe);
-                        }
-                        atMeListLive.postValue(list);
-                    }
-                });
-                return atMeListLive;
-            }
-        });
-    }
-
     private Map<String, MutableLiveData<List<Mic>>> liveDataMap = new HashMap<>();
     public LiveData<List<Mic>> getMic(TopicTag tag, String userId, boolean isFinished, int pageNum) {
 
@@ -450,8 +421,8 @@ public class ModelDB {
 
     // endregion
 
-    public void updateAtMe(AtMe atMe) {
-        database.atMeDao().updateAtMe(atMe.getMic().getId(), atMe.getMe().getId(), atMe.isBrowsed()? 1:0, new Date());
+    public void updateIMMessage(IMMessage message) {
+        database.immessageDao().updateIMMessage(message.getMicId(), message.getMeId(), message.isRead()? 1:0, new Date());
     }
 
 

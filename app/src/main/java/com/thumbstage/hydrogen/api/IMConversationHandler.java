@@ -27,6 +27,7 @@ public class IMConversationHandler extends AVIMConversationEventHandler {
         IMMessage imMessage = new IMMessage();
         imMessage.setWhen(new Date(message.getTimestamp()));
         imMessage.setWhoId(message.getFrom());
+        imMessage.setRead(false);
         if(message instanceof AVIMTextMessage) {
             imMessage.setWhat(((AVIMTextMessage) message).getText());
             LineType type = LineType.LT_DIALOGUE;

@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.database.ModelDB;
 import com.thumbstage.hydrogen.model.bo.TopicTag;
+import com.thumbstage.hydrogen.model.dto.IMMessage;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.User;
@@ -233,6 +234,24 @@ public class TopicRepository {
         if(!TextUtils.isEmpty(mic.getId())) {
             cloudAPI.sendLine(mic, line, iReturnBool);
         }
+    }
+
+    public void haveReadIMMessage(final IMMessage imMessage) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                modelDB.updateIMMessage(imMessage);
+            }
+        });
+    }
+
+    public void saveIMMessage(final IMMessage imMessage) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                modelDB.saveIMMessage(imMessage);
+            }
+        });
     }
 
 }

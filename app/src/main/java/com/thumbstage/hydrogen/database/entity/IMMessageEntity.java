@@ -8,20 +8,14 @@ import android.support.annotation.NonNull;
 
 import java.util.Date;
 
-@Entity(tableName = "at_me",
+@Entity(tableName = "last_im_message",
         primaryKeys = {"mic_id", "me"},
         indices = {@Index("mic_id"), @Index("who"), @Index("me")},
         foreignKeys = {
-                @ForeignKey(entity = MicEntity.class,
-                        parentColumns = "id",
-                        childColumns = "mic_id"),
-                @ForeignKey(entity = UserEntity.class,
-                        parentColumns = "id",
-                        childColumns = "who"),
                 @ForeignKey(entity = UserEntity.class,
                         parentColumns = "id",
                         childColumns = "me")})
-public class AtMeEntity {
+public class IMMessageEntity {
     @NonNull
     private String me;
     @NonNull
@@ -32,6 +26,7 @@ public class AtMeEntity {
     @NonNull
     private Date when;
     private String what;
+    private String type;
 
     @ColumnInfo(name = "is_browsed")
     private Boolean isBrowsed = false;
@@ -96,5 +91,13 @@ public class AtMeEntity {
 
     public void setBrowsed(Boolean browsed) {
         isBrowsed = browsed;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }
