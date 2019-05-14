@@ -10,7 +10,6 @@ import android.arch.persistence.room.Update;
 
 import com.thumbstage.hydrogen.database.entity.MicEntity;
 
-import java.util.Date;
 import java.util.List;
 
 @Dao

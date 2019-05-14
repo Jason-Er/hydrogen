@@ -7,7 +7,6 @@ import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.repository.UserRepository;
 
 import java.util.List;
-import java.util.Set;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;

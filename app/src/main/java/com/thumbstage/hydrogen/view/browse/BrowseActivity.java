@@ -1,15 +1,13 @@
 package com.thumbstage.hydrogen.view.browse;
 
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -19,15 +17,13 @@ import android.view.MenuItem;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.api.IMService;
-import com.thumbstage.hydrogen.event.AtMeEvent;
 import com.thumbstage.hydrogen.event.BrowseItemEvent;
 import com.thumbstage.hydrogen.event.FabEvent;
 import com.thumbstage.hydrogen.event.IMMessageEvent;
 import com.thumbstage.hydrogen.event.IMMicEvent;
 import com.thumbstage.hydrogen.event.NaviViewEvent;
-import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.dto.IMMessage;
-import com.thumbstage.hydrogen.utils.BoUtil;
+import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.utils.NotificationUtils;
 import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.view.account.AccountActivity;
@@ -172,6 +168,14 @@ public class BrowseActivity extends AppCompatActivity
         }
     }
 
+    private void haveReadIMMessage(Mic mic) {
+        IMMessage imMessage = new IMMessage();
+        imMessage.setMicId(mic.getId());
+        imMessage.setWhoId(userViewModel.getCurrentUser().getId());
+        imMessage.setRead(true);
+        browseViewModel.haveReadIMMessage(imMessage);
+    }
+
     private void navi2AccountOrSignIn() {
         if( userViewModel.getCurrentUser().getId().equals(StringUtil.DEFAULT_USERID) ) {
             Navigation.sign2SignIn(BrowseActivity.this);
@@ -201,6 +205,7 @@ public class BrowseActivity extends AppCompatActivity
             case "CommunityShowViewHolder":
             case "IAttendedClosedViewHolder":
                 intent.setClass(this, ShowActivity.class);
+                haveReadIMMessage(mic);
                 break;
         }
         startActivity(intent);

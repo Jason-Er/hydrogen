@@ -18,7 +18,6 @@ import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
 import com.thumbstage.hydrogen.view.common.BasicBrowseFragment;
 
 import java.util.List;
-import java.util.Set;
 
 public class CommunityTopicFragment extends BasicBrowseFragment implements IBrowseCustomize, IAdapterFunction {
 

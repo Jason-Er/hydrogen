@@ -8,14 +8,10 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.avos.avoscloud.im.v2.audio.AVIMAudioRecorder;
 import com.thumbstage.hydrogen.R;

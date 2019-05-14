@@ -6,11 +6,7 @@ import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.database.HyDatabase;
-import com.thumbstage.hydrogen.database.ModelDB;
-import com.thumbstage.hydrogen.api.IMService;
-import com.thumbstage.hydrogen.repository.TopicRepository;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;

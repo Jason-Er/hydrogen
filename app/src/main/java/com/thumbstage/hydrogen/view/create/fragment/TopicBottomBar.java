@@ -11,11 +11,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.model.vo.Line;
+import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
 import com.thumbstage.hydrogen.model.bo.LineType;
+import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.utils.PathUtils;
 import com.thumbstage.hydrogen.utils.SoftInputUtils;
-import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
