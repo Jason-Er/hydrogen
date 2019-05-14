@@ -49,7 +49,7 @@ public class IAttendedOpenedViewHolder extends RecyclerView.ViewHolder {
         Topic topic = mic.getTopic();
         name.setText(topic.getName());
         brief.setText(topic.getBrief());
-        if(!mic.isHasNewLine()) {
+        if(!mic.isHasNew()) {
             unread.setVisibility(View.GONE);
         }
         if(topic.getSetting() != null) {

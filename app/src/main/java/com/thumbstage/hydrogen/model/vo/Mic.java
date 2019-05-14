@@ -3,7 +3,7 @@ package com.thumbstage.hydrogen.model.vo;
 public class Mic implements Cloneable {
     String id; // conversation id
     Topic topic;
-    boolean hasNewLine;
+    boolean hasNew;
 
     public Mic() {
         topic = new Topic();
@@ -26,12 +26,12 @@ public class Mic implements Cloneable {
         this.topic = topic;
     }
 
-    public boolean isHasNewLine() {
-        return hasNewLine;
+    public boolean isHasNew() {
+        return hasNew;
     }
 
-    public void setHasNewLine(boolean hasNewLine) {
-        this.hasNewLine = hasNewLine;
+    public void setHasNew(boolean hasNew) {
+        this.hasNew = hasNew;
     }
 
     // endregion

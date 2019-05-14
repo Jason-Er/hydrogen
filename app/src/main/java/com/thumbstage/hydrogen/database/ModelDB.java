@@ -333,6 +333,7 @@ public class ModelDB {
         Topic topic = getTopic(entity.getTopicId());
         mic.setTopic(topic);
         mic.setId(entity.getId());
+        mic.setHasNew(entity.getHasNew());
         return mic;
     }
 

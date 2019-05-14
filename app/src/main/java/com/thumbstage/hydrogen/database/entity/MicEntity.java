@@ -27,7 +27,7 @@ public class MicEntity {
     @ColumnInfo(name = "last_refresh")
     private Date lastRefresh;
     @ColumnInfo(name = "has_new")
-    private Boolean hasNew;
+    private Boolean hasNew = false;
 
 
     @NonNull
