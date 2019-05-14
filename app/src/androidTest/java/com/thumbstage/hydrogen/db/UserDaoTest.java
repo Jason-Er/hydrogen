@@ -1,14 +1,11 @@
 package com.thumbstage.hydrogen.db;
 
-import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
-import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.database.entity.TopicEntity;
 import com.thumbstage.hydrogen.database.entity.TopicTagEntity;
 import com.thumbstage.hydrogen.database.entity.UserEntity;
-import com.thumbstage.hydrogen.model.bo.TopicTag;
 import com.thumbstage.hydrogen.model.vo.Mic;
 
 import org.junit.Test;

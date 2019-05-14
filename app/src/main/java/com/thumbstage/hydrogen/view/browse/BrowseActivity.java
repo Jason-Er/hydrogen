@@ -23,6 +23,7 @@ import com.thumbstage.hydrogen.event.IMMessageEvent;
 import com.thumbstage.hydrogen.event.IMMicEvent;
 import com.thumbstage.hydrogen.event.NaviViewEvent;
 import com.thumbstage.hydrogen.model.dto.IMMessage;
+import com.thumbstage.hydrogen.model.dto.MicHasNew;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.utils.NotificationUtils;
 import com.thumbstage.hydrogen.utils.StringUtil;
@@ -168,14 +169,6 @@ public class BrowseActivity extends AppCompatActivity
         }
     }
 
-    private void haveReadIMMessage(Mic mic) {
-        IMMessage imMessage = new IMMessage();
-        imMessage.setMicId(mic.getId());
-        imMessage.setWhoId(userViewModel.getCurrentUser().getId());
-        imMessage.setRead(true);
-        browseViewModel.haveReadIMMessage(imMessage);
-    }
-
     private void navi2AccountOrSignIn() {
         if( userViewModel.getCurrentUser().getId().equals(StringUtil.DEFAULT_USERID) ) {
             Navigation.sign2SignIn(BrowseActivity.this);
@@ -205,7 +198,7 @@ public class BrowseActivity extends AppCompatActivity
             case "CommunityShowViewHolder":
             case "IAttendedClosedViewHolder":
                 intent.setClass(this, ShowActivity.class);
-                haveReadIMMessage(mic);
+                browseViewModel.micHasNew(new MicHasNew(mic.getId(), false));
                 break;
         }
         startActivity(intent);
@@ -215,8 +208,8 @@ public class BrowseActivity extends AppCompatActivity
     public void onResponseMessageEvent(final IMMicEvent event) {
         if(event.getMessage().equals("onUnreadMessage")) {
             final IMMessage imMessage = (IMMessage) event.getData();
-            imMessage.setMeId(userViewModel.getCurrentUser().getId());
-            browseViewModel.saveIMMessage(imMessage);
+            // TODO: 5/14/2019 need notification here
+            browseViewModel.micHasNew(new MicHasNew(imMessage.getMicId(), true));
         }
     }
 

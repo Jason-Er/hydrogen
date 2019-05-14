@@ -10,6 +10,7 @@ import android.arch.persistence.room.Update;
 
 import com.thumbstage.hydrogen.database.entity.MicEntity;
 
+import java.util.Date;
 import java.util.List;
 
 @Dao
@@ -36,7 +37,10 @@ public interface MicDao {
     @Query("SELECT * FROM mic WHERE topic_id IN ( SELECT id FROM topic WHERE id IN ( SELECT topic_id FROM topic_tag WHERE tag =:tag) AND is_finished =:isFinished) ORDER BY last_refresh DESC LIMIT :perPageNum OFFSET :offset")
     LiveData<List<MicEntity>> get(String tag, boolean isFinished, int perPageNum,  int offset);
 
-    @Query("SELECT * FROM mic WHERE topic_id IN ( SELECT id FROM topic WHERE id IN ( SELECT topic_id FROM topic_tag WHERE tag =:tag) AND id IN ( SELECT topic_id FROM topic_user WHERE user_id =:userId ) AND is_finished =:isFinished ) ORDER BY last_refresh DESC LIMIT :perPageNum OFFSET :offset")
+    @Query("SELECT * FROM mic WHERE topic_id IN ( SELECT id FROM topic WHERE id IN ( SELECT topic_id FROM topic_tag WHERE tag =:tag) AND id IN ( SELECT topic_id FROM topic_user WHERE user_id =:userId ) AND is_finished =:isFinished ) ORDER BY has_new ASC, last_refresh DESC LIMIT :perPageNum OFFSET :offset")
     LiveData<List<MicEntity>> get(String tag, String userId, boolean isFinished, int perPageNum, int offset);
+
+    @Query("UPDATE mic SET has_new =:hasNew, last_refresh =:lastRefresh WHERE id = :micId")
+    void updateHasNew(String micId, int hasNew, Date lastRefresh);
 
 }

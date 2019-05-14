@@ -12,6 +12,7 @@ import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
 import com.thumbstage.hydrogen.model.callback.IReturnMic;
 import com.thumbstage.hydrogen.model.callback.IReturnMicList;
 import com.thumbstage.hydrogen.model.dto.IMMessage;
+import com.thumbstage.hydrogen.model.dto.MicHasNew;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.User;
@@ -236,20 +237,11 @@ public class TopicRepository {
         }
     }
 
-    public void haveReadIMMessage(final IMMessage imMessage) {
+    public void micHasNew(final MicHasNew hasNew) {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                modelDB.updateIMMessage(imMessage);
-            }
-        });
-    }
-
-    public void saveIMMessage(final IMMessage imMessage) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                modelDB.saveIMMessage(imMessage);
+                modelDB.updateMicHasNew(hasNew);
             }
         });
     }

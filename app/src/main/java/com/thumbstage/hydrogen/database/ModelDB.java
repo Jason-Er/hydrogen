@@ -7,7 +7,6 @@ import android.arch.lifecycle.Transformations;
 import android.text.TextUtils;
 
 import com.thumbstage.hydrogen.database.entity.ContactEntity;
-import com.thumbstage.hydrogen.database.entity.IMMessageEntity;
 import com.thumbstage.hydrogen.database.entity.LineEntity;
 import com.thumbstage.hydrogen.database.entity.MicEntity;
 import com.thumbstage.hydrogen.database.entity.TopicEntity;
@@ -18,7 +17,7 @@ import com.thumbstage.hydrogen.database.entity.UserEntity;
 import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.model.bo.LineType;
 import com.thumbstage.hydrogen.model.bo.TopicTag;
-import com.thumbstage.hydrogen.model.dto.IMMessage;
+import com.thumbstage.hydrogen.model.dto.MicHasNew;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.Setting;
@@ -173,22 +172,6 @@ public class ModelDB {
             lineEntities.add(entity);
         }
         database.lineDao().insert(lineEntities);
-    }
-
-    public void saveIMMessage(final IMMessage imMessage) {
-        database.runInTransaction(new Runnable() {
-            @Override
-            public void run() {
-                IMMessageEntity entity = new IMMessageEntity();
-                entity.setMicId(imMessage.getMicId());
-                entity.setWhen(imMessage.getWhen());
-                entity.setWho(imMessage.getWhoId());
-                entity.setWhat(imMessage.getWhat());
-                entity.setMe(imMessage.getMeId());
-                entity.setLastRefresh(new Date());
-                database.immessageDao().insert(entity);
-            }
-        });
     }
 
     public void saveMic(final Mic mic) {
@@ -421,8 +404,8 @@ public class ModelDB {
 
     // endregion
 
-    public void updateIMMessage(IMMessage message) {
-        database.immessageDao().updateIMMessage(message.getMicId(), message.getMeId(), message.isRead()? 1:0, new Date());
+    public void updateMicHasNew(MicHasNew micHasNew) {
+        database.micDao().updateHasNew(micHasNew.getMicId(), micHasNew.isHasNew()? 1:0, new Date());
     }
 
 
