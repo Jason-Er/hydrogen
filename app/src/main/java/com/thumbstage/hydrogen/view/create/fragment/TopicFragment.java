@@ -35,7 +35,6 @@ import com.thumbstage.hydrogen.model.dto.IMMessage;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.utils.DensityUtil;
-import com.thumbstage.hydrogen.view.common.HyMenuItem;
 import com.thumbstage.hydrogen.view.create.cases.CaseAttendTopic;
 import com.thumbstage.hydrogen.view.create.cases.CaseBase;
 import com.thumbstage.hydrogen.view.create.feature.ICanAddMember;
@@ -210,13 +209,13 @@ public class TopicFragment extends Fragment {
         for(Privilege privilege: userPrivileges) {
             switch (privilege) {
                 case CREATE_SEMINAR:
-                    onTopics.add(CanOnTopic.ADD_MEMBER);
-                    onTopics.add(CanOnTopic.SETUP_INFO);
+                    onTopics.add(CanOnTopic.PARTICIPANT);
+                    onTopics.add(CanOnTopic.SETUPINFO);
                     onTopics.add(CanOnTopic.OPEN);
                     break;
                 case CREATE_TOPIC:
-                    onTopics.add(CanOnTopic.ADD_MEMBER);
-                    onTopics.add(CanOnTopic.SETUP_INFO);
+                    onTopics.add(CanOnTopic.PARTICIPANT);
+                    onTopics.add(CanOnTopic.SETUPINFO);
                     onTopics.add(CanOnTopic.PUBLISH);
                     break;
             }
@@ -261,8 +260,8 @@ public class TopicFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onResponseMessageEvent(final HyMenuItemEvent event) {
-        switch ((HyMenuItem.CommandType) event.getData()) {
-            case SETTING:
+        switch ((CanOnTopic) event.getData()) {
+            case SETUPINFO:
                 if( currentRole instanceof ICanSetSetting) {
                     ((ICanSetSetting) currentRole).setSetting(this);
                 }
@@ -301,7 +300,7 @@ public class TopicFragment extends Fragment {
                 }
                 popupWindow.dismiss();
                 break;
-            case MEMBERS:
+            case PARTICIPANT:
                 if(currentRole instanceof ICanAddMember) {
                     ((ICanAddMember) currentRole).addMember(this);
                 }

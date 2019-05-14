@@ -370,7 +370,7 @@ public class CloudAPI {
             }
         } else {
             String[] privileges = {CanOnTopic.CLOSE.name(), CanOnTopic.DELETE.name(),
-                    CanOnTopic.ADD_MEMBER.name(), CanOnTopic.SETUP_INFO.name()};
+                    CanOnTopic.PARTICIPANT.name(), CanOnTopic.SETUPINFO.name()};
             setMemberPrivilege2Topic(avTopic, getCurrentUserId(), privileges);
         }
         //endregion

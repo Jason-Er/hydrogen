@@ -54,11 +54,12 @@ public class CaseBase implements ITopicFragmentFunction,
     PopupWindowAdapter popupWindowAdapter;
     ProgressBar spinner;
 
-    HyMenuItem settingItem = new HyMenuItem(R.drawable.ic_menu_setting_g, HyMenuItem.CommandType.SETTING);
-    HyMenuItem membersItem = new HyMenuItem(R.drawable.ic_menu_account_plus, HyMenuItem.CommandType.MEMBERS);
-    HyMenuItem openItem = new HyMenuItem(R.drawable.ic_menu_start_g, HyMenuItem.CommandType.OPEN);
-    HyMenuItem publishItem = new HyMenuItem(R.drawable.ic_menu_publish_g, HyMenuItem.CommandType.PUBLISH);
-    HyMenuItem closeItem = new HyMenuItem(R.drawable.ic_menu_transcribe_close_g, HyMenuItem.CommandType.CLOSE);
+    HyMenuItem settingItem = new HyMenuItem(R.drawable.ic_menu_setting_g, CanOnTopic.SETUPINFO);
+    HyMenuItem membersItem = new HyMenuItem(R.drawable.ic_menu_account_plus, CanOnTopic.PARTICIPANT);
+    HyMenuItem openItem = new HyMenuItem(R.drawable.ic_menu_start_g, CanOnTopic.OPEN);
+    HyMenuItem publishItem = new HyMenuItem(R.drawable.ic_menu_publish_g, CanOnTopic.PUBLISH);
+    HyMenuItem closeItem = new HyMenuItem(R.drawable.ic_menu_transcribe_close_g, CanOnTopic.CLOSE);
+    HyMenuItem updateItem = new HyMenuItem(R.drawable.ic_menu_update_g, CanOnTopic.UPDATE);
 
 
     public CaseBase setTopicAdapter(TopicAdapter topicAdapter) {
@@ -224,10 +225,13 @@ public class CaseBase implements ITopicFragmentFunction,
                         break;
                     case DELETE:
                         break;
-                    case ADD_MEMBER:
+                    case UPDATE:
+                        itemList.add(updateItem);
+                        break;
+                    case PARTICIPANT:
                         itemList.add(membersItem);
                         break;
-                    case SETUP_INFO:
+                    case SETUPINFO:
                         itemList.add(settingItem);
                         break;
                 }

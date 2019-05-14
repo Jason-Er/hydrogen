@@ -1,16 +1,14 @@
 package com.thumbstage.hydrogen.view.common;
 
+import com.thumbstage.hydrogen.model.bo.CanOnTopic;
+
 public class HyMenuItem {
     int resId;
-    CommandType commandName;
+    CanOnTopic canOnTopic;
 
-    public enum CommandType {
-        MEMBERS, SETTING, OPEN, PUBLISH, CLOSE
-    }
-
-    public HyMenuItem(int resId, CommandType commandName) {
+    public HyMenuItem(int resId, CanOnTopic canOnTopic) {
         this.resId = resId;
-        this.commandName = commandName;
+        this.canOnTopic = canOnTopic;
     }
 
     public int getResId() {
@@ -21,11 +19,11 @@ public class HyMenuItem {
         this.resId = resId;
     }
 
-    public CommandType getCommandName() {
-        return commandName;
+    public CanOnTopic getCanOnTopic() {
+        return canOnTopic;
     }
 
-    public void setCommandName(CommandType commandName) {
-        this.commandName = commandName;
+    public void setCanOnTopic(CanOnTopic canOnTopic) {
+        this.canOnTopic = canOnTopic;
     }
 }
