@@ -179,12 +179,6 @@ public class ModelDB {
             @Override
             public void run() {
                 saveTopic(mic.getTopic());
-                /*
-                MicEntity entity = new MicEntity();
-                entity.setId(mic.getId());
-                entity.setTopicId(mic.getTopic().getId());
-                entity.setLastRefresh(new Date());
-                */
                 String id = database.micDao().getItemId(mic.getId());
                 if(id == null) {
                     MicEntity entity = new MicEntity();
