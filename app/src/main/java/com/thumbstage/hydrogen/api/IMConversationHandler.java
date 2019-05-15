@@ -25,6 +25,7 @@ public class IMConversationHandler extends AVIMConversationEventHandler {
         Log.i(TAG, "onUnreadMessagesCountUpdated ");
         AVIMMessage message = conversation.getLastMessage();
         IMMessage imMessage = new IMMessage();
+        imMessage.setMicId(message.getConversationId());
         imMessage.setWhen(new Date(message.getTimestamp()));
         imMessage.setWhoId(message.getFrom());
         imMessage.setRead(false);

@@ -179,11 +179,22 @@ public class ModelDB {
             @Override
             public void run() {
                 saveTopic(mic.getTopic());
+                /*
                 MicEntity entity = new MicEntity();
                 entity.setId(mic.getId());
                 entity.setTopicId(mic.getTopic().getId());
                 entity.setLastRefresh(new Date());
-                database.micDao().insert(entity);
+                */
+                String id = database.micDao().getItemId(mic.getId());
+                if(id == null) {
+                    MicEntity entity = new MicEntity();
+                    entity.setId(mic.getId());
+                    entity.setTopicId(mic.getTopic().getId());
+                    entity.setLastRefresh(new Date());
+                    database.micDao().insert(entity);
+                } else {
+                    database.micDao().update(mic.getId(), mic.getTopic().getId(), new Date());
+                }
             }
         });
     }

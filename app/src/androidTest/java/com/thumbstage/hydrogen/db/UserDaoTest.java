@@ -6,6 +6,7 @@ import android.util.Log;
 import com.thumbstage.hydrogen.database.entity.TopicEntity;
 import com.thumbstage.hydrogen.database.entity.TopicTagEntity;
 import com.thumbstage.hydrogen.database.entity.UserEntity;
+import com.thumbstage.hydrogen.model.dto.MicHasNew;
 import com.thumbstage.hydrogen.model.vo.Mic;
 
 import org.junit.Test;
@@ -109,6 +110,12 @@ public class UserDaoTest extends DbTest {
         entities.add(entity);
         db.topicTagDao().insert(entities);
         List<TopicTagEntity> list = db.topicTagDao().get("5cd126687b968a0072e3df6d");
+        Log.i("testSaveTopicTagList","ok");
+    }
+
+    @Test
+    public void testMicHasNew() {
+        db.micDao().updateHasNew("5cda85dd17b54d0071f3971b", 0, new Date());
         Log.i("testSaveTopicTagList","ok");
     }
 
