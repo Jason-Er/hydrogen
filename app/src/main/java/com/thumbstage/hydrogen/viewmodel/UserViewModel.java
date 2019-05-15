@@ -46,6 +46,10 @@ public class UserViewModel extends ViewModel {
         return userRepository.getUsers(userIds);
     }
 
+    public LiveData<User> getUser(String userId) {
+        return userRepository.getUser(userId);
+    }
+
     public void addContact(User user) {
         userRepository.addContact(user);
     }

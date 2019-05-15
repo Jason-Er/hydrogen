@@ -32,6 +32,9 @@ public interface UserDao {
     @Query("SELECT * FROM user WHERE id = :userId")
     UserEntity get(String userId);
 
+    @Query("SELECT * FROM user WHERE id = :userId")
+    LiveData<UserEntity> getLive(String userId);
+
     @Query("SELECT * FROM user WHERE id IN (:userIds)")
     List<UserEntity> get(List<String> userIds);
 
@@ -41,6 +44,6 @@ public interface UserDao {
     @Query("SELECT * FROM user LIMIT :num")
     List<UserEntity> get(int num);
 
-    @Query("SELECT * FROM user WHERE name = :username AND last_refresh > :lastRefreshMax LIMIT 1")
-    UserEntity hasUser(String username, Date lastRefreshMax);
+    @Query("SELECT * FROM user WHERE id = :id AND last_refresh > :lastRefreshMax LIMIT 1")
+    UserEntity hasUser(String id, Date lastRefreshMax);
 }

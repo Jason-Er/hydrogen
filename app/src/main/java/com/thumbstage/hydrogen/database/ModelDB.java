@@ -66,6 +66,10 @@ public class ModelDB {
         return database.contractDao().hasContract(userId, getMaxRefreshTime(new Date())) == null;
     }
 
+    public boolean isUserNeedFresh(String userId) {
+        return database.userDao().hasUser(userId, getMaxRefreshTime(new Date())) == null;
+    }
+
     private Date getMaxRefreshTime(Date currentDate){
         Calendar cal = Calendar.getInstance();
         cal.setTime(currentDate);
@@ -300,6 +304,10 @@ public class ModelDB {
         return entity2User(userEntities);
     }
 
+    private User entity2User(UserEntity entity) {
+        return new User(entity.getId(), entity.getName(), entity.getAvatar());
+    }
+
     private List<User> entity2User(List<UserEntity> userEntityList) {
         List<User> users = new ArrayList<>();
         for(UserEntity entity: userEntityList) {
@@ -326,7 +334,16 @@ public class ModelDB {
         });
     }
 
-    public User getUser(String userId) {
+    public LiveData<User> getUserLive(String userId) {
+        return Transformations.map(database.userDao().getLive(userId), new Function<UserEntity, User>() {
+            @Override
+            public User apply(UserEntity input) {
+                return entity2User(input);
+            }
+        });
+    }
+
+    private User getUser(String userId) {
         UserEntity entity = database.userDao().get(userId);
         User user = new User(entity.getId(), entity.getName(), entity.getAvatar());
         return user;

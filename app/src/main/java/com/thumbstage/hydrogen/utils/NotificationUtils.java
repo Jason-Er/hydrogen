@@ -19,7 +19,16 @@ public class NotificationUtils {
         showNotification(context, title, content, null, intent);
     }
 
+    public static void showNotification(Context context, String title, String content, Intent intent, int id) {
+        showNotification(context, title, content, null, intent, id);
+    }
+
     public static void showNotification(Context context, String title, String content, String sound, Intent intent) {
+        lastNotificationId = (lastNotificationId > 10000 ? 0 : lastNotificationId + 1);
+        showNotification(context, title, content, sound, intent, lastNotificationId);
+    }
+
+    public static void showNotification(Context context, String title, String content, String sound, Intent intent, int id) {
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, 0);
         NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(context.getApplicationInfo().icon)
@@ -33,7 +42,6 @@ public class NotificationUtils {
         if (sound != null && sound.trim().length() > 0) {
             notification.sound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + sound);
         }
-        lastNotificationId = (lastNotificationId > 10000 ? 0 : lastNotificationId + 1);
-        manager.notify(lastNotificationId, notification);
+        manager.notify(id, notification);
     }
 }
