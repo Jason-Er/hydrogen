@@ -8,6 +8,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.app.TaskStackBuilder;
+
+import com.thumbstage.hydrogen.view.browse.BrowseActivity;
+import com.thumbstage.hydrogen.view.create.CreateActivity;
 
 
 public class NotificationUtils {
@@ -29,16 +34,18 @@ public class NotificationUtils {
     }
 
     public static void showNotification(Context context, String title, String content, String sound, Intent intent, int id) {
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, intent, 0);
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context, CHANNEL_ID)
+        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+        stackBuilder.addParentStack(CreateActivity.class);
+        stackBuilder.addNextIntentWithParentStack(intent);
+        PendingIntent contentIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(context.getApplicationInfo().icon)
                 .setContentTitle(title).setAutoCancel(true).setContentIntent(contentIntent)
                 .setDefaults(Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentText(content);
-        NotificationManager manager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-        Notification notification = mBuilder.build();
+        NotificationManagerCompat manager = NotificationManagerCompat.from(context);
+        Notification notification = builder.build();
         if (sound != null && sound.trim().length() > 0) {
             notification.sound = Uri.parse(ContentResolver.SCHEME_ANDROID_RESOURCE + "://" + sound);
         }

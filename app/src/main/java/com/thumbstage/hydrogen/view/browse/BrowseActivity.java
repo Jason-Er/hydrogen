@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -239,7 +240,8 @@ public class BrowseActivity extends AppCompatActivity
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                     intent.putExtra(Mic.class.getSimpleName(), imMessage.getMicId());
                     intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.CONTINUE.name());
-                    NotificationUtils.showNotification(BrowseActivity.this, user.getName(), imMessage.getWhat(), intent, Integer.parseInt(imMessage.getMicId()));
+                    int id = Integer.parseInt(imMessage.getMicId().replaceAll("[^\\d]", "").substring(0,5));
+                    NotificationUtils.showNotification(BrowseActivity.this, user.getName(), imMessage.getWhat(), intent, id);
                 }
             });
         }
