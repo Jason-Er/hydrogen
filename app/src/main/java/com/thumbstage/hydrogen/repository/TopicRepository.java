@@ -198,6 +198,33 @@ public class TopicRepository {
         });
     }
 
+    public void updateMembers(final IReturnBool iReturnBool) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                final Mic mic = micLiveData.getValue();
+                if(!TextUtils.isEmpty(mic.getId())) {
+                    cloudAPI.updateMicMembers(mic, new IReturnBool() {
+                        @Override
+                        public void callback(Boolean isOK) {
+                            if(isOK) {
+                                executor.execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        saveMic2DB(mic);
+                                    }
+                                });
+                                iReturnBool.callback(true);
+                            }
+                        }
+                    });
+                } else {
+                    iReturnBool.callback(true);
+                }
+            }
+        });
+    }
+
     public void updateMembers(final List<User> users, final IReturnBool iReturnBool) {
         executor.execute(new Runnable() {
             @Override

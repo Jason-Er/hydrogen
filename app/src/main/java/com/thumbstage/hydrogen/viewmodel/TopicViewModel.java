@@ -70,6 +70,10 @@ public class TopicViewModel extends ViewModel {
         topicRepository.closeTheMic(iReturnBool);
     }
 
+    public void updateMembers(IReturnBool iReturnBool) {
+        topicRepository.updateMembers(iReturnBool);
+    }
+
     public void updateMembers(List<User> users, IReturnBool iReturnBool) {
         topicRepository.updateMembers(users, iReturnBool);
     }
