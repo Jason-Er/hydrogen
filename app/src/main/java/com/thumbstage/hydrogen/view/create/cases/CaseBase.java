@@ -36,6 +36,7 @@ import com.thumbstage.hydrogen.view.create.fragment.TopicAdapter;
 import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -106,6 +107,8 @@ public class CaseBase implements ITopicFragmentFunction,
     public void handleBottomBarEvent(TopicBottomBarEvent event) {
         switch (event.getMessage()) {
             case "text":
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                Log.i(TAG, "handleBottomBarEvent time:"+sdf.format(((Line)event.getData()).getWhen()));
                 addLine((Line) event.getData());
                 break;
             case "voice":
