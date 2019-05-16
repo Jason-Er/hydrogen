@@ -167,25 +167,10 @@ public class CaseBase implements ITopicFragmentFunction,
     }
 
     private void saveOrUpdate(final Mic mic, final TopicViewModel topicViewModel, final IReturnBool iReturnBool) {
-        if(mic.getTopic().getSetting() != null) {
-            File file = new File(mic.getTopic().getSetting().getUrl());
-            topicViewModel.saveFile(file, new IReturnHyFile() {
-                @Override
-                public void callback(HyFile hyFile) {
-                    mic.getTopic().setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
-                    if(TextUtils.isEmpty(mic.getId())) {
-                        topicViewModel.createTheTopic(iReturnBool);
-                    } else {
-                        topicViewModel.updateTheTopic(iReturnBool);
-                    }
-                }
-            });
+        if(TextUtils.isEmpty(mic.getId())) {
+            topicViewModel.createTheTopic(iReturnBool);
         } else {
-            if(TextUtils.isEmpty(mic.getId())) {
-                topicViewModel.createTheTopic(iReturnBool);
-            } else {
-                topicViewModel.updateTheTopic(iReturnBool);
-            }
+            topicViewModel.updateTheTopic(iReturnBool);
         }
     }
 

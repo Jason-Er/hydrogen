@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AssistDialogPagerAdapter extends FragmentPagerAdapter {
+public class AssistDialogPagerAdapter extends FragmentPagerAdapter implements OnDismiss {
 
     List<Fragment> fragmentList;
 
@@ -28,4 +28,12 @@ public class AssistDialogPagerAdapter extends FragmentPagerAdapter {
         return fragmentList.size();
     }
 
+    @Override
+    public void dismiss() {
+        for(Fragment fragment: fragmentList) {
+            if(fragment instanceof OnDismiss) {
+                ((OnDismiss) fragment).dismiss();
+            }
+        }
+    }
 }

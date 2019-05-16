@@ -306,6 +306,44 @@ public class CloudAPI {
     }
     */
 
+    public void updateTopicSetting(final Topic topic, final IReturnBool iReturnBool) {
+        if(topic.getSetting()!= null) {
+            final AVObject avTopic = AVObject.createWithoutData(TableName.TABLE_TOPIC.name, topic.getId());
+            AVObject avObject = AVObject.createWithoutData(TableName.TABLE_FILE.name, topic.getSetting().getId());
+            avTopic.put(FieldName.FIELD_SETTING.name, avObject);
+            avTopic.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(AVException e) {
+                    if(e == null) {
+                        Log.i(TAG, "createTopic ok");
+                        iReturnBool.callback(true);
+                    } else {
+                        iReturnBool.callback(false);
+                    }
+                }
+            });
+        } else {
+            iReturnBool.callback(true);
+        }
+    }
+
+    public void updateTopicInfo(final Topic topic, final IReturnBool iReturnBool) {
+        final AVObject avTopic = AVObject.createWithoutData(TableName.TABLE_TOPIC.name, topic.getId());
+        avTopic.put(FieldName.FIELD_NAME.name, topic.getName());
+        avTopic.put(FieldName.FIELD_BRIEF.name, topic.getBrief());
+        avTopic.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                if(e == null) {
+                    Log.i(TAG, "createTopic ok");
+                    iReturnBool.callback(true);
+                } else {
+                    iReturnBool.callback(false);
+                }
+            }
+        });
+    }
+
     public void updateTopic(final Topic topic, final ICallBack iCallBack) {
         topic.setSponsor(getCurrentUser());
         if( getCurrentUser()!=null && !topic.getMembers().contains(getCurrentUser()) ) {

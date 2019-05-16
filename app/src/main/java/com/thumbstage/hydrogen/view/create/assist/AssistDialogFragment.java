@@ -1,5 +1,6 @@
 package com.thumbstage.hydrogen.view.create.assist;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -42,5 +43,9 @@ public class AssistDialogFragment extends BottomSheetDialogFragment {
         return contentView;
     }
 
-
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        pagerAdapter.dismiss();
+    }
 }

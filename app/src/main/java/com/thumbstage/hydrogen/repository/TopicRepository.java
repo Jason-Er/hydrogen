@@ -6,15 +6,16 @@ import android.text.TextUtils;
 
 import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.database.ModelDB;
+import com.thumbstage.hydrogen.model.bo.HyFile;
 import com.thumbstage.hydrogen.model.bo.TopicTag;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
 import com.thumbstage.hydrogen.model.callback.IReturnMic;
 import com.thumbstage.hydrogen.model.callback.IReturnMicList;
-import com.thumbstage.hydrogen.model.dto.IMMessage;
 import com.thumbstage.hydrogen.model.dto.MicHasNew;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
+import com.thumbstage.hydrogen.model.vo.Setting;
 import com.thumbstage.hydrogen.model.vo.User;
 
 import java.io.File;
@@ -149,13 +150,30 @@ public class TopicRepository {
             @Override
             public void run() {
                 final Mic mic = micLiveData.getValue();
-                cloudAPI.createMic(mic, new CloudAPI.ICallBack() {
-                    @Override
-                    public void callback(String objectID) {
-                        saveMic2DB(mic);
-                        iReturnBool.callback(true);
-                    }
-                });
+                if (mic.getTopic().getSetting() != null) {
+                    File file = new File(mic.getTopic().getSetting().getUrl());
+                    cloudAPI.saveFile(file, new IReturnHyFile() {
+                        @Override
+                        public void callback(HyFile hyFile) {
+                            mic.getTopic().setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
+                            cloudAPI.createMic(mic, new CloudAPI.ICallBack() {
+                                @Override
+                                public void callback(String objectID) {
+                                    saveMic2DB(mic);
+                                    iReturnBool.callback(true);
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    cloudAPI.createMic(mic, new CloudAPI.ICallBack() {
+                        @Override
+                        public void callback(String objectID) {
+                            saveMic2DB(mic);
+                            iReturnBool.callback(true);
+                        }
+                    });
+                }
             }
         });
     }
@@ -198,6 +216,71 @@ public class TopicRepository {
         });
     }
 
+    public void updateSetting(final IReturnBool iReturnBool) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                final Mic mic = micLiveData.getValue();
+                if(!TextUtils.isEmpty(mic.getId())) {
+                    File file = new File(mic.getTopic().getSetting().getUrl());
+                    cloudAPI.saveFile(file, new IReturnHyFile() {
+                        @Override
+                        public void callback(HyFile hyFile) {
+                            mic.getTopic().setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
+                            cloudAPI.updateTopicSetting(mic.getTopic(), new IReturnBool() {
+                                @Override
+                                public void callback(Boolean isOK) {
+                                    if(isOK) {
+                                        executor.execute(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                modelDB.saveMic(mic);
+                                            }
+                                        });
+                                        iReturnBool.callback(true);
+                                    } else {
+                                        iReturnBool.callback(false);
+                                    }
+                                }
+                            });
+                        }
+                    });
+                } else {
+                    iReturnBool.callback(true);
+                }
+            }
+        });
+    }
+
+    public void updateBasicInfo(final IReturnBool iReturnBool) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                final Mic mic = micLiveData.getValue();
+                if(!TextUtils.isEmpty(mic.getId())) {
+                    cloudAPI.updateTopicInfo(mic.getTopic(), new IReturnBool() {
+                        @Override
+                        public void callback(Boolean isOK) {
+                            if(isOK) {
+                                executor.execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        modelDB.saveMic(mic);
+                                    }
+                                });
+                                iReturnBool.callback(true);
+                            } else {
+                                iReturnBool.callback(false);
+                            }
+                        }
+                    });
+                } else {
+                    iReturnBool.callback(true);
+                }
+            }
+        });
+    }
+
     public void updateMembers(final IReturnBool iReturnBool) {
         executor.execute(new Runnable() {
             @Override
@@ -211,7 +294,7 @@ public class TopicRepository {
                                 executor.execute(new Runnable() {
                                     @Override
                                     public void run() {
-                                        saveMic2DB(mic);
+                                        modelDB.saveMic(mic);
                                     }
                                 });
                                 iReturnBool.callback(true);
