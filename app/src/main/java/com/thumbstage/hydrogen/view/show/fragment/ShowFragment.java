@@ -14,10 +14,14 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ListPopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
@@ -26,17 +30,35 @@ import android.widget.ViewSwitcher;
 
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.event.HyMenuItemEvent;
 import com.thumbstage.hydrogen.event.PlayerControlEvent;
+import com.thumbstage.hydrogen.model.bo.CanOnTopic;
+import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
+import com.thumbstage.hydrogen.model.vo.Topic;
 import com.thumbstage.hydrogen.utils.DensityUtil;
+import com.thumbstage.hydrogen.view.common.HyMenuItem;
+import com.thumbstage.hydrogen.view.create.feature.ICanAddMember;
+import com.thumbstage.hydrogen.view.create.feature.ICanCloseTopic;
+import com.thumbstage.hydrogen.view.create.feature.ICanOpenTopic;
+import com.thumbstage.hydrogen.view.create.feature.ICanPopupMenu;
+import com.thumbstage.hydrogen.view.create.feature.ICanPublishTopic;
+import com.thumbstage.hydrogen.view.create.feature.ICanSetSetting;
+import com.thumbstage.hydrogen.view.create.feature.ICanUpdateTopic;
+import com.thumbstage.hydrogen.view.create.fragment.PopupWindowAdapter;
 import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
+import com.thumbstage.hydrogen.viewmodel.UserViewModel;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 import javax.inject.Inject;
 
@@ -57,6 +79,10 @@ public class ShowFragment extends Fragment implements TextToSpeech.OnInitListene
     @Inject
     ViewModelProvider.Factory viewModelFactory;
     TopicViewModel topicViewModel;
+    UserViewModel userViewModel;
+
+    ListPopupWindow popupWindow;
+    PopupWindowAdapter popupWindowAdapter;
 
     TextToSpeech textToSpeech;
     Mic mic;
@@ -67,6 +93,7 @@ public class ShowFragment extends Fragment implements TextToSpeech.OnInitListene
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_show, container, false);
         ButterKnife.bind(this, view);
+        setHasOptionsMenu(true);
 
         subtitle.setFactory(new ViewSwitcher.ViewFactory() {
             @Override
@@ -81,6 +108,13 @@ public class ShowFragment extends Fragment implements TextToSpeech.OnInitListene
                 return tv;
             }
         });
+
+        popupWindow = new ListPopupWindow(getContext());
+        popupWindowAdapter = new PopupWindowAdapter();
+        popupWindow.setAdapter(popupWindowAdapter);
+        popupWindow.setWidth(DensityUtil.dp2px(getContext(),200));
+        popupWindow.setHeight(ListPopupWindow.WRAP_CONTENT);
+        popupWindow.setModal(true);
 
         textToSpeech = new TextToSpeech(getContext(), this);
         EventBus.getDefault().register(this);
@@ -141,6 +175,8 @@ public class ShowFragment extends Fragment implements TextToSpeech.OnInitListene
                 spinner.setVisibility(View.GONE);
             }
         });
+
+        userViewModel = ViewModelProviders.of(getActivity(), viewModelFactory).get(UserViewModel.class);
     }
 
     @Override
@@ -180,6 +216,85 @@ public class ShowFragment extends Fragment implements TextToSpeech.OnInitListene
             Line line = mic.getTopic().getDialogue().get(index);
             subtitle.setText(line.getWhat());
             textToSpeech.speak(line.getWhat(), TextToSpeech.QUEUE_FLUSH, null, String.valueOf(index));
+        }
+    }
+
+    HyMenuItem recommendItem = new HyMenuItem(R.drawable.ic_menu_recommend_g, CanOnTopic.RECOMMEND);
+
+
+    protected Set<CanOnTopic> getUserCan(Topic topic, String userId) {
+        Set<CanOnTopic> userCan = null;
+        if(topic.getUserCan()!= null) {
+            if(topic.getUserCan().containsKey(userId)) {
+                userCan = topic.getUserCan().get(userId);
+            }
+        }
+        return userCan;
+    }
+
+    private void setUpPopupMenu(Topic topic, String userId) {
+        List<HyMenuItem> itemList = new ArrayList<>();
+        Set<CanOnTopic> userCan = getUserCan(topic, userId);
+        if(userCan != null) {
+            for(CanOnTopic can: userCan) {
+                switch (can) {
+                    case RECOMMEND:
+                        itemList.add(recommendItem);
+                        break;
+                }
+            }
+        }
+        popupWindowAdapter.setItemList(itemList);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        final MenuItem menuItemSetup = menu.findItem(R.id.menu_item_setup);
+        menuItemSetup.setVisible(false);
+        topicViewModel.getTheTopic().observe(this, new Observer<Mic>() {
+            @Override
+            public void onChanged(@Nullable Mic mic) {
+                if(mic.getTopic()!=null) {
+                    Map<String, Set<CanOnTopic>> userCan = mic.getTopic().getUserCan();
+                    String userId = userViewModel.getCurrentUser().getId();
+                    if(userCan != null && userCan.containsKey(userId)) {
+                        if(userCan.get(userId).size() > 0) {
+                            menuItemSetup.setVisible(true);
+                            setUpPopupMenu(mic.getTopic(), userId);
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_create_default, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_item_setup:
+                Log.i(TAG, "menu_item_setup");
+                View anchor = getActivity().findViewById(R.id.menu_item_setup);
+                popupWindow.setAnchorView(anchor);
+                popupWindow.show();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onResponseMessageEvent(final HyMenuItemEvent event) {
+        switch ((CanOnTopic) event.getData()) {
+            case RECOMMEND:
+
+                popupWindow.dismiss();
+                break;
         }
     }
 }
