@@ -33,6 +33,7 @@ import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.HyMenuItemEvent;
 import com.thumbstage.hydrogen.event.PlayerControlEvent;
 import com.thumbstage.hydrogen.model.bo.CanOnTopic;
+import com.thumbstage.hydrogen.model.bo.TopicTag;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
@@ -55,6 +56,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -292,7 +294,13 @@ public class ShowFragment extends Fragment implements TextToSpeech.OnInitListene
     public void onResponseMessageEvent(final HyMenuItemEvent event) {
         switch ((CanOnTopic) event.getData()) {
             case RECOMMEND:
+                mic.getTopic().setTags(new HashSet<TopicTag>(){{add(TopicTag.SELECTED);}});
+                topicViewModel.updateTheTopic(new IReturnBool() {
+                    @Override
+                    public void callback(Boolean isOK) {
 
+                    }
+                });
                 popupWindow.dismiss();
                 break;
         }
