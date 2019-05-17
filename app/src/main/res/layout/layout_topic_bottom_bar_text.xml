@@ -43,6 +43,8 @@
         <ImageButton
             android:id="@+id/input_bar_btn_voice"
             style="@style/hy_input_bar_button_style"
-            android:src="@drawable/hy_bottom_bar_voice_button_bg"/>
+            android:background="@null"
+            android:scaleType="center"
+            android:src="@drawable/hy_bottom_bar_voice_button_bg" />
     </FrameLayout>
 </LinearLayout>

@@ -31,5 +31,4 @@
         <include layout="@layout/layout_topic_bottom_bar_text"/>
     </LinearLayout>
 
-    <!--include layout="@layout/lcim_bottom_bar_more_layout"/-->
 </LinearLayout>
