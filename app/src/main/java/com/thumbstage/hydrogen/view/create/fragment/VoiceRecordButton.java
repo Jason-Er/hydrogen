@@ -8,26 +8,32 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.widget.AppCompatButton;
 import android.util.AttributeSet;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.avos.avoscloud.im.v2.audio.AVIMAudioRecorder;
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.utils.AudioHelper;
+import com.thumbstage.hydrogen.utils.PathUtils;
 
 import java.io.File;
 
 public class VoiceRecordButton extends AppCompatButton {
-    public static final int BACK_RECORDING = R.drawable.lcim_chat_voice_bg_pressed;
-    public static final int BACK_IDLE = R.drawable.lcim_chat_voice_bg;
+    public static final int BACK_RECORDING = R.drawable.hy_chat_voice_bg_pressed;
+    public static final int BACK_IDLE = R.drawable.hy_chat_voice_bg;
     public static final int SLIDE_UP_TO_CANCEL = 0;
     public static final int RELEASE_TO_CANCEL = 1;
     private static final int MIN_INTERVAL_TIME = 1000;
-    private static int[] recordImageIds = {R.drawable.lcim_record_icon_voice0,
-            R.drawable.lcim_record_icon_voice1, R.drawable.lcim_record_icon_voice2,
-            R.drawable.lcim_record_icon_voice3, R.drawable.lcim_record_icon_voice4,
-            R.drawable.lcim_record_icon_voice5};
+    private static int[] recordImageIds = {R.drawable.hy_record_icon_voice0,
+            R.drawable.hy_record_icon_voice1, R.drawable.hy_record_icon_voice2,
+            R.drawable.hy_record_icon_voice3, R.drawable.hy_record_icon_voice4,
+            R.drawable.hy_record_icon_voice5};
     private TextView textView;
     private String outputPath = null;
     private RecordEventListener recordEventListener;
@@ -115,29 +121,26 @@ public class VoiceRecordButton extends AppCompatButton {
     private void setTextViewByStatus() {
         if (status == RELEASE_TO_CANCEL) {
             textView.setTextColor(getColor(R.color.hy_commom_read));
-            // textView.setText(R.string.lcim_chat_record_button_releaseToCancel);
+            textView.setText(R.string.hy_chat_record_button_releaseToCancel);
         } else if (status == SLIDE_UP_TO_CANCEL) {
             textView.setTextColor(Color.WHITE);
-            // textView.setText(R.string.lcim_chat_record_button_slideUpToCancel);
+            textView.setText(R.string.hy_chat_record_button_slideUpToCancel);
         }
     }
 
     private void startRecord() {
-        /*
-        LCIMAudioHelper.getInstance().stopPlayer();
+        AudioHelper.getInstance().stopPlayer();
         initRecordDialog();
         startTime = System.currentTimeMillis();
         setBackgroundResource(BACK_RECORDING);
         startRecording();
         recordIndicator.show();
-        */
     }
 
     private void initRecordDialog() {
-        /*
         if (null == recordIndicator) {
-            recordIndicator = new Dialog(getContext(), R.style.lcim_record_dialog_style);
-            view = inflate(getContext(), R.layout.lcim_chat_record_layout, null);
+            recordIndicator = new Dialog(getContext(), R.style.hy_record_dialog_style);
+            view = inflate(getContext(), R.layout.layout_chat_record_dialog, null);
             imageView = (ImageView) view.findViewById(R.id.imageView);
             textView = (TextView) view.findViewById(R.id.textView);
             recordIndicator.setContentView(view, new WindowManager.LayoutParams(
@@ -148,7 +151,6 @@ public class VoiceRecordButton extends AppCompatButton {
             WindowManager.LayoutParams lp = recordIndicator.getWindow().getAttributes();
             lp.gravity = Gravity.CENTER;
         }
-        */
     }
 
     private void removeFile() {
@@ -168,13 +170,12 @@ public class VoiceRecordButton extends AppCompatButton {
         stopRecording();
         setBackgroundResource(BACK_IDLE);
         recordIndicator.dismiss();
-        // Toast.makeText(getContext(), getContext().getString(R.string.lcim_chat_cancelRecord), Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), getContext().getString(R.string.hy_chat_cancelRecord), Toast.LENGTH_SHORT).show();
         removeFile();
     }
 
-    /*
     private void startRecording() {
-        outputPath = LCIMPathUtils.getRecordPathByCurrentTime(getContext());
+        outputPath = PathUtils.getRecordPathByCurrentTime(getContext());
         try {
             if (null == audioRecorder) {
                 final String localFilePath = outputPath;
@@ -185,7 +186,7 @@ public class VoiceRecordButton extends AppCompatButton {
                             removeFile();
                         } else if (null != recordEventListener) {
                             if (milliSeconds < MIN_INTERVAL_TIME) {
-                                Toast.makeText(getContext(), getContext().getString(R.string.lcim_chat_record_button_pleaseSayMore), Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getContext(), getContext().getString(R.string.hy_chat_record_button_pleaseSayMore), Toast.LENGTH_SHORT).show();
                                 removeFile();
                             } else {
                                 recordEventListener.onFinishedRecord(localFilePath, Math.round(milliSeconds/1000));
@@ -208,7 +209,6 @@ public class VoiceRecordButton extends AppCompatButton {
             ex.printStackTrace();
         }
     }
-    */
 
     private void stopRecording() {
         if (thread != null) {
@@ -222,7 +222,7 @@ public class VoiceRecordButton extends AppCompatButton {
     }
 
     public interface RecordEventListener {
-        public void onFinishedRecord(String audioPath, int secs);
+        void onFinishedRecord(String audioPath, int secs);
 
         void onStartRecord();
     }
