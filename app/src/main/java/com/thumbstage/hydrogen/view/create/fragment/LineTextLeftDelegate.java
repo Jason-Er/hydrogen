@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.view.common.IAdapterDelegate;
+import com.thumbstage.hydrogen.view.create.type.LineEx;
 import com.thumbstage.hydrogen.view.create.type.LineTextLeft;
 
 import java.util.List;
@@ -47,6 +48,6 @@ public class LineTextLeftDelegate implements IAdapterDelegate<List> {
 
     @Override
     public void onBindViewHolder(@NonNull List items, int position, @NonNull RecyclerView.ViewHolder holder) {
-        ((LineTextLeftViewHolder)holder).setLine((Line) items.get(position));
+        ((LineTextLeftViewHolder)holder).setLine((LineEx) items.get(position));
     }
 }

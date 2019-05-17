@@ -14,6 +14,7 @@ import com.thumbstage.hydrogen.event.PopupMenuEvent;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.utils.GlideUtil;
 import com.thumbstage.hydrogen.utils.StringUtil;
+import com.thumbstage.hydrogen.view.create.type.LineEx;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -55,10 +56,14 @@ public class LineTextLeftViewHolder extends RecyclerView.ViewHolder {
         });
     }
 
-    public void setLine(@NonNull Line line) {
+    public void setLine(@NonNull LineEx line) {
         this.line = line;
         GlideUtil.inject(itemView.getContext(), line.getWho().getAvatar(), avatar);
         content.setText(line.getWhat());
-        time.setText(StringUtil.date2String4Show(line.getWhen()));
+        if(line.isNeedShowTime()) {
+            time.setText(StringUtil.date2String4Show(line.getWhen()));
+        } else {
+            time.setVisibility(View.GONE);
+        }
     }
 }

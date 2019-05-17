@@ -3,10 +3,11 @@ package com.thumbstage.hydrogen.viewmodel;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
-import com.thumbstage.hydrogen.model.vo.Mic;
-import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
+import com.thumbstage.hydrogen.model.vo.Line;
+import com.thumbstage.hydrogen.model.vo.Mic;
+import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.repository.TopicRepository;
 
 import java.io.File;
@@ -61,12 +62,24 @@ public class TopicViewModel extends ViewModel {
         topicRepository.updateTheMic(iReturnBool);
     }
 
-    public void flushMicBuf(IReturnBool iReturnBool) {
-        topicRepository.flushMicBuf(iReturnBool);
+    public void speakLine(Line line, IReturnBool iReturnBool) {
+        topicRepository.speakLine(line, iReturnBool);
     }
 
     public void closeTheTopic(final IReturnBool iReturnBool) {
         topicRepository.closeTheMic(iReturnBool);
+    }
+
+    public void updateSetting(IReturnBool iReturnBool) {
+        topicRepository.updateSetting(iReturnBool);
+    }
+
+    public void updateBasicInfo(IReturnBool iReturnBool) {
+        topicRepository.updateBasicInfo(iReturnBool);
+    }
+
+    public void updateMembers(IReturnBool iReturnBool) {
+        topicRepository.updateMembers(iReturnBool);
     }
 
     public void updateMembers(List<User> users, IReturnBool iReturnBool) {

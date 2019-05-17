@@ -11,14 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.bo.Privilege;
+import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.view.browse.IAdapterFunction;
 import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
 import com.thumbstage.hydrogen.view.common.BasicBrowseFragment;
 
 import java.util.List;
-import java.util.Set;
 
 public class CommunityShowFragment extends BasicBrowseFragment implements IBrowseCustomize, IAdapterFunction {
 
@@ -51,7 +50,7 @@ public class CommunityShowFragment extends BasicBrowseFragment implements IBrows
     }
 
     @Override
-    public void customizeFab(FloatingActionButton fab, Set<Privilege> userPrivileges) {
+    public void customizeFab(FloatingActionButton fab) {
         fab.hide();
     }
     // endregion

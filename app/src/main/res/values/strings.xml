@@ -53,4 +53,8 @@
     <string name="action_delete">Delete</string>
     <string name="item_add">add</string>
     <string name="nav_account_address">address book</string>
+    <string name="hy_chat_record_button_releaseToCancel">loose thumb, cancel record</string>
+    <string name="hy_chat_record_button_slideUpToCancel">slide up, cancel send</string>
+    <string name="hy_chat_record_button_pleaseSayMore">speak more</string>
+    <string name="hy_chat_cancelRecord">cancel recording</string>
 </resources>

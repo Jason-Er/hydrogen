@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -207,7 +207,7 @@ public class ExampleInstrumentedTest {
             @Override
             public void done(AVIMClient client, AVIMException e) {
                 if(e == null) {
-                    client.createTopic(Arrays.asList("Jerry"), "testConversation", null, new AVIMConversationCreatedCallback() {
+                    client.openTopic(Arrays.asList("Jerry"), "testConversation", null, new AVIMConversationCreatedCallback() {
                         @Override
                         public void done(AVIMConversation conversation, AVIMException e) {
                             if(e == null) {

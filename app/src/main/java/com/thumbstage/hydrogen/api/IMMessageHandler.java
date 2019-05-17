@@ -22,8 +22,10 @@ public class IMMessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> 
     public void onMessage(AVIMTypedMessage message, AVIMConversation conversation, AVIMClient client) {
         Log.i(TAG, "callBack");
         IMMessage imMessage = new IMMessage();
+        imMessage.setMicId(message.getConversationId());
         imMessage.setWhen(new Date(message.getTimestamp()));
         imMessage.setWhoId(message.getFrom());
+        imMessage.setRead(false);
         if(message instanceof AVIMTextMessage) {
             imMessage.setWhat(((AVIMTextMessage) message).getText());
             LineType type = LineType.valueOf((String) ((AVIMTextMessage) message).getAttrs().get("type"));

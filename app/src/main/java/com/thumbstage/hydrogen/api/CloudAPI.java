@@ -29,16 +29,11 @@ import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
-import com.thumbstage.hydrogen.model.bo.HyFile;
 import com.thumbstage.hydrogen.model.bo.CanOnTopic;
-import com.thumbstage.hydrogen.model.bo.TopicTag;
-import com.thumbstage.hydrogen.model.vo.Line;
+import com.thumbstage.hydrogen.model.bo.HyFile;
 import com.thumbstage.hydrogen.model.bo.LineType;
-import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.bo.Privilege;
-import com.thumbstage.hydrogen.model.vo.Setting;
-import com.thumbstage.hydrogen.model.vo.Topic;
-import com.thumbstage.hydrogen.model.vo.User;
+import com.thumbstage.hydrogen.model.bo.TopicTag;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
 import com.thumbstage.hydrogen.model.callback.IReturnLine;
@@ -46,6 +41,11 @@ import com.thumbstage.hydrogen.model.callback.IReturnMic;
 import com.thumbstage.hydrogen.model.callback.IReturnMicList;
 import com.thumbstage.hydrogen.model.callback.IReturnTopic;
 import com.thumbstage.hydrogen.model.callback.IReturnUser;
+import com.thumbstage.hydrogen.model.vo.Line;
+import com.thumbstage.hydrogen.model.vo.Mic;
+import com.thumbstage.hydrogen.model.vo.Setting;
+import com.thumbstage.hydrogen.model.vo.Topic;
+import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.repository.FieldName;
 import com.thumbstage.hydrogen.repository.TableName;
 import com.thumbstage.hydrogen.utils.DataConvertUtil;
@@ -126,7 +126,7 @@ public class CloudAPI {
             @Override
             public void done(final AVIMConversation conversation, AVIMException e) {
                 if(e == null) {
-                    Log.i(TAG, "createTopic ok");
+                    Log.i(TAG, "createMic ok");
                     AVObject avMic = AVObject.createWithoutData(TableName.TABLE_MIC.name, conversation.getConversationId());// 构建对象
                     AVObject avTopic = AVObject.createWithoutData(TableName.TABLE_TOPIC.name, topic.getId());
                     avMic.put(FieldName.FIELD_TOPIC.name, avTopic);
@@ -205,6 +205,7 @@ public class CloudAPI {
             @Override
             public void done(AVIMException e) {
                 if(e == null) {
+                    // TODO: 5/13/2019 addTopicOneLine may remove to server sometime
                     addTopicOneLine(mic.getTopic(), line, iReturnBool);
                 } else {
                     iReturnBool.callback(false);
@@ -305,8 +306,46 @@ public class CloudAPI {
     }
     */
 
+    public void updateTopicSetting(final Topic topic, final IReturnBool iReturnBool) {
+        if(topic.getSetting()!= null) {
+            final AVObject avTopic = AVObject.createWithoutData(TableName.TABLE_TOPIC.name, topic.getId());
+            AVObject avObject = AVObject.createWithoutData(TableName.TABLE_FILE.name, topic.getSetting().getId());
+            avTopic.put(FieldName.FIELD_SETTING.name, avObject);
+            avTopic.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(AVException e) {
+                    if(e == null) {
+                        Log.i(TAG, "createTopic ok");
+                        iReturnBool.callback(true);
+                    } else {
+                        iReturnBool.callback(false);
+                    }
+                }
+            });
+        } else {
+            iReturnBool.callback(true);
+        }
+    }
+
+    public void updateTopicInfo(final Topic topic, final IReturnBool iReturnBool) {
+        final AVObject avTopic = AVObject.createWithoutData(TableName.TABLE_TOPIC.name, topic.getId());
+        avTopic.put(FieldName.FIELD_NAME.name, topic.getName());
+        avTopic.put(FieldName.FIELD_BRIEF.name, topic.getBrief());
+        avTopic.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                if(e == null) {
+                    Log.i(TAG, "createTopic ok");
+                    iReturnBool.callback(true);
+                } else {
+                    iReturnBool.callback(false);
+                }
+            }
+        });
+    }
+
     public void updateTopic(final Topic topic, final ICallBack iCallBack) {
-        topic.setStarted_by(getCurrentUser());
+        topic.setSponsor(getCurrentUser());
         if( getCurrentUser()!=null && !topic.getMembers().contains(getCurrentUser()) ) {
             topic.getMembers().add(getCurrentUser());
         }
@@ -340,8 +379,8 @@ public class CloudAPI {
     }
 
     private void createTopic(@NonNull final Topic topic, final ICallBack iCallBack) {
-        User originUser = topic.getStarted_by();
-        topic.setStarted_by(getCurrentUser());
+        User originUser = topic.getSponsor();
+        topic.setSponsor(getCurrentUser());
         if( getCurrentUser()!=null && !topic.getMembers().contains(getCurrentUser()) ) {
             topic.getMembers().add(getCurrentUser());
         }
@@ -360,16 +399,19 @@ public class CloudAPI {
         }
         avTopic.put(FieldName.FIELD_MEMBER.name, DataConvertUtil.user2StringId(topic.getMembers()));
 
-        // default privilege for one member on topic
+        // TODO: 5/13/2019 such privileges set must be removed later and move such function to server
+        // region remove block *** default privilege for one member on topic
         if(avTopic.get(FieldName.FIELD_DERIVE_FROM.name) !=null ) {
             if(originUser != null) {
-                String[] privileges = {CanOnTopic.CLOSE.name(), CanOnTopic.PUBLISH.name()};
+                String[] privileges = {CanOnTopic.CLOSE.name(), CanOnTopic.DELETE.name()};
                 setMemberPrivilege2Topic(avTopic, originUser.getId(), privileges);
             }
         } else {
-            String[] privileges = {CanOnTopic.CLOSE.name(), CanOnTopic.PUBLISH.name()};
+            String[] privileges = {CanOnTopic.CLOSE.name(), CanOnTopic.DELETE.name(),
+                    CanOnTopic.PARTICIPANT.name(), CanOnTopic.SETUPINFO.name()};
             setMemberPrivilege2Topic(avTopic, getCurrentUserId(), privileges);
         }
+        //endregion
 
         List<Map> list = DataConvertUtil.convert2AVObject(topic.getDialogue());
         avTopic.put(FieldName.FIELD_DIALOGUE.name, list);
@@ -388,7 +430,7 @@ public class CloudAPI {
 
     private void setMemberPrivilege2Topic(AVObject avTopic, String userId, String[] privileges) {
         Map data = convertPrivilegeOnTopic2AVObject(userId, privileges);
-        avTopic.add(FieldName.FIELD_PRIVILEGE.name, data);
+        avTopic.put(FieldName.FIELD_PRIVILEGE.name, data);
     }
 
     private Map convertPrivilegeOnTopic2AVObject(String userId, String[] privileges) {
@@ -650,21 +692,23 @@ public class CloudAPI {
                         }
                     });
                     Map<String, Set<CanOnTopic>> userCans = new HashMap<>();
-                    for(Object key: userCanMap.keySet()) {
-                        List<String> pris = new ArrayList<>();
-                        if(userCanMap.get(key) instanceof JSONArray) {
-                            JSONArray arr = (JSONArray) userCanMap.get(key);
-                            pris = JSONObject.parseArray(arr.toJSONString(), String.class);
-                        } else if(userCanMap.get(key) instanceof ArrayList){
-                            pris = (List<String>) userCanMap.get(key);
-                        } else {
+                    if(userCanMap != null) {
+                        for (Object key : userCanMap.keySet()) {
+                            List<String> pris = new ArrayList<>();
+                            if (userCanMap.get(key) instanceof JSONArray) {
+                                JSONArray arr = (JSONArray) userCanMap.get(key);
+                                pris = JSONObject.parseArray(arr.toJSONString(), String.class);
+                            } else if (userCanMap.get(key) instanceof ArrayList) {
+                                pris = (List<String>) userCanMap.get(key);
+                            } else {
 
+                            }
+                            Set<CanOnTopic> cans = new LinkedHashSet<>();
+                            for (String str : pris) {
+                                cans.add(CanOnTopic.valueOf(str));
+                            }
+                            userCans.put((String) key, cans);
                         }
-                        Set<CanOnTopic> cans = new LinkedHashSet<>();
-                        for(String str: pris) {
-                            cans.add(CanOnTopic.valueOf(str));
-                        }
-                        userCans.put((String) key, cans);
                     }
 
                     Topic topic = new Topic();
@@ -675,7 +719,7 @@ public class CloudAPI {
                     topic.setUserCan(userCans);
                     topic.setDialogue(dialogue);
                     topic.setMembers(users);
-                    topic.setStarted_by(user);
+                    topic.setSponsor(user);
                     topic.setSetting(setting);
                     topic.setFinished(isFinished);
                     iReturnTopic.callback(topic);
@@ -684,15 +728,15 @@ public class CloudAPI {
         }
     }
 
-    private List<TopicTag> convert2TopicTag(List<String> tags) {
-        List<TopicTag> list = new ArrayList<>();
+    private Set<TopicTag> convert2TopicTag(List<String> tags) {
+        Set<TopicTag> list = new LinkedHashSet<>();
         for(String tag: tags) {
             list.add(TopicTag.valueOf(tag));
         }
         return list;
     }
 
-    private List<String> convert2String(List<TopicTag> tags) {
+    private List<String> convert2String(Set<TopicTag> tags) {
         List<String> list = new ArrayList<>();
         for(TopicTag tag: tags) {
             list.add(tag.name());
@@ -763,37 +807,6 @@ public class CloudAPI {
             }
         });
     }
-
-    /*
-    public void getCanOnMic(String userId, String micId, final IReturnCanOnMic iReturnCanOnMic) {
-        AVQuery<AVObject> query = new AVQuery<>(TableName.TABLE_CANONMIC.name);
-        AVObject avMic = AVObject.createWithoutData(TableName.TABLE_MIC.name, micId);
-        AVObject avUser = AVObject.createWithoutData(TableName.TABLE_USER.name, userId);
-        query.whereEqualTo(FieldName.FIELD_USER.name, avUser);
-        query.whereEqualTo(FieldName.FIELD_MIC.name, avMic);
-        query.getFirstInBackground(new GetCallback<AVObject>() {
-            @Override
-            public void done(AVObject object, AVException e) {
-                if (e == null && object != null) {
-                    List<String> prilist = object.getList(FieldName.FIELD_PRIVILEGE.name);
-                    Set<CanOnMic> privileges = new LinkedHashSet<>();
-                    if (prilist != null) {
-                        for (String str : prilist) {
-                            privileges.add(CanOnMic.valueOf(str));
-                        }
-                    } else {
-                        privileges = new LinkedHashSet<CanOnMic>() {
-                            {
-                                add(CanOnMic.PRIVATE);
-                            }
-                        };
-                    }
-                    iReturnCanOnMic.callback(privileges);
-                }
-            }
-        });
-    }
-    */
 
     public void getUsers(List<String> membersId, final IReturnUsers iReturnUsers) {
         AVQuery<AVObject> query = new AVQuery<>(TableName.TABLE_USER.name);

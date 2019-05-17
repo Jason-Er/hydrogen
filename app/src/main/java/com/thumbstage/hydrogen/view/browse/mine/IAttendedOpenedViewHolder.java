@@ -30,6 +30,8 @@ public class IAttendedOpenedViewHolder extends RecyclerView.ViewHolder {
     TextView brief;
     @BindView(R.id.item_browse_topic_avatar)
     ImageView avatar;
+    @BindView(R.id.item_browse_topic_unread)
+    TextView unread;
 
     public IAttendedOpenedViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -47,10 +49,13 @@ public class IAttendedOpenedViewHolder extends RecyclerView.ViewHolder {
         Topic topic = mic.getTopic();
         name.setText(topic.getName());
         brief.setText(topic.getBrief());
+        if(!mic.isHasNew()) {
+            unread.setVisibility(View.GONE);
+        }
         if(topic.getSetting() != null) {
             Glide.with(setting.getContext()).load(topic.getSetting().getUrl()).into(setting);
         }
-        User user = topic.getStarted_by();
+        User user = topic.getSponsor();
         if(user != null) {
             Glide.with(avatar).load(user.getAvatar()).into(avatar);
         }

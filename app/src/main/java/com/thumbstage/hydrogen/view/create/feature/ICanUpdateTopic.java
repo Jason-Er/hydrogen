@@ -2,6 +2,6 @@ package com.thumbstage.hydrogen.view.create.feature;
 
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 
-public interface ICanCreateTopic {
-    void createTopic(IReturnBool iReturnBool);
+public interface ICanUpdateTopic {
+    void updateTopic(IReturnBool iReturnBool);
 }

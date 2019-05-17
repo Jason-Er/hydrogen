@@ -44,11 +44,11 @@ public class PopupWindowAdapter extends BaseAdapter {
         ImageView icon = view.findViewById(R.id.menu_item_icon);
         TextView command = view.findViewById(R.id.menu_item_command);
         icon.setImageResource(item.getResId());
-        command.setText(item.getCommandName().name());
+        command.setText(item.getCanOnTopic().name());
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EventBus.getDefault().post(new HyMenuItemEvent(item.getCommandName()));
+                EventBus.getDefault().post(new HyMenuItemEvent(item.getCanOnTopic()));
             }
         });
         return view;

@@ -8,8 +8,9 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
@@ -19,16 +20,15 @@ import android.view.MenuItem;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.api.IMService;
-import com.thumbstage.hydrogen.event.AtMeEvent;
 import com.thumbstage.hydrogen.event.BrowseItemEvent;
 import com.thumbstage.hydrogen.event.FabEvent;
 import com.thumbstage.hydrogen.event.IMMessageEvent;
 import com.thumbstage.hydrogen.event.IMMicEvent;
 import com.thumbstage.hydrogen.event.NaviViewEvent;
-import com.thumbstage.hydrogen.model.vo.AtMe;
-import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.dto.IMMessage;
-import com.thumbstage.hydrogen.utils.BoUtil;
+import com.thumbstage.hydrogen.model.dto.MicHasNew;
+import com.thumbstage.hydrogen.model.vo.Mic;
+import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.utils.NotificationUtils;
 import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.view.account.AccountActivity;
@@ -36,14 +36,15 @@ import com.thumbstage.hydrogen.view.common.Navigation;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
 import com.thumbstage.hydrogen.view.create.fragment.TopicHandleType;
 import com.thumbstage.hydrogen.view.show.ShowActivity;
-import com.thumbstage.hydrogen.viewmodel.AtMeViewModel;
-import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
+import com.thumbstage.hydrogen.viewmodel.BrowseViewModel;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.NoSubscriberEvent;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -70,9 +71,8 @@ public class BrowseActivity extends AppCompatActivity
     ViewPager viewPager;
     BrowseFragmentPagerAdapter pagerAdapter;
 
-    TopicViewModel topicViewModel;
     UserViewModel userViewModel;
-    AtMeViewModel atMeViewModel;
+    BrowseViewModel browseViewModel;
 
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
@@ -115,8 +115,7 @@ public class BrowseActivity extends AppCompatActivity
 
         AndroidInjection.inject(this);
         userViewModel = ViewModelProviders.of(this, viewModelFactory).get(UserViewModel.class);
-        topicViewModel = ViewModelProviders.of(this, viewModelFactory).get(TopicViewModel.class);
-        atMeViewModel = ViewModelProviders.of(this, viewModelFactory).get(AtMeViewModel.class);
+        browseViewModel = ViewModelProviders.of(this, viewModelFactory).get(BrowseViewModel.class);
 
         pagerAdapter = new BrowseFragmentPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
@@ -130,7 +129,7 @@ public class BrowseActivity extends AppCompatActivity
             public void onPageSelected(int position) {
                 if ( pagerAdapter.getItem(position) instanceof IBrowseCustomize) {
                     ((IBrowseCustomize) pagerAdapter.getItem(position)).customizeToolbar(toolbar);
-                    ((IBrowseCustomize) pagerAdapter.getItem(position)).customizeFab(fab, userViewModel.getCurrentUser().getPrivileges());
+                    ((IBrowseCustomize) pagerAdapter.getItem(position)).customizeFab(fab);
                 } else {
                     // default function
                 }
@@ -185,20 +184,6 @@ public class BrowseActivity extends AppCompatActivity
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onResponseMessageEvent(final AtMeEvent event) {
-        switch (event.getMessage()) {
-            case "click":
-                AtMe atMe = (AtMe) event.getData();
-                Intent intent = new Intent(this, CreateActivity.class);
-                intent.putExtra(Mic.class.getSimpleName(), atMe.getMic().getId());
-                intent.putExtra(TopicHandleType.class.getSimpleName(),
-                        TopicHandleType.CONTINUE.name());
-                startActivity(intent);
-                break;
-        }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onResponseMessageEvent(final BrowseItemEvent event) {
         Mic mic = (Mic) event.getData();
         Intent intent = new Intent();
@@ -206,11 +191,16 @@ public class BrowseActivity extends AppCompatActivity
         switch (event.getMessage()) {
             case "CommunityTopicViewHolder":
                 intent.setClass(this, CreateActivity.class);
-                intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.ATTEND.name());
+                if(mic.getTopic().getSponsor().equals(userViewModel.getCurrentUser())) {
+                    intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.CONTINUE.name());
+                } else {
+                    intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.ATTEND.name());
+                }
                 break;
             case "IAttendedOpenedViewHolder":
                 intent.setClass(this, CreateActivity.class);
                 intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.CONTINUE.name());
+                browseViewModel.micHasNew(new MicHasNew(mic.getId(), false));
                 break;
             case "CommunityShowViewHolder":
             case "IAttendedClosedViewHolder":
@@ -224,16 +214,16 @@ public class BrowseActivity extends AppCompatActivity
     public void onResponseMessageEvent(final IMMicEvent event) {
         if(event.getMessage().equals("onUnreadMessage")) {
             final IMMessage imMessage = (IMMessage) event.getData();
-            topicViewModel.pickUpTopic(imMessage.getMicId()).observe(this, new Observer<Mic>() {
+            browseViewModel.micHasNew(new MicHasNew(imMessage.getMicId(), true));
+            userViewModel.getUser(imMessage.getWhoId()).observe(this, new Observer<User>() {
                 @Override
-                public void onChanged(@Nullable Mic mic) {
-                    AtMe atMe = new AtMe();
-                    atMe.setMic(mic);
-                    atMe.setWhat(imMessage.getWhat());
-                    atMe.setWho(BoUtil.findById(mic.getTopic().getMembers(), imMessage.getWhoId()));
-                    atMe.setMe(userViewModel.getCurrentUser());
-                    atMe.setWhen(imMessage.getWhen());
-                    atMeViewModel.saveAtMe(atMe);
+                public void onChanged(@Nullable User user) {
+                    Intent intent = new Intent(BrowseActivity.this, CreateActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent.putExtra(Mic.class.getSimpleName(), imMessage.getMicId());
+                    intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.CONTINUE.name());
+                    int id = Integer.parseInt(imMessage.getMicId().replaceAll("[^\\d]", "").substring(0,5));
+                    NotificationUtils.showNotification(BrowseActivity.this, user.getName(), imMessage.getWhat(), intent, id);
                 }
             });
         }
@@ -242,12 +232,18 @@ public class BrowseActivity extends AppCompatActivity
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onResponseMessageEvent(final NoSubscriberEvent event) {
         if(event.originalEvent instanceof IMMessageEvent) {
-            Intent intent = new Intent(this, CreateActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            IMMessage imMessage = (IMMessage) ((IMMessageEvent) event.originalEvent).getData();
-            intent.putExtra(Mic.class.getSimpleName(), imMessage.getMicId());
-            intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.CONTINUE.name());
-            NotificationUtils.showNotification(this, "userName", "say what", intent);
+            final IMMessage imMessage = (IMMessage) ((IMMessageEvent) event.originalEvent).getData();
+            userViewModel.getUser(imMessage.getWhoId()).observe(this, new Observer<User>() {
+                @Override
+                public void onChanged(@Nullable User user) {
+                    Intent intent = new Intent(BrowseActivity.this, CreateActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    intent.putExtra(Mic.class.getSimpleName(), imMessage.getMicId());
+                    intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.CONTINUE.name());
+                    int id = Integer.parseInt(imMessage.getMicId().replaceAll("[^\\d]", "").substring(0,5));
+                    NotificationUtils.showNotification(BrowseActivity.this, user.getName(), imMessage.getWhat(), intent, id);
+                }
+            });
         }
     }
 

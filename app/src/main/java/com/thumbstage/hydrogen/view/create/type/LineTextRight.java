@@ -2,11 +2,9 @@ package com.thumbstage.hydrogen.view.create.type;
 
 import com.thumbstage.hydrogen.model.vo.Line;
 
-public class LineTextRight extends Line {
+public class LineTextRight extends LineEx {
+
     public LineTextRight(Line line) {
-        who = line.getWho();
-        when = line.getWhen();
-        what = line.getWhat();
-        lineType = line.getLineType();
+        super(line);
     }
 }

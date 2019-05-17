@@ -58,10 +58,4 @@
         android:src="@drawable/ic_button_plus"
         />
     </LinearLayout>
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/dialog_topic_setting_ok"
-        android:text="@string/button_ok"/>
 </RelativeLayout>

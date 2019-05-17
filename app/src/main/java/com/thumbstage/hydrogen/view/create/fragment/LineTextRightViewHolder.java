@@ -9,6 +9,7 @@ import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.utils.GlideUtil;
 import com.thumbstage.hydrogen.utils.StringUtil;
+import com.thumbstage.hydrogen.view.create.type.LineEx;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,10 +30,14 @@ public class LineTextRightViewHolder extends RecyclerView.ViewHolder {
         ButterKnife.bind(this, itemView);
     }
 
-    public void setLine(Line line) {
+    public void setLine(LineEx line) {
         this.line = line;
         GlideUtil.inject(itemView.getContext(), line.getWho().getAvatar(), avatar);
         content.setText(line.getWhat());
-        time.setText(StringUtil.date2String4Show(line.getWhen()));
+        if(line.isNeedShowTime()) {
+            time.setText(StringUtil.date2String4Show(line.getWhen()));
+        } else {
+            time.setVisibility(View.GONE);
+        }
     }
 }

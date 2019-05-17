@@ -18,6 +18,7 @@ import android.widget.PopupMenu;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.TopicMemberEvent;
+import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.utils.CollectionsUtil;
@@ -39,7 +40,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.support.AndroidSupportInjection;
 
-public class TopicMemberFragment extends Fragment {
+public class TopicMemberFragment extends Fragment implements OnDismiss {
 
     @BindView(R.id.fragment_dialog_member_recycler)
     RecyclerView recyclerView;
@@ -53,12 +54,15 @@ public class TopicMemberFragment extends Fragment {
     TopicViewModel topicViewModel;
     Mic mic;
 
+    boolean somethingChanged;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dialog_topic_member, container, false);
         ButterKnife.bind(this, view);
 
+        somethingChanged = false;
         layoutManager = new GridAutoFitLayoutManager(getContext(), 50);
         recyclerViewAdapter = new TopicMemberAdapter();
         recyclerView.setLayoutManager(layoutManager);
@@ -90,7 +94,9 @@ public class TopicMemberFragment extends Fragment {
                 startActivityForResult(intent, RequestResultCode.SELECT_CONTACT_REQUEST_CODE);
                 break;
             case "Added":
-                popUpMenu(event);
+                if(!event.getUser().equals(userViewModel.getCurrentUser())) {
+                    popUpMenu(event);
+                }
                 break;
         }
     }
@@ -106,6 +112,7 @@ public class TopicMemberFragment extends Fragment {
                     if(!userViewModel.getCurrentUser().equals(event.getUser())) {
                         mic.getTopic().getMembers().remove(event.getUser());
                         recyclerViewAdapter.setUsers(mic.getTopic().getMembers());
+                        somethingChanged = true;
                     }
                 }
                 return false;
@@ -135,6 +142,7 @@ public class TopicMemberFragment extends Fragment {
             memberIds.addAll(userIds);
             CollectionsUtil.removeDuplicate(memberIds);
             showMemberAvatars(memberIds);
+            somethingChanged = true;
         }
     }
 
@@ -150,4 +158,15 @@ public class TopicMemberFragment extends Fragment {
         }
     }
 
+    @Override
+    public void dismiss() {
+        if(somethingChanged) {
+            topicViewModel.updateMembers(new IReturnBool() {
+                @Override
+                public void callback(Boolean isOK) {
+
+                }
+            });
+        }
+    }
 }

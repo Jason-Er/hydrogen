@@ -26,6 +26,8 @@ public class MicEntity {
 
     @ColumnInfo(name = "last_refresh")
     private Date lastRefresh;
+    @ColumnInfo(name = "has_new")
+    private Boolean hasNew = false;
 
 
     @NonNull
@@ -52,5 +54,13 @@ public class MicEntity {
 
     public void setLastRefresh(Date lastRefresh) {
         this.lastRefresh = lastRefresh;
+    }
+
+    public Boolean getHasNew() {
+        return hasNew;
+    }
+
+    public void setHasNew(Boolean hasNew) {
+        this.hasNew = hasNew;
     }
 }

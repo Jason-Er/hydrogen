@@ -21,6 +21,7 @@ import com.linchaolong.android.imagepicker.ImagePicker;
 import com.linchaolong.android.imagepicker.cropper.CropImage;
 import com.linchaolong.android.imagepicker.cropper.CropImageView;
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.Setting;
 import com.thumbstage.hydrogen.utils.GlideUtil;
@@ -33,7 +34,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dagger.android.support.AndroidSupportInjection;
 
-public class TopicInfoFragment extends Fragment {
+public class TopicInfoFragment extends Fragment implements OnDismiss {
 
     @BindView(R.id.dialog_topic_setting_name)
     EditText name;
@@ -48,13 +49,16 @@ public class TopicInfoFragment extends Fragment {
     Mic mic;
 
     ImagePicker imagePicker;
+    boolean basicInfoChanged;
+    boolean settingChanged;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_dialog_topic_info, container, false);
         ButterKnife.bind(this, view);
-
+        basicInfoChanged = false;
+        settingChanged = false;
         name.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -68,6 +72,7 @@ public class TopicInfoFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
+                basicInfoChanged = true;
                 mic.getTopic().setName(name.getText().toString());
             }
         });
@@ -85,6 +90,7 @@ public class TopicInfoFragment extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
+                basicInfoChanged = true;
                 mic.getTopic().setBrief(brief.getText().toString());
             }
         });
@@ -140,6 +146,7 @@ public class TopicInfoFragment extends Fragment {
 
             @Override
             public void onCropImage(Uri imageUri) {
+                settingChanged = true;
                 mic.getTopic().setSetting(new Setting(null, imageUri.getPath(), false));
                 GlideUtil.inject(getContext(), imageUri.toString(), settingPic);
             }
@@ -156,5 +163,25 @@ public class TopicInfoFragment extends Fragment {
                                            int[] grantResults) {
             }
         });
+    }
+
+    @Override
+    public void dismiss() {
+        if(basicInfoChanged) {
+            topicViewModel.updateBasicInfo(new IReturnBool() {
+                @Override
+                public void callback(Boolean isOK) {
+
+                }
+            });
+        }
+        if(settingChanged) {
+            topicViewModel.updateSetting(new IReturnBool() {
+                @Override
+                public void callback(Boolean isOK) {
+
+                }
+            });
+        }
     }
 }

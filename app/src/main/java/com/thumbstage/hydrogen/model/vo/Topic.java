@@ -4,6 +4,7 @@ import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.model.bo.TopicTag;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,11 +15,11 @@ public class Topic implements Cloneable {
     String name;
     String brief;
     Setting setting;
-    User started_by;
+    User sponsor;
     String derive_from; // topic id
     List<Line> dialogue;
     List<User> members;
-    List<TopicTag> tags;
+    Set<TopicTag> tags;
     Map<String, Set<CanOnTopic>> userCan; // current user can
     boolean isFinished;
 
@@ -26,7 +27,7 @@ public class Topic implements Cloneable {
         name = "";
         brief = "";
         derive_from = "";
-        tags = new ArrayList<>();
+        tags = new LinkedHashSet<>();
         dialogue = new ArrayList<>();
         members = new ArrayList<>();
     }
@@ -63,12 +64,12 @@ public class Topic implements Cloneable {
         this.setting = setting;
     }
 
-    public User getStarted_by() {
-        return started_by;
+    public User getSponsor() {
+        return sponsor;
     }
 
-    public void setStarted_by(User started_by) {
-        this.started_by = started_by;
+    public void setSponsor(User sponsor) {
+        this.sponsor = sponsor;
     }
 
     public List<Line> getDialogue() {
@@ -103,11 +104,11 @@ public class Topic implements Cloneable {
         isFinished = finished;
     }
 
-    public List<TopicTag> getTags() {
+    public Set<TopicTag> getTags() {
         return tags;
     }
 
-    public void setTags(List<TopicTag> tags) {
+    public void setTags(Set<TopicTag> tags) {
         this.tags = tags;
     }
 

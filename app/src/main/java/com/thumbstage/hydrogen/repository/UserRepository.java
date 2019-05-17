@@ -5,9 +5,9 @@ import android.arch.lifecycle.MutableLiveData;
 
 import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.database.ModelDB;
-import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnUser;
+import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.utils.StringUtil;
 
 import java.util.Arrays;
@@ -108,6 +108,11 @@ public class UserRepository {
         return modelDB.getUsers(userIds);
     }
 
+    public LiveData<User> getUser(String userId) {
+        refreshUser(userId);
+        return modelDB.getUserLive(userId);
+    }
+
     private void refreshContact(final String userId, final int pageNum) {
         executor.execute(new Runnable() {
             @Override
@@ -124,6 +129,22 @@ public class UserRepository {
                                     modelDB.saveContacts(userId, users);
                                 }
                             });
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    private void refreshUser(final String userId) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                if( modelDB.isUserNeedFresh(userId) ) {
+                    cloudAPI.getUser(userId, new IReturnUser() {
+                        @Override
+                        public void callback(User user) {
+                            modelDB.saveUser(user);
                         }
                     });
                 }

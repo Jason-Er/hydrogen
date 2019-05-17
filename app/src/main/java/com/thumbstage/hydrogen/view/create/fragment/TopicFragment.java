@@ -29,20 +29,21 @@ import com.thumbstage.hydrogen.event.IMMessageEvent;
 import com.thumbstage.hydrogen.event.PopupMenuEvent;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
 import com.thumbstage.hydrogen.model.bo.CanOnTopic;
+import com.thumbstage.hydrogen.model.bo.Privilege;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.dto.IMMessage;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.utils.DensityUtil;
-import com.thumbstage.hydrogen.view.common.HyMenuItem;
+import com.thumbstage.hydrogen.view.create.cases.CaseAttendTopic;
 import com.thumbstage.hydrogen.view.create.cases.CaseBase;
-import com.thumbstage.hydrogen.view.create.cases.CaseContinueTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanAddMember;
 import com.thumbstage.hydrogen.view.create.feature.ICanCloseTopic;
-import com.thumbstage.hydrogen.view.create.feature.ICanCreateTopic;
+import com.thumbstage.hydrogen.view.create.feature.ICanOpenTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanPopupMenu;
 import com.thumbstage.hydrogen.view.create.feature.ICanPublishTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanSetSetting;
+import com.thumbstage.hydrogen.view.create.feature.ICanUpdateTopic;
 import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
 
@@ -52,6 +53,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -84,8 +86,8 @@ public class TopicFragment extends Fragment {
     Map<TopicHandleType, CaseBase> roleMap = new HashMap<TopicHandleType, CaseBase>(){
         {
             put(TopicHandleType.CREATE, new CaseBase());
-            put(TopicHandleType.ATTEND, new CaseBase());
-            put(TopicHandleType.CONTINUE, new CaseContinueTopic());
+            put(TopicHandleType.ATTEND, new CaseAttendTopic());
+            put(TopicHandleType.CONTINUE, new CaseBase());
         }
     };
 
@@ -121,6 +123,7 @@ public class TopicFragment extends Fragment {
                     .setTopicAdapter(topicAdapter)
                     .setBackgroundView(background)
                     .setRecyclerView(recyclerView)
+                    .setSpinner(spinner)
                     .setPopupWindowAdapter(popupWindowAdapter);
         }
 
@@ -164,6 +167,7 @@ public class TopicFragment extends Fragment {
                     public void onChanged(@Nullable Mic mic) {
                         topicAdapter.setMic(mic);
                         spinner.setVisibility(View.GONE);
+                        topicAdapter.getTopic().setUserCan(setupDefaultCanOnTopic(userViewModel.getCurrentUser().getPrivileges()));
                         getActivity().invalidateOptionsMenu();
                     }
                 });
@@ -198,7 +202,27 @@ public class TopicFragment extends Fragment {
                 });
                 break;
         }
+    }
 
+    private Map<String, Set<CanOnTopic>> setupDefaultCanOnTopic(Set<Privilege> userPrivileges) {
+        Map<String, Set<CanOnTopic>> setMap = new HashMap<>();
+        Set<CanOnTopic> onTopics = new LinkedHashSet<>();
+        for(Privilege privilege: userPrivileges) {
+            switch (privilege) {
+                case CREATE_SEMINAR:
+                    onTopics.add(CanOnTopic.PARTICIPANT);
+                    onTopics.add(CanOnTopic.SETUPINFO);
+                    onTopics.add(CanOnTopic.OPEN);
+                    break;
+                case CREATE_TOPIC:
+                    onTopics.add(CanOnTopic.PARTICIPANT);
+                    onTopics.add(CanOnTopic.SETUPINFO);
+                    onTopics.add(CanOnTopic.PUBLISH);
+                    break;
+            }
+        }
+        setMap.put(userViewModel.getCurrentUser().getId(), onTopics);
+        return setMap;
     }
 
     @Override
@@ -237,16 +261,16 @@ public class TopicFragment extends Fragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onResponseMessageEvent(final HyMenuItemEvent event) {
-        switch ((HyMenuItem.CommandType) event.getData()) {
-            case SETTING:
+        switch ((CanOnTopic) event.getData()) {
+            case SETUPINFO:
                 if( currentRole instanceof ICanSetSetting) {
                     ((ICanSetSetting) currentRole).setSetting(this);
                 }
                 popupWindow.dismiss();
                 break;
-            case START:
-                if( currentRole instanceof ICanCreateTopic) {
-                    ((ICanCreateTopic) currentRole).createTopic(new IReturnBool() {
+            case OPEN:
+                if( currentRole instanceof ICanOpenTopic) {
+                    ((ICanOpenTopic) currentRole).openTopic(new IReturnBool() {
                         @Override
                         public void callback(Boolean status) {
 
@@ -277,9 +301,20 @@ public class TopicFragment extends Fragment {
                 }
                 popupWindow.dismiss();
                 break;
-            case MEMBERS:
+            case PARTICIPANT:
                 if(currentRole instanceof ICanAddMember) {
                     ((ICanAddMember) currentRole).addMember(this);
+                }
+                popupWindow.dismiss();
+                break;
+            case UPDATE:
+                if(currentRole instanceof ICanUpdateTopic) {
+                    ((ICanUpdateTopic) currentRole).updateTopic(new IReturnBool() {
+                        @Override
+                        public void callback(Boolean isOK) {
+
+                        }
+                    });
                 }
                 popupWindow.dismiss();
                 break;

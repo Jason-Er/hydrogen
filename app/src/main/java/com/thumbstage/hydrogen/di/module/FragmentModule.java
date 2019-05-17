@@ -4,6 +4,7 @@ package com.thumbstage.hydrogen.di.module;
 import com.thumbstage.hydrogen.view.account.AccountFragment;
 import com.thumbstage.hydrogen.view.account.ContactFragment;
 import com.thumbstage.hydrogen.view.browse.mine.IAttendedClosedFragment;
+import com.thumbstage.hydrogen.view.browse.mine.IAttendedFragment;
 import com.thumbstage.hydrogen.view.browse.mine.IAttendedOpenedFragment;
 import com.thumbstage.hydrogen.view.browse.published.CommunityShowFragment;
 import com.thumbstage.hydrogen.view.browse.published.CommunityTopicFragment;
@@ -26,6 +27,8 @@ public abstract class FragmentModule {
     abstract CommunityTopicFragment contributePublishedOpenedFragment();
     @ContributesAndroidInjector
     abstract CommunityShowFragment contributePublishedClosedFragment();
+    @ContributesAndroidInjector
+    abstract IAttendedFragment contributeIAttendedFragment();
     @ContributesAndroidInjector
     abstract IAttendedOpenedFragment contributeIAttendedOpenedFragment();
     @ContributesAndroidInjector

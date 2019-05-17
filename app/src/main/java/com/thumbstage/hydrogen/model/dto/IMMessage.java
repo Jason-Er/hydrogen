@@ -7,9 +7,11 @@ import java.util.Date;
 public class IMMessage {
     String whoId;
     String what;
+    String meId;
     Date when;
     LineType lineType;
     String micId;
+    boolean isRead;
 
     public String getWhoId() {
         return whoId;
@@ -49,5 +51,21 @@ public class IMMessage {
 
     public void setMicId(String micId) {
         this.micId = micId;
+    }
+
+    public boolean isRead() {
+        return isRead;
+    }
+
+    public void setRead(boolean read) {
+        isRead = read;
+    }
+
+    public String getMeId() {
+        return meId;
+    }
+
+    public void setMeId(String meId) {
+        this.meId = meId;
     }
 }

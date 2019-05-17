@@ -1,5 +1,5 @@
 package com.thumbstage.hydrogen.model.bo;
 
 public enum CanOnTopic {
-    PUBLISH, CLOSE, DELETE, ADD_MEMBER, SETUP_INFO
+    PUBLISH, OPEN, CLOSE, DELETE, PARTICIPANT, SETUPINFO, UPDATE, RECOMMEND
 }

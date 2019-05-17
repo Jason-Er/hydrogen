@@ -1,5 +1,7 @@
 package com.thumbstage.hydrogen.view.browse.mine;
 
+import android.arch.lifecycle.ViewModelProvider;
+import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
@@ -16,13 +18,15 @@ import com.thumbstage.hydrogen.event.FabEvent;
 import com.thumbstage.hydrogen.model.bo.Privilege;
 import com.thumbstage.hydrogen.view.browse.IAdapterFunction;
 import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
+import com.thumbstage.hydrogen.viewmodel.UserViewModel;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.Set;
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.android.support.AndroidSupportInjection;
 
 public class IAttendedFragment extends Fragment implements IBrowseCustomize, IAdapterFunction {
 
@@ -34,6 +38,10 @@ public class IAttendedFragment extends Fragment implements IBrowseCustomize, IAd
     IAttendedFragmentPagerAdapter pagerAdapter;
     Toolbar toolbar;
     FloatingActionButton fab;
+
+    @Inject
+    ViewModelProvider.Factory viewModelFactory;
+    UserViewModel userViewModel;
 
     @Nullable
     @Override
@@ -47,7 +55,15 @@ public class IAttendedFragment extends Fragment implements IBrowseCustomize, IAd
             tabLayout.addTab(tabLayout.newTab().setText(title));
         }
         viewPager.setAdapter(pagerAdapter);
+
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        AndroidSupportInjection.inject(this);
+        userViewModel = ViewModelProviders.of(this, viewModelFactory).get(UserViewModel.class);
     }
 
     // region implement of interface IBrowseCustomize
@@ -61,16 +77,19 @@ public class IAttendedFragment extends Fragment implements IBrowseCustomize, IAd
     }
 
     @Override
-    public void customizeFab(FloatingActionButton fab, Set<Privilege> userPrivileges) {
+    public void customizeFab(FloatingActionButton fab) {
         this.fab = fab;
-        fab.show();
-        fab.setImageResource(R.drawable.ic_button_plus);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EventBus.getDefault().post(new FabEvent("plus"));
-            }
-        });
+        if(userViewModel.getCurrentUser().getPrivileges().contains(Privilege.CREATE_TOPIC) ||
+                userViewModel.getCurrentUser().getPrivileges().contains(Privilege.CREATE_SEMINAR)) {
+            fab.show();
+            fab.setImageResource(R.drawable.ic_button_plus);
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    EventBus.getDefault().post(new FabEvent("plus"));
+                }
+            });
+        }
     }
     // endregion
 

@@ -6,7 +6,6 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.text.TextUtils;
 
-import com.thumbstage.hydrogen.database.entity.AtMeEntity;
 import com.thumbstage.hydrogen.database.entity.ContactEntity;
 import com.thumbstage.hydrogen.database.entity.LineEntity;
 import com.thumbstage.hydrogen.database.entity.MicEntity;
@@ -16,10 +15,10 @@ import com.thumbstage.hydrogen.database.entity.TopicUserCanEntity;
 import com.thumbstage.hydrogen.database.entity.TopicUserEntity;
 import com.thumbstage.hydrogen.database.entity.UserEntity;
 import com.thumbstage.hydrogen.model.bo.CanOnTopic;
-import com.thumbstage.hydrogen.model.bo.TopicTag;
-import com.thumbstage.hydrogen.model.vo.AtMe;
-import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.bo.LineType;
+import com.thumbstage.hydrogen.model.bo.TopicTag;
+import com.thumbstage.hydrogen.model.dto.MicHasNew;
+import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.Setting;
 import com.thumbstage.hydrogen.model.vo.Topic;
@@ -67,6 +66,10 @@ public class ModelDB {
         return database.contractDao().hasContract(userId, getMaxRefreshTime(new Date())) == null;
     }
 
+    public boolean isUserNeedFresh(String userId) {
+        return database.userDao().hasUser(userId, getMaxRefreshTime(new Date())) == null;
+    }
+
     private Date getMaxRefreshTime(Date currentDate){
         Calendar cal = Calendar.getInstance();
         cal.setTime(currentDate);
@@ -79,14 +82,14 @@ public class ModelDB {
         database.runInTransaction(new Runnable() {
             @Override
             public void run() {
-                User user = topic.getStarted_by();
+                User user = topic.getSponsor();
                 saveUser(user);
                 TopicEntity entity = new TopicEntity();
                 entity.setId(topic.getId());
                 entity.setName(topic.getName());
                 entity.setBrief(topic.getBrief());
                 entity.setDerive_from(topic.getDerive_from());
-                entity.setSponsor(topic.getStarted_by().getId());
+                entity.setSponsor(topic.getSponsor().getId());
                 entity.setFinished(topic.isFinished());
                 if( topic.getSetting()!=null ) {
                     entity.setSetting_url(topic.getSetting().getUrl());
@@ -115,7 +118,7 @@ public class ModelDB {
         database.topicUserCanDao().insert(entities);
     }
 
-    private void saveTag(String topicId, List<TopicTag> tags) {
+    private void saveTag(String topicId, Set<TopicTag> tags) {
         List<TopicTagEntity> entities = new ArrayList<>();
         for(TopicTag tag: tags) {
             TopicTagEntity entity = new TopicTagEntity();
@@ -175,33 +178,21 @@ public class ModelDB {
         database.lineDao().insert(lineEntities);
     }
 
-    public void saveAtMe(final AtMe atMe) {
-        database.runInTransaction(new Runnable() {
-            @Override
-            public void run() {
-                saveMic(atMe.getMic());
-                AtMeEntity entity = new AtMeEntity();
-                entity.setMicId(atMe.getMic().getId());
-                entity.setWhen(atMe.getWhen());
-                entity.setWho(atMe.getWho().getId());
-                entity.setWhat(atMe.getWhat());
-                entity.setMe(atMe.getMe().getId());
-                entity.setLastRefresh(new Date());
-                database.atMeDao().insert(entity);
-            }
-        });
-    }
-
     public void saveMic(final Mic mic) {
         database.runInTransaction(new Runnable() {
             @Override
             public void run() {
                 saveTopic(mic.getTopic());
-                MicEntity entity = new MicEntity();
-                entity.setId(mic.getId());
-                entity.setTopicId(mic.getTopic().getId());
-                entity.setLastRefresh(new Date());
-                database.micDao().insert(entity);
+                String id = database.micDao().getItemId(mic.getId());
+                if(id == null) {
+                    MicEntity entity = new MicEntity();
+                    entity.setId(mic.getId());
+                    entity.setTopicId(mic.getTopic().getId());
+                    entity.setLastRefresh(new Date());
+                    database.micDao().insert(entity);
+                } else {
+                    database.micDao().update(mic.getId(), mic.getTopic().getId(), new Date());
+                }
             }
         });
     }
@@ -258,34 +249,6 @@ public class ModelDB {
     // endregion
 
     // region getter
-    private MutableLiveData<List<AtMe>> atMeListLive = new MutableLiveData<>();
-    public LiveData<List<AtMe>> getAtMeByPageNum(String meId, int pageNum) {
-        return Transformations.switchMap(database.atMeDao().get(meId, 15, pageNum * 15), new Function<List<AtMeEntity>, LiveData<List<AtMe>>>() {
-            @Override
-            public LiveData<List<AtMe>> apply(final List<AtMeEntity> input) {
-                executor.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        List<AtMe> list = new ArrayList<>();
-                        for(AtMeEntity entity:input) {
-                            AtMe atMe = new AtMe();
-                            Mic mic = getMic(entity.getMicId());
-                            atMe.setMe(getUser(entity.getMe()));
-                            atMe.setMic(mic);
-                            atMe.setWhat(entity.getWhat());
-                            atMe.setWhen(entity.getWhen());
-                            atMe.setWho(getUser(entity.getWho()));
-                            atMe.setBrowsed(entity.getBrowsed());
-                            list.add(atMe);
-                        }
-                        atMeListLive.postValue(list);
-                    }
-                });
-                return atMeListLive;
-            }
-        });
-    }
-
     private Map<String, MutableLiveData<List<Mic>>> liveDataMap = new HashMap<>();
     public LiveData<List<Mic>> getMic(TopicTag tag, String userId, boolean isFinished, int pageNum) {
 
@@ -341,6 +304,10 @@ public class ModelDB {
         return entity2User(userEntities);
     }
 
+    private User entity2User(UserEntity entity) {
+        return new User(entity.getId(), entity.getName(), entity.getAvatar());
+    }
+
     private List<User> entity2User(List<UserEntity> userEntityList) {
         List<User> users = new ArrayList<>();
         for(UserEntity entity: userEntityList) {
@@ -367,7 +334,16 @@ public class ModelDB {
         });
     }
 
-    public User getUser(String userId) {
+    public LiveData<User> getUserLive(String userId) {
+        return Transformations.map(database.userDao().getLive(userId), new Function<UserEntity, User>() {
+            @Override
+            public User apply(UserEntity input) {
+                return entity2User(input);
+            }
+        });
+    }
+
+    private User getUser(String userId) {
         UserEntity entity = database.userDao().get(userId);
         User user = new User(entity.getId(), entity.getName(), entity.getAvatar());
         return user;
@@ -379,6 +355,7 @@ public class ModelDB {
         Topic topic = getTopic(entity.getTopicId());
         mic.setTopic(topic);
         mic.setId(entity.getId());
+        mic.setHasNew(entity.getHasNew());
         return mic;
     }
 
@@ -402,7 +379,7 @@ public class ModelDB {
         topic.setSetting(new Setting("", entity.getSetting_url(), true));
         topic.setDerive_from(entity.getDerive_from());
         topic.setDialogue(getLine(entity.getId()));
-        topic.setStarted_by(getUser(entity.getSponsor()));
+        topic.setSponsor(getUser(entity.getSponsor()));
         topic.setMembers(getMembers(entity.getId()));
         return topic;
     }
@@ -422,8 +399,8 @@ public class ModelDB {
         return userCans;
     }
 
-    private List<TopicTag> getTags(String topicId) {
-        List<TopicTag> tags = new ArrayList<>();
+    private Set<TopicTag> getTags(String topicId) {
+        Set<TopicTag> tags = new LinkedHashSet<>();
         List<TopicTagEntity> entities = database.topicTagDao().get(topicId);
         for(TopicTagEntity entity: entities) {
             tags.add(TopicTag.valueOf(entity.getTag()));
@@ -442,7 +419,7 @@ public class ModelDB {
             topic.setSetting(new Setting("", entity.getSetting_url(), true));
             topic.setDerive_from(entity.getDerive_from());
             topic.setDialogue(getLine(entity.getId()));
-            topic.setStarted_by(getUser(entity.getSponsor()));
+            topic.setSponsor(getUser(entity.getSponsor()));
             topic.setMembers(getMembers(entity.getId()));
         }
         return topics;
@@ -450,8 +427,8 @@ public class ModelDB {
 
     // endregion
 
-    public void updateAtMe(AtMe atMe) {
-        database.atMeDao().updateAtMe(atMe.getMic().getId(), atMe.getMe().getId(), atMe.isBrowsed()? 1:0, new Date());
+    public void updateMicHasNew(MicHasNew micHasNew) {
+        database.micDao().updateHasNew(micHasNew.getMicId(), micHasNew.isHasNew()? 1:0, new Date());
     }
 
 

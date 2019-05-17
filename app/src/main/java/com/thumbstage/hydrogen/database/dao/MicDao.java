@@ -31,13 +31,22 @@ public interface MicDao {
     @Query("SELECT * FROM mic WHERE id = :id")
     MicEntity get(String id);
 
+    @Query("SELECT id FROM mic WHERE id = :id LIMIT 1")
+    String getItemId(String id);
+
     @Query("SELECT * FROM mic WHERE id IN (:ids)")
     List<MicEntity> get(List<String> ids);
 
     @Query("SELECT * FROM mic WHERE topic_id IN ( SELECT id FROM topic WHERE id IN ( SELECT topic_id FROM topic_tag WHERE tag =:tag) AND is_finished =:isFinished) ORDER BY last_refresh DESC LIMIT :perPageNum OFFSET :offset")
     LiveData<List<MicEntity>> get(String tag, boolean isFinished, int perPageNum,  int offset);
 
-    @Query("SELECT * FROM mic WHERE topic_id IN ( SELECT id FROM topic WHERE id IN ( SELECT topic_id FROM topic_tag WHERE tag =:tag) AND id IN ( SELECT topic_id FROM topic_user WHERE user_id =:userId ) AND is_finished =:isFinished ) ORDER BY last_refresh DESC LIMIT :perPageNum OFFSET :offset")
+    @Query("SELECT * FROM mic WHERE topic_id IN ( SELECT id FROM topic WHERE id IN ( SELECT topic_id FROM topic_tag WHERE tag =:tag) AND id IN ( SELECT topic_id FROM topic_user WHERE user_id =:userId ) AND is_finished =:isFinished ) ORDER BY has_new DESC, last_refresh DESC LIMIT :perPageNum OFFSET :offset")
     LiveData<List<MicEntity>> get(String tag, String userId, boolean isFinished, int perPageNum, int offset);
+
+    @Query("UPDATE mic SET topic_id =:topicId, last_refresh =:lastFresh WHERE id =:id")
+    void update(String id, String topicId, Date lastFresh);
+
+    @Query("UPDATE mic SET has_new =:hasNew, last_refresh =:lastRefresh WHERE id = :micId")
+    void updateHasNew(String micId, int hasNew, Date lastRefresh);
 
 }

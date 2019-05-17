@@ -4,6 +4,7 @@ import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
 
 import com.thumbstage.hydrogen.model.bo.TopicTag;
+import com.thumbstage.hydrogen.model.dto.MicHasNew;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.repository.TopicRepository;
 import com.thumbstage.hydrogen.repository.UserRepository;
@@ -45,4 +46,7 @@ public class BrowseViewModel extends ViewModel {
         return topicRepository.getMic(TopicTag.SELECTED, "", true, pageNum);
     }
 
+    public void micHasNew(MicHasNew hasNew) {
+        topicRepository.micHasNew(hasNew);
+    }
 }

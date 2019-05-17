@@ -1,8 +1,11 @@
 package com.thumbstage.hydrogen.view.create;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NavUtils;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 
@@ -45,12 +48,16 @@ public class CreateActivity extends AppCompatActivity implements HasSupportFragm
 
     @Override
     public boolean onSupportNavigateUp() {
-        finish();
-        return super.onSupportNavigateUp();
+        Intent upIntent = NavUtils.getParentActivityIntent(this);
+        if( NavUtils.shouldUpRecreateTask(this, upIntent) || isTaskRoot()) {
+            TaskStackBuilder.create(this)
+                    .addNextIntentWithParentStack(upIntent)
+                    .startActivities();
+        } else {
+            finish();
+            NavUtils.navigateUpTo(this, upIntent);
+        }
+        return true;
     }
 
-    public void navigateUp() {
-        finish();
-        super.onSupportNavigateUp();
-    }
 }
