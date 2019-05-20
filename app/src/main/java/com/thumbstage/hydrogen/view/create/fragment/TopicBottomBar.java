@@ -2,6 +2,9 @@ package com.thumbstage.hydrogen.view.create.fragment;
 
 import android.content.Context;
 import android.os.Handler;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -11,13 +14,17 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.event.LineTypeEvent;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
 import com.thumbstage.hydrogen.model.bo.LineType;
 import com.thumbstage.hydrogen.model.vo.Line;
+import com.thumbstage.hydrogen.utils.DensityUtil;
 import com.thumbstage.hydrogen.utils.PathUtils;
 import com.thumbstage.hydrogen.utils.SoftInputUtils;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.Date;
 
@@ -37,6 +44,8 @@ public class TopicBottomBar extends LinearLayout {
     View keyboardBtn;
     @BindView(R.id.input_bar_btn_record)
     VoiceRecordButton recordBtn;
+    @BindView(R.id.input_bar_btn_type)
+    RecyclerView recyclerView;
 
     /**
      * 最小间隔时间为 1 秒，避免多次点击
@@ -46,12 +55,21 @@ public class TopicBottomBar extends LinearLayout {
     public TopicBottomBar(Context context, AttributeSet attrs) {
         super(context, attrs);
         View.inflate(context, R.layout.layout_topic_bottom_bar, this);
+
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         ButterKnife.bind(this);
+
+        WheelNutLayoutManager layoutManager = new WheelNutLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(new LineTypeAdapter());
+        int padding = DensityUtil.dp2px(getContext(), 50) / 2 - DensityUtil.dp2px(getContext(), 30) / 2;
+        recyclerView.setPadding(0,padding, 0, padding);
+        LinearSnapHelper linearSnapHelper = new LinearSnapHelper();
+        linearSnapHelper.attachToRecyclerView(recyclerView);
 
         setEditTextChangeListener();
         initRecordBtn();
@@ -64,12 +82,29 @@ public class TopicBottomBar extends LinearLayout {
         });
     }
 
-    /**
-     * 加号 Button
-     */
-    @OnClick(R.id.input_bar_btn_action)
-    public void actionBtn(View view) {
-        SoftInputUtils.hideSoftInput(getContext(), contentEditText);
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onResponseMessageEvent(final LineTypeEvent event) {
+        switch (event.getMessage()) {
+            case "click":
+                int position = recyclerView.getChildLayoutPosition((View)event.getData());
+                if(position==0)
+                    recyclerView.smoothScrollToPosition(1);
+                else
+                    recyclerView.smoothScrollToPosition(0);
+                break;
+        }
     }
 
     @OnClick(R.id.input_bar_btn_send_text)

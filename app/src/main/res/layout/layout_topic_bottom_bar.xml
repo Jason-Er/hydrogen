@@ -15,18 +15,13 @@
         android:minHeight="@dimen/hy_bottom_bar_height"
         android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/input_bar_btn_type"
+            android:layout_width="@dimen/hy_bottom_bar_button_size"
             android:layout_height="match_parent"
-            android:gravity="center_vertical">
-
-            <Button
-                android:id="@+id/input_bar_btn_action"
-                android:layout_width="@dimen/hy_bottom_bar_button_size"
-                android:layout_height="@dimen/hy_bottom_bar_button_size"
-                android:layout_marginLeft="3dp"
-                android:background="@drawable/hy_bottom_bar_action_button_bg"/>
-        </LinearLayout>
+            android:layout_marginLeft="3dp"
+            android:clipToPadding="false"
+            android:gravity="center_vertical"/>
 
         <include layout="@layout/layout_topic_bottom_bar_text"/>
     </LinearLayout>
