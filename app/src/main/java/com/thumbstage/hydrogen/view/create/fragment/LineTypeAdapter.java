@@ -23,8 +23,8 @@ public class LineTypeAdapter extends RecyclerView.Adapter{
 
     List<LineType> items = new ArrayList(){
         {
-            add(LineType.LT_DIRECTION);
             add(LineType.LT_DIALOGUE);
+            add(LineType.LT_DIRECTION);
         }};
 
     class ItemViewHolder extends RecyclerView.ViewHolder {
@@ -64,5 +64,9 @@ public class LineTypeAdapter extends RecyclerView.Adapter{
     @Override
     public int getItemCount() {
         return items.size();
+    }
+
+    public LineType getLineType(int index) {
+        return items.get(index);
     }
 }

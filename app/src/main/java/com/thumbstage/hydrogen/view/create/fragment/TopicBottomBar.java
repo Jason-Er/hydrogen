@@ -2,7 +2,6 @@ package com.thumbstage.hydrogen.view.create.fragment;
 
 import android.content.Context;
 import android.os.Handler;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -47,6 +46,8 @@ public class TopicBottomBar extends LinearLayout {
     @BindView(R.id.input_bar_btn_type)
     RecyclerView recyclerView;
 
+    LineTypeAdapter lineTypeAdapter;
+    SliderLayoutManager layoutManager;
     /**
      * 最小间隔时间为 1 秒，避免多次点击
      */
@@ -63,9 +64,10 @@ public class TopicBottomBar extends LinearLayout {
         super.onFinishInflate();
         ButterKnife.bind(this);
 
-        WheelNutLayoutManager layoutManager = new WheelNutLayoutManager(getContext());
+        layoutManager = new SliderLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(new LineTypeAdapter());
+        lineTypeAdapter = new LineTypeAdapter();
+        recyclerView.setAdapter(lineTypeAdapter);
         int padding = DensityUtil.dp2px(getContext(), 50) / 2 - DensityUtil.dp2px(getContext(), 30) / 2;
         recyclerView.setPadding(0,padding, 0, padding);
         LinearSnapHelper linearSnapHelper = new LinearSnapHelper();
@@ -114,6 +116,8 @@ public class TopicBottomBar extends LinearLayout {
             // Toast.makeText(getContext(), cn.leancloud.chatkit.R.string.lcim_message_is_null, Toast.LENGTH_SHORT).show();
             return;
         }
+        int position = layoutManager.getPosition();
+        LineType lineType = lineTypeAdapter.getLineType(position);
 
         contentEditText.setText("");
         new Handler().postDelayed(new Runnable() {
@@ -123,7 +127,7 @@ public class TopicBottomBar extends LinearLayout {
             }
         }, MIN_INTERVAL_SEND_MESSAGE);
 
-        Line line = new Line(null, new Date(), content, LineType.LT_DIALOGUE);
+        Line line = new Line(null, new Date(), content, lineType);
         EventBus.getDefault().post(
                 new TopicBottomBarEvent(line, "text"));
     }
