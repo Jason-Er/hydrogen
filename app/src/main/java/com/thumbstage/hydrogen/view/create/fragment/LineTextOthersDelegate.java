@@ -7,16 +7,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.model.vo.Line;
-import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.view.common.IAdapterDelegate;
+import com.thumbstage.hydrogen.view.create.type.LineEx;
+import com.thumbstage.hydrogen.view.create.type.LineTextMine;
+import com.thumbstage.hydrogen.view.create.type.LineTextOthers;
 
 import java.util.List;
 
-public class LineTextCenterDelegate implements IAdapterDelegate<List> {
+public class LineTextOthersDelegate implements IAdapterDelegate<List> {
     private int viewType;
 
-    public LineTextCenterDelegate(int viewType) {
+    public LineTextOthersDelegate(int viewType) {
         this.viewType = viewType;
     }
 
@@ -28,10 +29,9 @@ public class LineTextCenterDelegate implements IAdapterDelegate<List> {
     @Override
     public boolean isForViewType(@NonNull List items, int position) {
         boolean status = false;
-        if( items.get(position) instanceof Line ) {
-            if( !StringUtil.isUrl(((Line)items.get(position)).getWhat()) ) {
-                status = false;
-            }
+        Object object = items.get(position);
+        if( object instanceof LineTextOthers) {
+            status = true;
         }
         return status;
     }
@@ -40,12 +40,14 @@ public class LineTextCenterDelegate implements IAdapterDelegate<List> {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_topic_browse, parent, false);
-        return new LineTextLeftViewHolder(view);
+                .inflate(R.layout.item_line_left_layout, parent, false);
+        ViewGroup contentContainer = view.findViewById(R.id.item_line_left_layout_content);
+        View.inflate(view.getContext(), R.layout.item_line_left_text, contentContainer);
+        return new LineTextOthersViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull List items, int position, @NonNull RecyclerView.ViewHolder holder) {
-
+        ((LineTextOthersViewHolder)holder).setLine((LineEx) items.get(position));
     }
 }

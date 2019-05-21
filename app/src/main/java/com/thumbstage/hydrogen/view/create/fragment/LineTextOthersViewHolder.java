@@ -21,7 +21,7 @@ import org.greenrobot.eventbus.EventBus;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class LineTextLeftViewHolder extends RecyclerView.ViewHolder {
+public class LineTextOthersViewHolder extends RecyclerView.ViewHolder {
 
     Line line;
 
@@ -33,7 +33,7 @@ public class LineTextLeftViewHolder extends RecyclerView.ViewHolder {
     TextView content;
 
 
-    public LineTextLeftViewHolder(View itemView) {
+    public LineTextOthersViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
         avatar.setOnClickListener(new View.OnClickListener() {
