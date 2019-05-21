@@ -94,6 +94,7 @@ public class ModelDB {
                 if( topic.getSetting()!=null ) {
                     entity.setSetting_url(topic.getSetting().getUrl());
                 }
+                entity.setUpdateAt(topic.getUpdateAt());
                 entity.setLastRefresh(new Date());
                 database.topicDao().insert(entity);
                 saveTag(topic.getId(), topic.getTags());
@@ -188,6 +189,7 @@ public class ModelDB {
                     MicEntity entity = new MicEntity();
                     entity.setId(mic.getId());
                     entity.setTopicId(mic.getTopic().getId());
+                    entity.setUpdateAt(mic.getUpdateAt());
                     entity.setLastRefresh(new Date());
                     database.micDao().insert(entity);
                 } else {

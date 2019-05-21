@@ -2,9 +2,8 @@ package com.thumbstage.hydrogen.view.create.type;
 
 import com.thumbstage.hydrogen.model.vo.Line;
 
-public class LineTextRight extends LineEx {
-
-    public LineTextRight(Line line) {
+public class LineTextOthers extends LineEx {
+    public LineTextOthers(Line line) {
         super(line);
     }
 }

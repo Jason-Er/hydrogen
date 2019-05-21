@@ -8,8 +8,9 @@ import com.thumbstage.hydrogen.model.vo.Topic;
 import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.view.common.ListDelegationAdapter;
 import com.thumbstage.hydrogen.view.create.type.LineEx;
-import com.thumbstage.hydrogen.view.create.type.LineTextLeft;
-import com.thumbstage.hydrogen.view.create.type.LineTextRight;
+import com.thumbstage.hydrogen.view.create.type.LineTextDirection;
+import com.thumbstage.hydrogen.view.create.type.LineTextMine;
+import com.thumbstage.hydrogen.view.create.type.LineTextOthers;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,9 +26,9 @@ public class TopicAdapter extends ListDelegationAdapter {
     }
 
     public TopicAdapter() {
-        delegatesManager.addDelegate(new LineTextLeftDelegate(view_type.LINE_TEXT_LEFT.ordinal()));
-        delegatesManager.addDelegate(new LineTextRightDelegate(view_type.LINE_TEXT_RIGHT.ordinal()));
-        delegatesManager.addDelegate(new LineTextCenterDelegate(view_type.LINE_TEXT_CENTER.ordinal()));
+        delegatesManager.addDelegate(new LineTextOthersDelegate(view_type.LINE_TEXT_LEFT.ordinal()));
+        delegatesManager.addDelegate(new LineTextMineDelegate(view_type.LINE_TEXT_RIGHT.ordinal()));
+        delegatesManager.addDelegate(new LineTextDirectionDelegate(view_type.LINE_TEXT_CENTER.ordinal()));
     }
 
     public void setMic(Mic mic) {
@@ -100,14 +101,25 @@ public class TopicAdapter extends ListDelegationAdapter {
 
     private LineEx generateLine(Line line) {
         LineEx local = null;
-        if( !URLUtil.isValidUrl(line.getWhat()) ) {
-            if(!line.getWho().equals(user)) {
-                local = new LineTextLeft(line);
-            } else {
-                local = new LineTextRight(line);
-            }
-        } else {
+        switch (line.getLineType()) {
+            case LT_DIRECTION:
+                if( !URLUtil.isValidUrl(line.getWhat()) ) {
+                    local = new LineTextDirection(line);
+                } else {// voice then
 
+                }
+                break;
+            case LT_DIALOGUE:
+                if( !URLUtil.isValidUrl(line.getWhat()) ) {
+                    if(!line.getWho().equals(user)) {
+                        local = new LineTextOthers(line);
+                    } else {
+                        local = new LineTextMine(line);
+                    }
+                } else {// voice then
+
+                }
+                break;
         }
         return local;
     }

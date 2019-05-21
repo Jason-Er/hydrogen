@@ -7,17 +7,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.view.common.IAdapterDelegate;
 import com.thumbstage.hydrogen.view.create.type.LineEx;
-import com.thumbstage.hydrogen.view.create.type.LineTextRight;
+import com.thumbstage.hydrogen.view.create.type.LineTextMine;
+import com.thumbstage.hydrogen.view.create.type.LineTextOthers;
 
 import java.util.List;
 
-public class LineTextRightDelegate implements IAdapterDelegate<List> {
+public class LineTextMineDelegate implements IAdapterDelegate<List> {
     private int viewType;
 
-    public LineTextRightDelegate(int viewType) {
+    public LineTextMineDelegate(int viewType) {
         this.viewType = viewType;
     }
 
@@ -30,7 +30,7 @@ public class LineTextRightDelegate implements IAdapterDelegate<List> {
     public boolean isForViewType(@NonNull List items, int position) {
         boolean status = false;
         Object object = items.get(position);
-        if( object instanceof LineTextRight) {
+        if( object instanceof LineTextMine) {
             status = true;
         }
         return status;
@@ -43,11 +43,11 @@ public class LineTextRightDelegate implements IAdapterDelegate<List> {
                 .inflate(R.layout.item_line_right_layout, parent, false);
         ViewGroup contentContainer = view.findViewById(R.id.item_line_right_layout_content);
         View.inflate(view.getContext(), R.layout.item_line_right_text, contentContainer);
-        return new LineTextRightViewHolder(view);
+        return new LineTextMineViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull List items, int position, @NonNull RecyclerView.ViewHolder holder) {
-        ((LineTextRightViewHolder)holder).setLine((LineEx) items.get(position));
+        ((LineTextMineViewHolder)holder).setLine((LineEx) items.get(position));
     }
 }

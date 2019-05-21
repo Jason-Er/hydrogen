@@ -6,19 +6,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
 import com.thumbstage.hydrogen.model.bo.CanOnTopic;
-import com.thumbstage.hydrogen.model.bo.HyFile;
 import com.thumbstage.hydrogen.model.bo.TopicTag;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
-import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
-import com.thumbstage.hydrogen.model.vo.Setting;
 import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.view.common.HyMenuItem;
 import com.thumbstage.hydrogen.view.common.RequestResultCode;
@@ -35,9 +33,9 @@ import com.thumbstage.hydrogen.view.create.fragment.PopupWindowAdapter;
 import com.thumbstage.hydrogen.view.create.fragment.TopicAdapter;
 import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -136,17 +134,43 @@ public class CaseBase implements ITopicFragmentFunction,
     }
 
     @Override
-    public void publishTopic(IReturnBool iReturnBool) {
+    public void publishTopic(final IReturnBool iReturnBool) {
         Log.i(TAG, "publishTopic");
         topicAdapter.getTopic().setTags(new HashSet<TopicTag>(){{add(TopicTag.LITERAL);}});
-        saveOrUpdate(topicAdapter.getMic(), topicViewModel, iReturnBool);
+        spinner.setVisibility(View.VISIBLE);
+        saveOrUpdate(topicAdapter.getMic(), topicViewModel, new IReturnBool() {
+            @Override
+            public void callback(Boolean isOK) {
+                if(isOK) {
+                    popupWindowAdapter.removeItem(publishItem);
+                    popupWindowAdapter.removeItem(openItem);
+                    iReturnBool.callback(true);
+                } else {
+                    iReturnBool.callback(false);
+                }
+                spinner.setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override
-    public void openTopic(IReturnBool iReturnBool) {
+    public void openTopic(final IReturnBool iReturnBool) {
         Log.i(TAG, "openTopic");
         topicAdapter.getTopic().setTags(new HashSet<TopicTag>(){{add(TopicTag.SEMINAR);}});
-        saveOrUpdate(topicAdapter.getMic(), topicViewModel, iReturnBool);
+        spinner.setVisibility(View.VISIBLE);
+        saveOrUpdate(topicAdapter.getMic(), topicViewModel, new IReturnBool() {
+            @Override
+            public void callback(Boolean isOK) {
+                if(isOK) {
+                    popupWindowAdapter.removeItem(publishItem);
+                    popupWindowAdapter.removeItem(openItem);
+                    iReturnBool.callback(true);
+                } else {
+                    iReturnBool.callback(false);
+                }
+                spinner.setVisibility(View.GONE);
+            }
+        });
     }
 
     void copyTopic(IReturnBool iReturnBool) {
@@ -156,9 +180,21 @@ public class CaseBase implements ITopicFragmentFunction,
     }
 
     @Override
-    public void closeTopic(IReturnBool iReturnBool) {
+    public void closeTopic(final IReturnBool iReturnBool) {
         topicAdapter.getTopic().setFinished(true);
-        topicViewModel.closeTheTopic(iReturnBool);
+        spinner.setVisibility(View.VISIBLE);
+        topicViewModel.closeTheTopic(new IReturnBool() {
+            @Override
+            public void callback(Boolean isOK) {
+                if(isOK) {
+                    popupWindowAdapter.removeItem(closeItem);
+                    iReturnBool.callback(true);
+                } else {
+                    iReturnBool.callback(false);
+                }
+                spinner.setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override
@@ -167,6 +203,8 @@ public class CaseBase implements ITopicFragmentFunction,
     }
 
     private void saveOrUpdate(final Mic mic, final TopicViewModel topicViewModel, final IReturnBool iReturnBool) {
+        topicAdapter.getMic().setUpdateAt(new Date());
+        topicAdapter.getMic().getTopic().setUpdateAt(new Date());
         if(TextUtils.isEmpty(mic.getId())) {
             topicViewModel.createTheTopic(iReturnBool);
         } else {
@@ -209,13 +247,19 @@ public class CaseBase implements ITopicFragmentFunction,
             for(CanOnTopic can: userCan) {
                 switch (can) {
                     case PUBLISH:
-                        itemList.add(publishItem);
+                        if(!topicAdapter.getTopic().getTags().contains(TopicTag.LITERAL)) {
+                            itemList.add(publishItem);
+                        }
                         break;
                     case OPEN:
-                        itemList.add(openItem);
+                        if(!topicAdapter.getTopic().getTags().contains(TopicTag.SEMINAR)) {
+                            itemList.add(openItem);
+                        }
                         break;
                     case CLOSE:
-                        itemList.add(closeItem);
+                        if(!topicAdapter.getTopic().isFinished()) {
+                            itemList.add(closeItem);
+                        }
                         break;
                     case DELETE:
                         break;

@@ -24,6 +24,8 @@ public class MicEntity {
     @ColumnInfo(name = "topic_id")
     private String topicId;
 
+    @ColumnInfo(name = "update_at")
+    private Date updateAt;
     @ColumnInfo(name = "last_refresh")
     private Date lastRefresh;
     @ColumnInfo(name = "has_new")
@@ -62,5 +64,13 @@ public class MicEntity {
 
     public void setHasNew(Boolean hasNew) {
         this.hasNew = hasNew;
+    }
+
+    public Date getUpdateAt() {
+        return updateAt;
+    }
+
+    public void setUpdateAt(Date updateAt) {
+        this.updateAt = updateAt;
     }
 }

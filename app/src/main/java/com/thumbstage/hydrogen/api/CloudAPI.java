@@ -503,6 +503,7 @@ public class CloudAPI {
         avTopicQuery.whereEqualTo(FieldName.FIELD_TAG.name, tag.name());
         avTopicQuery.whereEqualTo(FieldName.FIELD_IS_FINISHED.name, isFinished);
         avQuery.whereMatchesQuery(FieldName.FIELD_TOPIC.name, avTopicQuery);
+        avQuery.orderByDescending(FieldName.FIELD_UPDATE_AT.name);
         avQuery.limit(15);
         avQuery.skip(0);
         avQuery.findInBackground(new FindCallback<AVObject>() {
@@ -518,6 +519,7 @@ public class CloudAPI {
                                 Mic mic = new Mic();
                                 mic.setId(avObject.getObjectId());
                                 mic.setTopic(topic);
+                                mic.setUpdateAt(avObject.getUpdatedAt());
                                 mices.add(mic);
                                 iReturnMicList.callback(mices);
                             }
@@ -613,7 +615,7 @@ public class CloudAPI {
 
     public void getContact(String userId, int pageNum, final IReturnUsers iReturnUsers) {
         AVQuery<AVObject> avQuery = new AVQuery<>(TableName.TABLE_CONTACT.name);
-        avQuery.orderByDescending(FieldName.FIELD_CREATEDAT.name);
+        avQuery.orderByDescending(FieldName.FIELD_CREATED_AT.name);
         avQuery.include(FieldName.FIELD_CONTACT.name);
         AVObject avWho = AVObject.createWithoutData(TableName.TABLE_USER.name, userId);
         avQuery.whereEqualTo(FieldName.FIELD_WHO.name, avWho);
@@ -710,6 +712,7 @@ public class CloudAPI {
                             userCans.put((String) key, cans);
                         }
                     }
+                    Date lastRefresh = avTopic.getUpdatedAt();
 
                     Topic topic = new Topic();
                     topic.setTags(convert2TopicTag(tags));
@@ -722,6 +725,7 @@ public class CloudAPI {
                     topic.setSponsor(user);
                     topic.setSetting(setting);
                     topic.setFinished(isFinished);
+                    topic.setUpdateAt(lastRefresh);
                     iReturnTopic.callback(topic);
                 }
             });
