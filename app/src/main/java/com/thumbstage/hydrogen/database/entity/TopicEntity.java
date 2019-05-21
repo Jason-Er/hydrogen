@@ -35,6 +35,9 @@ public class TopicEntity {
     @ColumnInfo(name = "is_finished")
     private Boolean isFinished = false;
 
+    @ColumnInfo(name = "update_at")
+    private Date updateAt;
+
     @ColumnInfo(name = "last_refresh")
     private Date lastRefresh;
 
@@ -103,5 +106,13 @@ public class TopicEntity {
 
     public void setFinished(Boolean finished) {
         isFinished = finished;
+    }
+
+    public Date getUpdateAt() {
+        return updateAt;
+    }
+
+    public void setUpdateAt(Date updateAt) {
+        this.updateAt = updateAt;
     }
 }

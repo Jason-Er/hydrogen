@@ -6,7 +6,7 @@ public class Mic implements Cloneable {
     String id; // conversation id
     Topic topic;
     boolean hasNew;
-    Date lastRefresh;
+    Date updateAt;
 
     public Mic() {
         topic = new Topic();
@@ -37,12 +37,12 @@ public class Mic implements Cloneable {
         this.hasNew = hasNew;
     }
 
-    public Date getLastRefresh() {
-        return lastRefresh;
+    public Date getUpdateAt() {
+        return updateAt;
     }
 
-    public void setLastRefresh(Date lastRefresh) {
-        this.lastRefresh = lastRefresh;
+    public void setUpdateAt(Date updateAt) {
+        this.updateAt = updateAt;
     }
 
     // endregion

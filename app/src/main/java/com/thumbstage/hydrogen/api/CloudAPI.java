@@ -518,7 +518,7 @@ public class CloudAPI {
                                 Mic mic = new Mic();
                                 mic.setId(avObject.getObjectId());
                                 mic.setTopic(topic);
-                                mic.setLastRefresh(avObject.getUpdatedAt());
+                                mic.setUpdateAt(avObject.getUpdatedAt());
                                 mices.add(mic);
                                 iReturnMicList.callback(mices);
                             }
@@ -724,7 +724,7 @@ public class CloudAPI {
                     topic.setSponsor(user);
                     topic.setSetting(setting);
                     topic.setFinished(isFinished);
-                    topic.setLastRefresh(lastRefresh);
+                    topic.setUpdateAt(lastRefresh);
                     iReturnTopic.callback(topic);
                 }
             });

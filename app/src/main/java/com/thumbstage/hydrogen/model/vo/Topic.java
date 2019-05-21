@@ -22,7 +22,7 @@ public class Topic implements Cloneable {
     List<User> members;
     Set<TopicTag> tags;
     Map<String, Set<CanOnTopic>> userCan; // current user can
-    Date lastRefresh;
+    Date updateAt;
     boolean isFinished;
 
     public Topic() {
@@ -122,12 +122,12 @@ public class Topic implements Cloneable {
         this.userCan = userCan;
     }
 
-    public Date getLastRefresh() {
-        return lastRefresh;
+    public Date getUpdateAt() {
+        return updateAt;
     }
 
-    public void setLastRefresh(Date lastRefresh) {
-        this.lastRefresh = lastRefresh;
+    public void setUpdateAt(Date updateAt) {
+        this.updateAt = updateAt;
     }
 
     @Override
