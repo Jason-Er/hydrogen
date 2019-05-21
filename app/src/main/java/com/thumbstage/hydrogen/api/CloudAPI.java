@@ -518,6 +518,7 @@ public class CloudAPI {
                                 Mic mic = new Mic();
                                 mic.setId(avObject.getObjectId());
                                 mic.setTopic(topic);
+                                mic.setLastRefresh(avObject.getUpdatedAt());
                                 mices.add(mic);
                                 iReturnMicList.callback(mices);
                             }
@@ -710,6 +711,7 @@ public class CloudAPI {
                             userCans.put((String) key, cans);
                         }
                     }
+                    Date lastRefresh = avTopic.getUpdatedAt();
 
                     Topic topic = new Topic();
                     topic.setTags(convert2TopicTag(tags));
@@ -722,6 +724,7 @@ public class CloudAPI {
                     topic.setSponsor(user);
                     topic.setSetting(setting);
                     topic.setFinished(isFinished);
+                    topic.setLastRefresh(lastRefresh);
                     iReturnTopic.callback(topic);
                 }
             });

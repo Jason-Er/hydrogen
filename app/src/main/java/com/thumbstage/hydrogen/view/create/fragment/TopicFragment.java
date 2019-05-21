@@ -192,7 +192,9 @@ public class TopicFragment extends Fragment {
                     @Override
                     public void onChanged(@Nullable Mic mic) {
                         topicAdapter.setMic(mic);
-                        recyclerView.smoothScrollToPosition(topicAdapter.getItemCount()-1);
+                        if( topicAdapter.getItemCount() > 0 ) {
+                            recyclerView.smoothScrollToPosition(topicAdapter.getItemCount() - 1);
+                        }
                         if(mic.getTopic().getSetting() != null) {
                             Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
                         }

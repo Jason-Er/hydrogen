@@ -1,9 +1,12 @@
 package com.thumbstage.hydrogen.model.vo;
 
+import java.util.Date;
+
 public class Mic implements Cloneable {
     String id; // conversation id
     Topic topic;
     boolean hasNew;
+    Date lastRefresh;
 
     public Mic() {
         topic = new Topic();
@@ -32,6 +35,14 @@ public class Mic implements Cloneable {
 
     public void setHasNew(boolean hasNew) {
         this.hasNew = hasNew;
+    }
+
+    public Date getLastRefresh() {
+        return lastRefresh;
+    }
+
+    public void setLastRefresh(Date lastRefresh) {
+        this.lastRefresh = lastRefresh;
     }
 
     // endregion

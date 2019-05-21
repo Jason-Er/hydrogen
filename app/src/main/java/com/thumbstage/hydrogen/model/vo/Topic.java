@@ -4,6 +4,7 @@ import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.model.bo.TopicTag;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ public class Topic implements Cloneable {
     List<User> members;
     Set<TopicTag> tags;
     Map<String, Set<CanOnTopic>> userCan; // current user can
+    Date lastRefresh;
     boolean isFinished;
 
     public Topic() {
@@ -118,6 +120,14 @@ public class Topic implements Cloneable {
 
     public void setUserCan(Map<String, Set<CanOnTopic>> userCan) {
         this.userCan = userCan;
+    }
+
+    public Date getLastRefresh() {
+        return lastRefresh;
+    }
+
+    public void setLastRefresh(Date lastRefresh) {
+        this.lastRefresh = lastRefresh;
     }
 
     @Override

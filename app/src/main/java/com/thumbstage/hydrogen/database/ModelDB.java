@@ -94,7 +94,7 @@ public class ModelDB {
                 if( topic.getSetting()!=null ) {
                     entity.setSetting_url(topic.getSetting().getUrl());
                 }
-                entity.setLastRefresh(new Date());
+                entity.setLastRefresh(topic.getLastRefresh());
                 database.topicDao().insert(entity);
                 saveTag(topic.getId(), topic.getTags());
                 saveUserCan(topic.getId(),topic.getUserCan());
@@ -188,7 +188,7 @@ public class ModelDB {
                     MicEntity entity = new MicEntity();
                     entity.setId(mic.getId());
                     entity.setTopicId(mic.getTopic().getId());
-                    entity.setLastRefresh(new Date());
+                    entity.setLastRefresh(mic.getLastRefresh());
                     database.micDao().insert(entity);
                 } else {
                     database.micDao().update(mic.getId(), mic.getTopic().getId(), new Date());
