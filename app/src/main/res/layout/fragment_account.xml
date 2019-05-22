@@ -51,4 +51,9 @@
         android:text="@string/sign_out"
         android:theme="@style/PrimaryButton"/>
 
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        layout="@layout/layout_loading_spinner"/>
 </RelativeLayout>

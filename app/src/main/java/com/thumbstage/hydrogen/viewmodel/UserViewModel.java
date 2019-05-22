@@ -2,7 +2,9 @@ package com.thumbstage.hydrogen.viewmodel;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.ViewModel;
+import android.net.Uri;
 
+import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.repository.UserRepository;
 
@@ -52,5 +54,9 @@ public class UserViewModel extends ViewModel {
 
     public void addContact(User user) {
         userRepository.addContact(user);
+    }
+
+    public void updateUserAvatar(Uri imageUri, IReturnBool iReturnBool) {
+        userRepository.updateUserAvatar(imageUri, iReturnBool);
     }
 }

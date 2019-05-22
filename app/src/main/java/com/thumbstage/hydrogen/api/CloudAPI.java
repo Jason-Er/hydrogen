@@ -812,6 +812,20 @@ public class CloudAPI {
         });
     }
 
+    public void updateUserAvatar(String avatar, final IReturnBool iReturnBool) {
+        AVUser.getCurrentUser().put(FieldName.FIELD_AVATAR.name, avatar);
+        AVUser.getCurrentUser().saveInBackground(new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                if(e == null) {
+                    iReturnBool.callback(true);
+                } else {
+                    iReturnBool.callback(false);
+                }
+            }
+        });
+    }
+
     public void getUsers(List<String> membersId, final IReturnUsers iReturnUsers) {
         AVQuery<AVObject> query = new AVQuery<>(TableName.TABLE_USER.name);
         query.whereContainedIn(FieldName.FIELD_ID.name, membersId);

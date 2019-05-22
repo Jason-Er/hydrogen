@@ -14,12 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 import com.bumptech.glide.Glide;
 import com.linchaolong.android.imagepicker.ImagePicker;
 import com.linchaolong.android.imagepicker.cropper.CropImage;
 import com.linchaolong.android.imagepicker.cropper.CropImageView;
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.vo.Setting;
 import com.thumbstage.hydrogen.utils.GlideUtil;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
@@ -37,6 +39,8 @@ public class AccountFragment extends Fragment {
     ImageView avatar;
     @BindView(R.id.activity_account_name)
     EditText name;
+    @BindView(R.id.loading_spinner)
+    ProgressBar spinner;
 
     @Inject
     ViewModelProvider.Factory viewModelFactory;
@@ -53,6 +57,7 @@ public class AccountFragment extends Fragment {
         imagePicker.setTitle("avatarURL");
         imagePicker.setCropImage(true);
 
+        spinner.setVisibility(View.GONE);
         return view;
     }
 
@@ -95,10 +100,13 @@ public class AccountFragment extends Fragment {
 
             @Override
             public void onCropImage(Uri imageUri) {
-                // userViewModel.getCurrentUser().setAvatar(imageUri.getPath());
-                // userViewModel.
-                //mic.getTopic().setSetting(new Setting(null, imageUri.getPath(), false));
-                // GlideUtil.inject(getContext(), imageUri.toString(), settingPic);
+                spinner.setVisibility(View.VISIBLE);
+                userViewModel.updateUserAvatar(imageUri, new IReturnBool() {
+                    @Override
+                    public void callback(Boolean isOK) {
+                        spinner.setVisibility(View.GONE);
+                    }
+                });
                 Glide.with(avatar).load(imageUri.toString()).into(avatar);
             }
 
