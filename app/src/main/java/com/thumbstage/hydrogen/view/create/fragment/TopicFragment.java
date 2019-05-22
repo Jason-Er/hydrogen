@@ -191,10 +191,9 @@ public class TopicFragment extends Fragment {
                 topicViewModel.pickUpTopic(micId).observe(this, new Observer<Mic>() {
                     @Override
                     public void onChanged(@Nullable Mic mic) {
+                        Log.i(TAG, "CONTINUE onChanged");
                         topicAdapter.setMic(mic);
-                        if( topicAdapter.getItemCount() > 0 ) {
-                            recyclerView.smoothScrollToPosition(topicAdapter.getItemCount() - 1);
-                        }
+                        smoothToBottom();
                         if(mic.getTopic().getSetting() != null) {
                             Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
                         }
@@ -251,8 +250,15 @@ public class TopicFragment extends Fragment {
             if( !imMessage.getMicId().equals(topicAdapter.getMic().getId()) ) {
                 EventBus.getDefault().post(new NoSubscriberEvent(EventBus.getDefault(), event));
             } else {
-                topicViewModel.refreshTheTopic();
+                topicAdapter.showIMMessage(imMessage);
+                smoothToBottom();
             }
+        }
+    }
+
+    private void smoothToBottom() {
+        if( topicAdapter.getItemCount() > 0 ) {
+            recyclerView.smoothScrollToPosition(topicAdapter.getItemCount() - 1);
         }
     }
 

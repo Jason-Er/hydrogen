@@ -33,12 +33,23 @@ public class Line {
         return when;
     }
 
+    public void setWhen(Date when) {
+        this.when = when;
+    }
+
     public String getWhat() {
         return what;
+    }
+
+    public void setWhat(String what) {
+        this.what = what;
     }
 
     public LineType getLineType() {
         return lineType;
     }
-
+    
+    public void setLineType(LineType lineType) {
+        this.lineType = lineType;
+    }
 }

@@ -532,58 +532,6 @@ public class CloudAPI {
         });
     }
 
-    /*
-    public void getMic(TopicTag tag, String sponsor, boolean isFinished, int pageNum, final IReturnMicList callBack) {
-        AVQuery<AVObject> avQuery = new AVQuery<>(TableName.TABLE_MIC.name);
-        avQuery.include(FieldName.FIELD_TOPIC.name);
-        avQuery.include(FieldName.FIELD_TOPIC.name+"."+FieldName.FIELD_SPONSOR.name);
-
-        List<AVQuery<AVObject>> andQuery = new ArrayList<>();
-        if(!TextUtils.isEmpty(sponsor)) {
-            AVObject avUser = AVUser.createWithoutData(TableName.TABLE_USER.name, sponsor);
-            AVQuery<AVObject> avQueryAnd1 = new AVQuery<>(Topic.class.getSimpleName());
-            avQueryAnd1.whereEqualTo(FieldName.FIELD_SPONSOR.name, avUser);
-            andQuery.add(avQueryAnd1);
-        }
-
-        AVQuery<AVObject> avQueryAnd2 = new AVQuery<>(Topic.class.getSimpleName());
-        avQueryAnd2.whereEqualTo(FieldName.FIELD_TAG.name, tag.name());
-        andQuery.add(avQueryAnd2);
-
-        AVQuery<AVObject> avQueryAnd3 = new AVQuery<>(Topic.class.getSimpleName());
-        avQueryAnd3.whereEqualTo(FieldName.FIELD_IS_FINISHED.name, isFinished);
-        andQuery.add(avQueryAnd3);
-
-        AVQuery<AVObject> avQueryInner = AVQuery.and(andQuery);
-        avQuery.whereMatchesQuery(FieldName.FIELD_TOPIC.name, avQueryInner);
-        avQuery.limit(15);
-        avQuery.skip(0);
-        avQuery.findInBackground(new FindCallback<AVObject>() {
-            @Override
-            public void done(final List<AVObject> avObjects, AVException avException) {
-                if(avException == null) {
-                    final List<Mic> mices = new ArrayList<>();
-                    for(final AVObject avObject: avObjects) {
-                        AVObject avTopic = avObject.getAVObject(FieldName.FIELD_TOPIC.name);
-                        getTopic(avTopic, new IReturnTopic() {
-                            @Override
-                            public void callback(Topic topic) {
-                                Mic mic = new Mic();
-                                mic.setId(avObject.getObjectId());
-                                mic.setTopic(topic);
-                                mices.add(mic);
-                                callBack.callback(mices);
-                            }
-                        });
-                    }
-                } else {
-                    avException.printStackTrace();
-                }
-            }
-        });
-    }
-    */
-
     public void addContact(String whoId, String contactId, final IReturnBool iReturnBool) {
         AVQuery<AVObject> avQuery = new AVQuery<>(TableName.TABLE_CONTACT.name);
         final AVObject avWho = AVObject.createWithoutData(TableName.TABLE_USER.name, whoId);
