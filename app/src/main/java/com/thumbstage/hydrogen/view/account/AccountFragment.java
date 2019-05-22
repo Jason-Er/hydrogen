@@ -95,8 +95,11 @@ public class AccountFragment extends Fragment {
 
             @Override
             public void onCropImage(Uri imageUri) {
+                // userViewModel.getCurrentUser().setAvatar(imageUri.getPath());
+                // userViewModel.
                 //mic.getTopic().setSetting(new Setting(null, imageUri.getPath(), false));
                 // GlideUtil.inject(getContext(), imageUri.toString(), settingPic);
+                Glide.with(avatar).load(imageUri.toString()).into(avatar);
             }
 
             @Override
