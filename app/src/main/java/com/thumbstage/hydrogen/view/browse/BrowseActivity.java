@@ -200,7 +200,6 @@ public class BrowseActivity extends AppCompatActivity
             case "IAttendedOpenedViewHolder":
                 intent.setClass(this, CreateActivity.class);
                 intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.CONTINUE.name());
-                browseViewModel.micHasNew(new MicHasNew(mic.getId(), false));
                 break;
             case "CommunityShowViewHolder":
             case "IAttendedClosedViewHolder":

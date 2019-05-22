@@ -32,6 +32,7 @@ import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.model.bo.Privilege;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.dto.IMMessage;
+import com.thumbstage.hydrogen.model.dto.MicHasNew;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.utils.DensityUtil;
@@ -197,6 +198,7 @@ public class TopicFragment extends Fragment {
                         if(mic.getTopic().getSetting() != null) {
                             Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
                         }
+                        topicViewModel.micHasNew(new MicHasNew(mic.getId(), false));
                         spinner.setVisibility(View.GONE);
                         getActivity().invalidateOptionsMenu();
                     }
