@@ -172,8 +172,13 @@ public class UserRepository {
                 if( modelDB.isUserNeedFresh(userId) ) {
                     cloudAPI.getUser(userId, new IReturnUser() {
                         @Override
-                        public void callback(User user) {
-                            modelDB.saveUser(user);
+                        public void callback(final User user) {
+                            executor.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    modelDB.saveUser(user);
+                                }
+                            });
                         }
                     });
                 }
