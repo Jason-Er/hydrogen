@@ -180,23 +180,18 @@ public class ModelDB {
     }
 
     public void saveMic(final Mic mic) {
-        database.runInTransaction(new Runnable() {
-            @Override
-            public void run() {
-                saveTopic(mic.getTopic());
-                String id = database.micDao().getItemId(mic.getId());
-                if(id == null) {
-                    MicEntity entity = new MicEntity();
-                    entity.setId(mic.getId());
-                    entity.setTopicId(mic.getTopic().getId());
-                    entity.setUpdateAt(mic.getUpdateAt());
-                    entity.setLastRefresh(new Date());
-                    database.micDao().insert(entity);
-                } else {
-                    database.micDao().update(mic.getId(), mic.getTopic().getId(), new Date());
-                }
-            }
-        });
+        saveTopic(mic.getTopic());
+        String id = database.micDao().getItemId(mic.getId());
+        if(id == null) {
+            MicEntity entity = new MicEntity();
+            entity.setId(mic.getId());
+            entity.setTopicId(mic.getTopic().getId());
+            entity.setUpdateAt(mic.getUpdateAt());
+            entity.setLastRefresh(new Date());
+            database.micDao().insert(entity);
+        } else {
+            database.micDao().update(mic.getId(), mic.getTopic().getId(), new Date());
+        }
     }
 
     public void saveMicList(final List<Mic> micList) {

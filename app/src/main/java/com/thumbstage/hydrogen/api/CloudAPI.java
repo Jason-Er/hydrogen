@@ -521,10 +521,10 @@ public class CloudAPI {
                                 mic.setTopic(topic);
                                 mic.setUpdateAt(avObject.getUpdatedAt());
                                 mices.add(mic);
-                                iReturnMicList.callback(mices);
                             }
                         });
                     }
+                    iReturnMicList.callback(mices);
                 } else {
                     avException.printStackTrace();
                 }
