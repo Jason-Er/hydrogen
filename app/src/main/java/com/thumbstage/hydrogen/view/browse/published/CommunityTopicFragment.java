@@ -43,6 +43,17 @@ public class CommunityTopicFragment extends BasicBrowseFragment implements IBrow
         });
     }
 
+    @Override
+    public void swipeRefresh() {
+        viewModel.getCommunityTopicByPageNum(0).observe(this, new Observer<List<Mic>>() {
+            @Override
+            public void onChanged(@Nullable List<Mic> micList) {
+                recyclerViewAdapter.setItems(micList);
+                refreshLayout.setRefreshing(false);
+            }
+        });
+    }
+
     // region implement of interface IBrowseCustomize
     @Override
     public void customizeToolbar(Toolbar toolbar) {

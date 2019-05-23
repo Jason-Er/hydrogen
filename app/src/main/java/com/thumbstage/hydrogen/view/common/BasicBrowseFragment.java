@@ -3,6 +3,7 @@ package com.thumbstage.hydrogen.view.common;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -43,11 +44,15 @@ public abstract class BasicBrowseFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_recycler_common, container, false);
         ButterKnife.bind(this, view);
 
-        refreshLayout.setEnabled(false);
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
-
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                swipeRefresh();
+            }
+        });
         spinner.setVisibility(View.VISIBLE);
 
         return view;
@@ -62,5 +67,6 @@ public abstract class BasicBrowseFragment extends Fragment {
     }
 
     abstract public void customObserve();
+    abstract public void swipeRefresh();
 
 }

@@ -37,4 +37,15 @@ public class IAttendedOpenedFragment extends BasicBrowseFragment {
         });
     }
 
+    @Override
+    public void swipeRefresh() {
+        viewModel.getIAttendedOpenedByPageNum(0).observe(this, new Observer<List<Mic>>() {
+            @Override
+            public void onChanged(@Nullable List<Mic> micList) {
+                recyclerViewAdapter.setItems(micList);
+                refreshLayout.setRefreshing(false);
+            }
+        });
+    }
+
 }
