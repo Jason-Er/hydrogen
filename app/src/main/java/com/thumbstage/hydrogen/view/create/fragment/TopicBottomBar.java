@@ -100,7 +100,7 @@ public class TopicBottomBar extends LinearLayout {
     public void onResponseMessageEvent(final LineTypeEvent event) {
         switch (event.getMessage()) {
             case "click":
-                int position = layoutManager.findFirstVisibleItemPosition();
+                int position = layoutManager.findFirstCompletelyVisibleItemPosition();
                 if(position==0)
                     recyclerView.smoothScrollToPosition(1);
                 else
@@ -116,7 +116,7 @@ public class TopicBottomBar extends LinearLayout {
             // Toast.makeText(getContext(), cn.leancloud.chatkit.R.string.lcim_message_is_null, Toast.LENGTH_SHORT).show();
             return;
         }
-        int position = layoutManager.findFirstVisibleItemPosition();
+        int position = layoutManager.findFirstCompletelyVisibleItemPosition();
         LineType lineType = lineTypeAdapter.getLineType(position);
 
         contentEditText.setText("");
