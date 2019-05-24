@@ -3,6 +3,7 @@ package com.thumbstage.hydrogen.repository;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.database.ModelDB;
@@ -116,6 +117,7 @@ public class TopicRepository {
                 cloudAPI.getMic(micId, new IReturnMic() {
                     @Override
                     public void callback(final Mic mic) {
+                        Log.i("TopicRepository", "refreshMic");
                         saveMic2DB(mic);
                         liveData.setValue(mic);
                     }

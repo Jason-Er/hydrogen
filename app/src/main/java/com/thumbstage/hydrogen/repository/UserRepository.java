@@ -2,14 +2,18 @@ package com.thumbstage.hydrogen.repository;
 
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.net.Uri;
 
 import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.database.ModelDB;
+import com.thumbstage.hydrogen.model.bo.HyFile;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
+import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
 import com.thumbstage.hydrogen.model.callback.IReturnUser;
 import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.utils.StringUtil;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -104,6 +108,31 @@ public class UserRepository {
         return modelDB.getContact(userId, pageNum);
     }
 
+    public void updateUserAvatar(Uri imageUri, final IReturnBool iReturnBool) {
+        File file = new File(imageUri.getPath());
+        cloudAPI.saveFile(file, new IReturnHyFile() {
+            @Override
+            public void callback(HyFile hyFile) {
+                cloudAPI.updateUserAvatar(hyFile.getUrl(), new IReturnBool() {
+                    @Override
+                    public void callback(Boolean isOK) {
+                        if(isOK) {
+                            executor.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    modelDB.saveUser(getCurrentUser());
+                                }
+                            });
+                            iReturnBool.callback(true);
+                        } else {
+                            iReturnBool.callback(false);
+                        }
+                    }
+                });
+            }
+        });
+    }
+
     public LiveData<List<User>> getUsers(List<String> userIds) {
         return modelDB.getUsers(userIds);
     }
@@ -143,8 +172,13 @@ public class UserRepository {
                 if( modelDB.isUserNeedFresh(userId) ) {
                     cloudAPI.getUser(userId, new IReturnUser() {
                         @Override
-                        public void callback(User user) {
-                            modelDB.saveUser(user);
+                        public void callback(final User user) {
+                            executor.execute(new Runnable() {
+                                @Override
+                                public void run() {
+                                    modelDB.saveUser(user);
+                                }
+                            });
                         }
                     });
                 }

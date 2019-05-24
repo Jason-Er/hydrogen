@@ -32,6 +32,7 @@ import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.model.bo.Privilege;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.dto.IMMessage;
+import com.thumbstage.hydrogen.model.dto.MicHasNew;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.utils.DensityUtil;
@@ -191,13 +192,13 @@ public class TopicFragment extends Fragment {
                 topicViewModel.pickUpTopic(micId).observe(this, new Observer<Mic>() {
                     @Override
                     public void onChanged(@Nullable Mic mic) {
+                        Log.i(TAG, "CONTINUE onChanged");
                         topicAdapter.setMic(mic);
-                        if( topicAdapter.getItemCount() > 0 ) {
-                            recyclerView.smoothScrollToPosition(topicAdapter.getItemCount() - 1);
-                        }
+                        smoothToBottom();
                         if(mic.getTopic().getSetting() != null) {
                             Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
                         }
+                        topicViewModel.micHasNew(new MicHasNew(mic.getId(), false));
                         spinner.setVisibility(View.GONE);
                         getActivity().invalidateOptionsMenu();
                     }
@@ -251,8 +252,15 @@ public class TopicFragment extends Fragment {
             if( !imMessage.getMicId().equals(topicAdapter.getMic().getId()) ) {
                 EventBus.getDefault().post(new NoSubscriberEvent(EventBus.getDefault(), event));
             } else {
-                topicViewModel.refreshTheTopic();
+                topicAdapter.showIMMessage(imMessage);
+                smoothToBottom();
             }
+        }
+    }
+
+    private void smoothToBottom() {
+        if( topicAdapter.getItemCount() > 0 ) {
+            recyclerView.smoothScrollToPosition(topicAdapter.getItemCount() - 1);
         }
     }
 

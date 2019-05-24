@@ -340,7 +340,11 @@ public class ModelDB {
         return Transformations.map(database.userDao().getLive(userId), new Function<UserEntity, User>() {
             @Override
             public User apply(UserEntity input) {
-                return entity2User(input);
+                User user = null;
+                if(input != null) {
+                    user = entity2User(input);
+                }
+                return user;
             }
         });
     }

@@ -2,6 +2,7 @@ package com.thumbstage.hydrogen.view.create.fragment;
 
 import android.webkit.URLUtil;
 
+import com.thumbstage.hydrogen.model.dto.IMMessage;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.Topic;
@@ -56,6 +57,31 @@ public class TopicAdapter extends ListDelegationAdapter {
         determineShowTime(lineEx, getItems());
         addItem(lineEx);// for show
         mic.getTopic().getDialogue().add(line); // for save
+    }
+
+    public void showIMMessage(IMMessage imMessage) {
+        Line line = convert2Line(imMessage);
+        addLine(line);
+    }
+
+    private User findUser(String userId) {
+        User user = null;
+        for(User u: mic.getTopic().getMembers()) {
+            if(u.getId().equals(userId)) {
+                user = u;
+                break;
+            }
+        }
+        return user;
+    }
+
+    private Line convert2Line(IMMessage imMessage) {
+        Line line = new Line();
+        line.setWho(findUser(imMessage.getWhoId()));
+        line.setWhen(imMessage.getWhen());
+        line.setWhat(imMessage.getWhat());
+        line.setLineType(imMessage.getLineType());
+        return line;
     }
 
     public void setDialogue(List<Line> lines) {

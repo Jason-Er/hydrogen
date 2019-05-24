@@ -10,20 +10,20 @@
     android:focusable="true"
     android:focusableInTouchMode="true">
 
-    <ImageView
-        android:id="@+id/activity_account_pic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <com.thumbstage.hydrogen.view.common.NiceImageView
+        android:id="@+id/activity_account_avatar"
+        android:layout_width="@dimen/avatar_size"
+        android:layout_height="@dimen/avatar_size"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="54dp"
-        app:srcCompat="@android:drawable/sym_def_app_icon" />
+        app:is_circle="true" />
 
     <LinearLayout
         android:id="@+id/activity_account_blankInfo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/activity_account_pic"
+        android:layout_below="@id/activity_account_avatar"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="50dp"
         android:background="@android:color/background_light"
@@ -51,4 +51,9 @@
         android:text="@string/sign_out"
         android:theme="@style/PrimaryButton"/>
 
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        layout="@layout/layout_loading_spinner"/>
 </RelativeLayout>
