@@ -32,7 +32,7 @@ public class IAttendedOpenedFragment extends BasicBrowseFragment {
         viewModel.iAttendedOpenedList.observe(this, new Observer<PagedList<Mic>>() {
             @Override
             public void onChanged(@Nullable PagedList<Mic> micList) {
-                recyclerViewAdapter.setItems(micList);
+                recyclerViewAdapter.submitList(micList);
                 spinner.setVisibility(View.GONE);
             }
         });
@@ -40,6 +40,7 @@ public class IAttendedOpenedFragment extends BasicBrowseFragment {
 
     @Override
     public void swipeRefresh() {
+
         /*
         viewModel.getIAttendedOpenedByPageNum(0).observe(this, new Observer<List<Mic>>() {
             @Override
@@ -49,6 +50,7 @@ public class IAttendedOpenedFragment extends BasicBrowseFragment {
             }
         });
         */
+
     }
 
 }

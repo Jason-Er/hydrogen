@@ -38,7 +38,7 @@ public class CommunityTopicFragment extends BasicBrowseFragment implements IBrow
         viewModel.communityTopicList.observe(this, new Observer<PagedList<Mic>>() {
             @Override
             public void onChanged(@Nullable PagedList<Mic> micList) {
-                recyclerViewAdapter.setItems(micList);
+                recyclerViewAdapter.submitList(micList);
                 spinner.setVisibility(View.GONE);
             }
         });

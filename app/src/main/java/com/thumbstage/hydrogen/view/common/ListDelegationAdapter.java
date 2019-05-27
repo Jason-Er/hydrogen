@@ -14,7 +14,6 @@ import java.util.List;
 
 public abstract class ListDelegationAdapter extends PagedListAdapter<Mic, RecyclerView.ViewHolder> {
 
-    List items = new ArrayList();
     protected AdapterDelegatesManager delegatesManager = new AdapterDelegatesManager();
 
     protected ListDelegationAdapter() {
@@ -33,17 +32,12 @@ public abstract class ListDelegationAdapter extends PagedListAdapter<Mic, Recycl
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        delegatesManager.onBindViewHolder(items, position, holder);
-    }
-
-    @Override
-    public int getItemCount() {
-        return items == null? 0 : items.size();
+        delegatesManager.onBindViewHolder(getCurrentList(), position, holder);
     }
 
     @Override
     public int getItemViewType(int position) {
-        return delegatesManager.getItemViewType(items, position);
+        return delegatesManager.getItemViewType(getCurrentList(), position);
     }
 
     private static DiffUtil.ItemCallback<Mic> DIFF_CALLBACK =
@@ -62,6 +56,7 @@ public abstract class ListDelegationAdapter extends PagedListAdapter<Mic, Recycl
                 }
             };
 
+    List items = new ArrayList();
 
     public List getItems() {
         return items;
@@ -76,4 +71,5 @@ public abstract class ListDelegationAdapter extends PagedListAdapter<Mic, Recycl
         items.add(object);
         notifyItemChanged(items.size()-1);
     }
+
 }
