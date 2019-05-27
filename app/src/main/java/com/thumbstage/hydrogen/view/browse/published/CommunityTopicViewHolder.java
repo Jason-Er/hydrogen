@@ -2,6 +2,7 @@ package com.thumbstage.hydrogen.view.browse.published;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,14 +23,12 @@ public class CommunityTopicViewHolder extends RecyclerView.ViewHolder {
 
     Mic mic;
 
-    @BindView(R.id.item_browse_topic_setting)
-    ImageView setting;
     @BindView(R.id.item_browse_topic_name)
     TextView name;
     @BindView(R.id.item_browse_topic_brief)
     TextView brief;
-    @BindView(R.id.item_browse_topic_avatar)
-    ImageView avatar;
+    @BindView(R.id.item_browse_topic_badge)
+    ImageView badge;
 
     public CommunityTopicViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -47,12 +46,8 @@ public class CommunityTopicViewHolder extends RecyclerView.ViewHolder {
         Topic topic = mic.getTopic();
         name.setText(topic.getName());
         brief.setText(topic.getBrief());
-        if(topic.getSetting() != null) {
-            Glide.with(setting).load(topic.getSetting().getUrl()).into(setting);
-        }
-        User user = topic.getSponsor();
-        if(user != null) {
-            Glide.with(avatar).load(user.getAvatar()).into(avatar);
+        if(!TextUtils.isEmpty(topic.getBadgeUrl())) {
+            Glide.with(badge).load(topic.getBadgeUrl()).into(badge);
         }
     }
 

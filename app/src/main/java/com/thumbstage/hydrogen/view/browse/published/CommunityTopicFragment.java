@@ -1,6 +1,7 @@
 package com.thumbstage.hydrogen.view.browse.published;
 
 import android.arch.lifecycle.Observer;
+import android.arch.paging.PagedList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -34,9 +35,9 @@ public class CommunityTopicFragment extends BasicBrowseFragment implements IBrow
 
     @Override
     public void customObserve() {
-        viewModel.getCommunityTopicByPageNum(0).observe(this, new Observer<List<Mic>>() {
+        viewModel.communityTopicList.observe(this, new Observer<PagedList<Mic>>() {
             @Override
-            public void onChanged(@Nullable List<Mic> micList) {
+            public void onChanged(@Nullable PagedList<Mic> micList) {
                 recyclerViewAdapter.setItems(micList);
                 spinner.setVisibility(View.GONE);
             }
@@ -45,6 +46,7 @@ public class CommunityTopicFragment extends BasicBrowseFragment implements IBrow
 
     @Override
     public void swipeRefresh() {
+        /*
         viewModel.getCommunityTopicByPageNum(0).observe(this, new Observer<List<Mic>>() {
             @Override
             public void onChanged(@Nullable List<Mic> micList) {
@@ -52,6 +54,7 @@ public class CommunityTopicFragment extends BasicBrowseFragment implements IBrow
                 refreshLayout.setRefreshing(false);
             }
         });
+        */
     }
 
     // region implement of interface IBrowseCustomize

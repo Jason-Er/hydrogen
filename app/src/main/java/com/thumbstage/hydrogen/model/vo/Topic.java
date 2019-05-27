@@ -15,6 +15,7 @@ public class Topic implements Cloneable {
     String id;
     String name;
     String brief;
+    String badgeUrl;
     Setting setting;
     User sponsor;
     String derive_from; // topic id
@@ -128,6 +129,14 @@ public class Topic implements Cloneable {
 
     public void setUpdateAt(Date updateAt) {
         this.updateAt = updateAt;
+    }
+
+    public String getBadgeUrl() {
+        return badgeUrl;
+    }
+
+    public void setBadgeUrl(String badgeUrl) {
+        this.badgeUrl = badgeUrl;
     }
 
     @Override

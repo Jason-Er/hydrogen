@@ -1,6 +1,7 @@
 package com.thumbstage.hydrogen.view.browse.mine;
 
 import android.arch.lifecycle.Observer;
+import android.arch.paging.PagedList;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -28,9 +29,9 @@ public class IAttendedOpenedFragment extends BasicBrowseFragment {
 
     @Override
     public void customObserve() {
-        viewModel.getIAttendedOpenedByPageNum(0).observe(this, new Observer<List<Mic>>() {
+        viewModel.iAttendedOpenedList.observe(this, new Observer<PagedList<Mic>>() {
             @Override
-            public void onChanged(@Nullable List<Mic> micList) {
+            public void onChanged(@Nullable PagedList<Mic> micList) {
                 recyclerViewAdapter.setItems(micList);
                 spinner.setVisibility(View.GONE);
             }
@@ -39,6 +40,7 @@ public class IAttendedOpenedFragment extends BasicBrowseFragment {
 
     @Override
     public void swipeRefresh() {
+        /*
         viewModel.getIAttendedOpenedByPageNum(0).observe(this, new Observer<List<Mic>>() {
             @Override
             public void onChanged(@Nullable List<Mic> micList) {
@@ -46,6 +48,7 @@ public class IAttendedOpenedFragment extends BasicBrowseFragment {
                 refreshLayout.setRefreshing(false);
             }
         });
+        */
     }
 
 }

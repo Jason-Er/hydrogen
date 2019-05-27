@@ -23,6 +23,9 @@ public class TopicEntity {
     private String name;
     private String brief;
 
+    @ColumnInfo(name = "badge_url")
+    private String badge_url;
+
     @ColumnInfo(name = "setting_url")
     private String setting_url;
 
@@ -114,5 +117,13 @@ public class TopicEntity {
 
     public void setUpdateAt(Date updateAt) {
         this.updateAt = updateAt;
+    }
+
+    public String getBadge_url() {
+        return badge_url;
+    }
+
+    public void setBadge_url(String badge_url) {
+        this.badge_url = badge_url;
     }
 }
