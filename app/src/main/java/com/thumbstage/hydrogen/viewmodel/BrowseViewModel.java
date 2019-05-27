@@ -74,13 +74,24 @@ public class BrowseViewModel extends ViewModel {
                 }).build();
     }
 
-    private void initCommunityTopicList(PagedList.Config config, CloudAPI cloudAPI, ModelDB modelDB, Executor executor) {
+    private void initCommunityTopicList(PagedList.Config config, final CloudAPI cloudAPI, final ModelDB modelDB, final Executor executor) {
         communityTopicList = new LivePagedListBuilder<>(modelDB.getMic(TopicTag.LITERAL, false), config)
                 .setFetchExecutor(executor)
                 .setBoundaryCallback(new PagedList.BoundaryCallback<Mic>() {
                     @Override
                     public void onZeroItemsLoaded() {
                         super.onZeroItemsLoaded();
+                        cloudAPI.getMic(TopicTag.LITERAL, "", false, 0, new IReturnMicList() {
+                            @Override
+                            public void callback(final List<Mic> micList) {
+                                executor.execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        modelDB.saveMicList(micList);
+                                    }
+                                });
+                            }
+                        });
                     }
 
                     @Override
@@ -95,13 +106,24 @@ public class BrowseViewModel extends ViewModel {
                 }).build();
     }
 
-    private void initIAttendedOpenedList(String userId, PagedList.Config config, CloudAPI cloudAPI, ModelDB modelDB, Executor executor) {
+    private void initIAttendedOpenedList(final String userId, PagedList.Config config, final CloudAPI cloudAPI, final ModelDB modelDB, final Executor executor) {
         iAttendedOpenedList = new LivePagedListBuilder<>(modelDB.getMic(TopicTag.SEMINAR, userId,false), config)
                 .setFetchExecutor(executor)
                 .setBoundaryCallback(new PagedList.BoundaryCallback<Mic>() {
                     @Override
                     public void onZeroItemsLoaded() {
                         super.onZeroItemsLoaded();
+                        cloudAPI.getMic(TopicTag.SEMINAR, userId, false, 0, new IReturnMicList() {
+                            @Override
+                            public void callback(final List<Mic> micList) {
+                                executor.execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        modelDB.saveMicList(micList);
+                                    }
+                                });
+                            }
+                        });
                     }
 
                     @Override
@@ -116,13 +138,24 @@ public class BrowseViewModel extends ViewModel {
                 }).build();
     }
 
-    private void initIAttendedClosedList(String userId, PagedList.Config config, CloudAPI cloudAPI, ModelDB modelDB, Executor executor) {
+    private void initIAttendedClosedList(final String userId, PagedList.Config config, final CloudAPI cloudAPI, final ModelDB modelDB, final Executor executor) {
         iAttendedClosedList = new LivePagedListBuilder<>(modelDB.getMic(TopicTag.SEMINAR, userId,true), config)
                 .setFetchExecutor(executor)
                 .setBoundaryCallback(new PagedList.BoundaryCallback<Mic>() {
                     @Override
                     public void onZeroItemsLoaded() {
                         super.onZeroItemsLoaded();
+                        cloudAPI.getMic(TopicTag.SEMINAR, userId, true, 0, new IReturnMicList() {
+                            @Override
+                            public void callback(final List<Mic> micList) {
+                                executor.execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        modelDB.saveMicList(micList);
+                                    }
+                                });
+                            }
+                        });
                     }
 
                     @Override

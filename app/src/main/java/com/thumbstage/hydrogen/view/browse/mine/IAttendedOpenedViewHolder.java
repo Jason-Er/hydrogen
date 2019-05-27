@@ -2,6 +2,7 @@ package com.thumbstage.hydrogen.view.browse.mine;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,14 +23,12 @@ public class IAttendedOpenedViewHolder extends RecyclerView.ViewHolder {
 
     Mic mic;
 
-    @BindView(R.id.item_browse_topic_setting)
-    ImageView setting;
     @BindView(R.id.item_browse_topic_name)
     TextView name;
     @BindView(R.id.item_browse_topic_brief)
     TextView brief;
-    @BindView(R.id.item_browse_topic_avatar)
-    ImageView avatar;
+    @BindView(R.id.item_browse_topic_badge)
+    ImageView badge;
     @BindView(R.id.item_browse_topic_unread)
     TextView unread;
 
@@ -52,12 +51,8 @@ public class IAttendedOpenedViewHolder extends RecyclerView.ViewHolder {
         if(!mic.isHasNew()) {
             unread.setVisibility(View.GONE);
         }
-        if(topic.getSetting() != null) {
-            Glide.with(setting.getContext()).load(topic.getSetting().getUrl()).into(setting);
-        }
-        User user = topic.getSponsor();
-        if(user != null) {
-            Glide.with(avatar).load(user.getAvatar()).into(avatar);
+        if(!TextUtils.isEmpty(topic.getBadgeUrl())) {
+            Glide.with(badge).load(topic.getBadgeUrl()).into(badge);
         }
     }
 

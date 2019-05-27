@@ -509,21 +509,35 @@ public class CloudAPI {
     private Topic convert2TopicMini(AVObject avTopic) {
         String id = avTopic.getObjectId();
         String name = (String) avTopic.get(FieldName.FIELD_NAME.name);
+        String badge = (String) avTopic.get(FieldName.FIELD_BADGE.name);
         List<String> tags = avTopic.getList(FieldName.FIELD_TAG.name);
         String brief = (String) avTopic.get(FieldName.FIELD_BRIEF.name);
         boolean isFinished = avTopic.getBoolean(FieldName.FIELD_IS_FINISHED.name);
         Date lastRefresh = avTopic.getUpdatedAt();
         User user = convert2User(avTopic.getAVObject(FieldName.FIELD_SPONSOR.name));
+        List<String> membersIds = avTopic.getList(FieldName.FIELD_MEMBER.name);
 
         Topic topic = new Topic();
         topic.setTags(convert2TopicTag(tags));
         topic.setId(id);
-        topic.setBrief(brief);
         topic.setName(name);
+        topic.setBrief(brief);
+        topic.setBadgeUrl(badge);
         topic.setSponsor(user);
+        topic.setMembers(convert2UserMini(membersIds));
         topic.setFinished(isFinished);
         topic.setUpdateAt(lastRefresh);
         return topic;
+    }
+
+    private List<User> convert2UserMini(List<String> userId) {
+        List<User> users = new ArrayList<>();
+        for(String id: userId) {
+            User user = new User();
+            user.setId(id);
+            users.add(user);
+        }
+        return users;
     }
 
     private User convert2User(AVObject avUser) {
