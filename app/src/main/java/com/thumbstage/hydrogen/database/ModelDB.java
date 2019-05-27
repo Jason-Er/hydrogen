@@ -89,7 +89,6 @@ public class ModelDB {
                 entity.setId(topic.getId());
                 entity.setName(topic.getName());
                 entity.setBrief(topic.getBrief());
-                entity.setBadge_url(topic.getBadgeUrl());
                 entity.setDerive_from(topic.getDerive_from());
                 entity.setSponsor(topic.getSponsor().getId());
                 entity.setFinished(topic.isFinished());
@@ -419,7 +418,6 @@ public class ModelDB {
         topic.setUserCan(getUserCan(id));
         topic.setName(entity.getName());
         topic.setBrief(entity.getName());
-        topic.setBadgeUrl(entity.getBadge_url());
         topic.setSetting(new Setting("", entity.getSetting_url(), true));
         topic.setDerive_from(entity.getDerive_from());
         topic.setDialogue(getLine(entity.getId()));

@@ -12,6 +12,7 @@ import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.BrowseItemEvent;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.Topic;
+import com.thumbstage.hydrogen.model.vo.User;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -45,8 +46,9 @@ public class CommunityShowViewHolder extends RecyclerView.ViewHolder {
         Topic topic = mic.getTopic();
         name.setText(topic.getName());
         brief.setText(topic.getBrief());
-        if(!TextUtils.isEmpty(topic.getBadgeUrl())) {
-            Glide.with(badge).load(topic.getBadgeUrl()).into(badge);
+        User user = topic.getSponsor();
+        if(user != null) {
+            Glide.with(badge).load(user.getAvatar()).into(badge);
         }
     }
 

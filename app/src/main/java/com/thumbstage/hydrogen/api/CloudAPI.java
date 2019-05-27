@@ -509,7 +509,6 @@ public class CloudAPI {
     private Topic convert2TopicMini(AVObject avTopic) {
         String id = avTopic.getObjectId();
         String name = (String) avTopic.get(FieldName.FIELD_NAME.name);
-        String badge = (String) avTopic.get(FieldName.FIELD_BADGE.name);
         List<String> tags = avTopic.getList(FieldName.FIELD_TAG.name);
         String brief = (String) avTopic.get(FieldName.FIELD_BRIEF.name);
         boolean isFinished = avTopic.getBoolean(FieldName.FIELD_IS_FINISHED.name);
@@ -522,7 +521,6 @@ public class CloudAPI {
         topic.setId(id);
         topic.setName(name);
         topic.setBrief(brief);
-        topic.setBadgeUrl(badge);
         topic.setSponsor(user);
         topic.setMembers(convert2UserMini(membersIds));
         topic.setFinished(isFinished);
