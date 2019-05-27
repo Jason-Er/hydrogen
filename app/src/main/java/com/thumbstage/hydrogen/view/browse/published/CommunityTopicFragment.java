@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.bo.Privilege;
+import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.view.browse.IAdapterFunction;
 import com.thumbstage.hydrogen.view.browse.IBrowseCustomize;
@@ -40,21 +41,21 @@ public class CommunityTopicFragment extends BasicBrowseFragment implements IBrow
             public void onChanged(@Nullable PagedList<Mic> micList) {
                 recyclerViewAdapter.submitList(micList);
                 spinner.setVisibility(View.GONE);
+                refreshLayout.setRefreshing(false);
             }
         });
     }
 
     @Override
     public void swipeRefresh() {
-        /*
-        viewModel.getCommunityTopicByPageNum(0).observe(this, new Observer<List<Mic>>() {
+        viewModel.refreshCommunityTopicList(new IReturnBool() {
             @Override
-            public void onChanged(@Nullable List<Mic> micList) {
-                recyclerViewAdapter.setItems(micList);
-                refreshLayout.setRefreshing(false);
+            public void callback(Boolean isOK) {
+                if(isOK) {
+                    recyclerViewAdapter.getCurrentList().getDataSource().invalidate();
+                }
             }
         });
-        */
     }
 
     // region implement of interface IBrowseCustomize

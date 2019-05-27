@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.view.common.BasicBrowseFragment;
 
@@ -34,20 +35,20 @@ public class IAttendedClosedFragment extends BasicBrowseFragment {
             public void onChanged(@Nullable PagedList<Mic> micList) {
                 recyclerViewAdapter.submitList(micList);
                 spinner.setVisibility(View.GONE);
+                refreshLayout.setRefreshing(false);
             }
         });
     }
 
     @Override
     public void swipeRefresh() {
-        /*
-        viewModel.getIAttendedClosedByPageNum(0).observe(this, new Observer<List<Mic>>() {
+        viewModel.refreshIAttendedClosedList(new IReturnBool() {
             @Override
-            public void onChanged(@Nullable List<Mic> micList) {
-                recyclerViewAdapter.setItems(micList);
-                refreshLayout.setRefreshing(false);
+            public void callback(Boolean isOK) {
+                if(isOK) {
+                    recyclerViewAdapter.getCurrentList().getDataSource().invalidate();
+                }
             }
         });
-        */
     }
 }
