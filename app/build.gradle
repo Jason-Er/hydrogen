@@ -87,5 +87,8 @@ dependencies {
 
     def indicator_version = '1.0.4'
     implementation "com.github.ronaldsmartin:Material-ViewPagerIndicator:$indicator_version"
+
+    def videocache_version = '2.7.1'
+    implementation "com.danikula:videocache:$videocache_version"
 }
 
