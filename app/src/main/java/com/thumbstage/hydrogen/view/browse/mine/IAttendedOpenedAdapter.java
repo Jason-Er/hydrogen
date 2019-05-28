@@ -1,8 +1,8 @@
 package com.thumbstage.hydrogen.view.browse.mine;
 
-import com.thumbstage.hydrogen.view.common.ListDelegationAdapter;
+import com.thumbstage.hydrogen.view.common.PagedListDelegationAdapter;
 
-public class IAttendedOpenedAdapter extends ListDelegationAdapter {
+public class IAttendedOpenedAdapter extends PagedListDelegationAdapter {
 
     enum view_type {
         ATTENDED_OPENED

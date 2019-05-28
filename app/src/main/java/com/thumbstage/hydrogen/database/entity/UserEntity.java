@@ -15,6 +15,7 @@ public class UserEntity {
     private String id;
     private String avatar;
     private String name;
+    private String badge;
 
     @ColumnInfo(name = "last_refresh")
     private Date lastRefresh;
@@ -30,4 +31,11 @@ public class UserEntity {
     public void setLastRefresh(Date lastRefresh) { this.lastRefresh = lastRefresh; }
     public void setName(String name) { this.name = name; }
 
+    public String getBadge() {
+        return badge;
+    }
+
+    public void setBadge(String badge) {
+        this.badge = badge;
+    }
 }

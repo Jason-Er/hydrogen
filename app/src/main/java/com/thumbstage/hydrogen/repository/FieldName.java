@@ -5,6 +5,7 @@ public enum FieldName {
     FIELD_NAME("name"),
     FIELD_USERNAME("username"),
     FIELD_AVATAR("avatar"),
+    FIELD_BADGE("badge"),
     FIELD_BRIEF("brief"),
     FIELD_IS_FINISHED("is_finished"),
     FIELD_SPONSOR("sponsor"),

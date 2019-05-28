@@ -10,7 +10,12 @@ public class User {
     String id;
     String name;
     String avatar;
+    String badge;
     Set<Privilege> privileges;
+
+    public User() {
+
+    }
 
     public User(String id, String name, String avatar) {
         this.id = id;
@@ -76,6 +81,14 @@ public class User {
 
     public void setPrivileges(Set<Privilege> privileges) {
         this.privileges = privileges;
+    }
+
+    public String getBadge() {
+        return badge;
+    }
+
+    public void setBadge(String badge) {
+        this.badge = badge;
     }
 
     // endregion

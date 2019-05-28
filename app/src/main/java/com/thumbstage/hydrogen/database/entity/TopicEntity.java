@@ -115,4 +115,5 @@ public class TopicEntity {
     public void setUpdateAt(Date updateAt) {
         this.updateAt = updateAt;
     }
+
 }
