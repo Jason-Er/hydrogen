@@ -213,7 +213,7 @@ public class BrowseActivity extends AppCompatActivity
     public void onResponseMessageEvent(final IMMicEvent event) {
         if(event.getMessage().equals("onUnreadMessage")) {
             final IMMessage imMessage = (IMMessage) event.getData();
-            // browseViewModel.micHasNew(new MicHasNew(imMessage.getMicId(), true));
+            browseViewModel.micHasNew(new MicHasNew(imMessage.getMicId(), true));
             userViewModel.getUser(imMessage.getWhoId()).observe(this, new Observer<User>() {
                 @Override
                 public void onChanged(@Nullable User user) {

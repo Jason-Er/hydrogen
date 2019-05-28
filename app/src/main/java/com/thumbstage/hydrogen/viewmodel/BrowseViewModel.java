@@ -11,6 +11,7 @@ import com.thumbstage.hydrogen.app.Config;
 import com.thumbstage.hydrogen.database.ModelDB;
 import com.thumbstage.hydrogen.model.bo.TopicTag;
 import com.thumbstage.hydrogen.model.callback.IReturnMicList;
+import com.thumbstage.hydrogen.model.dto.MicHasNew;
 import com.thumbstage.hydrogen.model.vo.Mic;
 
 import java.util.List;
@@ -31,6 +32,10 @@ public class BrowseViewModel extends ViewModel {
     final CloudAPI cloudAPI;
     final ModelDB modelDB;
     final Executor executor;
+    int communityShowListPageNum = 0;
+    int communityTopicListPageNum = 0;
+    int iAttendedOpenedListPageNum = 0;
+    int iAttendedClosedListPageNum = 0;
 
     @Inject
     public BrowseViewModel(CloudAPI cloudAPI, ModelDB modelDB, Executor executor) {
@@ -138,7 +143,19 @@ public class BrowseViewModel extends ViewModel {
                     @Override
                     public void onItemAtEndLoaded(@NonNull Mic itemAtEnd) {
                         super.onItemAtEndLoaded(itemAtEnd);
-
+                        // on the base that server page_size is the same with db page_size otherwise need calculation
+                        communityShowListPageNum++;
+                        cloudAPI.getMic(TopicTag.SELECTED, "", true, communityShowListPageNum, new IReturnMicList() {
+                            @Override
+                            public void callback(final List<Mic> micList) {
+                                executor.execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        modelDB.saveMicList(micList);
+                                    }
+                                });
+                            }
+                        });
                     }
                 }).build();
     }
@@ -171,6 +188,19 @@ public class BrowseViewModel extends ViewModel {
                     @Override
                     public void onItemAtEndLoaded(@NonNull Mic itemAtEnd) {
                         super.onItemAtEndLoaded(itemAtEnd);
+                        // on the base that server page_size is the same with db page_size otherwise need calculation
+                        communityTopicListPageNum++;
+                        cloudAPI.getMic(TopicTag.LITERAL, "", false, communityTopicListPageNum, new IReturnMicList() {
+                            @Override
+                            public void callback(final List<Mic> micList) {
+                                executor.execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        modelDB.saveMicList(micList);
+                                    }
+                                });
+                            }
+                        });
                     }
                 }).build();
     }
@@ -204,6 +234,19 @@ public class BrowseViewModel extends ViewModel {
                     @Override
                     public void onItemAtEndLoaded(@NonNull Mic itemAtEnd) {
                         super.onItemAtEndLoaded(itemAtEnd);
+                        // on the base that server page_size is the same with db page_size otherwise need calculation
+                        iAttendedOpenedListPageNum++;
+                        cloudAPI.getMic(TopicTag.SEMINAR, userId, false, iAttendedOpenedListPageNum, new IReturnMicList() {
+                            @Override
+                            public void callback(final List<Mic> micList) {
+                                executor.execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        modelDB.saveMicList(micList);
+                                    }
+                                });
+                            }
+                        });
                     }
                 }).setInitialLoadKey(0).build();
     }
@@ -237,33 +280,30 @@ public class BrowseViewModel extends ViewModel {
                     @Override
                     public void onItemAtEndLoaded(@NonNull Mic itemAtEnd) {
                         super.onItemAtEndLoaded(itemAtEnd);
+                        // on the base that server page_size is the same with db page_size otherwise need calculation
+                        iAttendedClosedListPageNum++;
+                        cloudAPI.getMic(TopicTag.SEMINAR, userId, true, iAttendedClosedListPageNum, new IReturnMicList() {
+                            @Override
+                            public void callback(final List<Mic> micList) {
+                                executor.execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        modelDB.saveMicList(micList);
+                                    }
+                                });
+                            }
+                        });
                     }
                 }).build();
     }
-    /*
-    public LiveData<List<Mic>> getIAttendedOpenedByPageNum(int pageNum) {
-        String userId = userRepository.getCurrentUser().getId();
-        return topicRepository.getMic(TopicTag.SEMINAR, userId, false, pageNum);
+
+    public void micHasNew(final MicHasNew hasNew) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                modelDB.updateMicHasNew(hasNew);
+            }
+        });
     }
-
-    public LiveData<List<Mic>> getIAttendedClosedByPageNum(int pageNum) {
-        String userId = userRepository.getCurrentUser().getId();
-        return topicRepository.getMic(TopicTag.SEMINAR, userId, true, pageNum);
-    }
-
-    public LiveData<List<Mic>> getCommunityTopicByPageNum(int pageNum) {
-        return topicRepository.getMic(TopicTag.LITERAL, "", false, pageNum);
-    }
-
-    public LiveData<List<Mic>> getCommunityShowByPageNum(int pageNum) {
-        return topicRepository.getMic(TopicTag.SELECTED, "", true, pageNum);
-    }
-
-    public void micHasNew(MicHasNew hasNew) {
-        topicRepository.micHasNew(hasNew);
-    }
-
-    */
-
 
 }
