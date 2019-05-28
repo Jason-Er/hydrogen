@@ -56,7 +56,7 @@ public class Mic implements Cloneable {
             return false;
         }
         Mic mic = (Mic) obj;
-        boolean status = mic.equals(mic.topic)
+        boolean status = updateAt.compareTo(mic.updateAt) == 0 ? true : false
                 && id.equals(mic.id);
         return status;
     }

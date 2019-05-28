@@ -10,7 +10,6 @@ import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.app.Config;
 import com.thumbstage.hydrogen.database.ModelDB;
 import com.thumbstage.hydrogen.model.bo.TopicTag;
-import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnMicList;
 import com.thumbstage.hydrogen.model.vo.Mic;
 
@@ -50,8 +49,7 @@ public class BrowseViewModel extends ViewModel {
     }
 
     public void refreshCommunityShowList() {
-        int pageNum = (int) communityShowList.getValue().getLastKey();
-        cloudAPI.getMic(TopicTag.SELECTED, "", true, pageNum, new IReturnMicList() {
+        cloudAPI.getMic(TopicTag.SELECTED, "", true, 0, new IReturnMicList() {
             @Override
             public void callback(final List<Mic> micList) {
                 executor.execute(new Runnable() {
@@ -66,8 +64,7 @@ public class BrowseViewModel extends ViewModel {
     }
 
     public void refreshCommunityTopicList() {
-        int pageNum = (int) communityTopicList.getValue().getLastKey();
-        cloudAPI.getMic(TopicTag.LITERAL, "", false, pageNum, new IReturnMicList() {
+        cloudAPI.getMic(TopicTag.LITERAL, "", false, 0, new IReturnMicList() {
             @Override
             public void callback(final List<Mic> micList) {
                 executor.execute(new Runnable() {
@@ -82,9 +79,8 @@ public class BrowseViewModel extends ViewModel {
     }
 
     public void refreshIAttendedOpenedList() {
-        int pageNum = (int) iAttendedOpenedList.getValue().getLastKey();
         String userId = cloudAPI.getCurrentUser().getId();
-        cloudAPI.getMic(TopicTag.SEMINAR, userId, false, pageNum, new IReturnMicList() {
+        cloudAPI.getMic(TopicTag.SEMINAR, userId, false, 0, new IReturnMicList() {
             @Override
             public void callback(final List<Mic> micList) {
                 executor.execute(new Runnable() {
@@ -99,9 +95,8 @@ public class BrowseViewModel extends ViewModel {
     }
 
     public void refreshIAttendedClosedList() {
-        int pageNum = (int) iAttendedClosedList.getValue().getLastKey();
         String userId = cloudAPI.getCurrentUser().getId();
-        cloudAPI.getMic(TopicTag.SEMINAR, userId, true, pageNum, new IReturnMicList() {
+        cloudAPI.getMic(TopicTag.SEMINAR, userId, true, 0, new IReturnMicList() {
             @Override
             public void callback(final List<Mic> micList) {
                 executor.execute(new Runnable() {
@@ -118,7 +113,6 @@ public class BrowseViewModel extends ViewModel {
     private void initCommunityShowList(PagedList.Config config) {
         communityShowList = new LivePagedListBuilder<>(modelDB.getMic(TopicTag.SELECTED, true), config)
                 .setFetchExecutor(executor)
-                .setInitialLoadKey(0)
                 .setBoundaryCallback(new PagedList.BoundaryCallback<Mic>() {
                     @Override
                     public void onZeroItemsLoaded() {
@@ -144,6 +138,7 @@ public class BrowseViewModel extends ViewModel {
                     @Override
                     public void onItemAtEndLoaded(@NonNull Mic itemAtEnd) {
                         super.onItemAtEndLoaded(itemAtEnd);
+
                     }
                 }).build();
     }
