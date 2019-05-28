@@ -48,14 +48,7 @@ public class CommunityTopicFragment extends BasicBrowseFragment implements IBrow
 
     @Override
     public void swipeRefresh() {
-        viewModel.refreshCommunityTopicList(new IReturnBool() {
-            @Override
-            public void callback(Boolean isOK) {
-                if(isOK) {
-                    recyclerViewAdapter.getCurrentList().getDataSource().invalidate();
-                }
-            }
-        });
+        viewModel.refreshCommunityTopicList();
     }
 
     // region implement of interface IBrowseCustomize

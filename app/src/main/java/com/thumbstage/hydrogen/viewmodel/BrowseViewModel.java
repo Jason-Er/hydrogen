@@ -49,7 +49,7 @@ public class BrowseViewModel extends ViewModel {
 
     }
 
-    public void refreshCommunityShowList(final IReturnBool iReturnBool) {
+    public void refreshCommunityShowList() {
         int pageNum = (int) communityShowList.getValue().getLastKey();
         cloudAPI.getMic(TopicTag.SELECTED, "", true, pageNum, new IReturnMicList() {
             @Override
@@ -58,14 +58,14 @@ public class BrowseViewModel extends ViewModel {
                     @Override
                     public void run() {
                         modelDB.saveMicList(micList);
-                        iReturnBool.callback(true);
+                        communityShowList.getValue().getDataSource().invalidate();
                     }
                 });
             }
         });
     }
 
-    public void refreshCommunityTopicList(final IReturnBool iReturnBool) {
+    public void refreshCommunityTopicList() {
         int pageNum = (int) communityTopicList.getValue().getLastKey();
         cloudAPI.getMic(TopicTag.LITERAL, "", false, pageNum, new IReturnMicList() {
             @Override
@@ -74,14 +74,14 @@ public class BrowseViewModel extends ViewModel {
                     @Override
                     public void run() {
                         modelDB.saveMicList(micList);
-                        iReturnBool.callback(true);
+                        communityTopicList.getValue().getDataSource().invalidate();
                     }
                 });
             }
         });
     }
 
-    public void refreshIAttendedOpenedList(final IReturnBool iReturnBool) {
+    public void refreshIAttendedOpenedList() {
         int pageNum = (int) iAttendedOpenedList.getValue().getLastKey();
         String userId = cloudAPI.getCurrentUser().getId();
         cloudAPI.getMic(TopicTag.SEMINAR, userId, false, pageNum, new IReturnMicList() {
@@ -91,14 +91,14 @@ public class BrowseViewModel extends ViewModel {
                     @Override
                     public void run() {
                         modelDB.saveMicList(micList);
-                        iReturnBool.callback(true);
+                        iAttendedOpenedList.getValue().getDataSource().invalidate();
                     }
                 });
             }
         });
     }
 
-    public void refreshIAttendedClosedList(final IReturnBool iReturnBool) {
+    public void refreshIAttendedClosedList() {
         int pageNum = (int) iAttendedClosedList.getValue().getLastKey();
         String userId = cloudAPI.getCurrentUser().getId();
         cloudAPI.getMic(TopicTag.SEMINAR, userId, true, pageNum, new IReturnMicList() {
@@ -108,6 +108,7 @@ public class BrowseViewModel extends ViewModel {
                     @Override
                     public void run() {
                         modelDB.saveMicList(micList);
+                        iAttendedClosedList.getValue().getDataSource().invalidate();
                     }
                 });
             }

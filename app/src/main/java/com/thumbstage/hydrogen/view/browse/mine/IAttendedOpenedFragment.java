@@ -42,14 +42,7 @@ public class IAttendedOpenedFragment extends BasicBrowseFragment {
 
     @Override
     public void swipeRefresh() {
-        viewModel.refreshIAttendedOpenedList(new IReturnBool() {
-            @Override
-            public void callback(Boolean isOK) {
-                if(isOK) {
-                    recyclerViewAdapter.getCurrentList().getDataSource().invalidate();
-                }
-            }
-        });
+        viewModel.refreshIAttendedOpenedList();
     }
 
 }

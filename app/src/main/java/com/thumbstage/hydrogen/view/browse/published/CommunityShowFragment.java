@@ -48,14 +48,7 @@ public class CommunityShowFragment extends BasicBrowseFragment implements IBrows
 
     @Override
     public void swipeRefresh() {
-        viewModel.refreshCommunityShowList(new IReturnBool() {
-            @Override
-            public void callback(Boolean isOK) {
-                if(isOK) {
-                    recyclerViewAdapter.getCurrentList().getDataSource().invalidate();
-                }
-            }
-        });
+        viewModel.refreshCommunityShowList();
     }
     // region implement of interface IBrowseCustomize
     @Override
