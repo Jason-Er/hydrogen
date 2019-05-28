@@ -9,11 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.view.common.BasicBrowseFragment;
-
-import java.util.List;
 
 public class IAttendedClosedFragment extends BasicBrowseFragment {
 
