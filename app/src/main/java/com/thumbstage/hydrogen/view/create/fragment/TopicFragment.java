@@ -178,12 +178,14 @@ public class TopicFragment extends Fragment {
                 topicViewModel.attendTopic(micId).observe(this, new Observer<Mic>() {
                     @Override
                     public void onChanged(@Nullable Mic mic) {
-                        topicAdapter.setMic(mic);
-                        if(mic.getTopic().getSetting() != null) {
-                            Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
+                        if(mic != null) {
+                            topicAdapter.setMic(mic);
+                            if (mic.getTopic().getSetting() != null) {
+                                Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
+                            }
+                            spinner.setVisibility(View.GONE);
+                            getActivity().invalidateOptionsMenu();
                         }
-                        spinner.setVisibility(View.GONE);
-                        getActivity().invalidateOptionsMenu();
                     }
                 });
                 break;
@@ -193,14 +195,16 @@ public class TopicFragment extends Fragment {
                     @Override
                     public void onChanged(@Nullable Mic mic) {
                         Log.i(TAG, "CONTINUE onChanged");
-                        topicAdapter.setMic(mic);
-                        smoothToBottom();
-                        if(mic.getTopic().getSetting() != null) {
-                            Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
+                        if(mic != null) {
+                            topicAdapter.setMic(mic);
+                            smoothToBottom();
+                            if (mic.getTopic().getSetting() != null) {
+                                Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
+                            }
+                            topicViewModel.micHasNew(new MicHasNew(mic.getId(), false));
+                            spinner.setVisibility(View.GONE);
+                            getActivity().invalidateOptionsMenu();
                         }
-                        topicViewModel.micHasNew(new MicHasNew(mic.getId(), false));
-                        spinner.setVisibility(View.GONE);
-                        getActivity().invalidateOptionsMenu();
                     }
                 });
                 break;
