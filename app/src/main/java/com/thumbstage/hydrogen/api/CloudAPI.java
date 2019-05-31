@@ -211,15 +211,16 @@ public class CloudAPI {
         } else {
             messageType = MessageType.AUDIO;
         }
-        AVIMTypedMessage msg = line2Message(line, messageType);
+        final AVIMTypedMessage msg = line2Message(line, messageType);
         avMic.sendMessage(msg, new AVIMConversationCallback() {
             @Override
             public void done(AVIMException e) {
                 if(e == null) {
                     // TODO: 5/13/2019 addTopicOneLine may remove to server sometime
-                    // replace line content if it is audio
+                    if(msg instanceof AVIMAudioMessage) {
+                        line.setWhat(((AVIMAudioMessage) msg).getFileUrl());
+                    }
                     addTopicOneLine(mic.getTopic(), line, iReturnBool);
-                    // TODO: 5/31/2019 need setting url to line here
                 } else {
                     iReturnBool.callback(false);
                 }
