@@ -28,7 +28,6 @@ public class LineAudioDirectionViewHolder extends RecyclerView.ViewHolder {
 
     public void setLine(LineEx line) {
         this.line = line;
-        content.setText(line.getWhat());
         if(line.isNeedShowTime()) {
             time.setText(StringUtil.date2String4Show(line.getWhen()));
         } else {

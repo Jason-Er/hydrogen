@@ -217,7 +217,9 @@ public class CloudAPI {
             public void done(AVIMException e) {
                 if(e == null) {
                     // TODO: 5/13/2019 addTopicOneLine may remove to server sometime
+                    // replace line content if it is audio
                     addTopicOneLine(mic.getTopic(), line, iReturnBool);
+                    // TODO: 5/31/2019 need setting url to line here
                 } else {
                     iReturnBool.callback(false);
                 }
@@ -858,12 +860,12 @@ public class CloudAPI {
             break;
             case AUDIO:
                 try {
-                    Date now = new Date();
-                    AVFile file = AVFile.withAbsoluteLocalPath(getCurrentUserId()+"-"+now.getTime(),line.getWhat());
+                    AVFile file = AVFile.withAbsoluteLocalPath(getCurrentUserId()+".mp3",line.getWhat());
                     message = new AVIMAudioMessage(file);
                     Map<String, Object> attributes = new HashMap<>();
                     attributes.put("type", line.getLineType().name());
                     ((AVIMAudioMessage)message).setAttrs(attributes);
+                    // file.saveInBackground(); // if donot show in _File then save it manually
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }

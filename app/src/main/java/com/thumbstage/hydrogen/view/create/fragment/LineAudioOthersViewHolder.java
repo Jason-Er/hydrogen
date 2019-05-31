@@ -30,7 +30,6 @@ public class LineAudioOthersViewHolder extends RecyclerView.ViewHolder {
     @BindView(R.id.item_line_left_iv_avatar)
     ImageView avatar;
 
-
     public LineAudioOthersViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
@@ -57,7 +56,6 @@ public class LineAudioOthersViewHolder extends RecyclerView.ViewHolder {
     public void setLine(@NonNull LineEx line) {
         this.line = line;
         GlideUtil.inject(itemView.getContext(), line.getWho().getAvatar(), avatar);
-        // content.setText(line.getWhat());
         if(line.isNeedShowTime()) {
             time.setText(StringUtil.date2String4Show(line.getWhen()));
         } else {

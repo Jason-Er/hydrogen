@@ -31,7 +31,6 @@ public class LineAudioMineViewHolder extends RecyclerView.ViewHolder {
     public void setLine(LineEx line) {
         this.line = line;
         GlideUtil.inject(itemView.getContext(), line.getWho().getAvatar(), avatar);
-        // content.setText(line.getWhat());
         if(line.isNeedShowTime()) {
             time.setText(StringUtil.date2String4Show(line.getWhen()));
         } else {
