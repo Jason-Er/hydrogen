@@ -8,6 +8,9 @@ import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.Topic;
 import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.view.common.ListDelegationAdapter;
+import com.thumbstage.hydrogen.view.create.type.LineAudioDirection;
+import com.thumbstage.hydrogen.view.create.type.LineAudioMine;
+import com.thumbstage.hydrogen.view.create.type.LineAudioOthers;
 import com.thumbstage.hydrogen.view.create.type.LineEx;
 import com.thumbstage.hydrogen.view.create.type.LineTextDirection;
 import com.thumbstage.hydrogen.view.create.type.LineTextMine;
@@ -30,6 +33,9 @@ public class TopicAdapter extends ListDelegationAdapter {
         delegatesManager.addDelegate(new LineTextOthersDelegate(view_type.LINE_TEXT_LEFT.ordinal()));
         delegatesManager.addDelegate(new LineTextMineDelegate(view_type.LINE_TEXT_RIGHT.ordinal()));
         delegatesManager.addDelegate(new LineTextDirectionDelegate(view_type.LINE_TEXT_CENTER.ordinal()));
+        delegatesManager.addDelegate(new LineAudioOthersDelegate(view_type.LINE_AUDIO_LEFT.ordinal()));
+        delegatesManager.addDelegate(new LineAudioMineDelegate(view_type.LINE_AUDIO_RIGHT.ordinal()));
+        delegatesManager.addDelegate(new LineAudioDirectionDelegate(view_type.LINE_AUDIO_CENTER.ordinal()));
     }
 
     public void setMic(Mic mic) {
@@ -132,7 +138,7 @@ public class TopicAdapter extends ListDelegationAdapter {
                 if( !URLUtil.isValidUrl(line.getWhat()) ) {
                     local = new LineTextDirection(line);
                 } else {// voice then
-
+                    local = new LineAudioDirection(line);
                 }
                 break;
             case LT_DIALOGUE:
@@ -143,7 +149,11 @@ public class TopicAdapter extends ListDelegationAdapter {
                         local = new LineTextMine(line);
                     }
                 } else {// voice then
-
+                    if(!line.getWho().equals(user)) {
+                        local = new LineAudioOthers(line);
+                    } else {
+                        local = new LineAudioMine(line);
+                    }
                 }
                 break;
         }

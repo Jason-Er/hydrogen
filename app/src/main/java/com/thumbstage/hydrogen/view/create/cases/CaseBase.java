@@ -109,8 +109,8 @@ public class CaseBase implements ITopicFragmentFunction,
                 Log.i(TAG, "handleBottomBarEvent time:"+sdf.format(((Line)event.getData()).getWhen()));
                 addLine((Line) event.getData());
                 break;
-            case "voice":
-
+            case "audio":
+                addLine((Line) event.getData());
                 break;
         }
     }

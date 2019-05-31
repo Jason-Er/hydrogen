@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
+import android.webkit.URLUtil;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -28,12 +29,14 @@ import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
+import com.avos.avoscloud.im.v2.messages.AVIMAudioMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.thumbstage.hydrogen.app.Config;
 import com.thumbstage.hydrogen.database.entity.MicEntity;
 import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.model.bo.HyFile;
 import com.thumbstage.hydrogen.model.bo.LineType;
+import com.thumbstage.hydrogen.model.bo.MessageType;
 import com.thumbstage.hydrogen.model.bo.Privilege;
 import com.thumbstage.hydrogen.model.bo.TopicTag;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
@@ -202,7 +205,13 @@ public class CloudAPI {
     public void sendLine(final Mic mic, final Line line, final IReturnBool iReturnBool) {
         AVIMClient client = AVIMClient.getInstance(AVUser.getCurrentUser());
         AVIMConversation avMic = client.getConversation(mic.getId());
-        AVIMTypedMessage msg = line2Message(line);
+        MessageType messageType = MessageType.TEXT;
+        if( !URLUtil.isValidUrl(line.getWhat()) ) {
+            messageType = MessageType.TEXT;
+        } else {
+            messageType = MessageType.AUDIO;
+        }
+        AVIMTypedMessage msg = line2Message(line, messageType);
         avMic.sendMessage(msg, new AVIMConversationCallback() {
             @Override
             public void done(AVIMException e) {
@@ -836,12 +845,30 @@ public class CloudAPI {
         });
     }
 
-    private AVIMTypedMessage line2Message(Line line) {
-        AVIMTextMessage message = new AVIMTextMessage();
-        message.setText(line.getWhat());
-        Map<String, Object> attributes = new HashMap<>();
-        attributes.put("type", line.getLineType().name());
-        message.setAttrs(attributes);
+    private AVIMTypedMessage line2Message(Line line, MessageType messageType) {
+        AVIMTypedMessage message = null;
+        switch (messageType) {
+            case TEXT: {
+                message = new AVIMTextMessage();
+                ((AVIMTextMessage) message).setText(line.getWhat());
+                Map<String, Object> attributes = new HashMap<>();
+                attributes.put("type", line.getLineType().name());
+                ((AVIMTextMessage) message).setAttrs(attributes);
+            }
+            break;
+            case AUDIO:
+                try {
+                    Date now = new Date();
+                    AVFile file = AVFile.withAbsoluteLocalPath(getCurrentUserId()+"-"+now.getTime(),line.getWhat());
+                    message = new AVIMAudioMessage(file);
+                    Map<String, Object> attributes = new HashMap<>();
+                    attributes.put("type", line.getLineType().name());
+                    ((AVIMAudioMessage)message).setAttrs(attributes);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                break;
+        }
         return message;
     }
 
