@@ -1,6 +1,7 @@
 package com.thumbstage.hydrogen.database.dao;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.paging.DataSource;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -42,6 +43,12 @@ public interface MicDao {
 
     @Query("SELECT * FROM mic WHERE topic_id IN ( SELECT id FROM topic WHERE id IN ( SELECT topic_id FROM topic_tag WHERE tag =:tag) AND id IN ( SELECT topic_id FROM topic_user WHERE user_id =:userId ) AND is_finished =:isFinished ) ORDER BY has_new DESC, update_at DESC LIMIT :perPageNum OFFSET :offset")
     LiveData<List<MicEntity>> get(String tag, String userId, boolean isFinished, int perPageNum, int offset);
+
+    @Query("SELECT * FROM mic WHERE topic_id IN ( SELECT id FROM topic WHERE id IN ( SELECT topic_id FROM topic_tag WHERE tag =:tag) AND is_finished =:isFinished) ORDER BY update_at DESC")
+    DataSource.Factory<Integer, MicEntity> get(String tag, boolean isFinished);
+
+    @Query("SELECT * FROM mic WHERE topic_id IN ( SELECT id FROM topic WHERE id IN ( SELECT topic_id FROM topic_tag WHERE tag =:tag) AND id IN ( SELECT topic_id FROM topic_user WHERE user_id =:userId ) AND is_finished =:isFinished ) ORDER BY has_new DESC, update_at DESC")
+    DataSource.Factory<Integer, MicEntity> get(String tag, String userId, boolean isFinished);
 
     @Query("UPDATE mic SET topic_id =:topicId, last_refresh =:lastFresh WHERE id =:id")
     void update(String id, String topicId, Date lastFresh);

@@ -4,6 +4,7 @@ import android.arch.core.util.Function;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
+import android.arch.paging.DataSource;
 import android.text.TextUtils;
 
 import com.thumbstage.hydrogen.database.entity.ContactEntity;
@@ -107,13 +108,15 @@ public class ModelDB {
 
     private void saveUserCan(String topicId, Map<String, Set<CanOnTopic>> userCanMap) {
         List<TopicUserCanEntity> entities = new ArrayList<>();
-        for(String userId: userCanMap.keySet()) {
-            for (CanOnTopic can : userCanMap.get(userId)) {
-                TopicUserCanEntity entity = new TopicUserCanEntity();
-                entity.setTopicId(topicId);
-                entity.setUserId(userId);
-                entity.setCan(can.name());
-                entities.add(entity);
+        if(userCanMap != null) {
+            for (String userId : userCanMap.keySet()) {
+                for (CanOnTopic can : userCanMap.get(userId)) {
+                    TopicUserCanEntity entity = new TopicUserCanEntity();
+                    entity.setTopicId(topicId);
+                    entity.setUserId(userId);
+                    entity.setCan(can.name());
+                    entities.add(entity);
+                }
             }
         }
         database.topicUserCanDao().insert(entities);
@@ -131,25 +134,27 @@ public class ModelDB {
     }
 
     public void saveMembers(List<String> members, String topicId) {
-        List<String> userIds = new ArrayList<>();
-        userIds.addAll(members);
+        if(members!=null && members.size()>0) {
+            List<String> userIds = new ArrayList<>();
+            userIds.addAll(members);
 
-        List<UserEntity> userEntityList = database.userDao().get(members);
-        for(UserEntity entity: userEntityList) {
-            if(members.contains(entity.getId())) {
-                userIds.remove(entity.getId());
+            List<UserEntity> userEntityList = database.userDao().get(members);
+            for (UserEntity entity : userEntityList) {
+                if (members.contains(entity.getId())) {
+                    userIds.remove(entity.getId());
+                }
             }
+            userEntityList.clear();
+            saveUserIds(userIds);
+            List<TopicUserEntity> topicUserEntityList = new ArrayList<>();
+            for (String userId : members) {
+                TopicUserEntity entity = new TopicUserEntity();
+                entity.setTopicId(topicId);
+                entity.setUserId(userId);
+                topicUserEntityList.add(entity);
+            }
+            database.topicUserDao().insert(topicUserEntityList);
         }
-        userEntityList.clear();
-        saveUserIds(userIds);
-        List<TopicUserEntity> topicUserEntityList = new ArrayList<>();
-        for(String userId: members) {
-            TopicUserEntity entity = new TopicUserEntity();
-            entity.setTopicId(topicId);
-            entity.setUserId(userId);
-            topicUserEntityList.add(entity);
-        }
-        database.topicUserDao().insert(topicUserEntityList);
 
     }
 
@@ -251,6 +256,28 @@ public class ModelDB {
     // endregion
 
     // region getter
+    public DataSource.Factory<Integer, Mic> getMic(TopicTag tag, boolean isFinished) {
+        return database.micDao()
+                .get(tag.name(),isFinished)
+                .map(new Function<MicEntity, Mic>() {
+                    @Override
+                    public Mic apply(MicEntity input) {
+                        return convert2Mic(input);
+                    }
+                });
+    }
+
+    public DataSource.Factory<Integer, Mic> getMic(TopicTag tag, String userId, boolean isFinished) {
+        return database.micDao()
+                .get(tag.name(),userId,isFinished)
+                .map(new Function<MicEntity, Mic>() {
+                    @Override
+                    public Mic apply(MicEntity input) {
+                        return convert2Mic(input);
+                    }
+                });
+    }
+
     private Map<String, MutableLiveData<List<Mic>>> liveDataMap = new HashMap<>();
     public LiveData<List<Mic>> getMic(TopicTag tag, String userId, boolean isFinished, int pageNum) {
 
@@ -353,6 +380,15 @@ public class ModelDB {
         UserEntity entity = database.userDao().get(userId);
         User user = new User(entity.getId(), entity.getName(), entity.getAvatar());
         return user;
+    }
+
+    private Mic convert2Mic(MicEntity entity) {
+        Topic topic = getTopic(entity.getTopicId());
+        Mic mic = new Mic();
+        mic.setTopic(topic);
+        mic.setId(entity.getId());
+        mic.setHasNew(entity.getHasNew());
+        return mic;
     }
 
     public Mic getMic(String id) {

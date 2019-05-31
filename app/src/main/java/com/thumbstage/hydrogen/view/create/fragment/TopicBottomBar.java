@@ -150,9 +150,13 @@ public class TopicBottomBar extends LinearLayout {
         recordBtn.setRecordEventListener(new VoiceRecordButton.RecordEventListener() {
             @Override
             public void onFinishedRecord(final String audioPath, int secs) {
-                if (secs > 0)
+                if (secs > 0) {
+                    int position = layoutManager.findFirstCompletelyVisibleItemPosition();
+                    LineType lineType = lineTypeAdapter.getLineType(position);
+                    Line line = new Line(null, new Date(), audioPath, lineType);
                     EventBus.getDefault().post(
-                            new TopicBottomBarEvent(audioPath, "voice"));
+                            new TopicBottomBarEvent(line, "audio"));
+                }
                 recordBtn.setSavePath(PathUtils.getRecordPathByCurrentTime(getContext()));
             }
 

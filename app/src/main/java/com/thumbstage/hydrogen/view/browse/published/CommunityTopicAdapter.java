@@ -1,8 +1,8 @@
 package com.thumbstage.hydrogen.view.browse.published;
 
-import com.thumbstage.hydrogen.view.common.ListDelegationAdapter;
+import com.thumbstage.hydrogen.view.common.PagedListDelegationAdapter;
 
-public class CommunityTopicAdapter extends ListDelegationAdapter {
+public class CommunityTopicAdapter extends PagedListDelegationAdapter {
 
     enum view_type {
         PUBLISHED_OPENED

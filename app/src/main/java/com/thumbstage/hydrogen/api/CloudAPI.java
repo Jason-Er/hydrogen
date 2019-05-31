@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
+import android.webkit.URLUtil;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -28,10 +29,14 @@ import com.avos.avoscloud.im.v2.AVIMTypedMessage;
 import com.avos.avoscloud.im.v2.callback.AVIMClientCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCallback;
 import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
+import com.avos.avoscloud.im.v2.messages.AVIMAudioMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
+import com.thumbstage.hydrogen.app.Config;
+import com.thumbstage.hydrogen.database.entity.MicEntity;
 import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.model.bo.HyFile;
 import com.thumbstage.hydrogen.model.bo.LineType;
+import com.thumbstage.hydrogen.model.bo.MessageType;
 import com.thumbstage.hydrogen.model.bo.Privilege;
 import com.thumbstage.hydrogen.model.bo.TopicTag;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
@@ -200,13 +205,21 @@ public class CloudAPI {
     public void sendLine(final Mic mic, final Line line, final IReturnBool iReturnBool) {
         AVIMClient client = AVIMClient.getInstance(AVUser.getCurrentUser());
         AVIMConversation avMic = client.getConversation(mic.getId());
-        AVIMTypedMessage msg = line2Message(line);
+        MessageType messageType = MessageType.TEXT;
+        if( !URLUtil.isValidUrl(line.getWhat()) ) {
+            messageType = MessageType.TEXT;
+        } else {
+            messageType = MessageType.AUDIO;
+        }
+        AVIMTypedMessage msg = line2Message(line, messageType);
         avMic.sendMessage(msg, new AVIMConversationCallback() {
             @Override
             public void done(AVIMException e) {
                 if(e == null) {
                     // TODO: 5/13/2019 addTopicOneLine may remove to server sometime
+                    // replace line content if it is audio
                     addTopicOneLine(mic.getTopic(), line, iReturnBool);
+                    // TODO: 5/31/2019 need setting url to line here
                 } else {
                     iReturnBool.callback(false);
                 }
@@ -492,6 +505,64 @@ public class CloudAPI {
         });
     }
 
+    private List<Mic> convert2Mic(List<AVObject> avObjects) {
+        List<Mic> mics = new ArrayList<>();
+        for(AVObject avObject: avObjects) {
+            Mic mic = new Mic();
+            mic.setId(avObject.getObjectId());
+            mic.setUpdateAt(avObject.getUpdatedAt());
+            mic.setTopic(convert2TopicMini(avObject.getAVObject(FieldName.FIELD_TOPIC.name)));
+            mics.add(mic);
+        }
+        return mics;
+    }
+
+    private Topic convert2TopicMini(AVObject avTopic) {
+        String id = avTopic.getObjectId();
+        String name = (String) avTopic.get(FieldName.FIELD_NAME.name);
+        List<String> tags = avTopic.getList(FieldName.FIELD_TAG.name);
+        String brief = (String) avTopic.get(FieldName.FIELD_BRIEF.name);
+        boolean isFinished = avTopic.getBoolean(FieldName.FIELD_IS_FINISHED.name);
+        Date lastRefresh = avTopic.getUpdatedAt();
+        User user = convert2User(avTopic.getAVObject(FieldName.FIELD_SPONSOR.name));
+        List<String> membersIds = avTopic.getList(FieldName.FIELD_MEMBER.name);
+
+        Topic topic = new Topic();
+        topic.setTags(convert2TopicTag(tags));
+        topic.setId(id);
+        topic.setName(name);
+        topic.setBrief(brief);
+        topic.setSponsor(user);
+        topic.setMembers(convert2UserMini(membersIds));
+        topic.setFinished(isFinished);
+        topic.setUpdateAt(lastRefresh);
+        return topic;
+    }
+
+    private List<User> convert2UserMini(List<String> userId) {
+        List<User> users = new ArrayList<>();
+        for(String id: userId) {
+            User user = new User();
+            user.setId(id);
+            users.add(user);
+        }
+        return users;
+    }
+
+    private User convert2User(AVObject avUser) {
+        User user = new User();
+        user.setId(avUser.getObjectId());
+        user.setName((String) avUser.get(FieldName.FIELD_USERNAME.name));
+        user.setAvatar((String) avUser.get(FieldName.FIELD_AVATAR.name));
+        List<String> prilist = avUser.getList(FieldName.FIELD_PRIVILEGE.name);
+        Set<Privilege> privileges = new LinkedHashSet<>();
+        for(String str: prilist) {
+            privileges.add(Privilege.valueOf(str));
+        }
+        user.setPrivileges(privileges);
+        return user;
+    }
+
     public void getMic(TopicTag tag, String userId, boolean isFinished, int pageNum, final IReturnMicList iReturnMicList) {
         AVQuery<AVObject> avQuery = new AVQuery<>(TableName.TABLE_MIC.name);
         avQuery.include(FieldName.FIELD_TOPIC.name);
@@ -504,27 +575,13 @@ public class CloudAPI {
         avTopicQuery.whereEqualTo(FieldName.FIELD_IS_FINISHED.name, isFinished);
         avQuery.whereMatchesQuery(FieldName.FIELD_TOPIC.name, avTopicQuery);
         avQuery.orderByDescending(FieldName.FIELD_UPDATE_AT.name);
-        avQuery.limit(15);
-        avQuery.skip(0);
+        avQuery.limit(Config.PAGE_SIZE);
+        avQuery.skip(pageNum * Config.PAGE_SIZE);
         avQuery.findInBackground(new FindCallback<AVObject>() {
             @Override
             public void done(final List<AVObject> avObjects, AVException avException) {
                 if(avException == null) {
-                    final List<Mic> mices = new ArrayList<>();
-                    for(final AVObject avObject: avObjects) {
-                        AVObject avTopic = avObject.getAVObject(FieldName.FIELD_TOPIC.name);
-                        getTopic(avTopic, new IReturnTopic() {
-                            @Override
-                            public void callback(Topic topic) {
-                                Mic mic = new Mic();
-                                mic.setId(avObject.getObjectId());
-                                mic.setTopic(topic);
-                                mic.setUpdateAt(avObject.getUpdatedAt());
-                                mices.add(mic);
-                            }
-                        });
-                    }
-                    iReturnMicList.callback(mices);
+                    iReturnMicList.callback(convert2Mic(avObjects));
                 } else {
                     avException.printStackTrace();
                 }
@@ -790,12 +847,30 @@ public class CloudAPI {
         });
     }
 
-    private AVIMTypedMessage line2Message(Line line) {
-        AVIMTextMessage message = new AVIMTextMessage();
-        message.setText(line.getWhat());
-        Map<String, Object> attributes = new HashMap<>();
-        attributes.put("type", line.getLineType().name());
-        message.setAttrs(attributes);
+    private AVIMTypedMessage line2Message(Line line, MessageType messageType) {
+        AVIMTypedMessage message = null;
+        switch (messageType) {
+            case TEXT: {
+                message = new AVIMTextMessage();
+                ((AVIMTextMessage) message).setText(line.getWhat());
+                Map<String, Object> attributes = new HashMap<>();
+                attributes.put("type", line.getLineType().name());
+                ((AVIMTextMessage) message).setAttrs(attributes);
+            }
+            break;
+            case AUDIO:
+                try {
+                    AVFile file = AVFile.withAbsoluteLocalPath(getCurrentUserId()+".mp3",line.getWhat());
+                    message = new AVIMAudioMessage(file);
+                    Map<String, Object> attributes = new HashMap<>();
+                    attributes.put("type", line.getLineType().name());
+                    ((AVIMAudioMessage)message).setAttrs(attributes);
+                    // file.saveInBackground(); // if donot show in _File then save it manually
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+                break;
+        }
         return message;
     }
 

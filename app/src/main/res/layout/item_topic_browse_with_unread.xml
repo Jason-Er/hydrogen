@@ -3,11 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
+    <!--ImageView
         android:id="@+id/item_browse_topic_setting"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:contentDescription="@string/item_topic_setting" />
+        android:contentDescription="@string/item_topic_setting" /-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -24,7 +24,7 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/item_browse_topic_avatar"
+                android:id="@+id/item_browse_topic_badge"
                 style="@style/HyAvatar.Large"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"

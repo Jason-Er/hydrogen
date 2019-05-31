@@ -77,6 +77,7 @@ public class TopicRepository {
     }
 
     public LiveData<Mic> attendMic(final String micId) {
+        micLiveData.setValue(null);
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -93,6 +94,7 @@ public class TopicRepository {
     }
 
     public LiveData<Mic> pickUpMic(final String micId) {
+        micLiveData.setValue(null);
         refreshMic(micLiveData, micId);
         return micLiveData;
     }

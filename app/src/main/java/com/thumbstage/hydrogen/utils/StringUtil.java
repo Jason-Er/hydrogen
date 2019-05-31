@@ -64,4 +64,9 @@ public class StringUtil {
         }
         return status;
     }
+
+    public String getFileType(String url) {
+        String fileTyle=url.substring(url.lastIndexOf(".")+1,url.length());
+        return fileTyle;
+    }
 }
