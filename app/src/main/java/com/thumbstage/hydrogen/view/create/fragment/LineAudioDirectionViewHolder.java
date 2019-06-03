@@ -5,14 +5,18 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.event.TopicItemEvent;
 import com.thumbstage.hydrogen.model.vo.Line;
+import com.thumbstage.hydrogen.utils.IMAudioHelper;
 import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.view.create.type.LineEx;
+
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class LineAudioDirectionViewHolder extends RecyclerView.ViewHolder {
+public class LineAudioDirectionViewHolder extends RecyclerView.ViewHolder implements IExecuteSequentially {
 
     Line line;
 
@@ -34,5 +38,16 @@ public class LineAudioDirectionViewHolder extends RecyclerView.ViewHolder {
             time.setVisibility(View.GONE);
         }
         imPlayButton.setPath(line.getWhat());
+        imPlayButton.setFinishCallback(new IMAudioHelper.AudioFinishCallback() {
+            @Override
+            public void onFinish() {
+                EventBus.getDefault().post(new TopicItemEvent(LineAudioDirectionViewHolder.this,"LineAudioFinish"));
+            }
+        });
+    }
+
+    @Override
+    public void execute() {
+        imPlayButton.callOnClick();
     }
 }

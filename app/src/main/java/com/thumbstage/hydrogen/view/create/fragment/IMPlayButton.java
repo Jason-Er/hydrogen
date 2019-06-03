@@ -18,6 +18,7 @@ public class IMPlayButton extends AppCompatTextView implements View.OnClickListe
     private String path;
     private boolean leftSide;
     private AnimationDrawable anim;
+    private IMAudioHelper.AudioFinishCallback finishCallback;
 
     public IMPlayButton(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -79,6 +80,9 @@ public class IMPlayButton extends AppCompatTextView implements View.OnClickListe
             IMAudioHelper.getInstance().addFinishCallback(new IMAudioHelper.AudioFinishCallback() {
                 @Override
                 public void onFinish() {
+                    if(finishCallback!=null) {
+                        finishCallback.onFinish();
+                    }
                     stopRecordAnimation();
                 }
             });
@@ -99,6 +103,10 @@ public class IMPlayButton extends AppCompatTextView implements View.OnClickListe
         if (anim != null) {
             anim.stop();
         }
+    }
+
+    public void setFinishCallback(IMAudioHelper.AudioFinishCallback finishCallback) {
+        this.finishCallback = finishCallback;
     }
 
 }
