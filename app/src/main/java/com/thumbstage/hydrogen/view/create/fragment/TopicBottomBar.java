@@ -16,6 +16,7 @@ import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.LineTypeEvent;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
 import com.thumbstage.hydrogen.model.bo.LineType;
+import com.thumbstage.hydrogen.model.bo.MessageType;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.utils.DensityUtil;
 import com.thumbstage.hydrogen.utils.PathUtils;
@@ -128,6 +129,7 @@ public class TopicBottomBar extends LinearLayout {
         }, MIN_INTERVAL_SEND_MESSAGE);
 
         Line line = new Line(null, new Date(), content, lineType);
+        line.setMessageType(MessageType.TEXT);
         EventBus.getDefault().post(
                 new TopicBottomBarEvent(line, "text"));
     }
@@ -154,6 +156,7 @@ public class TopicBottomBar extends LinearLayout {
                     int position = layoutManager.findFirstCompletelyVisibleItemPosition();
                     LineType lineType = lineTypeAdapter.getLineType(position);
                     Line line = new Line(null, new Date(), audioPath, lineType);
+                    line.setMessageType(MessageType.AUDIO);
                     EventBus.getDefault().post(
                             new TopicBottomBarEvent(line, "audio"));
                 }

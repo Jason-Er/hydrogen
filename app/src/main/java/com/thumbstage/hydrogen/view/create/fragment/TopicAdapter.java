@@ -135,25 +135,31 @@ public class TopicAdapter extends ListDelegationAdapter {
         LineEx local = null;
         switch (line.getLineType()) {
             case LT_DIRECTION:
-                if( !URLUtil.isValidUrl(line.getWhat()) ) {
-                    local = new LineTextDirection(line);
-                } else {// voice then
-                    local = new LineAudioDirection(line);
+                switch (line.getMessageType()) {
+                    case TEXT:
+                        local = new LineTextDirection(line);
+                        break;
+                    case AUDIO:
+                        local = new LineAudioDirection(line);
+                        break;
                 }
                 break;
             case LT_DIALOGUE:
-                if( !URLUtil.isValidUrl(line.getWhat()) ) {
-                    if(!line.getWho().equals(user)) {
-                        local = new LineTextOthers(line);
-                    } else {
-                        local = new LineTextMine(line);
-                    }
-                } else {// voice then
-                    if(!line.getWho().equals(user)) {
-                        local = new LineAudioOthers(line);
-                    } else {
-                        local = new LineAudioMine(line);
-                    }
+                switch (line.getMessageType()) {
+                    case TEXT:
+                        if(!line.getWho().equals(user)) {
+                            local = new LineTextOthers(line);
+                        } else {
+                            local = new LineTextMine(line);
+                        }
+                        break;
+                    case AUDIO:
+                        if(!line.getWho().equals(user)) {
+                            local = new LineAudioOthers(line);
+                        } else {
+                            local = new LineAudioMine(line);
+                        }
+                        break;
                 }
                 break;
         }

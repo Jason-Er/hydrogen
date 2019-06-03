@@ -205,13 +205,7 @@ public class CloudAPI {
     public void sendLine(final Mic mic, final Line line, final IReturnBool iReturnBool) {
         AVIMClient client = AVIMClient.getInstance(AVUser.getCurrentUser());
         AVIMConversation avMic = client.getConversation(mic.getId());
-        MessageType messageType = MessageType.TEXT;
-        if( !URLUtil.isValidUrl(line.getWhat()) ) {
-            messageType = MessageType.TEXT;
-        } else {
-            messageType = MessageType.AUDIO;
-        }
-        final AVIMTypedMessage msg = line2Message(line, messageType);
+        final AVIMTypedMessage msg = line2Message(line);
         avMic.sendMessage(msg, new AVIMConversationCallback() {
             @Override
             public void done(AVIMException e) {
@@ -647,16 +641,6 @@ public class CloudAPI {
         return userIds;
     }
 
-    private User findUser(List<User> users, String userId) {
-        User user = null;
-        for(User u: users) {
-            if(u.getId().equals(userId)) {
-                user = u;
-            }
-        }
-        return user;
-    }
-
     private void getTopic(final AVObject avTopic, final IReturnTopic iReturnTopic) {
         if(avTopic != null) {
             final AVFile avFile = avTopic.getAVFile(FieldName.FIELD_SETTING.name);
@@ -671,16 +655,7 @@ public class CloudAPI {
             getUsers(membersIds, new IReturnUsers() {
                 @Override
                 public void callback(List<User> users) {
-                    List<Line> dialogue = new ArrayList<>();
-                    for (Map map : datalist) {
-                        if (map.size() != 0) {
-                            dialogue.add(new Line(
-                                    findUser(users, (String) map.get("who")),
-                                    StringUtil.string2Date((String) map.get("when")),
-                                    (String) map.get("what"),
-                                    (LineType.valueOf((String) map.get("type")))));
-                        }
-                    }
+                    List<Line> dialogue = DataConvertUtil.convert2Line(datalist, users);
                     AVObject avStartedBy = avTopic.getAVObject(FieldName.FIELD_SPONSOR.name);
                     User user = avObject2User(avStartedBy);
                     Setting setting;
@@ -848,9 +823,9 @@ public class CloudAPI {
         });
     }
 
-    private AVIMTypedMessage line2Message(Line line, MessageType messageType) {
+    private AVIMTypedMessage line2Message(Line line) {
         AVIMTypedMessage message = null;
-        switch (messageType) {
+        switch (line.getMessageType()) {
             case TEXT: {
                 message = new AVIMTextMessage();
                 ((AVIMTextMessage) message).setText(line.getWhat());
