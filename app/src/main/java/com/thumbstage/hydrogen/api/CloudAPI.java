@@ -1020,9 +1020,11 @@ public class CloudAPI {
         });
     }
 
+    private User defaultUser = new User(StringUtil.DEFAULT_USERID, StringUtil.DEFAULT_USERID, "");
+
     public User getCurrentUser() {
-        AVUser avUser = AVUser.getCurrentUser();
-        return avUser2User(avUser);
+        User user = avUser2User(AVUser.getCurrentUser());
+        return user != null? user : defaultUser;
     }
 
     private User avUser2User(AVUser avUser) {
