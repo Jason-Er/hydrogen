@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.AnimationDrawable;
 import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.thumbstage.hydrogen.R;
@@ -80,6 +81,7 @@ public class IMPlayButton extends AppCompatTextView implements View.OnClickListe
             IMAudioHelper.getInstance().addFinishCallback(new IMAudioHelper.AudioFinishCallback() {
                 @Override
                 public void onFinish() {
+                    Log.i("IMPlayButton","onFinish"+IMPlayButton.this);
                     if(finishCallback!=null) {
                         finishCallback.onFinish();
                     }

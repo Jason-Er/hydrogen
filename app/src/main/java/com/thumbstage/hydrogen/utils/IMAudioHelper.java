@@ -83,7 +83,6 @@ public class IMAudioHelper {
         if (onceStart) {
             mediaPlayer.reset();
         }
-        tryRunFinishCallback();
         audioPath = path;
         try {
             mediaPlayer.setDataSource(path);
