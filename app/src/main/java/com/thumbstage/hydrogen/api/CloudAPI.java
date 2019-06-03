@@ -420,7 +420,7 @@ public class CloudAPI {
             setMemberPrivilege2Topic(avTopic, getCurrentUserId(), privileges);
         }
         //endregion
-
+        processAudioLines(topic.getDialogue());
         List<Map> list = DataConvertUtil.convert2AVObject(topic.getDialogue());
         avTopic.put(FieldName.FIELD_DIALOGUE.name, list);
         avTopic.saveInBackground(new SaveCallback() {
@@ -434,6 +434,23 @@ public class CloudAPI {
                 }
             }
         });
+    }
+
+    private void processAudioLines(List<Line> dialogue) {
+        for(Line line: dialogue) {
+            if(line.getMessageType() == MessageType.AUDIO) {
+                try {
+                    String path = line.getWhat();
+                    AVFile avFile = AVFile.withAbsoluteLocalPath(path.substring(path.lastIndexOf("/")+1),line.getWhat());
+                    avFile.save();
+                    line.setWhat(avFile.getUrl());
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (AVException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     private void setMemberPrivilege2Topic(AVObject avTopic, String userId, String[] privileges) {
