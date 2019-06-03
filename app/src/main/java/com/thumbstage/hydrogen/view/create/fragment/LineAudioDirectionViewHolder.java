@@ -18,8 +18,8 @@ public class LineAudioDirectionViewHolder extends RecyclerView.ViewHolder {
 
     @BindView(R.id.item_line_center_tv_time)
     TextView time;
-    @BindView(R.id.item_line_center_text_tv_content)
-    TextView content;
+    @BindView(R.id.chat_item_audio_play_btn)
+    IMPlayButton imPlayButton;
 
     public LineAudioDirectionViewHolder(View itemView) {
         super(itemView);
@@ -33,5 +33,6 @@ public class LineAudioDirectionViewHolder extends RecyclerView.ViewHolder {
         } else {
             time.setVisibility(View.GONE);
         }
+        imPlayButton.setPath(line.getWhat());
     }
 }

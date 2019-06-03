@@ -42,7 +42,7 @@ public class LineAudioDirectionDelegate implements IAdapterDelegate<List> {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_line_center_layout, parent, false);
         ViewGroup contentContainer = view.findViewById(R.id.item_line_center_layout_content);
-        View.inflate(view.getContext(), R.layout.item_line_center_text, contentContainer);
+        View.inflate(view.getContext(), R.layout.item_line_left_audio, contentContainer);
         return new LineAudioDirectionViewHolder(view);
     }
 
