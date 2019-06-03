@@ -74,11 +74,7 @@ public class UserRepository {
     }
 
     public User getCurrentUser() {
-        User user = cloudAPI.getCurrentUser();
-        if( user == null) {
-            user = defaultUser;
-        }
-        return user;
+        return cloudAPI.getCurrentUser();
     }
 
     public void signOut() {

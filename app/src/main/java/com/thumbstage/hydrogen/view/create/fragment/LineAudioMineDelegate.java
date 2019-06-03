@@ -43,11 +43,11 @@ public class LineAudioMineDelegate implements IAdapterDelegate<List> {
                 .inflate(R.layout.item_line_right_layout, parent, false);
         ViewGroup contentContainer = view.findViewById(R.id.item_line_right_layout_content);
         View.inflate(view.getContext(), R.layout.item_line_right_audio, contentContainer);
-        return new LineTextMineViewHolder(view);
+        return new LineAudioMineViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull List items, int position, @NonNull RecyclerView.ViewHolder holder) {
-        ((LineTextMineViewHolder)holder).setLine((LineEx) items.get(position));
+        ((LineAudioMineViewHolder)holder).setLine((LineEx) items.get(position));
     }
 }

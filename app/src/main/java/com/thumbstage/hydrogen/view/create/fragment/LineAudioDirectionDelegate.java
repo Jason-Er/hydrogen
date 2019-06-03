@@ -42,12 +42,12 @@ public class LineAudioDirectionDelegate implements IAdapterDelegate<List> {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_line_center_layout, parent, false);
         ViewGroup contentContainer = view.findViewById(R.id.item_line_center_layout_content);
-        View.inflate(view.getContext(), R.layout.item_line_center_text, contentContainer);
-        return new LineTextDirectionViewHolder(view);
+        View.inflate(view.getContext(), R.layout.item_line_left_audio, contentContainer);
+        return new LineAudioDirectionViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull List items, int position, @NonNull RecyclerView.ViewHolder holder) {
-        ((LineTextDirectionViewHolder)holder).setLine((LineEx) items.get(position));
+        ((LineAudioDirectionViewHolder)holder).setLine((LineEx) items.get(position));
     }
 }

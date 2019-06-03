@@ -6,15 +6,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.event.TopicItemEvent;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.utils.GlideUtil;
+import com.thumbstage.hydrogen.utils.IMAudioHelper;
 import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.view.create.type.LineEx;
+
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class LineAudioMineViewHolder extends RecyclerView.ViewHolder {
+public class LineAudioMineViewHolder extends RecyclerView.ViewHolder implements IExecuteSequentially {
 
     Line line;
 
@@ -22,6 +26,8 @@ public class LineAudioMineViewHolder extends RecyclerView.ViewHolder {
     TextView time;
     @BindView(R.id.item_line_right_iv_avatar)
     ImageView avatar;
+    @BindView(R.id.chat_item_audio_play_btn)
+    IMPlayButton imPlayButton;
 
     public LineAudioMineViewHolder(View itemView) {
         super(itemView);
@@ -36,5 +42,17 @@ public class LineAudioMineViewHolder extends RecyclerView.ViewHolder {
         } else {
             time.setVisibility(View.GONE);
         }
+        imPlayButton.setPath(line.getWhat());
+        imPlayButton.setFinishCallback(new IMAudioHelper.AudioFinishCallback() {
+            @Override
+            public void onFinish() {
+                EventBus.getDefault().post(new TopicItemEvent(LineAudioMineViewHolder.this,"LineAudioFinish"));
+            }
+        });
+    }
+
+    @Override
+    public void execute() {
+        imPlayButton.callOnClick();
     }
 }

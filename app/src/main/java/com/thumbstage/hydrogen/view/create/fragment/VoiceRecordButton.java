@@ -19,7 +19,7 @@ import android.widget.Toast;
 
 import com.avos.avoscloud.im.v2.audio.AVIMAudioRecorder;
 import com.thumbstage.hydrogen.R;
-import com.thumbstage.hydrogen.utils.AudioHelper;
+import com.thumbstage.hydrogen.utils.IMAudioHelper;
 import com.thumbstage.hydrogen.utils.PathUtils;
 
 import java.io.File;
@@ -129,7 +129,7 @@ public class VoiceRecordButton extends AppCompatButton {
     }
 
     private void startRecord() {
-        AudioHelper.getInstance().stopPlayer();
+        IMAudioHelper.getInstance().stopPlayer();
         initRecordDialog();
         startTime = System.currentTimeMillis();
         setBackgroundResource(BACK_RECORDING);

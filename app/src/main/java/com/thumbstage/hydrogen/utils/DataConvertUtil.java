@@ -5,6 +5,7 @@ import com.avos.avoscloud.im.v2.messages.AVIMAudioMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.thumbstage.hydrogen.database.entity.MicEntity;
 import com.thumbstage.hydrogen.model.bo.LineType;
+import com.thumbstage.hydrogen.model.bo.MessageType;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.User;
@@ -17,6 +18,32 @@ import java.util.Map;
 
 public class DataConvertUtil {
 
+    private static User findUser(List<User> users, String userId) {
+        User user = null;
+        for(User u: users) {
+            if(u.getId().equals(userId)) {
+                user = u;
+            }
+        }
+        return user;
+    }
+
+    public static List<Line> convert2Line(List<Map> maps, List<User> users) {
+        List<Line> dialogue = new ArrayList<>();
+        for (Map map : maps) {
+            if (map.size() != 0) {
+                Line line = new Line();
+                line.setWho(findUser(users, (String) map.get("who")));
+                line.setWhen(StringUtil.string2Date((String) map.get("when")));
+                line.setWhat((String) map.get("what"));
+                line.setLineType((LineType.valueOf((String) map.get("type"))));
+                line.setMessageType((MessageType.valueOf((String) map.get("message"))));
+                dialogue.add(line);
+            }
+        }
+        return dialogue;
+    }
+
     public static List<Map> convert2AVObject(List<Line> lines) {
         List<Map> list = new ArrayList<>();
         for(Line line:lines) {
@@ -25,6 +52,7 @@ public class DataConvertUtil {
             map.put("when", StringUtil.date2String(line.getWhen()));
             map.put("what", line.getWhat());
             map.put("type", line.getLineType().name());
+            map.put("message", line.getMessageType().name());
             list.add(map);
         }
         return list;
@@ -36,6 +64,7 @@ public class DataConvertUtil {
         map.put("when", StringUtil.date2String(line.getWhen()));
         map.put("what", line.getWhat());
         map.put("type", line.getLineType().name());
+        map.put("message", line.getMessageType().name());
         return map;
     }
 

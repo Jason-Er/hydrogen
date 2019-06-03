@@ -39,18 +39,21 @@ public class BrowseViewModel extends ViewModel {
 
     @Inject
     public BrowseViewModel(CloudAPI cloudAPI, ModelDB modelDB, Executor executor) {
-        PagedList.Config config = new PagedList.Config.Builder()
-                .setPageSize(Config.PAGE_SIZE).setPrefetchDistance(Config.PREFETCH_DISTANCE).setEnablePlaceholders(false).build();
-
         this.cloudAPI = cloudAPI;
         this.modelDB = modelDB;
         this.executor = executor;
+    }
+
+    public void refreshObserveList() {
+        PagedList.Config config = new PagedList.Config.Builder()
+                .setPageSize(Config.PAGE_SIZE)
+                .setPrefetchDistance(Config.PREFETCH_DISTANCE)
+                .setEnablePlaceholders(false).build();
 
         initCommunityShowList(config);
         initCommunityTopicList(config);
         initIAttendedOpenedList(config);
         initIAttendedClosedList(config);
-
     }
 
     public void refreshCommunityShowList() {

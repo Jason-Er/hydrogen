@@ -28,6 +28,7 @@ import com.thumbstage.hydrogen.event.HyMenuItemEvent;
 import com.thumbstage.hydrogen.event.IMMessageEvent;
 import com.thumbstage.hydrogen.event.PopupMenuEvent;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
+import com.thumbstage.hydrogen.event.TopicItemEvent;
 import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.model.bo.Privilege;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
@@ -265,6 +266,22 @@ public class TopicFragment extends Fragment {
     private void smoothToBottom() {
         if( topicAdapter.getItemCount() > 0 ) {
             recyclerView.smoothScrollToPosition(topicAdapter.getItemCount() - 1);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onResponseMessageEvent(final TopicItemEvent event) {
+        switch (event.getMessage()) {
+            case "LineAudioFinish":
+                int position = ((RecyclerView.ViewHolder) event.getData()).getAdapterPosition();
+                Log.i(TAG, "LineAudioFinish position: "+position);
+                if(position < recyclerView.getAdapter().getItemCount()) {
+                    RecyclerView.ViewHolder viewHolder = recyclerView.findViewHolderForAdapterPosition(position + 1);
+                    if(viewHolder instanceof IExecuteSequentially) {
+                        ((IExecuteSequentially) viewHolder).execute();
+                    }
+                }
+                break;
         }
     }
 

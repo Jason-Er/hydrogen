@@ -1,6 +1,7 @@
 package com.thumbstage.hydrogen.model.vo;
 
 import com.thumbstage.hydrogen.model.bo.LineType;
+import com.thumbstage.hydrogen.model.bo.MessageType;
 
 import java.util.Date;
 
@@ -9,6 +10,7 @@ public class Line {
     protected Date when;
     protected String what;
     protected LineType lineType;
+    protected MessageType messageType;
 
     public Line() {
         lineType = LineType.LT_DIALOGUE;
@@ -51,5 +53,13 @@ public class Line {
     
     public void setLineType(LineType lineType) {
         this.lineType = lineType;
+    }
+
+    public MessageType getMessageType() {
+        return messageType;
+    }
+
+    public void setMessageType(MessageType messageType) {
+        this.messageType = messageType;
     }
 }

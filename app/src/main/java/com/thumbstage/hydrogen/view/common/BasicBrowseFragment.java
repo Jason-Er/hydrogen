@@ -63,6 +63,11 @@ public abstract class BasicBrowseFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         AndroidSupportInjection.inject(this);
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(BrowseViewModel.class);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
         customObserve();
     }
 

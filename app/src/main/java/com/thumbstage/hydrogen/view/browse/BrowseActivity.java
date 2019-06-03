@@ -80,6 +80,8 @@ public class BrowseActivity extends AppCompatActivity
     @BindView(R.id.fab)
     FloatingActionButton fab;
 
+    User preUser;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,6 +115,7 @@ public class BrowseActivity extends AppCompatActivity
         AndroidInjection.inject(this);
         userViewModel = ViewModelProviders.of(this, viewModelFactory).get(UserViewModel.class);
         browseViewModel = ViewModelProviders.of(this, viewModelFactory).get(BrowseViewModel.class);
+        preUser = userViewModel.getCurrentUser();
 
         pagerAdapter = new BrowseFragmentPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
@@ -261,6 +264,7 @@ public class BrowseActivity extends AppCompatActivity
     @Override
     protected void onResume() {
         super.onResume();
+        browseViewModel.refreshObserveList();
         pagerAdapter.updateFragmentsBy(userViewModel.getCurrentUser().getPrivileges());
         navigationView.updateStateBy(userViewModel.getCurrentUser(), viewPager, drawer);
     }
