@@ -17,6 +17,7 @@ import com.thumbstage.hydrogen.database.entity.TopicUserEntity;
 import com.thumbstage.hydrogen.database.entity.UserEntity;
 import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.model.bo.LineType;
+import com.thumbstage.hydrogen.model.bo.MessageType;
 import com.thumbstage.hydrogen.model.bo.TopicTag;
 import com.thumbstage.hydrogen.model.dto.MicHasNew;
 import com.thumbstage.hydrogen.model.vo.Line;
@@ -179,6 +180,7 @@ public class ModelDB {
             entity.setWhat(line.getWhat());
             entity.setInWhichTopic(topicId);
             entity.setLine_type(line.getLineType().name());
+            entity.setMessage_type(line.getMessageType().name());
             lineEntities.add(entity);
         }
         database.lineDao().insert(lineEntities);
@@ -323,6 +325,7 @@ public class ModelDB {
         List<LineEntity> lineEntities = database.lineDao().get(topicId);
         for(LineEntity entity: lineEntities) {
             Line line = new Line(getUser(entity.getWho()), entity.getWhen(), entity.getWhat(), LineType.valueOf(entity.getLine_type()));
+            line.setMessageType(MessageType.valueOf(entity.getMessage_type()));
             lines.add(line);
         }
         return lines;
