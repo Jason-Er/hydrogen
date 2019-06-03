@@ -22,6 +22,8 @@ public class LineAudioMineViewHolder extends RecyclerView.ViewHolder {
     TextView time;
     @BindView(R.id.item_line_right_iv_avatar)
     ImageView avatar;
+    @BindView(R.id.chat_item_audio_play_btn)
+    IMPlayButton imPlayButton;
 
     public LineAudioMineViewHolder(View itemView) {
         super(itemView);
@@ -36,5 +38,6 @@ public class LineAudioMineViewHolder extends RecyclerView.ViewHolder {
         } else {
             time.setVisibility(View.GONE);
         }
+        imPlayButton.setPath(line.getWhat());
     }
 }

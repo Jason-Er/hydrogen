@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.utils.IMAudioHelper;
 
 /**
  * Created by lzw on 14-9-22.
@@ -48,12 +49,11 @@ public class IMPlayButton extends AppCompatTextView implements View.OnClickListe
         return left;
     }
 
-    /*
     public void setPath(String path) {
         this.path = path;
         stopRecordAnimation();
         if (isPlaying()) {
-            LCIMAudioHelper.getInstance().addFinishCallback(new LCIMAudioHelper.AudioFinishCallback() {
+            IMAudioHelper.getInstance().addFinishCallback(new IMAudioHelper.AudioFinishCallback() {
                 @Override
                 public void onFinish() {
                     stopRecordAnimation();
@@ -64,20 +64,19 @@ public class IMPlayButton extends AppCompatTextView implements View.OnClickListe
     }
 
     private boolean isPlaying() {
-        return LCIMAudioHelper.getInstance().isPlaying() == true &&
-                LCIMAudioHelper.getInstance().getAudioPath().equals(path);
+        return IMAudioHelper.getInstance().isPlaying() == true &&
+                IMAudioHelper.getInstance().getAudioPath().equals(path);
     }
-    */
+
     @Override
     public void onClick(View v) {
-        /*
-        if (LCIMAudioHelper.getInstance().isPlaying() == true &&
-                LCIMAudioHelper.getInstance().getAudioPath().equals(path)) {
-            LCIMAudioHelper.getInstance().pausePlayer();
+        if (IMAudioHelper.getInstance().isPlaying() == true &&
+                IMAudioHelper.getInstance().getAudioPath().equals(path)) {
+            IMAudioHelper.getInstance().pausePlayer();
             stopRecordAnimation();
         } else {
-            LCIMAudioHelper.getInstance().playAudio(path);
-            LCIMAudioHelper.getInstance().addFinishCallback(new LCIMAudioHelper.AudioFinishCallback() {
+            IMAudioHelper.getInstance().playAudio(path);
+            IMAudioHelper.getInstance().addFinishCallback(new IMAudioHelper.AudioFinishCallback() {
                 @Override
                 public void onFinish() {
                     stopRecordAnimation();
@@ -85,7 +84,6 @@ public class IMPlayButton extends AppCompatTextView implements View.OnClickListe
             });
             startRecordAnimation();
         }
-        */
     }
 
     private void startRecordAnimation() {

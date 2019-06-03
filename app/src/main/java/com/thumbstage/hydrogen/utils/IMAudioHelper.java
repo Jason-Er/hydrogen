@@ -4,22 +4,22 @@ import android.media.MediaPlayer;
 
 import java.io.IOException;
 
-public class AudioHelper {
-    private static AudioHelper audioHelper;
+public class IMAudioHelper {
+    private static IMAudioHelper IMAudioHelper;
     private MediaPlayer mediaPlayer;
     private AudioFinishCallback finishCallback;
     private String audioPath;
     private boolean onceStart = false;
 
-    private AudioHelper() {
+    private IMAudioHelper() {
         mediaPlayer = new MediaPlayer();
     }
 
-    public static synchronized AudioHelper getInstance() {
-        if (audioHelper == null) {
-            audioHelper = new AudioHelper();
+    public static synchronized IMAudioHelper getInstance() {
+        if (IMAudioHelper == null) {
+            IMAudioHelper = new IMAudioHelper();
         }
-        return audioHelper;
+        return IMAudioHelper;
     }
 
     /**
