@@ -10,6 +10,7 @@ import android.speech.tts.UtteranceProgressListener;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
@@ -40,13 +41,6 @@ import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.Topic;
 import com.thumbstage.hydrogen.utils.DensityUtil;
 import com.thumbstage.hydrogen.view.common.HyMenuItem;
-import com.thumbstage.hydrogen.view.create.feature.ICanAddMember;
-import com.thumbstage.hydrogen.view.create.feature.ICanCloseTopic;
-import com.thumbstage.hydrogen.view.create.feature.ICanOpenTopic;
-import com.thumbstage.hydrogen.view.create.feature.ICanPopupMenu;
-import com.thumbstage.hydrogen.view.create.feature.ICanPublishTopic;
-import com.thumbstage.hydrogen.view.create.feature.ICanSetSetting;
-import com.thumbstage.hydrogen.view.create.feature.ICanUpdateTopic;
 import com.thumbstage.hydrogen.view.create.fragment.PopupWindowAdapter;
 import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
@@ -72,8 +66,10 @@ public class ShowFragment extends Fragment implements TextToSpeech.OnInitListene
 
     final String TAG = "TopicFragment";
 
-    @BindView(R.id.fragment_topic_bk)
+    @BindView(R.id.fragment_show_bk)
     ImageView background;
+    @BindView(R.id.fragment_show_chat)
+    RecyclerView recyclerView;
     @BindView(R.id.loading_spinner)
     ProgressBar spinner;
     @BindView(R.id.fragment_show_subtitle)
@@ -83,6 +79,8 @@ public class ShowFragment extends Fragment implements TextToSpeech.OnInitListene
     TopicViewModel topicViewModel;
     UserViewModel userViewModel;
 
+    ShowAdapter showAdapter;
+    ShowLayoutManager layoutManager;
     ListPopupWindow popupWindow;
     PopupWindowAdapter popupWindowAdapter;
 
@@ -117,6 +115,11 @@ public class ShowFragment extends Fragment implements TextToSpeech.OnInitListene
         popupWindow.setWidth(DensityUtil.dp2px(getContext(),200));
         popupWindow.setHeight(ListPopupWindow.WRAP_CONTENT);
         popupWindow.setModal(true);
+
+        showAdapter = new ShowAdapter();
+        layoutManager = new ShowLayoutManager();
+        recyclerView.setLayoutManager( layoutManager );
+        recyclerView.setAdapter(showAdapter);
 
         textToSpeech = new TextToSpeech(getContext(), this);
         EventBus.getDefault().register(this);
@@ -171,7 +174,7 @@ public class ShowFragment extends Fragment implements TextToSpeech.OnInitListene
             @Override
             public void onChanged(@Nullable Mic micl) {
                 mic = micl;
-                if(mic.getTopic().getSetting() != null) {
+                if (mic.getTopic().getSetting() != null) {
                     Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
                 }
                 spinner.setVisibility(View.GONE);

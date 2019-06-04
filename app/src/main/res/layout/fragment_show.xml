@@ -4,10 +4,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <ImageView
-        android:id="@+id/fragment_topic_bk"
+        android:id="@+id/fragment_show_bk"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitCenter"/>
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/fragment_show_pullrefresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/fragment_show_bottom_bar">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/fragment_show_chat"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </android.support.v4.widget.SwipeRefreshLayout>
     <TextSwitcher
         android:id="@+id/fragment_show_subtitle"
         android:layout_width="match_parent"
