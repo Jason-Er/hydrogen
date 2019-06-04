@@ -173,11 +173,13 @@ public class ShowFragment extends Fragment implements TextToSpeech.OnInitListene
         topicViewModel.pickUpTopic(micId).observe(this, new Observer<Mic>() {
             @Override
             public void onChanged(@Nullable Mic micl) {
-                mic = micl;
-                if (mic.getTopic().getSetting() != null) {
-                    Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
+                if(micl != null) {
+                    mic = micl;
+                    if (mic.getTopic().getSetting() != null) {
+                        Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
+                    }
+                    spinner.setVisibility(View.GONE);
                 }
-                spinner.setVisibility(View.GONE);
             }
         });
 
@@ -260,7 +262,7 @@ public class ShowFragment extends Fragment implements TextToSpeech.OnInitListene
         topicViewModel.getTheTopic().observe(this, new Observer<Mic>() {
             @Override
             public void onChanged(@Nullable Mic mic) {
-                if(mic.getTopic()!=null) {
+                if(mic!=null && mic.getTopic()!=null) {
                     Map<String, Set<CanOnTopic>> userCan = mic.getTopic().getUserCan();
                     String userId = userViewModel.getCurrentUser().getId();
                     if(userCan != null && userCan.containsKey(userId)) {
