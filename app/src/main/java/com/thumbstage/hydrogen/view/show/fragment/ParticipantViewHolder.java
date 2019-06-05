@@ -1,6 +1,7 @@
 package com.thumbstage.hydrogen.view.show.fragment;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -24,8 +25,11 @@ public class ParticipantViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void setParticipant(User user) {
+        Log.i("ParticipantViewHolder","user name:"+user.getName());
         this.user = user;
-        Glide.with(avatar).load(user.getAvatar()).into(avatar);
+        Log.i("ParticipantViewHolder","avatar w:"+avatar.getWidth()+" h:"+avatar.getHeight());
+        Log.i("ParticipantViewHolder","avatar :"+user.getAvatar());
+        Glide.with(itemView.getContext()).load(user.getAvatar()).into(avatar);
     }
 
     public void speakLine(Line line) {

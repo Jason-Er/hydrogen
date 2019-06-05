@@ -5,6 +5,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.net.Uri;
 
 import com.thumbstage.hydrogen.api.CloudAPI;
+import com.thumbstage.hydrogen.app.Config;
 import com.thumbstage.hydrogen.database.ModelDB;
 import com.thumbstage.hydrogen.model.bo.HyFile;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
@@ -27,8 +28,6 @@ public class UserRepository {
     private final CloudAPI cloudAPI;
     private final ModelDB modelDB;
     private final Executor executor;
-
-    private User defaultUser = new User(StringUtil.DEFAULT_USERID, StringUtil.DEFAULT_USERID, "");
 
     @Inject
     public UserRepository(CloudAPI cloudAPI, ModelDB modelDB, Executor executor) {
@@ -79,7 +78,7 @@ public class UserRepository {
 
     public void signOut() {
         cloudAPI.signOut();
-        userLiveData.setValue(defaultUser);
+        userLiveData.setValue(Config.defaultUser);
     }
 
     public void addContact(final User user) {

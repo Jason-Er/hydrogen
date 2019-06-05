@@ -7,6 +7,7 @@ import android.arch.lifecycle.Transformations;
 import android.arch.paging.DataSource;
 import android.text.TextUtils;
 
+import com.thumbstage.hydrogen.app.Config;
 import com.thumbstage.hydrogen.database.entity.ContactEntity;
 import com.thumbstage.hydrogen.database.entity.LineEntity;
 import com.thumbstage.hydrogen.database.entity.MicEntity;
@@ -370,7 +371,7 @@ public class ModelDB {
         return Transformations.map(database.userDao().getLive(userId), new Function<UserEntity, User>() {
             @Override
             public User apply(UserEntity input) {
-                User user = null;
+                User user = Config.defaultUser;
                 if(input != null) {
                     user = entity2User(input);
                 }

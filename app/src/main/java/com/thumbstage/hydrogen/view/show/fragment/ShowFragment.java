@@ -64,7 +64,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.support.AndroidSupportInjection;
 
-public class ShowFragment extends Fragment implements TextToSpeech.OnInitListener{
+public class ShowFragment extends Fragment /*implements TextToSpeech.OnInitListener*/ {
 
     final String TAG = "TopicFragment";
 
@@ -86,7 +86,7 @@ public class ShowFragment extends Fragment implements TextToSpeech.OnInitListene
     ListPopupWindow popupWindow;
     PopupWindowAdapter popupWindowAdapter;
 
-    TextToSpeech textToSpeech;
+    // TextToSpeech textToSpeech;
     Mic mic;
     int currentIndex = 0;
 
@@ -123,7 +123,7 @@ public class ShowFragment extends Fragment implements TextToSpeech.OnInitListene
         recyclerView.setLayoutManager( layoutManager );
         recyclerView.setAdapter(showAdapter);
 
-        textToSpeech = new TextToSpeech(getContext(), this);
+        // textToSpeech = new TextToSpeech(getContext(), this);
         EventBus.getDefault().register(this);
         return view;
     }
@@ -145,13 +145,15 @@ public class ShowFragment extends Fragment implements TextToSpeech.OnInitListene
     public void onResponseMessageEvent(final PlayerControlEvent event) {
         switch (event.getMessage()) {
             case "STOP":
-                textToSpeech.shutdown();
+                // textToSpeech.shutdown();
                 currentIndex = 0;
                 break;
             case "PLAY":
+                /*
                 if(textToSpeech !=null && !textToSpeech.isSpeaking() && mic.getTopic().getDialogue().size() > 0) {
                     speakAtIndex(currentIndex);
                 }
+                */
                 View view = recyclerView.getChildAt(currentIndex);
                 RecyclerView.ViewHolder viewHolder = recyclerView.getChildViewHolder(view);
                 if(viewHolder instanceof IExecuteSequentially) {
@@ -159,7 +161,7 @@ public class ShowFragment extends Fragment implements TextToSpeech.OnInitListene
                 }
                 break;
             case "PAUSE":
-                textToSpeech.stop();
+                // textToSpeech.stop();
                 break;
             case "SEEK":
 
@@ -194,6 +196,7 @@ public class ShowFragment extends Fragment implements TextToSpeech.OnInitListene
         userViewModel = ViewModelProviders.of(getActivity(), viewModelFactory).get(UserViewModel.class);
     }
 
+    /*
     @Override
     public void onInit(int status) {
         if (status == TextToSpeech.SUCCESS) {
@@ -233,6 +236,7 @@ public class ShowFragment extends Fragment implements TextToSpeech.OnInitListene
             textToSpeech.speak(line.getWhat(), TextToSpeech.QUEUE_FLUSH, null, String.valueOf(index));
         }
     }
+    */
 
     HyMenuItem recommendItem = new HyMenuItem(R.drawable.ic_menu_recommend_g, CanOnTopic.RECOMMEND);
 
