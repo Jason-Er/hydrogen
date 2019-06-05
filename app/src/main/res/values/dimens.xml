@@ -41,4 +41,6 @@
     <dimen name="radius_sidebar">20dp</dimen>
     <dimen name="ball_radius_sidebar">24dp</dimen>
     <dimen name="avatar_size">48dp</dimen>
+    <dimen name="avatar_size_large">50dp</dimen>
+    <dimen name="avatar_size_half_large">25dp</dimen>
 </resources>

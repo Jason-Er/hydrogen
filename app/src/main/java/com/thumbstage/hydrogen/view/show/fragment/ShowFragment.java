@@ -10,6 +10,7 @@ import android.speech.tts.UtteranceProgressListener;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -41,6 +42,7 @@ import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.Topic;
 import com.thumbstage.hydrogen.utils.DensityUtil;
 import com.thumbstage.hydrogen.view.common.HyMenuItem;
+import com.thumbstage.hydrogen.view.create.fragment.IExecuteSequentially;
 import com.thumbstage.hydrogen.view.create.fragment.PopupWindowAdapter;
 import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
@@ -80,7 +82,8 @@ public class ShowFragment extends Fragment implements TextToSpeech.OnInitListene
     UserViewModel userViewModel;
 
     ShowAdapter showAdapter;
-    ShowLayoutManager layoutManager;
+    // ShowLayoutManager layoutManager;
+    LinearLayoutManager layoutManager;
     ListPopupWindow popupWindow;
     PopupWindowAdapter popupWindowAdapter;
 
@@ -117,7 +120,8 @@ public class ShowFragment extends Fragment implements TextToSpeech.OnInitListene
         popupWindow.setModal(true);
 
         showAdapter = new ShowAdapter();
-        layoutManager = new ShowLayoutManager();
+        // layoutManager = new ShowLayoutManager();
+        layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager( layoutManager );
         recyclerView.setAdapter(showAdapter);
 
@@ -150,6 +154,11 @@ public class ShowFragment extends Fragment implements TextToSpeech.OnInitListene
                 if(textToSpeech !=null && !textToSpeech.isSpeaking() && mic.getTopic().getDialogue().size() > 0) {
                     speakAtIndex(currentIndex);
                 }
+                View view = recyclerView.getChildAt(currentIndex);
+                RecyclerView.ViewHolder viewHolder = recyclerView.getChildViewHolder(view);
+                if(viewHolder instanceof IExecuteSequentially) {
+                    ((IExecuteSequentially) viewHolder).execute();
+                }
                 break;
             case "PAUSE":
                 textToSpeech.stop();
@@ -178,6 +187,7 @@ public class ShowFragment extends Fragment implements TextToSpeech.OnInitListene
                     if (mic.getTopic().getSetting() != null) {
                         Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
                     }
+                    showAdapter.setMic(mic);
                     spinner.setVisibility(View.GONE);
                 }
             }
