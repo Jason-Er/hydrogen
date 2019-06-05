@@ -57,6 +57,23 @@ public class ShowLayoutManager extends RecyclerView.LayoutManager {
 
     }
     private void layoutTwoParticipant(RecyclerView.Recycler recycler) {
+        View view = getChildAt(0);
+        Rect center = new Rect(
+                getHorizontalSpace()/3 - decoratedChildWidth/2,
+                (getVerticalSpace() - decoratedChildHeight)/2,
+                getHorizontalSpace()/3 + decoratedChildWidth/2,
+                (getVerticalSpace() + decoratedChildHeight)/2
+        );
+        layoutDecorated(view, center.left, center.top, center.right, center.bottom);
+        View view2 = recycler.getViewForPosition(1);
+        addView(view2);
+        Rect center2 = new Rect(
+                getHorizontalSpace()*2/3 - decoratedChildWidth/2,
+                (getVerticalSpace() - decoratedChildHeight)/2,
+                getHorizontalSpace()*2/3 + decoratedChildWidth/2,
+                (getVerticalSpace() + decoratedChildHeight)/2
+        );
+        layoutDecorated(view2, center2.left, center2.top, center2.right, center2.bottom);
 
     }
     private void layoutThreeParticipant(RecyclerView.Recycler recycler) {
