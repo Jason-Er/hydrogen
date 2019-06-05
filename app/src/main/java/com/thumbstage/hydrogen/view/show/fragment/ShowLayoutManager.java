@@ -1,8 +1,13 @@
 package com.thumbstage.hydrogen.view.show.fragment;
 
+import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 public class ShowLayoutManager extends RecyclerView.LayoutManager {
+
+    int decoratedChildWidth, decoratedChildHeight;
+
     @Override
     public RecyclerView.LayoutParams generateDefaultLayoutParams() {
         return new RecyclerView.LayoutParams(
@@ -12,6 +17,61 @@ public class ShowLayoutManager extends RecyclerView.LayoutManager {
 
     @Override
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
-        super.onLayoutChildren(recycler, state);
+        if (getItemCount() == 0) {
+            detachAndScrapAttachedViews(recycler);
+            return;
+        }
+        if (getItemCount() == 0 || state.isPreLayout()) {
+            return;
+        }
+        removeAllViews();
+
+        View firstView = recycler.getViewForPosition(0);
+        addView(firstView);
+        measureChildWithMargins(firstView, 0, 0);
+        decoratedChildWidth = getDecoratedMeasuredWidth(firstView);
+        decoratedChildHeight = getDecoratedMeasuredHeight(firstView);
+        switch (getItemCount()) {
+            case 1:
+                layoutOneParticipant(recycler);
+                break;
+            case 2:
+                layoutTwoParticipant(recycler);
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+        }
     }
+
+    private void layoutOneParticipant(RecyclerView.Recycler recycler) {
+        View view = getChildAt(0);
+        Rect center = new Rect(
+                (getHorizontalSpace() - decoratedChildWidth)/2,
+                (getVerticalSpace() - decoratedChildHeight)/2,
+                (getHorizontalSpace() + decoratedChildWidth)/2,
+                (getVerticalSpace() + decoratedChildHeight)/2
+        );
+        layoutDecorated(view, center.left, center.top, center.right, center.bottom);
+
+    }
+    private void layoutTwoParticipant(RecyclerView.Recycler recycler) {
+
+    }
+    private void layoutThreeParticipant(RecyclerView.Recycler recycler) {
+
+    }
+    private void layoutFourParticipant(RecyclerView.Recycler recycler) {
+
+    }
+
+    private int getVerticalSpace() {
+        return getHeight() - getPaddingTop() - getPaddingBottom();
+    }
+
+    private int getHorizontalSpace() {
+        return getWidth() - getPaddingStart() - getPaddingEnd();
+    }
+
 }

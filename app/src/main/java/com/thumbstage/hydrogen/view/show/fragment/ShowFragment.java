@@ -82,8 +82,7 @@ public class ShowFragment extends Fragment implements TextToSpeech.OnInitListene
     UserViewModel userViewModel;
 
     ShowAdapter showAdapter;
-    // ShowLayoutManager layoutManager;
-    LinearLayoutManager layoutManager;
+    ShowLayoutManager layoutManager;
     ListPopupWindow popupWindow;
     PopupWindowAdapter popupWindowAdapter;
 
@@ -120,8 +119,7 @@ public class ShowFragment extends Fragment implements TextToSpeech.OnInitListene
         popupWindow.setModal(true);
 
         showAdapter = new ShowAdapter();
-        // layoutManager = new ShowLayoutManager();
-        layoutManager = new LinearLayoutManager(getActivity());
+        layoutManager = new ShowLayoutManager();
         recyclerView.setLayoutManager( layoutManager );
         recyclerView.setAdapter(showAdapter);
 
