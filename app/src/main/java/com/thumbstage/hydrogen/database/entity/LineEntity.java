@@ -32,6 +32,8 @@ public class LineEntity {
 
     @ColumnInfo(name = "line_type")
     private String line_type;
+    @ColumnInfo(name = "message_type")
+    private String message_type;
     @NonNull
     @ColumnInfo(name = "in_which_topic")
     private String inWhichTopic;
@@ -85,5 +87,13 @@ public class LineEntity {
 
     public void setOrdinal(long ordinal) {
         this.ordinal = ordinal;
+    }
+
+    public String getMessage_type() {
+        return message_type;
+    }
+
+    public void setMessage_type(String message_type) {
+        this.message_type = message_type;
     }
 }
