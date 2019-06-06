@@ -29,7 +29,7 @@ public class ParticipantViewHolder extends RecyclerView.ViewHolder {
         Glide.with(itemView.getContext()).load(user.getAvatar()).into(avatar);
     }
 
-    public void speakLine(Line line) {
-
+    public User getUser() {
+        return user;
     }
 }

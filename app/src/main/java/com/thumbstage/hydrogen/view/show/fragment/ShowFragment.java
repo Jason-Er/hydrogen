@@ -40,6 +40,7 @@ import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.Topic;
+import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.utils.DensityUtil;
 import com.thumbstage.hydrogen.view.common.HyMenuItem;
 import com.thumbstage.hydrogen.view.create.fragment.IExecuteSequentially;
@@ -52,6 +53,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
@@ -64,7 +66,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.support.AndroidSupportInjection;
 
-public class ShowFragment extends Fragment /*implements TextToSpeech.OnInitListener*/ {
+public class ShowFragment extends Fragment {
 
     final String TAG = "TopicFragment";
 
@@ -85,8 +87,8 @@ public class ShowFragment extends Fragment /*implements TextToSpeech.OnInitListe
     ShowLayoutManager layoutManager;
     ListPopupWindow popupWindow;
     PopupWindowAdapter popupWindowAdapter;
+    Map<User, RecyclerView.ViewHolder> membersViewHolderMap = new HashMap<>();
 
-    // TextToSpeech textToSpeech;
     Mic mic;
     int currentIndex = 0;
 
@@ -123,7 +125,6 @@ public class ShowFragment extends Fragment /*implements TextToSpeech.OnInitListe
         recyclerView.setLayoutManager( layoutManager );
         recyclerView.setAdapter(showAdapter);
 
-        // textToSpeech = new TextToSpeech(getContext(), this);
         EventBus.getDefault().register(this);
         return view;
     }
@@ -145,23 +146,16 @@ public class ShowFragment extends Fragment /*implements TextToSpeech.OnInitListe
     public void onResponseMessageEvent(final PlayerControlEvent event) {
         switch (event.getMessage()) {
             case "STOP":
-                // textToSpeech.shutdown();
                 currentIndex = 0;
                 break;
             case "PLAY":
-                /*
-                if(textToSpeech !=null && !textToSpeech.isSpeaking() && mic.getTopic().getDialogue().size() > 0) {
-                    speakAtIndex(currentIndex);
+                if(membersViewHolderMap.size() != mic.getTopic().getMembers().size()) {
+                    makeUpMembersViewHolderMap(membersViewHolderMap);
                 }
-                */
-                View view = recyclerView.getChildAt(currentIndex);
-                RecyclerView.ViewHolder viewHolder = recyclerView.getChildViewHolder(view);
-                if(viewHolder instanceof IExecuteSequentially) {
-                    ((IExecuteSequentially) viewHolder).execute();
-                }
+                autoSpeakLine(currentIndex);
                 break;
             case "PAUSE":
-                // textToSpeech.stop();
+
                 break;
             case "SEEK":
 
@@ -169,6 +163,29 @@ public class ShowFragment extends Fragment /*implements TextToSpeech.OnInitListe
             case "VOLUME":
 
                 break;
+        }
+    }
+
+    private void autoSpeakLine(int lineIndex) {
+        if(lineIndex < mic.getTopic().getDialogue().size()) {
+            Line line = mic.getTopic().getDialogue().get(currentIndex);
+            switch (line.getMessageType()) {
+                case TEXT:
+
+                    break;
+                case AUDIO:
+                    break;
+            }
+        }
+    }
+
+    private void makeUpMembersViewHolderMap(Map<User, RecyclerView.ViewHolder> map) {
+        for(int i=0;i<recyclerView.getChildCount();i++) {
+            View view = recyclerView.getChildAt(i);
+            RecyclerView.ViewHolder viewHolder = recyclerView.getChildViewHolder(view);
+            if(viewHolder instanceof ParticipantViewHolder) {
+                map.put(((ParticipantViewHolder) viewHolder).getUser(), viewHolder);
+            }
         }
     }
 
@@ -196,50 +213,7 @@ public class ShowFragment extends Fragment /*implements TextToSpeech.OnInitListe
         userViewModel = ViewModelProviders.of(getActivity(), viewModelFactory).get(UserViewModel.class);
     }
 
-    /*
-    @Override
-    public void onInit(int status) {
-        if (status == TextToSpeech.SUCCESS) {
-            int result = textToSpeech.setLanguage(Locale.SIMPLIFIED_CHINESE);
-            if (result == TextToSpeech.LANG_MISSING_DATA
-                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-                Toast.makeText(getContext(), "数据丢失或不支持", Toast.LENGTH_SHORT).show();
-            } else {
-                textToSpeech.setOnUtteranceProgressListener(new UtteranceProgressListener() {
-                    @Override
-                    public void onStart(String utteranceId) {
-                        Log.i("textToSpeech onStart","utteranceId: "+ utteranceId);
-                    }
-
-                    @Override
-                    public void onDone(String utteranceId) {
-                        Log.i("textToSpeech onDone","utteranceId: "+ utteranceId);
-                        currentIndex = Integer.parseInt(utteranceId);
-                        currentIndex++;
-                        speakAtIndex(currentIndex);
-                    }
-
-                    @Override
-                    public void onError(String utteranceId) {
-                        Log.i("textToSpeech onError","utteranceId: "+ utteranceId);
-                    }
-                });
-            }
-
-        }
-    }
-
-    private void speakAtIndex(int index) {
-        if(mic.getTopic().getDialogue().size() > index) {
-            Line line = mic.getTopic().getDialogue().get(index);
-            subtitle.setText(line.getWhat());
-            textToSpeech.speak(line.getWhat(), TextToSpeech.QUEUE_FLUSH, null, String.valueOf(index));
-        }
-    }
-    */
-
     HyMenuItem recommendItem = new HyMenuItem(R.drawable.ic_menu_recommend_g, CanOnTopic.RECOMMEND);
-
 
     protected Set<CanOnTopic> getUserCan(Topic topic, String userId) {
         Set<CanOnTopic> userCan = null;
