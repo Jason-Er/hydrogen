@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
@@ -14,6 +15,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -181,14 +183,22 @@ public class ShowFragment extends Fragment {
     private void autoSpeakLine(int lineIndex) {
         if(lineIndex < mic.getTopic().getDialogue().size()) {
             Line line = mic.getTopic().getDialogue().get(currentIndex);
+            View anchorView = membersViewHolderMap.get(line.getWho()).itemView;
+            Display display = getActivity().getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
             switch (line.getMessageType()) {
-                case TEXT:
+                case TEXT: {
                     lineTextViewHolder.setContent(line.getWhat());
-                    lineTextPopup.showAtLocation(membersViewHolderMap.get(line.getWho()).itemView, Gravity.TOP | Gravity.START, 0,0);
+                    lineTextViewHolder.itemView.measure(size.x, size.y);
+                    int offsetY = -(lineTextViewHolder.itemView.getMeasuredHeight()+anchorView.getMeasuredHeight());
+                    lineTextPopup.showAsDropDown(anchorView, 0, offsetY, Gravity.END); }
                     break;
-                case AUDIO:
+                case AUDIO: {
                     lineAudioViewHolder.setContent(line.getWhat());
-                    lineAudioPopup.showAtLocation(membersViewHolderMap.get(line.getWho()).itemView, Gravity.TOP | Gravity.START, 0,0);
+                    lineAudioViewHolder.itemView.measure(size.x, size.y);
+                    int offsetY = -(lineAudioViewHolder.itemView.getMeasuredHeight()+anchorView.getMeasuredHeight());
+                    lineAudioPopup.showAsDropDown(anchorView, 0, offsetY, Gravity.END); }
                     break;
             }
             currentIndex ++;
