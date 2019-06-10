@@ -189,19 +189,34 @@ public class ShowFragment extends Fragment {
             display.getSize(size);
             switch (line.getMessageType()) {
                 case TEXT: {
+                    lineTextViewHolder.setiFinishCallBack(new IFinishCallBack() {
+                        @Override
+                        public void finish() {
+                            currentIndex ++;
+                            lineTextPopup.dismiss();
+                            autoSpeakLine(currentIndex);
+                        }
+                    });
                     lineTextViewHolder.setContent(line.getWhat());
                     lineTextViewHolder.itemView.measure(size.x, size.y);
                     int offsetY = -(lineTextViewHolder.itemView.getMeasuredHeight()+anchorView.getMeasuredHeight());
                     lineTextPopup.showAsDropDown(anchorView, 0, offsetY, Gravity.END); }
                     break;
                 case AUDIO: {
+                    lineAudioViewHolder.setiFinishCallBack(new IFinishCallBack() {
+                        @Override
+                        public void finish() {
+                            currentIndex ++;
+                            lineAudioPopup.dismiss();
+                            autoSpeakLine(currentIndex);
+                        }
+                    });
                     lineAudioViewHolder.setContent(line.getWhat());
                     lineAudioViewHolder.itemView.measure(size.x, size.y);
                     int offsetY = -(lineAudioViewHolder.itemView.getMeasuredHeight()+anchorView.getMeasuredHeight());
                     lineAudioPopup.showAsDropDown(anchorView, 0, offsetY, Gravity.END); }
                     break;
             }
-            currentIndex ++;
         }
     }
 
