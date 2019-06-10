@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListPopupWindow;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
@@ -88,6 +89,10 @@ public class ShowFragment extends Fragment {
     ListPopupWindow popupWindow;
     PopupWindowAdapter popupWindowAdapter;
     Map<User, RecyclerView.ViewHolder> membersViewHolderMap = new HashMap<>();
+    LineTextViewHolder lineTextViewHolder;
+    LineAudioViewHolder lineAudioViewHolder;
+    PopupWindow lineTextPopup;
+    PopupWindow lineAudioPopup;
 
     Mic mic;
     int currentIndex = 0;
@@ -124,6 +129,13 @@ public class ShowFragment extends Fragment {
         layoutManager = new ShowLayoutManager();
         recyclerView.setLayoutManager( layoutManager );
         recyclerView.setAdapter(showAdapter);
+
+        View lineAudioView = inflater.inflate(R.layout.item_line_left_audio, null);
+        lineAudioViewHolder = new LineAudioViewHolder(lineAudioView);
+        lineAudioPopup = new PopupWindow(lineAudioView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+        View lineTextView = inflater.inflate(R.layout.item_line_left_text, null);
+        lineTextViewHolder = new LineTextViewHolder(lineTextView);
+        lineTextPopup = new PopupWindow(lineTextView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
 
         EventBus.getDefault().register(this);
         return view;
@@ -171,11 +183,15 @@ public class ShowFragment extends Fragment {
             Line line = mic.getTopic().getDialogue().get(currentIndex);
             switch (line.getMessageType()) {
                 case TEXT:
-
+                    lineTextViewHolder.setContent(line.getWhat());
+                    lineTextPopup.showAtLocation(membersViewHolderMap.get(line.getWho()).itemView, Gravity.TOP | Gravity.START, 0,0);
                     break;
                 case AUDIO:
+                    lineAudioViewHolder.setContent(line.getWhat());
+                    lineAudioPopup.showAtLocation(membersViewHolderMap.get(line.getWho()).itemView, Gravity.TOP | Gravity.START, 0,0);
                     break;
             }
+            currentIndex ++;
         }
     }
 
