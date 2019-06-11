@@ -84,4 +84,9 @@ public class PlayerControlBar extends LinearLayout {
         imageButtonPlay.setTag(false);
         imageButtonPlay.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_play));
     }
+
+    public void setProgress(int progress) {
+        seekBar.setProgress(progress);
+    }
+
 }

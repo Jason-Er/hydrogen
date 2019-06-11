@@ -6,12 +6,9 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
-import android.speech.tts.UtteranceProgressListener;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
@@ -30,7 +27,6 @@ import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.bumptech.glide.Glide;
@@ -46,7 +42,6 @@ import com.thumbstage.hydrogen.model.vo.Topic;
 import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.utils.DensityUtil;
 import com.thumbstage.hydrogen.view.common.HyMenuItem;
-import com.thumbstage.hydrogen.view.create.fragment.IExecuteSequentially;
 import com.thumbstage.hydrogen.view.create.fragment.PopupWindowAdapter;
 import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
@@ -163,23 +158,25 @@ public class ShowFragment extends Fragment {
         configureViewModel();
     }
 
-    boolean isStop;
+    boolean isStop = true;
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onResponseMessageEvent(final PlayerControlEvent event) {
+        if(membersViewHolderMap.size() != mic.getTopic().getMembers().size()) {
+            makeUpMembersViewHolderMap(membersViewHolderMap);
+        }
         switch (event.getMessage()) {
             case "STOP":
                 synchronized (this) {
                     isStop = true;
                     currentIndex = 0;
                 }
+                updateProgress(currentIndex);
                 lineTextPopup.dismiss();
                 lineAudioPopup.dismiss();
                 break;
             case "PLAY":
-                if(membersViewHolderMap.size() != mic.getTopic().getMembers().size()) {
-                    makeUpMembersViewHolderMap(membersViewHolderMap);
-                }
                 isStop = false;
+                updateProgress(currentIndex);
                 autoSpeakLine(currentIndex);
                 break;
             case "PAUSE":
@@ -187,7 +184,8 @@ public class ShowFragment extends Fragment {
                 pauseSpeakLine(currentIndex);
                 break;
             case "SEEK":
-
+                currentIndex = (int) (mic.getTopic().getDialogue().size() * event.getSeekProcess());
+                seek2Line(currentIndex);
                 break;
         }
     }
@@ -199,9 +197,61 @@ public class ShowFragment extends Fragment {
                 case TEXT:
                     break;
                 case AUDIO:
-                    lineAudioViewHolder.pausePlaying();
+                    lineAudioViewHolder.pausePlay();
                     break;
             }
+        }
+    }
+
+    private void seek2Line(int lineIndex) {
+        if(lineIndex < mic.getTopic().getDialogue().size()) {
+            if(isStop) {
+                showLine(lineIndex);
+            } else {
+                autoSpeakLine(lineIndex);
+            }
+        }
+    }
+
+    private void showLine(int lineIndex) {
+        if(lineIndex < mic.getTopic().getDialogue().size()) {
+            Line line = mic.getTopic().getDialogue().get(currentIndex);
+            View anchorView = membersViewHolderMap.get(line.getWho()).itemView;
+            Display display = getActivity().getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            switch (line.getMessageType()) {
+                case TEXT: {
+                    lineTextViewHolder.setiFinishCallBack(null);
+                    lineTextViewHolder.setContent(line.getWhat());
+                    lineTextViewHolder.itemView.measure(size.x, size.y);
+                    int offsetY = -(lineTextViewHolder.itemView.getMeasuredHeight()+anchorView.getMeasuredHeight());
+                    dismissAll();
+                    lineTextPopup.showAsDropDown(anchorView, 0, offsetY, Gravity.END); }
+                break;
+                case AUDIO: {
+                    lineAudioViewHolder.setiFinishCallBack(null);
+                    lineAudioViewHolder.setContent(line.getWhat());
+                    lineAudioViewHolder.itemView.measure(size.x, size.y);
+                    int offsetY = -(lineAudioViewHolder.itemView.getMeasuredHeight()+anchorView.getMeasuredHeight());
+                    dismissAll();
+                    lineAudioPopup.showAsDropDown(anchorView, 0, offsetY, Gravity.END); }
+                break;
+            }
+        }
+    }
+
+    private void dismissAll() {
+        lineAudioPopup.dismiss();
+        lineTextPopup.dismiss();
+    }
+
+    private void updateProgress(int currentIndex) {
+        Log.i("ShowFragment","currentIndex:"+currentIndex);
+        if(currentIndex <= mic.getTopic().getDialogue().size()) {
+            int progress = (int) ((float) currentIndex / (float) mic.getTopic().getDialogue().size() * 100);
+            Log.i("ShowFragment","progress:"+progress);
+            playerControlBar.setProgress(progress);
         }
     }
 
@@ -220,6 +270,7 @@ public class ShowFragment extends Fragment {
                             if(!isStop) {
                                 synchronized (this) {
                                     currentIndex++;
+                                    updateProgress(currentIndex);
                                     lineTextPopup.dismiss();
                                 }
                                 autoSpeakLine(currentIndex);
@@ -229,16 +280,19 @@ public class ShowFragment extends Fragment {
                     lineTextViewHolder.setContent(line.getWhat());
                     lineTextViewHolder.itemView.measure(size.x, size.y);
                     int offsetY = -(lineTextViewHolder.itemView.getMeasuredHeight()+anchorView.getMeasuredHeight());
-                    if(!isStop)
-                        lineTextPopup.showAsDropDown(anchorView, 0, offsetY, Gravity.END); }
+                    if(!isStop) {
+                        dismissAll();
+                        lineTextPopup.showAsDropDown(anchorView, 0, offsetY, Gravity.END);
+                    }}
                     break;
                 case AUDIO: {
                     lineAudioViewHolder.setiFinishCallBack(new IFinishCallBack() {
                         @Override
                         public void finish() {
-                            if(!isStop) {
+                            if (!isStop) {
                                 synchronized (this) {
                                     currentIndex++;
+                                    updateProgress(currentIndex);
                                     lineAudioPopup.dismiss();
                                 }
                                 autoSpeakLine(currentIndex);
@@ -247,13 +301,17 @@ public class ShowFragment extends Fragment {
                     });
                     lineAudioViewHolder.setContent(line.getWhat());
                     lineAudioViewHolder.itemView.measure(size.x, size.y);
-                    int offsetY = -(lineAudioViewHolder.itemView.getMeasuredHeight()+anchorView.getMeasuredHeight());
-                    if(!isStop)
-                        lineAudioPopup.showAsDropDown(anchorView, 0, offsetY, Gravity.END); }
+                    int offsetY = -(lineAudioViewHolder.itemView.getMeasuredHeight() + anchorView.getMeasuredHeight());
+                    if (!isStop) {
+                        dismissAll();
+                        lineAudioPopup.showAsDropDown(anchorView, 0, offsetY, Gravity.END);
+                        lineAudioViewHolder.play();
+                    } }
                     break;
             }
         } else {
             synchronized (this) {
+                isStop = true;
                 currentIndex = 0;
                 playerControlBar.stopAction();
             }

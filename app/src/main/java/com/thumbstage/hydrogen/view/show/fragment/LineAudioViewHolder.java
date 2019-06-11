@@ -31,14 +31,17 @@ public class LineAudioViewHolder extends ViewHolder{
 
     public void setContent(String content) {
         imPlayButton.setPath(content);
-        imPlayButton.onClick(imPlayButton);
     }
 
     public void setiFinishCallBack(IFinishCallBack iFinishCallBack) {
         this.iFinishCallBack = iFinishCallBack;
     }
 
-    public void pausePlaying() {
+    public void pausePlay() {
         imPlayButton.pausePlaying();
+    }
+
+    public void play() {
+        imPlayButton.onClick(imPlayButton);
     }
 }
