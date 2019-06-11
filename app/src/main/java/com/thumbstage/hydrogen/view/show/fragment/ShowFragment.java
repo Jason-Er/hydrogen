@@ -137,11 +137,13 @@ public class ShowFragment extends Fragment {
         View lineAudioView = inflater.inflate(R.layout.item_line_left_audio, null);
         lineAudioViewHolder = new LineAudioViewHolder(lineAudioView);
         lineAudioPopup = new PopupWindow(lineAudioView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, false);
+        lineAudioPopup.setTouchable(false);
         lineAudioPopup.setBackgroundDrawable(null);
 
         View lineTextView = inflater.inflate(R.layout.item_line_left_text, null);
         lineTextViewHolder = new LineTextViewHolder(lineTextView);
         lineTextPopup = new PopupWindow(lineTextView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, false);
+        lineTextPopup.setTouchable(false);
         lineTextPopup.setBackgroundDrawable(null);
 
         EventBus.getDefault().register(this);
