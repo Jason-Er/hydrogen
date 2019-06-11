@@ -192,6 +192,7 @@ public class TopicFragment extends Fragment {
                 break;
             case CONTINUE:
                 currentRole = roleMap.get(TopicHandleType.CONTINUE);
+                topicViewModel.micHasNew(new MicHasNew(micId, false));
                 topicViewModel.pickUpTopic(micId).observe(this, new Observer<Mic>() {
                     @Override
                     public void onChanged(@Nullable Mic mic) {
@@ -202,7 +203,6 @@ public class TopicFragment extends Fragment {
                             if (mic.getTopic().getSetting() != null) {
                                 Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
                             }
-                            topicViewModel.micHasNew(new MicHasNew(mic.getId(), false));
                             spinner.setVisibility(View.GONE);
                             getActivity().invalidateOptionsMenu();
                         }

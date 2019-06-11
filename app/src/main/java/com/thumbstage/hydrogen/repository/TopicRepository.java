@@ -41,32 +41,6 @@ public class TopicRepository {
         this.executor = executor;
     }
 
-    public LiveData<List<Mic>> getMic(TopicTag tag, String userId, boolean isFinished, int pageNum) {
-        refreshMicList(tag, userId, isFinished, pageNum);
-        return modelDB.getMic(tag, userId, isFinished, pageNum);
-    }
-
-    private void refreshMicList(final TopicTag tag, final String userId, final boolean isFinished, final int pageNum) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                if( modelDB.isTopicNeedFresh(tag, userId, isFinished) ) {
-                    cloudAPI.getMic(tag, userId, isFinished, pageNum, new IReturnMicList() {
-                        @Override
-                        public void callback(final List<Mic> micList) {
-                            executor.execute(new Runnable() {
-                                @Override
-                                public void run() {
-                                    modelDB.saveMicList(micList);
-                                }
-                            });
-                        }
-                    });
-                }
-            }
-        });
-    }
-
     private MutableLiveData<Mic> micLiveData = new MutableLiveData<>();
 
     public LiveData<Mic> createMic() {
@@ -94,9 +68,8 @@ public class TopicRepository {
     }
 
     public LiveData<Mic> pickUpMic(final String micId) {
-        micLiveData.setValue(null);
-        refreshMic(micLiveData, micId);
-        return micLiveData;
+        refreshMic(micId);
+        return modelDB.getMicLive(micId);
     }
 
     public LiveData<Mic> editMic(final String micId) {
@@ -110,6 +83,23 @@ public class TopicRepository {
 
     public void refreshTheMic() {
         refreshMic(micLiveData, micLiveData.getValue().getId());
+    }
+
+    private void refreshMic(final String micId) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                if( modelDB.isMicNeedFresh(micId) ) {
+                    cloudAPI.getMic(micId, new IReturnMic() {
+                        @Override
+                        public void callback(final Mic mic) {
+                            Log.i("TopicRepository", "refreshMic");
+                            saveMic2DB(mic);
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private void refreshMic(final MutableLiveData<Mic> liveData, final String micId) {

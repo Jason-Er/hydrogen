@@ -32,6 +32,9 @@ public interface MicDao {
     @Query("SELECT * FROM mic WHERE id = :id")
     MicEntity get(String id);
 
+    @Query("SELECT * FROM mic WHERE id = :id")
+    LiveData<MicEntity> getLive(String id);
+
     @Query("SELECT id FROM mic WHERE id = :id LIMIT 1")
     String getItemId(String id);
 
@@ -55,5 +58,8 @@ public interface MicDao {
 
     @Query("UPDATE mic SET has_new =:hasNew, last_refresh =:lastRefresh WHERE id = :micId")
     void updateHasNew(String micId, int hasNew, Date lastRefresh);
+
+    @Query("SELECT * FROM mic WHERE id =:id AND last_refresh > :lastRefreshMax")
+    MicEntity hasMic(String id, Date lastRefreshMax);
 
 }

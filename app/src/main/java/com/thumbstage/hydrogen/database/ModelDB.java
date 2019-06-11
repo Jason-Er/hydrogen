@@ -65,6 +65,10 @@ public class ModelDB {
         }
     }
 
+    public boolean isMicNeedFresh(String id) {
+        return database.micDao().hasMic(id, getMaxRefreshTime(new Date())) == null;
+    }
+
     public boolean isContactNeedFresh(String userId) {
         return database.contractDao().hasContract(userId, getMaxRefreshTime(new Date())) == null;
     }
@@ -265,7 +269,7 @@ public class ModelDB {
                 .map(new Function<MicEntity, Mic>() {
                     @Override
                     public Mic apply(MicEntity input) {
-                        return convert2Mic(input);
+                        return entity2Mic(input);
                     }
                 });
     }
@@ -276,11 +280,12 @@ public class ModelDB {
                 .map(new Function<MicEntity, Mic>() {
                     @Override
                     public Mic apply(MicEntity input) {
-                        return convert2Mic(input);
+                        return entity2Mic(input);
                     }
                 });
     }
 
+    /*
     private Map<String, MutableLiveData<List<Mic>>> liveDataMap = new HashMap<>();
     public LiveData<List<Mic>> getMic(TopicTag tag, String userId, boolean isFinished, int pageNum) {
 
@@ -320,6 +325,7 @@ public class ModelDB {
             }
         });
     }
+    */
 
     public List<Line> getLine(String topicId) {
         List<Line> lines = new ArrayList<>();
@@ -386,7 +392,7 @@ public class ModelDB {
         return user;
     }
 
-    private Mic convert2Mic(MicEntity entity) {
+    private Mic entity2Mic(MicEntity entity) {
         Topic topic = getTopic(entity.getTopicId());
         Mic mic = new Mic();
         mic.setTopic(topic);
@@ -395,14 +401,27 @@ public class ModelDB {
         return mic;
     }
 
+    private MutableLiveData<Mic> micLiveData = new MutableLiveData<>();
+    public LiveData<Mic> getMicLive(String id) {
+        micLiveData.setValue(null);
+        return Transformations.switchMap(database.micDao().getLive(id), new Function<MicEntity, LiveData<Mic>>() {
+            @Override
+            public LiveData<Mic> apply(final MicEntity input) {
+                executor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        micLiveData.postValue(entity2Mic(input));
+                    }
+                });
+                return micLiveData;
+            }
+        });
+    }
+
+    /*
     public Mic getMic(String id) {
         MicEntity entity = database.micDao().get(id);
-        Mic mic = new Mic();
-        Topic topic = getTopic(entity.getTopicId());
-        mic.setTopic(topic);
-        mic.setId(entity.getId());
-        mic.setHasNew(entity.getHasNew());
-        return mic;
+        return entity2Mic(entity);
     }
 
     public List<Mic> getMic(List<String> ids) {
@@ -413,6 +432,7 @@ public class ModelDB {
         }
         return mics;
     }
+    */
 
     private Topic getTopic(String id) {
         TopicEntity entity = database.topicDao().get(id);
