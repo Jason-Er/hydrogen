@@ -92,6 +92,14 @@ public class IMPlayButton extends AppCompatTextView implements View.OnClickListe
         }
     }
 
+    public void pausePlaying() {
+        if (IMAudioHelper.getInstance().isPlaying() == true &&
+                IMAudioHelper.getInstance().getAudioPath().equals(path)) {
+            IMAudioHelper.getInstance().pausePlayer();
+            stopRecordAnimation();
+        }
+    }
+
     private void startRecordAnimation() {
         setCompoundDrawablesWithIntrinsicBounds(leftSide ? R.drawable.hy_chat_anim_voice_left : 0,
                 0, !leftSide ? R.drawable.hy_chat_anim_voice_right : 0, 0);

@@ -59,7 +59,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -81,6 +80,9 @@ public class ShowFragment extends Fragment {
     ProgressBar spinner;
     @BindView(R.id.fragment_show_subtitle)
     TextSwitcher subtitle;
+    @BindView(R.id.fragment_show_bottom_bar)
+    PlayerControlBar playerControlBar;
+
     @Inject
     ViewModelProvider.Factory viewModelFactory;
     TopicViewModel topicViewModel;
@@ -134,10 +136,13 @@ public class ShowFragment extends Fragment {
 
         View lineAudioView = inflater.inflate(R.layout.item_line_left_audio, null);
         lineAudioViewHolder = new LineAudioViewHolder(lineAudioView);
-        lineAudioPopup = new PopupWindow(lineAudioView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+        lineAudioPopup = new PopupWindow(lineAudioView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, false);
+        lineAudioPopup.setBackgroundDrawable(null);
+
         View lineTextView = inflater.inflate(R.layout.item_line_left_text, null);
         lineTextViewHolder = new LineTextViewHolder(lineTextView);
-        lineTextPopup = new PopupWindow(lineTextView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
+        lineTextPopup = new PopupWindow(lineTextView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, false);
+        lineTextPopup.setBackgroundDrawable(null);
 
         EventBus.getDefault().register(this);
         return view;
@@ -156,32 +161,50 @@ public class ShowFragment extends Fragment {
         configureViewModel();
     }
 
+    boolean isStop;
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onResponseMessageEvent(final PlayerControlEvent event) {
         switch (event.getMessage()) {
             case "STOP":
-                currentIndex = 0;
+                synchronized (this) {
+                    isStop = true;
+                    currentIndex = 0;
+                }
+                lineTextPopup.dismiss();
+                lineAudioPopup.dismiss();
                 break;
             case "PLAY":
                 if(membersViewHolderMap.size() != mic.getTopic().getMembers().size()) {
                     makeUpMembersViewHolderMap(membersViewHolderMap);
                 }
+                isStop = false;
                 autoSpeakLine(currentIndex);
                 break;
             case "PAUSE":
-
+                isStop = true;
+                pauseSpeakLine(currentIndex);
                 break;
             case "SEEK":
-
-                break;
-            case "VOLUME":
 
                 break;
         }
     }
 
-    private void autoSpeakLine(int lineIndex) {
+    private void pauseSpeakLine(int lineIndex) {
         if(lineIndex < mic.getTopic().getDialogue().size()) {
+            Line line = mic.getTopic().getDialogue().get(currentIndex);
+            switch (line.getMessageType()) {
+                case TEXT:
+                    break;
+                case AUDIO:
+                    lineAudioViewHolder.pausePlaying();
+                    break;
+            }
+        }
+    }
+
+    private void autoSpeakLine(int lineIndex) {
+        if(lineIndex < mic.getTopic().getDialogue().size() && !isStop) {
             Line line = mic.getTopic().getDialogue().get(currentIndex);
             View anchorView = membersViewHolderMap.get(line.getWho()).itemView;
             Display display = getActivity().getWindowManager().getDefaultDisplay();
@@ -192,30 +215,45 @@ public class ShowFragment extends Fragment {
                     lineTextViewHolder.setiFinishCallBack(new IFinishCallBack() {
                         @Override
                         public void finish() {
-                            currentIndex ++;
-                            lineTextPopup.dismiss();
-                            autoSpeakLine(currentIndex);
+                            if(!isStop) {
+                                synchronized (this) {
+                                    currentIndex++;
+                                    lineTextPopup.dismiss();
+                                }
+                                autoSpeakLine(currentIndex);
+                            }
                         }
                     });
                     lineTextViewHolder.setContent(line.getWhat());
                     lineTextViewHolder.itemView.measure(size.x, size.y);
                     int offsetY = -(lineTextViewHolder.itemView.getMeasuredHeight()+anchorView.getMeasuredHeight());
-                    lineTextPopup.showAsDropDown(anchorView, 0, offsetY, Gravity.END); }
+                    if(!isStop)
+                        lineTextPopup.showAsDropDown(anchorView, 0, offsetY, Gravity.END); }
                     break;
                 case AUDIO: {
                     lineAudioViewHolder.setiFinishCallBack(new IFinishCallBack() {
                         @Override
                         public void finish() {
-                            currentIndex ++;
-                            lineAudioPopup.dismiss();
-                            autoSpeakLine(currentIndex);
+                            if(!isStop) {
+                                synchronized (this) {
+                                    currentIndex++;
+                                    lineAudioPopup.dismiss();
+                                }
+                                autoSpeakLine(currentIndex);
+                            }
                         }
                     });
                     lineAudioViewHolder.setContent(line.getWhat());
                     lineAudioViewHolder.itemView.measure(size.x, size.y);
                     int offsetY = -(lineAudioViewHolder.itemView.getMeasuredHeight()+anchorView.getMeasuredHeight());
-                    lineAudioPopup.showAsDropDown(anchorView, 0, offsetY, Gravity.END); }
+                    if(!isStop)
+                        lineAudioPopup.showAsDropDown(anchorView, 0, offsetY, Gravity.END); }
                     break;
+            }
+        } else {
+            synchronized (this) {
+                currentIndex = 0;
+                playerControlBar.stopAction();
             }
         }
     }

@@ -37,4 +37,8 @@ public class LineAudioViewHolder extends ViewHolder{
     public void setiFinishCallBack(IFinishCallBack iFinishCallBack) {
         this.iFinishCallBack = iFinishCallBack;
     }
+
+    public void pausePlaying() {
+        imPlayButton.pausePlaying();
+    }
 }
