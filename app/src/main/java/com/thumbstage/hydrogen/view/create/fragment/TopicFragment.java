@@ -34,6 +34,7 @@ import com.thumbstage.hydrogen.model.bo.Privilege;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.dto.IMMessage;
 import com.thumbstage.hydrogen.model.dto.MicHasNew;
+import com.thumbstage.hydrogen.model.dto.MicTopic;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.utils.DensityUtil;
@@ -144,7 +145,7 @@ public class TopicFragment extends Fragment {
     }
 
     private void configureViewModel(){
-        String micId = getActivity().getIntent().getStringExtra(Mic.class.getSimpleName());
+        MicTopic micTopic = getActivity().getIntent().getParcelableExtra(MicTopic.class.getSimpleName());
         String handleType = getActivity().getIntent().getStringExtra(TopicHandleType.class.getSimpleName());
         if(TextUtils.isEmpty(handleType)) {
             throw new IllegalArgumentException("No TopicHandleType found!");
@@ -176,7 +177,7 @@ public class TopicFragment extends Fragment {
                 break;
             case ATTEND:
                 currentRole = roleMap.get(TopicHandleType.ATTEND);
-                topicViewModel.attendTopic(micId).observe(this, new Observer<Mic>() {
+                topicViewModel.attendTopic(micTopic.getMicId()).observe(this, new Observer<Mic>() {
                     @Override
                     public void onChanged(@Nullable Mic mic) {
                         if(mic != null) {
@@ -192,8 +193,7 @@ public class TopicFragment extends Fragment {
                 break;
             case CONTINUE:
                 currentRole = roleMap.get(TopicHandleType.CONTINUE);
-                topicViewModel.micHasNew(new MicHasNew(micId, false));
-                topicViewModel.pickUpTopic(micId).observe(this, new Observer<Mic>() {
+                topicViewModel.pickUpTopic(micTopic).observe(this, new Observer<Mic>() {
                     @Override
                     public void onChanged(@Nullable Mic mic) {
                         Log.i(TAG, "CONTINUE onChanged");
@@ -203,6 +203,7 @@ public class TopicFragment extends Fragment {
                             if (mic.getTopic().getSetting() != null) {
                                 Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
                             }
+                            topicViewModel.micHasNew(new MicHasNew(mic.getId(), false));
                             spinner.setVisibility(View.GONE);
                             getActivity().invalidateOptionsMenu();
                         }
@@ -254,7 +255,7 @@ public class TopicFragment extends Fragment {
     public void onResponseMessageEvent(final IMMessageEvent event) {
         if(event.getMessage().equals("onMessage")) {
             IMMessage imMessage = (IMMessage) event.getData();
-            if( !imMessage.getMicId().equals(topicAdapter.getMic().getId()) ) {
+            if( !imMessage.getMicTopic().getMicId().equals(topicAdapter.getMic().getId()) ) {
                 EventBus.getDefault().post(new NoSubscriberEvent(EventBus.getDefault(), event));
             } else {
                 topicAdapter.showIMMessage(imMessage);

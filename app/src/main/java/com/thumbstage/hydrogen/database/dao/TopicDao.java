@@ -1,5 +1,6 @@
 package com.thumbstage.hydrogen.database.dao;
 
+import android.arch.lifecycle.LiveData;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -30,6 +31,9 @@ public interface TopicDao {
 
     @Query("SELECT * FROM topic WHERE id = :id")
     TopicEntity get(String id);
+
+    @Query("SELECT * FROM topic WHERE id = :id")
+    LiveData<TopicEntity> getLive(String id);
 
     @Query("SELECT * FROM topic WHERE id IN (:ids)")
     List<TopicEntity> get(List<String> ids);

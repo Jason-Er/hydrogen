@@ -14,6 +14,7 @@ import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
 import com.thumbstage.hydrogen.model.callback.IReturnMic;
 import com.thumbstage.hydrogen.model.callback.IReturnMicList;
 import com.thumbstage.hydrogen.model.dto.MicHasNew;
+import com.thumbstage.hydrogen.model.dto.MicTopic;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.Setting;
@@ -67,9 +68,9 @@ public class TopicRepository {
         return micLiveData;
     }
 
-    public LiveData<Mic> pickUpMic(final String micId) {
-        refreshMic(micId);
-        return modelDB.getMicLive(micId);
+    public LiveData<Mic> pickUpMic(MicTopic micTopic) {
+        refreshMic(micTopic.getMicId());
+        return modelDB.getMicLive(micTopic);
     }
 
     public LiveData<Mic> editMic(final String micId) {

@@ -36,6 +36,7 @@ import com.thumbstage.hydrogen.event.PlayerControlEvent;
 import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.model.bo.TopicTag;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
+import com.thumbstage.hydrogen.model.dto.MicTopic;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.Topic;
@@ -333,9 +334,9 @@ public class ShowFragment extends Fragment {
     }
 
     private void configureViewModel() {
-        final String micId = getActivity().getIntent().getStringExtra(Mic.class.getSimpleName());
+        final MicTopic micTopic = getActivity().getIntent().getParcelableExtra(MicTopic.class.getSimpleName());
         topicViewModel = ViewModelProviders.of(this, viewModelFactory).get(TopicViewModel.class);
-        topicViewModel.pickUpTopic(micId).observe(this, new Observer<Mic>() {
+        topicViewModel.pickUpTopic(micTopic).observe(this, new Observer<Mic>() {
             @Override
             public void onChanged(@Nullable Mic micl) {
                 if(micl != null) {

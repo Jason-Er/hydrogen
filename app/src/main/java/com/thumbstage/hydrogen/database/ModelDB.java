@@ -21,6 +21,7 @@ import com.thumbstage.hydrogen.model.bo.LineType;
 import com.thumbstage.hydrogen.model.bo.MessageType;
 import com.thumbstage.hydrogen.model.bo.TopicTag;
 import com.thumbstage.hydrogen.model.dto.MicHasNew;
+import com.thumbstage.hydrogen.model.dto.MicTopic;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.Setting;
@@ -285,48 +286,6 @@ public class ModelDB {
                 });
     }
 
-    /*
-    private Map<String, MutableLiveData<List<Mic>>> liveDataMap = new HashMap<>();
-    public LiveData<List<Mic>> getMic(TopicTag tag, String userId, boolean isFinished, int pageNum) {
-
-        final MutableLiveData<List<Mic>> micListLive;
-        String key = tag.name()+isFinished;
-        if(!TextUtils.isEmpty(userId)) {
-            key += "personal";
-        }
-        if(liveDataMap.containsKey(key)) {
-            micListLive = liveDataMap.get(key);
-        } else {
-            micListLive = new MutableLiveData<>();
-            liveDataMap.put(key, micListLive);
-        }
-
-        LiveData<List<MicEntity>> liveData;
-        if(TextUtils.isEmpty(userId)) {
-            liveData = database.micDao().get(tag.name(), isFinished, PER_PAGE_NUM, pageNum * PER_PAGE_NUM);
-        } else {
-            liveData = database.micDao().get(tag.name(), userId, isFinished, PER_PAGE_NUM, pageNum*PER_PAGE_NUM);
-        }
-        return Transformations.switchMap(liveData, new Function<List<MicEntity>, LiveData<List<Mic>>>() {
-            @Override
-            public LiveData<List<Mic>> apply(final List<MicEntity> input) {
-                executor.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        List<Mic> micList = new ArrayList<>();
-                        for(MicEntity entity: input) {
-                            Mic mic = getMic(entity.getId());
-                            micList.add(mic);
-                        }
-                        micListLive.postValue(micList);
-                    }
-                });
-                return micListLive;
-            }
-        });
-    }
-    */
-
     public List<Line> getLine(String topicId) {
         List<Line> lines = new ArrayList<>();
         List<LineEntity> lineEntities = database.lineDao().get(topicId);
@@ -402,37 +361,22 @@ public class ModelDB {
     }
 
     private MutableLiveData<Mic> micLiveData = new MutableLiveData<>();
-    public LiveData<Mic> getMicLive(String id) {
+    public LiveData<Mic> getMicLive(final MicTopic micTopic) {
         micLiveData.setValue(null);
-        return Transformations.switchMap(database.micDao().getLive(id), new Function<MicEntity, LiveData<Mic>>() {
+        return Transformations.switchMap(database.topicDao().getLive(micTopic.getTopicId()), new Function<TopicEntity, LiveData<Mic>>() {
             @Override
-            public LiveData<Mic> apply(final MicEntity input) {
+            public LiveData<Mic> apply(TopicEntity input) {
                 executor.execute(new Runnable() {
                     @Override
                     public void run() {
-                        micLiveData.postValue(entity2Mic(input));
+                        MicEntity entity = database.micDao().get(micTopic.getMicId());
+                        micLiveData.postValue(entity2Mic(entity));
                     }
                 });
                 return micLiveData;
             }
         });
     }
-
-    /*
-    public Mic getMic(String id) {
-        MicEntity entity = database.micDao().get(id);
-        return entity2Mic(entity);
-    }
-
-    public List<Mic> getMic(List<String> ids) {
-        List<Mic> mics = new ArrayList<>();
-        for(String id: ids) {
-            Mic mic = getMic(id);
-            mics.add(mic);
-        }
-        return mics;
-    }
-    */
 
     private Topic getTopic(String id) {
         TopicEntity entity = database.topicDao().get(id);
