@@ -36,6 +36,7 @@ import com.thumbstage.hydrogen.event.PlayerControlEvent;
 import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.model.bo.TopicTag;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
+import com.thumbstage.hydrogen.model.dto.MicTopic;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.Topic;
@@ -333,13 +334,14 @@ public class ShowFragment extends Fragment {
     }
 
     private void configureViewModel() {
-        final String micId = getActivity().getIntent().getStringExtra(Mic.class.getSimpleName());
+        final MicTopic micTopic = getActivity().getIntent().getParcelableExtra(MicTopic.class.getSimpleName());
         topicViewModel = ViewModelProviders.of(this, viewModelFactory).get(TopicViewModel.class);
-        topicViewModel.pickUpTopic(micId).observe(this, new Observer<Mic>() {
+        topicViewModel.pickUpTopic(micTopic).observe(this, new Observer<Mic>() {
             @Override
             public void onChanged(@Nullable Mic micl) {
                 if(micl != null) {
                     mic = micl;
+                    validateTopicMembers(mic.getTopic());
                     if (mic.getTopic().getSetting() != null) {
                         Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
                     }
@@ -350,6 +352,19 @@ public class ShowFragment extends Fragment {
         });
 
         userViewModel = ViewModelProviders.of(getActivity(), viewModelFactory).get(UserViewModel.class);
+    }
+
+    private void validateTopicMembers(Topic topic) {
+        List<String> userIds = new ArrayList<>();
+        for(User user: topic.getMembers()) {
+            if(TextUtils.isEmpty(user.getName())) {
+                userIds.add(user.getId());
+            }
+        }
+        if(!userIds.isEmpty()) {
+            Log.i(TAG, "validateTopicMembers begin topicViewModel.refreshTopic()");
+            topicViewModel.refreshTopic(topic.getId());
+        }
     }
 
     HyMenuItem recommendItem = new HyMenuItem(R.drawable.ic_menu_recommend_g, CanOnTopic.RECOMMEND);

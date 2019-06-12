@@ -13,10 +13,13 @@ import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
 import com.thumbstage.hydrogen.model.callback.IReturnMic;
 import com.thumbstage.hydrogen.model.callback.IReturnMicList;
+import com.thumbstage.hydrogen.model.callback.IReturnTopic;
 import com.thumbstage.hydrogen.model.dto.MicHasNew;
+import com.thumbstage.hydrogen.model.dto.MicTopic;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.Setting;
+import com.thumbstage.hydrogen.model.vo.Topic;
 import com.thumbstage.hydrogen.model.vo.User;
 
 import java.io.File;
@@ -67,22 +70,32 @@ public class TopicRepository {
         return micLiveData;
     }
 
-    public LiveData<Mic> pickUpMic(final String micId) {
-        refreshMic(micId);
-        return modelDB.getMicLive(micId);
-    }
-
-    public LiveData<Mic> editMic(final String micId) {
-        refreshMic(micLiveData, micId);
-        return micLiveData;
+    public LiveData<Mic> pickUpMic(MicTopic micTopic) {
+        refreshMic(micTopic.getMicId());
+        return modelDB.getMicLive(micTopic);
     }
 
     public LiveData<Mic> getTheMic() {
         return micLiveData;
     }
 
-    public void refreshTheMic() {
-        refreshMic(micLiveData, micLiveData.getValue().getId());
+    public void forceRefreshTopic(final String topicId) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                cloudAPI.getTopic(topicId, new IReturnTopic() {
+                    @Override
+                    public void callback(final Topic topic) {
+                        executor.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                modelDB.saveTopic(topic);
+                            }
+                        });
+                    }
+                });
+            }
+        });
     }
 
     private void refreshMic(final String micId) {
@@ -98,22 +111,6 @@ public class TopicRepository {
                         }
                     });
                 }
-            }
-        });
-    }
-
-    private void refreshMic(final MutableLiveData<Mic> liveData, final String micId) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                cloudAPI.getMic(micId, new IReturnMic() {
-                    @Override
-                    public void callback(final Mic mic) {
-                        Log.i("TopicRepository", "refreshMic");
-                        saveMic2DB(mic);
-                        liveData.setValue(mic);
-                    }
-                });
             }
         });
     }
