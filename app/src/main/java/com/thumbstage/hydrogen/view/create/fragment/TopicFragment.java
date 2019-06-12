@@ -36,6 +36,7 @@ import com.thumbstage.hydrogen.model.dto.IMMessage;
 import com.thumbstage.hydrogen.model.dto.MicHasNew;
 import com.thumbstage.hydrogen.model.dto.MicTopic;
 import com.thumbstage.hydrogen.model.vo.Mic;
+import com.thumbstage.hydrogen.model.vo.Topic;
 import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.utils.DensityUtil;
 import com.thumbstage.hydrogen.view.create.cases.CaseAttendTopic;
@@ -55,8 +56,10 @@ import org.greenrobot.eventbus.NoSubscriberEvent;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -199,6 +202,7 @@ public class TopicFragment extends Fragment {
                         Log.i(TAG, "CONTINUE onChanged");
                         if(mic != null) {
                             topicAdapter.setMic(mic);
+                            validateTopicMembers(mic.getTopic());
                             smoothToBottom();
                             if (mic.getTopic().getSetting() != null) {
                                 Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
@@ -210,6 +214,19 @@ public class TopicFragment extends Fragment {
                     }
                 });
                 break;
+        }
+    }
+
+    private void validateTopicMembers(Topic topic) {
+        List<String> userIds = new ArrayList<>();
+        for(User user: topic.getMembers()) {
+            if(TextUtils.isEmpty(user.getName())) {
+                userIds.add(user.getId());
+            }
+        }
+        if(!userIds.isEmpty()) {
+            Log.i(TAG, "validateTopicMembers begin topicViewModel.refreshTopic()");
+            topicViewModel.refreshTopic(topic.getId());
         }
     }
 

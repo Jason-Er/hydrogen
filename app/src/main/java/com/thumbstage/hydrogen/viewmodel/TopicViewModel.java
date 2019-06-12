@@ -40,12 +40,8 @@ public class TopicViewModel extends ViewModel {
         return topicRepository.pickUpMic(micTopic);
     }
 
-    public void refreshTheTopic() {
-        topicRepository.refreshTheMic();
-    }
-
-    public LiveData<Mic> editTopic(String micId) {
-        return topicRepository.editMic(micId);
+    public void refreshTopic(String topicId) {
+        topicRepository.forceRefreshTopic(topicId);
     }
 
     public LiveData<Mic> getTheTopic() {

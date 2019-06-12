@@ -485,6 +485,19 @@ public class CloudAPI {
 
     }
 
+    public void getTopic(String topicId, final IReturnTopic iReturnTopic) {
+        AVQuery<AVObject> avQuery = new AVQuery<>(TableName.TABLE_TOPIC.name);
+        avQuery.include(FieldName.FIELD_SPONSOR.name);
+        avQuery.getInBackground(topicId, new GetCallback<AVObject>() {
+            @Override
+            public void done(AVObject object, AVException e) {
+                if(e == null) {
+                    getTopic(object, iReturnTopic);
+                }
+            }
+        });
+    }
+
     public void getMic(String micId, final IReturnMic iReturnMic) {
         AVQuery<AVObject> avQuery = new AVQuery<>(TableName.TABLE_MIC.name);
         avQuery.include(FieldName.FIELD_TOPIC.name);

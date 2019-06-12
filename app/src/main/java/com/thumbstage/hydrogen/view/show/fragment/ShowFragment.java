@@ -341,6 +341,7 @@ public class ShowFragment extends Fragment {
             public void onChanged(@Nullable Mic micl) {
                 if(micl != null) {
                     mic = micl;
+                    validateTopicMembers(mic.getTopic());
                     if (mic.getTopic().getSetting() != null) {
                         Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
                     }
@@ -351,6 +352,19 @@ public class ShowFragment extends Fragment {
         });
 
         userViewModel = ViewModelProviders.of(getActivity(), viewModelFactory).get(UserViewModel.class);
+    }
+
+    private void validateTopicMembers(Topic topic) {
+        List<String> userIds = new ArrayList<>();
+        for(User user: topic.getMembers()) {
+            if(TextUtils.isEmpty(user.getName())) {
+                userIds.add(user.getId());
+            }
+        }
+        if(!userIds.isEmpty()) {
+            Log.i(TAG, "validateTopicMembers begin topicViewModel.refreshTopic()");
+            topicViewModel.refreshTopic(topic.getId());
+        }
     }
 
     HyMenuItem recommendItem = new HyMenuItem(R.drawable.ic_menu_recommend_g, CanOnTopic.RECOMMEND);

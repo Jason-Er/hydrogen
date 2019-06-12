@@ -108,6 +108,11 @@ public class ModelDB {
                 saveTag(topic.getId(), topic.getTags());
                 saveUserCan(topic.getId(),topic.getUserCan());
                 saveMembers(DataConvertUtil.user2StringId(topic.getMembers()), topic.getId());
+                for(User u: topic.getMembers()) {
+                    if(!TextUtils.isEmpty(u.getName())) {
+                        saveUser(u);
+                    }
+                }
                 saveLineList(topic.getDialogue(), topic.getId());
             }
         });
