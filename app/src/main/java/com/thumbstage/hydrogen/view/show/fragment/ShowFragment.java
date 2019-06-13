@@ -4,16 +4,15 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Bundle;
-import android.speech.tts.TextToSpeech;
-import android.speech.tts.UtteranceProgressListener;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -24,10 +23,10 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListPopupWindow;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
 import com.bumptech.glide.Glide;
@@ -37,13 +36,13 @@ import com.thumbstage.hydrogen.event.PlayerControlEvent;
 import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.model.bo.TopicTag;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
+import com.thumbstage.hydrogen.model.dto.MicTopic;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.Topic;
 import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.utils.DensityUtil;
 import com.thumbstage.hydrogen.view.common.HyMenuItem;
-import com.thumbstage.hydrogen.view.create.fragment.IExecuteSequentially;
 import com.thumbstage.hydrogen.view.create.fragment.PopupWindowAdapter;
 import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
@@ -56,7 +55,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -78,6 +76,9 @@ public class ShowFragment extends Fragment {
     ProgressBar spinner;
     @BindView(R.id.fragment_show_subtitle)
     TextSwitcher subtitle;
+    @BindView(R.id.fragment_show_bottom_bar)
+    PlayerControlBar playerControlBar;
+
     @Inject
     ViewModelProvider.Factory viewModelFactory;
     TopicViewModel topicViewModel;
@@ -88,6 +89,10 @@ public class ShowFragment extends Fragment {
     ListPopupWindow popupWindow;
     PopupWindowAdapter popupWindowAdapter;
     Map<User, RecyclerView.ViewHolder> membersViewHolderMap = new HashMap<>();
+    LineTextViewHolder lineTextViewHolder;
+    LineAudioViewHolder lineAudioViewHolder;
+    PopupWindow lineTextPopup;
+    PopupWindow lineAudioPopup;
 
     Mic mic;
     int currentIndex = 0;
@@ -125,6 +130,18 @@ public class ShowFragment extends Fragment {
         recyclerView.setLayoutManager( layoutManager );
         recyclerView.setAdapter(showAdapter);
 
+        View lineAudioView = inflater.inflate(R.layout.item_line_left_audio, null);
+        lineAudioViewHolder = new LineAudioViewHolder(lineAudioView);
+        lineAudioPopup = new PopupWindow(lineAudioView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, false);
+        lineAudioPopup.setTouchable(false);
+        lineAudioPopup.setBackgroundDrawable(null);
+
+        View lineTextView = inflater.inflate(R.layout.item_line_left_text, null);
+        lineTextViewHolder = new LineTextViewHolder(lineTextView);
+        lineTextPopup = new PopupWindow(lineTextView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, false);
+        lineTextPopup.setTouchable(false);
+        lineTextPopup.setBackgroundDrawable(null);
+
         EventBus.getDefault().register(this);
         return view;
     }
@@ -142,39 +159,173 @@ public class ShowFragment extends Fragment {
         configureViewModel();
     }
 
+    boolean isStop = true;
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onResponseMessageEvent(final PlayerControlEvent event) {
+        if(membersViewHolderMap.size() != mic.getTopic().getMembers().size()) {
+            makeUpMembersViewHolderMap(membersViewHolderMap);
+        }
         switch (event.getMessage()) {
             case "STOP":
-                currentIndex = 0;
+                synchronized (this) {
+                    isStop = true;
+                    currentIndex = 0;
+                }
+                updateProgress(currentIndex);
+                lineTextPopup.dismiss();
+                lineAudioPopup.dismiss();
                 break;
             case "PLAY":
-                if(membersViewHolderMap.size() != mic.getTopic().getMembers().size()) {
-                    makeUpMembersViewHolderMap(membersViewHolderMap);
-                }
+                isStop = false;
+                updateProgress(currentIndex);
                 autoSpeakLine(currentIndex);
                 break;
             case "PAUSE":
-
+                isStop = true;
+                pauseSpeakLine(currentIndex);
                 break;
             case "SEEK":
-
-                break;
-            case "VOLUME":
-
+                currentIndex = (int) (mic.getTopic().getDialogue().size() * event.getSeekProcess());
+                seek2Line(currentIndex);
                 break;
         }
     }
 
-    private void autoSpeakLine(int lineIndex) {
+    private void pauseSpeakLine(int lineIndex) {
         if(lineIndex < mic.getTopic().getDialogue().size()) {
             Line line = mic.getTopic().getDialogue().get(currentIndex);
             switch (line.getMessageType()) {
                 case TEXT:
-
                     break;
                 case AUDIO:
+                    lineAudioViewHolder.pausePlay();
                     break;
+            }
+        }
+    }
+
+    private void seek2Line(int lineIndex) {
+        if(lineIndex < mic.getTopic().getDialogue().size()) {
+            if(isStop) {
+                showLine(lineIndex);
+            } else {
+                autoSpeakLine(lineIndex);
+            }
+        }
+    }
+
+    int preLineIndex = 0;
+    private void showLine(int lineIndex) {
+        if(lineIndex < mic.getTopic().getDialogue().size()) {
+            Line line = mic.getTopic().getDialogue().get(currentIndex);
+            View anchorView = membersViewHolderMap.get(line.getWho()).itemView;
+            Display display = getActivity().getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            switch (line.getMessageType()) {
+                case TEXT: {
+                    lineTextViewHolder.setiFinishCallBack(null);
+                    lineTextViewHolder.setContent(line.getWhat());
+                    lineTextViewHolder.itemView.measure(size.x, size.y);
+                    int offsetY = -(lineTextViewHolder.itemView.getMeasuredHeight()+anchorView.getMeasuredHeight());
+                    if(lineIndex != preLineIndex && lineAudioPopup.isShowing())
+                        lineAudioPopup.dismiss();
+                    if(lineIndex != preLineIndex || (lineIndex == preLineIndex && !lineTextPopup.isShowing()))
+                        lineTextPopup.showAsDropDown(anchorView, 0, offsetY, Gravity.END); }
+                break;
+                case AUDIO: {
+                    lineAudioViewHolder.setiFinishCallBack(null);
+                    lineAudioViewHolder.setContent(line.getWhat());
+                    lineAudioViewHolder.itemView.measure(size.x, size.y);
+                    int offsetY = -(lineAudioViewHolder.itemView.getMeasuredHeight()+anchorView.getMeasuredHeight());
+                    if(lineIndex != preLineIndex && lineTextPopup.isShowing())
+                        lineTextPopup.dismiss();
+                    if(lineIndex != preLineIndex || (lineIndex == preLineIndex && !lineAudioPopup.isShowing()))
+                        lineAudioPopup.showAsDropDown(anchorView, 0, offsetY, Gravity.END); }
+                break;
+            }
+            preLineIndex = lineIndex;
+        }
+    }
+
+    private void dismissAll() {
+        lineAudioPopup.dismiss();
+        lineTextPopup.dismiss();
+    }
+
+    private void updateProgress(int currentIndex) {
+        Log.i("ShowFragment","currentIndex:"+currentIndex);
+        if(currentIndex <= mic.getTopic().getDialogue().size()) {
+            int progress = (int) ((float) currentIndex / (float) mic.getTopic().getDialogue().size() * 100);
+            Log.i("ShowFragment","progress:"+progress);
+            playerControlBar.setProgress(progress);
+        }
+    }
+
+    private void autoSpeakLine(int lineIndex) {
+        if(lineIndex < mic.getTopic().getDialogue().size() && !isStop) {
+            Line line = mic.getTopic().getDialogue().get(currentIndex);
+            View anchorView = membersViewHolderMap.get(line.getWho()).itemView;
+            Display display = getActivity().getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            switch (line.getMessageType()) {
+                case TEXT: {
+                    lineTextViewHolder.setiFinishCallBack(new IFinishCallBack() {
+                        @Override
+                        public void finish() {
+                            if(!isStop) {
+                                synchronized (this) {
+                                    currentIndex++;
+                                    updateProgress(currentIndex);
+                                    lineTextPopup.dismiss();
+                                }
+                                autoSpeakLine(currentIndex);
+                            }
+                        }
+                    });
+                    lineTextViewHolder.setContent(line.getWhat());
+                    lineTextViewHolder.itemView.measure(size.x, size.y);
+                    int offsetY = -(lineTextViewHolder.itemView.getMeasuredHeight()+anchorView.getMeasuredHeight());
+                    if(!isStop) {
+                        if(lineIndex != preLineIndex && lineAudioPopup.isShowing())
+                            lineAudioPopup.dismiss();
+                        if(lineIndex != preLineIndex || (lineIndex == preLineIndex && !lineTextPopup.isShowing()))
+                            lineTextPopup.showAsDropDown(anchorView, 0, offsetY, Gravity.END);
+                    }}
+                    break;
+                case AUDIO: {
+                    lineAudioViewHolder.setiFinishCallBack(new IFinishCallBack() {
+                        @Override
+                        public void finish() {
+                            if (!isStop) {
+                                synchronized (this) {
+                                    currentIndex++;
+                                    updateProgress(currentIndex);
+                                    lineAudioPopup.dismiss();
+                                }
+                                autoSpeakLine(currentIndex);
+                            }
+                        }
+                    });
+                    lineAudioViewHolder.setContent(line.getWhat());
+                    lineAudioViewHolder.itemView.measure(size.x, size.y);
+                    int offsetY = -(lineAudioViewHolder.itemView.getMeasuredHeight() + anchorView.getMeasuredHeight());
+                    if (!isStop) {
+                        if(lineIndex != preLineIndex && lineTextPopup.isShowing())
+                            lineTextPopup.dismiss();
+                        if(lineIndex != preLineIndex || (lineIndex == preLineIndex && !lineAudioPopup.isShowing()))
+                            lineAudioPopup.showAsDropDown(anchorView, 0, offsetY, Gravity.END);
+                        lineAudioViewHolder.play();
+                    } }
+                    break;
+            }
+            preLineIndex = lineIndex;
+        } else {
+            synchronized (this) {
+                isStop = true;
+                currentIndex = 0;
+                playerControlBar.stopAction();
             }
         }
     }
@@ -194,13 +345,14 @@ public class ShowFragment extends Fragment {
     }
 
     private void configureViewModel() {
-        final String micId = getActivity().getIntent().getStringExtra(Mic.class.getSimpleName());
+        final MicTopic micTopic = getActivity().getIntent().getParcelableExtra(MicTopic.class.getSimpleName());
         topicViewModel = ViewModelProviders.of(this, viewModelFactory).get(TopicViewModel.class);
-        topicViewModel.pickUpTopic(micId).observe(this, new Observer<Mic>() {
+        topicViewModel.pickUpTopic(micTopic).observe(this, new Observer<Mic>() {
             @Override
             public void onChanged(@Nullable Mic micl) {
                 if(micl != null) {
                     mic = micl;
+                    validateTopicMembers(mic.getTopic());
                     if (mic.getTopic().getSetting() != null) {
                         Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
                     }
@@ -211,6 +363,19 @@ public class ShowFragment extends Fragment {
         });
 
         userViewModel = ViewModelProviders.of(getActivity(), viewModelFactory).get(UserViewModel.class);
+    }
+
+    private void validateTopicMembers(Topic topic) {
+        List<String> userIds = new ArrayList<>();
+        for(User user: topic.getMembers()) {
+            if(TextUtils.isEmpty(user.getName())) {
+                userIds.add(user.getId());
+            }
+        }
+        if(!userIds.isEmpty()) {
+            Log.i(TAG, "validateTopicMembers begin topicViewModel.refreshTopic()");
+            topicViewModel.refreshTopic(topic.getId());
+        }
     }
 
     HyMenuItem recommendItem = new HyMenuItem(R.drawable.ic_menu_recommend_g, CanOnTopic.RECOMMEND);

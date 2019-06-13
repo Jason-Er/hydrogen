@@ -17,7 +17,7 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:minWidth="240dp"
+        android:minWidth="96dp"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:orientation="horizontal">
@@ -33,34 +33,10 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:id="@+id/footerMain_playerControl_pre"
-            android:contentDescription="@string/bottom_bar_pre"
-            android:background="@drawable/onclick_press_color"
-            android:src="@drawable/ic_skip_previous"/>
-        <ImageButton
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
             android:id="@+id/footerMain_playerControl_play"
             android:contentDescription="@string/bottom_bar_play"
             android:background="@drawable/onclick_press_color"
             android:src="@drawable/ic_play"/>
-        <ImageButton
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:id="@+id/footerMain_playerControl_next"
-            android:contentDescription="@string/bottom_bar_next"
-            android:background="@drawable/onclick_press_color"
-            android:src="@drawable/ic_skip_next"/>
-        <ImageButton
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:id="@+id/footerMain_playerControl_volume"
-            android:contentDescription="@string/bottom_bar_next"
-            android:background="@drawable/onclick_press_color"
-            android:src="@drawable/ic_volume"/>
     </LinearLayout>
 
 </com.thumbstage.hydrogen.view.show.fragment.PlayerControlBar>

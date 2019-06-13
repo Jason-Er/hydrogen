@@ -25,8 +25,7 @@ public class PlayerControlBar extends LinearLayout {
     ImageButton imageButtonPlay;
 
     @OnClick({R.id.footerMain_playerControl_stop,
-            R.id.footerMain_playerControl_play,
-            R.id.footerMain_playerControl_volume})
+            R.id.footerMain_playerControl_play})
     public void responseClick(ImageButton button) {
         PlayerControlEvent event = new PlayerControlEvent("NULL");
         switch (button.getId()) {
@@ -44,9 +43,6 @@ public class PlayerControlBar extends LinearLayout {
                     event.setMessage("PAUSE");
                     button.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_play));
                 }
-                break;
-            case R.id.footerMain_playerControl_volume:
-                event.setMessage("VOLUME");
                 break;
         }
         EventBus.getDefault().post(event);
@@ -84,8 +80,13 @@ public class PlayerControlBar extends LinearLayout {
 
     }
 
-    private void stopAction() {
+    public void stopAction() {
         imageButtonPlay.setTag(false);
         imageButtonPlay.setImageDrawable(getContext().getResources().getDrawable(R.drawable.ic_play));
     }
+
+    public void setProgress(int progress) {
+        seekBar.setProgress(progress);
+    }
+
 }
