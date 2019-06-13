@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
@@ -356,6 +357,7 @@ public class ShowFragment extends Fragment {
                     if (mic.getTopic().getSetting() != null) {
                         Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
                     }
+                    // toolbar.setTitle(mic.getTopic().getName());
                     showAdapter.setMic(mic);
                     spinner.setVisibility(View.GONE);
                 }

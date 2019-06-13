@@ -45,6 +45,7 @@
             android:label="CreateActivity"
             android:windowSoftInputMode="adjustResize|stateHidden"
             android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
             android:parentActivityName=".view.browse.BrowseActivity"
             >
             <meta-data
@@ -56,6 +57,7 @@
             android:name="com.thumbstage.hydrogen.view.show.ShowActivity"
             android:label="ShowActivity"
             android:screenOrientation="landscape"
+            android:theme="@style/AppTheme.NoActionBar"
             >
         </activity>
         <activity android:name="com.linchaolong.android.imagepicker.cropper.CropImageActivity"
