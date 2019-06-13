@@ -1,5 +1,6 @@
 package com.thumbstage.hydrogen.view.show;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.event.ShowFragmentEvent;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import javax.inject.Inject;
 
@@ -35,6 +41,7 @@ public class ShowActivity extends AppCompatActivity implements HasSupportFragmen
         actionBar.setDisplayHomeAsUpEnabled(true);
 
         configureDagger();
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -47,8 +54,21 @@ public class ShowActivity extends AppCompatActivity implements HasSupportFragmen
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Override
     public boolean onSupportNavigateUp() {
         finish();
         return super.onSupportNavigateUp();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onResponseMessageEvent(final ShowFragmentEvent event) {
+        if(event.getMessage().equals("title")) {
+            toolbar.setTitle((String)event.getData());
+        }
     }
 }
