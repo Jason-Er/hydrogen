@@ -1,7 +1,9 @@
 package com.thumbstage.hydrogen.repository;
 
+import android.arch.core.util.Function;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
+import android.arch.lifecycle.Transformations;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -72,7 +74,13 @@ public class TopicRepository {
 
     public LiveData<Mic> pickUpMic(MicTopic micTopic) {
         refreshMic(micTopic.getMicId());
-        return modelDB.getMicLive(micTopic);
+        return Transformations.switchMap(modelDB.getMicLive(micTopic), new Function<Mic, LiveData<Mic>>() {
+            @Override
+            public LiveData<Mic> apply(Mic input) {
+                micLiveData.setValue(input);
+                return micLiveData;
+            }
+        });
     }
 
     public LiveData<Mic> getTheMic() {
