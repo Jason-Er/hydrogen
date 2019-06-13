@@ -214,6 +214,7 @@ public class ShowFragment extends Fragment {
         }
     }
 
+    int preLineIndex = 0;
     private void showLine(int lineIndex) {
         if(lineIndex < mic.getTopic().getDialogue().size()) {
             Line line = mic.getTopic().getDialogue().get(currentIndex);
@@ -227,18 +228,23 @@ public class ShowFragment extends Fragment {
                     lineTextViewHolder.setContent(line.getWhat());
                     lineTextViewHolder.itemView.measure(size.x, size.y);
                     int offsetY = -(lineTextViewHolder.itemView.getMeasuredHeight()+anchorView.getMeasuredHeight());
-                    dismissAll();
-                    lineTextPopup.showAsDropDown(anchorView, 0, offsetY, Gravity.END); }
+                    if(lineIndex != preLineIndex && lineAudioPopup.isShowing())
+                        lineAudioPopup.dismiss();
+                    if(lineIndex != preLineIndex || (lineIndex == preLineIndex && !lineTextPopup.isShowing()))
+                        lineTextPopup.showAsDropDown(anchorView, 0, offsetY, Gravity.END); }
                 break;
                 case AUDIO: {
                     lineAudioViewHolder.setiFinishCallBack(null);
                     lineAudioViewHolder.setContent(line.getWhat());
                     lineAudioViewHolder.itemView.measure(size.x, size.y);
                     int offsetY = -(lineAudioViewHolder.itemView.getMeasuredHeight()+anchorView.getMeasuredHeight());
-                    dismissAll();
-                    lineAudioPopup.showAsDropDown(anchorView, 0, offsetY, Gravity.END); }
+                    if(lineIndex != preLineIndex && lineTextPopup.isShowing())
+                        lineTextPopup.dismiss();
+                    if(lineIndex != preLineIndex || (lineIndex == preLineIndex && !lineAudioPopup.isShowing()))
+                        lineAudioPopup.showAsDropDown(anchorView, 0, offsetY, Gravity.END); }
                 break;
             }
+            preLineIndex = lineIndex;
         }
     }
 
@@ -282,8 +288,10 @@ public class ShowFragment extends Fragment {
                     lineTextViewHolder.itemView.measure(size.x, size.y);
                     int offsetY = -(lineTextViewHolder.itemView.getMeasuredHeight()+anchorView.getMeasuredHeight());
                     if(!isStop) {
-                        dismissAll();
-                        lineTextPopup.showAsDropDown(anchorView, 0, offsetY, Gravity.END);
+                        if(lineIndex != preLineIndex && lineAudioPopup.isShowing())
+                            lineAudioPopup.dismiss();
+                        if(lineIndex != preLineIndex || (lineIndex == preLineIndex && !lineTextPopup.isShowing()))
+                            lineTextPopup.showAsDropDown(anchorView, 0, offsetY, Gravity.END);
                     }}
                     break;
                 case AUDIO: {
@@ -304,12 +312,15 @@ public class ShowFragment extends Fragment {
                     lineAudioViewHolder.itemView.measure(size.x, size.y);
                     int offsetY = -(lineAudioViewHolder.itemView.getMeasuredHeight() + anchorView.getMeasuredHeight());
                     if (!isStop) {
-                        dismissAll();
-                        lineAudioPopup.showAsDropDown(anchorView, 0, offsetY, Gravity.END);
+                        if(lineIndex != preLineIndex && lineTextPopup.isShowing())
+                            lineTextPopup.dismiss();
+                        if(lineIndex != preLineIndex || (lineIndex == preLineIndex && !lineAudioPopup.isShowing()))
+                            lineAudioPopup.showAsDropDown(anchorView, 0, offsetY, Gravity.END);
                         lineAudioViewHolder.play();
                     } }
                     break;
             }
+            preLineIndex = lineIndex;
         } else {
             synchronized (this) {
                 isStop = true;
