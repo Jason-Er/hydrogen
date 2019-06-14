@@ -21,11 +21,14 @@ import com.linchaolong.android.imagepicker.ImagePicker;
 import com.linchaolong.android.imagepicker.cropper.CropImage;
 import com.linchaolong.android.imagepicker.cropper.CropImageView;
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.event.TopicFragmentEvent;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.Setting;
 import com.thumbstage.hydrogen.utils.GlideUtil;
 import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
+
+import org.greenrobot.eventbus.EventBus;
 
 import javax.inject.Inject;
 
@@ -74,6 +77,7 @@ public class TopicInfoFragment extends Fragment implements OnDismiss {
             public void afterTextChanged(Editable s) {
                 basicInfoChanged = true;
                 mic.getTopic().setName(name.getText().toString());
+                EventBus.getDefault().post(new TopicFragmentEvent(mic.getTopic().getName(), "title"));
             }
         });
 
