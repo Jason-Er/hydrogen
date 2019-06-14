@@ -28,6 +28,7 @@ import com.thumbstage.hydrogen.event.HyMenuItemEvent;
 import com.thumbstage.hydrogen.event.IMMessageEvent;
 import com.thumbstage.hydrogen.event.PopupMenuEvent;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
+import com.thumbstage.hydrogen.event.TopicFragmentEvent;
 import com.thumbstage.hydrogen.event.TopicItemEvent;
 import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.model.bo.Privilege;
@@ -185,6 +186,7 @@ public class TopicFragment extends Fragment {
                     public void onChanged(@Nullable Mic mic) {
                         if(mic != null) {
                             topicAdapter.setMic(mic);
+                            EventBus.getDefault().post(new TopicFragmentEvent(mic.getTopic().getName(), "title"));
                             if (mic.getTopic().getSetting() != null) {
                                 Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
                             }
@@ -202,6 +204,7 @@ public class TopicFragment extends Fragment {
                         Log.i(TAG, "CONTINUE onChanged");
                         if(mic != null) {
                             topicAdapter.setMic(mic);
+                            EventBus.getDefault().post(new TopicFragmentEvent(mic.getTopic().getName(), "title"));
                             validateTopicMembers(mic.getTopic());
                             smoothToBottom();
                             if (mic.getTopic().getSetting() != null) {

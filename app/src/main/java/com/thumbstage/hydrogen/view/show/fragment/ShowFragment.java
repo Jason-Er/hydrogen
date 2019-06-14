@@ -1,5 +1,6 @@
 package com.thumbstage.hydrogen.view.show.fragment;
 
+import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
@@ -10,6 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
@@ -33,6 +35,7 @@ import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.HyMenuItemEvent;
 import com.thumbstage.hydrogen.event.PlayerControlEvent;
+import com.thumbstage.hydrogen.event.ShowFragmentEvent;
 import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.model.bo.TopicTag;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
@@ -248,11 +251,6 @@ public class ShowFragment extends Fragment {
         }
     }
 
-    private void dismissAll() {
-        lineAudioPopup.dismiss();
-        lineTextPopup.dismiss();
-    }
-
     private void updateProgress(int currentIndex) {
         Log.i("ShowFragment","currentIndex:"+currentIndex);
         if(currentIndex <= mic.getTopic().getDialogue().size()) {
@@ -356,6 +354,7 @@ public class ShowFragment extends Fragment {
                     if (mic.getTopic().getSetting() != null) {
                         Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
                     }
+                    EventBus.getDefault().post(new ShowFragmentEvent(mic.getTopic().getName(), "title"));
                     showAdapter.setMic(mic);
                     spinner.setVisibility(View.GONE);
                 }
@@ -461,4 +460,5 @@ public class ShowFragment extends Fragment {
                 break;
         }
     }
+
 }
