@@ -553,7 +553,7 @@ public class CloudAPI {
         String id = avTopic.getObjectId();
         String name = (String) avTopic.get(FieldName.FIELD_NAME.name);
         String brief = (String) avTopic.get(FieldName.FIELD_BRIEF.name);
-        String derive_from = (String) avTopic.get(FieldName.FIELD_DERIVE_FROM.name);
+        AVObject avDeriveFrom = avTopic.getAVObject(FieldName.FIELD_DERIVE_FROM.name);
         AVFile avFile = avTopic.getAVFile(FieldName.FIELD_SETTING.name);
         AVObject avUser = avTopic.getAVObject(FieldName.FIELD_SPONSOR.name);
         List<String> tags = avTopic.getList(FieldName.FIELD_TAG.name);
@@ -569,7 +569,7 @@ public class CloudAPI {
         topic.setBrief(brief);
         topic.setSetting(convert2SettingDto(avFile));
         topic.setSponsor(convert2UserDto(avUser));
-        topic.setDerive_from(derive_from);
+        topic.setDerive_from(avDeriveFrom==null?null:avDeriveFrom.getObjectId());
         topic.setMembers(membersIds);
         topic.setTags(convert2TopicTag(tags));
         topic.setDialogue(convert2LineDto(mapList));

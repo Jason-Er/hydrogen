@@ -70,17 +70,6 @@ public class ModelDB {
         }
     }
 
-    public List<String> getNeedFreshMicMembers(String id) {
-        List<UserEntity> userEntities = database.userDao().getMembers(id);
-        List<String> userIds = new ArrayList<>();
-        for(UserEntity entity: userEntities) {
-            if(TextUtils.isEmpty(entity.getName())) {
-                userIds.add(entity.getId());
-            }
-        }
-        return userIds;
-    }
-
     public boolean isMicNeedFresh(String id) {
         return database.micDao().hasMic(id, getMaxRefreshTime(new Date())) == null;
     }
@@ -93,6 +82,17 @@ public class ModelDB {
         return database.userDao().hasUser(userId, getMaxRefreshTime(new Date())) == null;
     }
 
+    public List<String> getNeedFreshMicMembers(String id) {
+        List<UserEntity> userEntities = database.userDao().getMembers(id);
+        List<String> userIds = new ArrayList<>();
+        for(UserEntity entity: userEntities) {
+            if(TextUtils.isEmpty(entity.getName())) {
+                userIds.add(entity.getId());
+            }
+        }
+        return userIds;
+    }
+
     private Date getMaxRefreshTime(Date currentDate){
         Calendar cal = Calendar.getInstance();
         cal.setTime(currentDate);
@@ -100,6 +100,7 @@ public class ModelDB {
         return cal.getTime();
     }
 
+    // region common
     private void saveUserCan(String topicId, Map<String, Set<CanOnTopic>> userCanMap) {
         List<TopicUserCanEntity> entities = new ArrayList<>();
         if(userCanMap != null) {
@@ -163,7 +164,6 @@ public class ModelDB {
         database.userDao().insert(userEntityList);
     }
 
-    // region common
     public void saveUser(UserDto user) {
         UserEntity entity = new UserEntity();
         entity.setId(user.getId());
@@ -172,6 +172,21 @@ public class ModelDB {
         entity.setBadge(user.getBadge());
         entity.setLastRefresh(new Date());
         database.userDao().insert(entity);
+    }
+
+    public void saveUserList(List<User> userList) {
+        List<UserEntity> userEntityList = new ArrayList<>();
+        for(User user: userList) {
+            if(user != null) {
+                UserEntity entity = new UserEntity();
+                entity.setName(user.getName());
+                entity.setAvatar(user.getAvatar());
+                entity.setId(user.getId());
+                entity.setLastRefresh(new Date());
+                userEntityList.add(entity);
+            }
+        }
+        database.userDao().insert(userEntityList);
     }
     // endregion
 
@@ -319,21 +334,6 @@ public class ModelDB {
     }
     // endregion
 
-    public void saveUserList(List<User> userList) {
-        List<UserEntity> userEntityList = new ArrayList<>();
-        for(User user: userList) {
-            if(user != null) {
-                UserEntity entity = new UserEntity();
-                entity.setName(user.getName());
-                entity.setAvatar(user.getAvatar());
-                entity.setId(user.getId());
-                entity.setLastRefresh(new Date());
-                userEntityList.add(entity);
-            }
-        }
-        database.userDao().insert(userEntityList);
-    }
-
     public void saveContacts(final String userId, final List<User> userList) {
         List<ContactEntity> contractEntities = new ArrayList<>();
         for(User user: userList) {
@@ -347,8 +347,6 @@ public class ModelDB {
         }
         database.contractDao().insert(contractEntities);
     }
-
-    // endregion
 
     // region getter
     public Mic getMic(String id) {
