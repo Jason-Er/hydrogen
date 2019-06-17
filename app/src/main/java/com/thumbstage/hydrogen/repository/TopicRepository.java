@@ -10,22 +10,20 @@ import android.util.Log;
 import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.database.ModelDB;
 import com.thumbstage.hydrogen.model.bo.HyFile;
-import com.thumbstage.hydrogen.model.bo.TopicTag;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
-import com.thumbstage.hydrogen.model.callback.IReturnMic;
-import com.thumbstage.hydrogen.model.callback.IReturnMicList;
-import com.thumbstage.hydrogen.model.callback.IReturnTopic;
+import com.thumbstage.hydrogen.model.callback.IReturnMicDto;
+import com.thumbstage.hydrogen.model.callback.IReturnTopicDto;
+import com.thumbstage.hydrogen.model.dto.MicDto;
 import com.thumbstage.hydrogen.model.dto.MicHasNew;
 import com.thumbstage.hydrogen.model.dto.MicTopic;
+import com.thumbstage.hydrogen.model.dto.TopicDto;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.Setting;
-import com.thumbstage.hydrogen.model.vo.Topic;
 import com.thumbstage.hydrogen.model.vo.User;
 
 import java.io.File;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executor;
 
@@ -61,11 +59,12 @@ public class TopicRepository {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                cloudAPI.getMic(micId, new IReturnMic() {
+                cloudAPI.getMicDto(micId, new IReturnMicDto() { // TODO: 6/17/2019 may get data first
                     @Override
-                    public void callback(Mic mic) {
-                        Mic copy = (Mic) mic.clone();
-                        micLiveData.setValue(copy);
+                    public void callback(MicDto mic) {
+                        modelDB.saveMicDto(mic);
+                        Mic micLocal = modelDB.getMic(micId);
+                        micLiveData.setValue((Mic)micLocal.clone());
                     }
                 });
             }
@@ -92,13 +91,13 @@ public class TopicRepository {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                cloudAPI.getTopic(topicId, new IReturnTopic() {
+                cloudAPI.getTopicDto(topicId, new IReturnTopicDto() {
                     @Override
-                    public void callback(final Topic topic) {
+                    public void callback(final TopicDto topic) {
                         executor.execute(new Runnable() {
                             @Override
                             public void run() {
-                                modelDB.saveTopic(topic);
+                                modelDB.saveTopicDto(topic);
                             }
                         });
                     }
@@ -112,10 +111,10 @@ public class TopicRepository {
             @Override
             public void run() {
                 if( modelDB.isMicNeedFresh(micId) ) {
-                    cloudAPI.getMic(micId, new IReturnMic() {
+                    cloudAPI.getMicDto(micId, new IReturnMicDto() {
                         @Override
-                        public void callback(final Mic mic) {
-                            Log.i("TopicRepository", "refreshMic getMic");
+                        public void callback(final MicDto mic) {
+                            Log.i("TopicRepository", "refreshMic getMicDto");
                             saveMic2DB(mic);
                         }
                     });
@@ -224,11 +223,20 @@ public class TopicRepository {
         });
     }
 
-    private void saveMic2DB(final Mic mic) {
+    private void saveMic2DB(final Mic mic) { // from UI side
         executor.execute(new Runnable() {
             @Override
             public void run() {
                 modelDB.saveMic(mic);
+            }
+        });
+    }
+
+    private void saveMic2DB(final MicDto mic) { // for CloudAPI
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                modelDB.saveMicDto(mic);
             }
         });
     }
