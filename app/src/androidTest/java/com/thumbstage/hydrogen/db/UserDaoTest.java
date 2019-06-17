@@ -6,7 +6,6 @@ import android.util.Log;
 import com.thumbstage.hydrogen.database.entity.TopicEntity;
 import com.thumbstage.hydrogen.database.entity.TopicTagEntity;
 import com.thumbstage.hydrogen.database.entity.UserEntity;
-import com.thumbstage.hydrogen.model.dto.MicHasNew;
 import com.thumbstage.hydrogen.model.vo.Mic;
 
 import org.junit.Test;
@@ -97,7 +96,7 @@ public class UserDaoTest extends DbTest {
     public void testSaveMicList() {
         List<Mic> micList = new ArrayList<>();
         //micList.add(new Mic("5c85d82ba91c9300651146f9"));
-        converter.saveMicList(micList);
+        converter.saveMicDtoList(micList);
 
     }
 

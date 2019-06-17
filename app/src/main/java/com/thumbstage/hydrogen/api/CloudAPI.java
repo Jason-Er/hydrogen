@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
-import android.webkit.URLUtil;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
@@ -32,7 +31,6 @@ import com.avos.avoscloud.im.v2.callback.AVIMConversationCreatedCallback;
 import com.avos.avoscloud.im.v2.messages.AVIMAudioMessage;
 import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.thumbstage.hydrogen.app.Config;
-import com.thumbstage.hydrogen.database.entity.MicEntity;
 import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.model.bo.HyFile;
 import com.thumbstage.hydrogen.model.bo.LineType;
@@ -42,10 +40,15 @@ import com.thumbstage.hydrogen.model.bo.TopicTag;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
 import com.thumbstage.hydrogen.model.callback.IReturnLine;
-import com.thumbstage.hydrogen.model.callback.IReturnMic;
-import com.thumbstage.hydrogen.model.callback.IReturnMicList;
-import com.thumbstage.hydrogen.model.callback.IReturnTopic;
+import com.thumbstage.hydrogen.model.callback.IReturnMicDto;
+import com.thumbstage.hydrogen.model.callback.IReturnMicDtoList;
+import com.thumbstage.hydrogen.model.callback.IReturnTopicDto;
 import com.thumbstage.hydrogen.model.callback.IReturnUser;
+import com.thumbstage.hydrogen.model.dto.LineDto;
+import com.thumbstage.hydrogen.model.dto.MicDto;
+import com.thumbstage.hydrogen.model.dto.SettingDto;
+import com.thumbstage.hydrogen.model.dto.TopicDto;
+import com.thumbstage.hydrogen.model.dto.UserDto;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.Setting;
@@ -485,20 +488,21 @@ public class CloudAPI {
 
     }
 
-    public void getTopic(String topicId, final IReturnTopic iReturnTopic) {
+    public void getTopicDto(String topicId, final IReturnTopicDto iReturnTopicDto) {
         AVQuery<AVObject> avQuery = new AVQuery<>(TableName.TABLE_TOPIC.name);
         avQuery.include(FieldName.FIELD_SPONSOR.name);
         avQuery.getInBackground(topicId, new GetCallback<AVObject>() {
             @Override
             public void done(AVObject object, AVException e) {
                 if(e == null) {
-                    getTopic(object, iReturnTopic);
+                    TopicDto topicDto = convert2TopicDto(object);
+                    iReturnTopicDto.callback(topicDto);
                 }
             }
         });
     }
 
-    public void getMic(String micId, final IReturnMic iReturnMic) {
+    public void getMicDto(String micId, final IReturnMicDto iReturnMicDto) {
         AVQuery<AVObject> avQuery = new AVQuery<>(TableName.TABLE_MIC.name);
         avQuery.include(FieldName.FIELD_TOPIC.name);
         avQuery.include(FieldName.FIELD_TOPIC.name+"."+FieldName.FIELD_SPONSOR.name);
@@ -506,79 +510,115 @@ public class CloudAPI {
             @Override
             public void done(AVObject object, AVException e) {
                 if(e == null) {
-                    avObject2Mic(object, new IReturnMic() {
-                        @Override
-                        public void callback(Mic mic) {
-                            iReturnMic.callback(mic);
-                        }
-                    });
+                    MicDto micDto = convert2MicDto(object);
+                    iReturnMicDto.callback(micDto);
                 }
             }
         });
     }
 
-    private void avObject2Mic(final AVObject avObject, final IReturnMic iReturnMic) {
+    /*
+    private void avObject2Mic(final AVObject avObject, final IReturnMicDto iReturnMicDto) {
         AVObject avTopic = avObject.getAVObject(FieldName.FIELD_TOPIC.name);
-        getTopic(avTopic, new IReturnTopic() {
+        getTopicDto(avTopic, new IReturnTopicDto() {
             @Override
             public void callback(Topic topic) {
                 Mic mic = new Mic();
                 mic.setId(avObject.getObjectId());
                 mic.setTopic(topic);
-                iReturnMic.callback(mic);
+                iReturnMicDto.callback(mic);
             }
         });
     }
+    */
 
-    private List<Mic> convert2Mic(List<AVObject> avObjects) {
-        List<Mic> mics = new ArrayList<>();
+    private MicDto convert2MicDto(AVObject avObject) {
+        MicDto mic = new MicDto();
+        mic.setId(avObject.getObjectId());
+        mic.setUpdateAt(avObject.getUpdatedAt());
+        mic.setTopic(convert2TopicDto(avObject.getAVObject(FieldName.FIELD_TOPIC.name)));
+        return mic;
+    }
+
+    private List<MicDto> convert2MicDto(List<AVObject> avObjects) {
+        List<MicDto> mics = new ArrayList<>();
         for(AVObject avObject: avObjects) {
-            Mic mic = new Mic();
-            mic.setId(avObject.getObjectId());
-            mic.setUpdateAt(avObject.getUpdatedAt());
-            mic.setTopic(convert2TopicMini(avObject.getAVObject(FieldName.FIELD_TOPIC.name)));
-            mics.add(mic);
+            mics.add(convert2MicDto(avObject));
         }
         return mics;
     }
 
-    private Topic convert2TopicMini(AVObject avTopic) {
+    private TopicDto convert2TopicDto(AVObject avTopic) {
+
         String id = avTopic.getObjectId();
         String name = (String) avTopic.get(FieldName.FIELD_NAME.name);
-        List<String> tags = avTopic.getList(FieldName.FIELD_TAG.name);
         String brief = (String) avTopic.get(FieldName.FIELD_BRIEF.name);
-        boolean isFinished = avTopic.getBoolean(FieldName.FIELD_IS_FINISHED.name);
-        Date lastRefresh = avTopic.getUpdatedAt();
-        User user = convert2User(avTopic.getAVObject(FieldName.FIELD_SPONSOR.name));
+        String derive_from = (String) avTopic.get(FieldName.FIELD_DERIVE_FROM.name);
+        AVFile avFile = avTopic.getAVFile(FieldName.FIELD_SETTING.name);
+        AVObject avUser = avTopic.getAVObject(FieldName.FIELD_SPONSOR.name);
+        List<String> tags = avTopic.getList(FieldName.FIELD_TAG.name);
+        Date updatedAt = avTopic.getUpdatedAt();
         List<String> membersIds = avTopic.getList(FieldName.FIELD_MEMBER.name);
         List<Map> mapList = avTopic.getList(FieldName.FIELD_DIALOGUE.name);
-        List<Line> dialogue = convert2LineMini(mapList);
+        Map userCanMap = avTopic.getMap(FieldName.FIELD_PRIVILEGE.name);
+        boolean isFinished = avTopic.getBoolean(FieldName.FIELD_IS_FINISHED.name);
 
-        Topic topic = new Topic();
-        topic.setTags(convert2TopicTag(tags));
+        TopicDto topic = new TopicDto();
         topic.setId(id);
         topic.setName(name);
         topic.setBrief(brief);
-        topic.setSponsor(user);
-        topic.setDialogue(dialogue);
-        topic.setMembers(convert2UserMini(membersIds));
+        topic.setSetting(convert2SettingDto(avFile));
+        topic.setSponsor(convert2UserDto(avUser));
+        topic.setDerive_from(derive_from);
+        topic.setMembers(membersIds);
+        topic.setTags(convert2TopicTag(tags));
+        topic.setDialogue(convert2LineDto(mapList));
+        topic.setUserCan(convert2UserCan(userCanMap));
+        topic.setUpdateAt(updatedAt);
         topic.setFinished(isFinished);
-        topic.setUpdateAt(lastRefresh);
+
         return topic;
     }
 
-    private List<User> convert2UserMini(List<String> userId) {
-        List<User> users = new ArrayList<>();
-        for(String id: userId) {
-            User user = new User();
-            user.setId(id);
-            users.add(user);
+    private Map<String, Set<CanOnTopic>> convert2UserCan(Map userCanMap) {
+        Map<String, Set<CanOnTopic>> userCans = new HashMap<>();
+        if(userCanMap != null) {
+            for (Object key : userCanMap.keySet()) {
+                List<String> pris = new ArrayList<>();
+                if (userCanMap.get(key) instanceof JSONArray) {
+                    JSONArray arr = (JSONArray) userCanMap.get(key);
+                    pris = JSONObject.parseArray(arr.toJSONString(), String.class);
+                } else if (userCanMap.get(key) instanceof ArrayList) {
+                    pris = (List<String>) userCanMap.get(key);
+                } else {
+
+                }
+                Set<CanOnTopic> cans = new LinkedHashSet<>();
+                for (String str : pris) {
+                    cans.add(CanOnTopic.valueOf(str));
+                }
+                userCans.put((String) key, cans);
+            }
         }
-        return users;
+        return userCans;
     }
 
-    private User convert2User(AVObject avUser) {
-        User user = new User();
+    private SettingDto convert2SettingDto(AVFile avFile) {
+        SettingDto setting;
+        if (avFile != null) {
+            boolean isInCloud = false;
+            if(!TextUtils.isEmpty(avFile.getBucket())) {
+                isInCloud = true;
+            }
+            setting = new SettingDto(avFile.getObjectId(), avFile.getUrl(), isInCloud);
+        } else {
+            setting = null;
+        }
+        return setting;
+    }
+
+    private UserDto convert2UserDto(AVObject avUser) {
+        UserDto user = new UserDto();
         user.setId(avUser.getObjectId());
         user.setName((String) avUser.get(FieldName.FIELD_USERNAME.name));
         user.setAvatar((String) avUser.get(FieldName.FIELD_AVATAR.name));
@@ -591,9 +631,10 @@ public class CloudAPI {
         return user;
     }
 
-    public void getMic(TopicTag tag, String userId, boolean isFinished, int pageNum, final IReturnMicList iReturnMicList) {
+    public void getMicDto(TopicTag tag, String userId, boolean isFinished, int pageNum, final IReturnMicDtoList iReturnMicDtoList) {
         AVQuery<AVObject> avQuery = new AVQuery<>(TableName.TABLE_MIC.name);
         avQuery.include(FieldName.FIELD_TOPIC.name);
+        avQuery.include(FieldName.FIELD_TOPIC.name+"."+FieldName.FIELD_SETTING.name);
         avQuery.include(FieldName.FIELD_TOPIC.name+"."+FieldName.FIELD_SPONSOR.name);
         AVQuery<AVObject> avTopicQuery = new AVQuery<>(TableName.TABLE_TOPIC.name);
         if(!TextUtils.isEmpty(userId)) {
@@ -609,7 +650,7 @@ public class CloudAPI {
             @Override
             public void done(final List<AVObject> avObjects, AVException avException) {
                 if(avException == null) {
-                    iReturnMicList.callback(convert2Mic(avObjects));
+                    iReturnMicDtoList.callback(convert2MicDto(avObjects));
                 } else {
                     avException.printStackTrace();
                 }
@@ -666,14 +707,12 @@ public class CloudAPI {
         });
     }
 
-    private List<Line> convert2LineMini(List<Map> maps) {
-        List<Line> dialogue = new ArrayList<>();
+    private List<LineDto> convert2LineDto(List<Map> maps) {
+        List<LineDto> dialogue = new ArrayList<>();
         for (Map map : maps) {
             if (map.size() != 0) {
-                Line line = new Line();
-                User user = new User();
-                user.setId((String) map.get("who"));
-                line.setWho(user);
+                LineDto line = new LineDto();
+                line.setWho((String) map.get("who"));
                 line.setWhen(StringUtil.string2Date((String) map.get("when")));
                 line.setWhat((String) map.get("what"));
                 line.setLineType((LineType.valueOf((String) map.get("type"))));
@@ -692,7 +731,8 @@ public class CloudAPI {
         return userIds;
     }
 
-    private void getTopic(final AVObject avTopic, final IReturnTopic iReturnTopic) {
+    /*
+    private void getTopicDto(final AVObject avTopic, final IReturnTopicDto iReturnTopicDto) {
         if(avTopic != null) {
             final AVFile avFile = avTopic.getAVFile(FieldName.FIELD_SETTING.name);
             final String id = avTopic.getObjectId();
@@ -758,11 +798,12 @@ public class CloudAPI {
                     topic.setSetting(setting);
                     topic.setFinished(isFinished);
                     topic.setUpdateAt(lastRefresh);
-                    iReturnTopic.callback(topic);
+                    iReturnTopicDto.callback(topic);
                 }
             });
         }
     }
+    */
 
     private Set<TopicTag> convert2TopicTag(List<String> tags) {
         Set<TopicTag> list = new LinkedHashSet<>();
@@ -796,6 +837,7 @@ public class CloudAPI {
         });
     }
 
+    /*
     public void addTopicOneLine(final Mic mic, final Line line, final IReturnBool callBack) {
         AVQuery<AVObject> avQuery = new AVQuery<>(TableName.TABLE_MIC.name);
         avQuery.getInBackground(mic.getId(), new GetCallback<AVObject>() {
@@ -822,7 +864,7 @@ public class CloudAPI {
 
     }
 
-    public void getTopic(Mic mic, @NonNull final IReturnTopic returnTopic) {
+    public void getTopicDto(Mic mic, @NonNull final IReturnTopicDto returnTopic) {
         AVQuery<AVObject> avQuery = new AVQuery<>(TableName.TABLE_MIC.name);
         avQuery.include(FieldName.FIELD_TOPIC.name);
         avQuery.getInBackground(mic.getId(), new GetCallback<AVObject>() {
@@ -830,7 +872,7 @@ public class CloudAPI {
             public void done(AVObject avObject, AVException e) {
                 if( e == null ) {
                     AVObject avTopic = avObject.getAVObject(FieldName.FIELD_TOPIC.name);
-                    getTopic(avTopic, new IReturnTopic() {
+                    getTopicDto(avTopic, new IReturnTopicDto() {
                         @Override
                         public void callback(Topic topic) {
                             returnTopic.callback(topic);
@@ -843,6 +885,7 @@ public class CloudAPI {
             }
         });
     }
+    */
 
     public void updateUserAvatar(String avatar, final IReturnBool iReturnBool) {
         AVUser.getCurrentUser().put(FieldName.FIELD_AVATAR.name, avatar);

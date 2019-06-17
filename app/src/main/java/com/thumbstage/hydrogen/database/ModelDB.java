@@ -20,8 +20,12 @@ import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.model.bo.LineType;
 import com.thumbstage.hydrogen.model.bo.MessageType;
 import com.thumbstage.hydrogen.model.bo.TopicTag;
+import com.thumbstage.hydrogen.model.dto.LineDto;
+import com.thumbstage.hydrogen.model.dto.MicDto;
 import com.thumbstage.hydrogen.model.dto.MicHasNew;
 import com.thumbstage.hydrogen.model.dto.MicTopic;
+import com.thumbstage.hydrogen.model.dto.TopicDto;
+import com.thumbstage.hydrogen.model.dto.UserDto;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.Setting;
@@ -96,39 +100,6 @@ public class ModelDB {
         return cal.getTime();
     }
 
-    // region Model 2 entity
-    public void saveTopic(final Topic topic) {
-        database.runInTransaction(new Runnable() {
-            @Override
-            public void run() {
-                User user = topic.getSponsor();
-                saveUser(user);
-                TopicEntity entity = new TopicEntity();
-                entity.setId(topic.getId());
-                entity.setName(topic.getName());
-                entity.setBrief(topic.getBrief());
-                entity.setDerive_from(topic.getDerive_from());
-                entity.setSponsor(topic.getSponsor().getId());
-                entity.setFinished(topic.isFinished());
-                if( topic.getSetting()!=null ) {
-                    entity.setSetting_url(topic.getSetting().getUrl());
-                }
-                entity.setUpdateAt(topic.getUpdateAt());
-                entity.setLastRefresh(new Date());
-                database.topicDao().insert(entity);
-                saveTag(topic.getId(), topic.getTags());
-                saveUserCan(topic.getId(),topic.getUserCan());
-                saveMembers(DataConvertUtil.user2StringId(topic.getMembers()), topic.getId());
-                for(User u: topic.getMembers()) {
-                    if(!TextUtils.isEmpty(u.getName())) {
-                        saveUser(u);
-                    }
-                }
-                saveLineList(topic.getDialogue(), topic.getId());
-            }
-        });
-    }
-
     private void saveUserCan(String topicId, Map<String, Set<CanOnTopic>> userCanMap) {
         List<TopicUserCanEntity> entities = new ArrayList<>();
         if(userCanMap != null) {
@@ -178,7 +149,6 @@ public class ModelDB {
             }
             database.topicUserDao().insert(topicUserEntityList);
         }
-
     }
 
     public void saveUserIds(List<String> userIds) {
@@ -193,6 +163,19 @@ public class ModelDB {
         database.userDao().insert(userEntityList);
     }
 
+    // region common
+    public void saveUser(UserDto user) {
+        UserEntity entity = new UserEntity();
+        entity.setId(user.getId());
+        entity.setName(user.getName());
+        entity.setAvatar(user.getAvatar());
+        entity.setBadge(user.getBadge());
+        entity.setLastRefresh(new Date());
+        database.userDao().insert(entity);
+    }
+    // endregion
+
+    // region for UI side
     public void saveLineList(List<Line> lineList, String topicId) {
         List<LineEntity> lineEntities = new ArrayList<>();
         for(Line line: lineList) {
@@ -208,7 +191,39 @@ public class ModelDB {
         database.lineDao().insert(lineEntities);
     }
 
-    public void saveMic(final Mic mic) {
+    public void saveTopic(final Topic topic) {
+        database.runInTransaction(new Runnable() {
+            @Override
+            public void run() {
+                User user = topic.getSponsor();
+                saveUser(user);
+                TopicEntity entity = new TopicEntity();
+                entity.setId(topic.getId());
+                entity.setName(topic.getName());
+                entity.setBrief(topic.getBrief());
+                entity.setDerive_from(topic.getDerive_from());
+                entity.setSponsor(topic.getSponsor().getId());
+                entity.setFinished(topic.isFinished());
+                if( topic.getSetting()!=null ) {
+                    entity.setSetting_url(topic.getSetting().getUrl());
+                }
+                entity.setUpdateAt(topic.getUpdateAt());
+                entity.setLastRefresh(new Date());
+                database.topicDao().insert(entity);
+                saveTag(topic.getId(), topic.getTags());
+                saveUserCan(topic.getId(),topic.getUserCan());
+                saveMembers(DataConvertUtil.user2StringId(topic.getMembers()), topic.getId());
+                for(User u: topic.getMembers()) {
+                    if(!TextUtils.isEmpty(u.getName())) {
+                        saveUser(u);
+                    }
+                }
+                saveLineList(topic.getDialogue(), topic.getId());
+            }
+        });
+    }
+
+    public void saveMic(final Mic mic) { // for UI side
         database.runInTransaction(new Runnable() {
             @Override
             public void run() {
@@ -227,26 +242,82 @@ public class ModelDB {
             }
         });
     }
+    // endregion
 
-    public void saveMicList(final List<Mic> micList) {
+    // region for CloudAPI to ModelDB
+    public void saveLineDtoList(List<LineDto> lineList, String topicId) {
+        List<LineEntity> lineEntities = new ArrayList<>();
+        for(LineDto line: lineList) {
+            LineEntity entity = new LineEntity();
+            entity.setWho(line.getWho());
+            entity.setWhen(line.getWhen());
+            entity.setWhat(line.getWhat());
+            entity.setInWhichTopic(topicId);
+            entity.setLine_type(line.getLineType().name());
+            entity.setMessage_type(line.getMessageType().name());
+            lineEntities.add(entity);
+        }
+        database.lineDao().insert(lineEntities);
+    }
+
+    public void saveTopicDto(final TopicDto topic) {
         database.runInTransaction(new Runnable() {
             @Override
             public void run() {
-                for(Mic mic: micList) {
-                    saveMic(mic);
+                UserDto user = topic.getSponsor();
+                saveUser(user);
+                TopicEntity entity = new TopicEntity();
+                entity.setId(topic.getId());
+                entity.setName(topic.getName());
+                entity.setBrief(topic.getBrief());
+                entity.setDerive_from(topic.getDerive_from());
+                entity.setSponsor(topic.getSponsor().getId());
+                entity.setFinished(topic.isFinished());
+                if( topic.getSetting()!=null ) {
+                    entity.setSetting_url(topic.getSetting().getUrl());
+                }
+                entity.setUpdateAt(topic.getUpdateAt());
+                entity.setLastRefresh(new Date());
+                database.topicDao().insert(entity);
+                saveTag(topic.getId(), topic.getTags());
+                saveUserCan(topic.getId(),topic.getUserCan());
+                saveMembers(topic.getMembers(), topic.getId());
+                saveLineDtoList(topic.getDialogue(), topic.getId());
+            }
+        });
+    }
+
+    public void saveMicDto(final MicDto mic) { // for CloudAPI
+        database.runInTransaction(new Runnable() {
+            @Override
+            public void run() {
+                saveTopicDto(mic.getTopic());
+                String id = database.micDao().getItemId(mic.getId());
+                if(id == null) {
+                    MicEntity entity = new MicEntity();
+                    entity.setId(mic.getId());
+                    entity.setTopicId(mic.getTopic().getId());
+                    entity.setUpdateAt(mic.getUpdateAt());
+                    entity.setLastRefresh(new Date());
+                    database.micDao().insert(entity);
+                } else { // TODO: 6/17/2019 why update?
+                    database.micDao().update(mic.getId(), mic.getTopic().getId(), new Date());
                 }
             }
         });
     }
 
-    public void saveUser(User user) {
-        UserEntity entity = new UserEntity();
-        entity.setId(user.getId());
-        entity.setName(user.getName());
-        entity.setAvatar(user.getAvatar());
-        entity.setLastRefresh(new Date());
-        database.userDao().insert(entity);
+    public void saveMicDtoList(final List<MicDto> micDtoList) {
+        database.runInTransaction(new Runnable() {
+            @Override
+            public void run() {
+                for(MicDto mic: micDtoList) {
+                    saveMicDto(mic);
+                }
+            }
+        });
     }
+    // endregion
 
     public void saveUserList(List<User> userList) {
         List<UserEntity> userEntityList = new ArrayList<>();
@@ -280,6 +351,10 @@ public class ModelDB {
     // endregion
 
     // region getter
+    public Mic getMic(String id) {
+        return entity2Mic(database.micDao().get(id));
+    }
+
     public DataSource.Factory<Integer, Mic> getMic(TopicTag tag, boolean isFinished) {
         return database.micDao()
                 .get(tag.name(),isFinished)
