@@ -25,6 +25,7 @@ import com.thumbstage.hydrogen.model.vo.Topic;
 import com.thumbstage.hydrogen.model.vo.User;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executor;
 
@@ -114,10 +115,27 @@ public class TopicRepository {
                     cloudAPI.getMic(micId, new IReturnMic() {
                         @Override
                         public void callback(final Mic mic) {
-                            Log.i("TopicRepository", "refreshMic");
+                            Log.i("TopicRepository", "refreshMic getMic");
                             saveMic2DB(mic);
                         }
                     });
+                } else {
+                    List<String> userIds = modelDB.getNeedFreshMicMembers(micId);
+                    if(!userIds.isEmpty()) {
+                        cloudAPI.getUsers(userIds, new CloudAPI.IReturnUsers() {
+                            @Override
+                            public void callback(final List<User> users) {
+                                Log.i("TopicRepository", "refreshMic getUsers");
+                                executor.execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        modelDB.saveUserList(users);
+                                        modelDB.updateMicLastRefresh(micId);
+                                    }
+                                });
+                            }
+                        });
+                    }
                 }
             }
         });

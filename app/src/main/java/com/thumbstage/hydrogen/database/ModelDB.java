@@ -66,6 +66,17 @@ public class ModelDB {
         }
     }
 
+    public List<String> getNeedFreshMicMembers(String id) {
+        List<UserEntity> userEntities = database.userDao().getMembers(id);
+        List<String> userIds = new ArrayList<>();
+        for(UserEntity entity: userEntities) {
+            if(TextUtils.isEmpty(entity.getName())) {
+                userIds.add(entity.getId());
+            }
+        }
+        return userIds;
+    }
+
     public boolean isMicNeedFresh(String id) {
         return database.micDao().hasMic(id, getMaxRefreshTime(new Date())) == null;
     }
@@ -442,9 +453,15 @@ public class ModelDB {
 
     // endregion
 
+    // region update
     public void updateMicHasNew(MicHasNew micHasNew) {
         database.micDao().updateHasNew(micHasNew.getMicId(), micHasNew.isHasNew()? 1:0, new Date());
     }
+
+    public void updateMicLastRefresh(String micId) {
+        database.topicDao().updateLastRefresh(micId, new Date());
+    }
+    //endregion
 
 
 }

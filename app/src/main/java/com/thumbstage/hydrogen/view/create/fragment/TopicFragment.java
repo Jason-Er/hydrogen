@@ -205,7 +205,6 @@ public class TopicFragment extends Fragment {
                         if(mic != null) {
                             topicAdapter.setMic(mic);
                             EventBus.getDefault().post(new TopicFragmentEvent(mic.getTopic().getName(), "title"));
-                            validateTopicMembers(mic.getTopic());
                             smoothToBottom();
                             if (mic.getTopic().getSetting() != null) {
                                 Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
@@ -217,19 +216,6 @@ public class TopicFragment extends Fragment {
                     }
                 });
                 break;
-        }
-    }
-
-    private void validateTopicMembers(Topic topic) {
-        List<String> userIds = new ArrayList<>();
-        for(User user: topic.getMembers()) {
-            if(TextUtils.isEmpty(user.getName())) {
-                userIds.add(user.getId());
-            }
-        }
-        if(!userIds.isEmpty()) {
-            Log.i(TAG, "validateTopicMembers begin topicViewModel.refreshTopic()");
-            topicViewModel.refreshTopic(topic.getId());
         }
     }
 

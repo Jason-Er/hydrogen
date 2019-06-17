@@ -551,6 +551,8 @@ public class CloudAPI {
         Date lastRefresh = avTopic.getUpdatedAt();
         User user = convert2User(avTopic.getAVObject(FieldName.FIELD_SPONSOR.name));
         List<String> membersIds = avTopic.getList(FieldName.FIELD_MEMBER.name);
+        List<Map> mapList = avTopic.getList(FieldName.FIELD_DIALOGUE.name);
+        List<Line> dialogue = convert2LineMini(mapList);
 
         Topic topic = new Topic();
         topic.setTags(convert2TopicTag(tags));
@@ -558,6 +560,7 @@ public class CloudAPI {
         topic.setName(name);
         topic.setBrief(brief);
         topic.setSponsor(user);
+        topic.setDialogue(dialogue);
         topic.setMembers(convert2UserMini(membersIds));
         topic.setFinished(isFinished);
         topic.setUpdateAt(lastRefresh);
@@ -661,6 +664,24 @@ public class CloudAPI {
                 }
             }
         });
+    }
+
+    private List<Line> convert2LineMini(List<Map> maps) {
+        List<Line> dialogue = new ArrayList<>();
+        for (Map map : maps) {
+            if (map.size() != 0) {
+                Line line = new Line();
+                User user = new User();
+                user.setId((String) map.get("who"));
+                line.setWho(user);
+                line.setWhen(StringUtil.string2Date((String) map.get("when")));
+                line.setWhat((String) map.get("what"));
+                line.setLineType((LineType.valueOf((String) map.get("type"))));
+                line.setMessageType((MessageType.valueOf((String) map.get("message"))));
+                dialogue.add(line);
+            }
+        }
+        return dialogue;
     }
 
     private List<String> users2Ids(List<User> users) {

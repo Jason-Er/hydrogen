@@ -46,4 +46,7 @@ public interface UserDao {
 
     @Query("SELECT * FROM user WHERE id = :id AND last_refresh > :lastRefreshMax LIMIT 1")
     UserEntity hasUser(String id, Date lastRefreshMax);
+
+    @Query("SELECT * FROM user WHERE id IN (SELECT user_id FROM topic_user WHERE topic_id =(SELECT topic_id FROM mic WHERE id =:micId ))")
+    List<UserEntity> getMembers(String micId);
 }

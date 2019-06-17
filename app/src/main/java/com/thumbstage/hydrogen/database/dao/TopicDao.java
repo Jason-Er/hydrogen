@@ -44,4 +44,7 @@ public interface TopicDao {
     @Query("SELECT * FROM topic WHERE id IN (SELECT topic_id FROM topic_tag WHERE tag =:tag) AND sponsor =:sponsor AND is_finished =:isFinished AND last_refresh > :lastRefreshMax LIMIT 1")
     TopicEntity hasTopic(String tag, String sponsor, boolean isFinished, Date lastRefreshMax);
 
+    @Query("UPDATE topic SET last_refresh =:lastRefresh WHERE id =(SELECT topic_id FROM mic WHERE id =:micId)")
+    void updateLastRefresh(String micId, Date lastRefresh);
+
 }
