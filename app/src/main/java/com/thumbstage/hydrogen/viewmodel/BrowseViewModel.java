@@ -10,7 +10,8 @@ import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.app.Config;
 import com.thumbstage.hydrogen.database.ModelDB;
 import com.thumbstage.hydrogen.model.bo.TopicTag;
-import com.thumbstage.hydrogen.model.callback.IReturnMicList;
+import com.thumbstage.hydrogen.model.callback.IReturnMicDtoList;
+import com.thumbstage.hydrogen.model.dto.MicDto;
 import com.thumbstage.hydrogen.model.dto.MicHasNew;
 import com.thumbstage.hydrogen.model.vo.Mic;
 
@@ -57,13 +58,13 @@ public class BrowseViewModel extends ViewModel {
     }
 
     public void refreshCommunityShowList() {
-        cloudAPI.getMic(TopicTag.SELECTED, "", true, 0, new IReturnMicList() {
+        cloudAPI.getMicDto(TopicTag.SELECTED, "", true, 0, new IReturnMicDtoList() {
             @Override
-            public void callback(final List<Mic> micList) {
+            public void callback(final List<MicDto> micList) {
                 executor.execute(new Runnable() {
                     @Override
                     public void run() {
-                        modelDB.saveMicList(micList);
+                        modelDB.saveMicDtoList(micList);
                         communityShowList.getValue().getDataSource().invalidate();
                     }
                 });
@@ -72,13 +73,13 @@ public class BrowseViewModel extends ViewModel {
     }
 
     public void refreshCommunityTopicList() {
-        cloudAPI.getMic(TopicTag.LITERAL, "", false, 0, new IReturnMicList() {
+        cloudAPI.getMicDto(TopicTag.LITERAL, "", false, 0, new IReturnMicDtoList() {
             @Override
-            public void callback(final List<Mic> micList) {
+            public void callback(final List<MicDto> micList) {
                 executor.execute(new Runnable() {
                     @Override
                     public void run() {
-                        modelDB.saveMicList(micList);
+                        modelDB.saveMicDtoList(micList);
                         communityTopicList.getValue().getDataSource().invalidate();
                     }
                 });
@@ -88,13 +89,13 @@ public class BrowseViewModel extends ViewModel {
 
     public void refreshIAttendedOpenedList() {
         String userId = cloudAPI.getCurrentUser().getId();
-        cloudAPI.getMic(TopicTag.SEMINAR, userId, false, 0, new IReturnMicList() {
+        cloudAPI.getMicDto(TopicTag.SEMINAR, userId, false, 0, new IReturnMicDtoList() {
             @Override
-            public void callback(final List<Mic> micList) {
+            public void callback(final List<MicDto> micList) {
                 executor.execute(new Runnable() {
                     @Override
                     public void run() {
-                        modelDB.saveMicList(micList);
+                        modelDB.saveMicDtoList(micList);
                         iAttendedOpenedList.getValue().getDataSource().invalidate();
                     }
                 });
@@ -104,13 +105,13 @@ public class BrowseViewModel extends ViewModel {
 
     public void refreshIAttendedClosedList() {
         String userId = cloudAPI.getCurrentUser().getId();
-        cloudAPI.getMic(TopicTag.SEMINAR, userId, true, 0, new IReturnMicList() {
+        cloudAPI.getMicDto(TopicTag.SEMINAR, userId, true, 0, new IReturnMicDtoList() {
             @Override
-            public void callback(final List<Mic> micList) {
+            public void callback(final List<MicDto> micList) {
                 executor.execute(new Runnable() {
                     @Override
                     public void run() {
-                        modelDB.saveMicList(micList);
+                        modelDB.saveMicDtoList(micList);
                         iAttendedClosedList.getValue().getDataSource().invalidate();
                     }
                 });
@@ -125,13 +126,13 @@ public class BrowseViewModel extends ViewModel {
                     @Override
                     public void onZeroItemsLoaded() {
                         super.onZeroItemsLoaded();
-                        cloudAPI.getMic(TopicTag.SELECTED, "", true, 0, new IReturnMicList() {
+                        cloudAPI.getMicDto(TopicTag.SELECTED, "", true, 0, new IReturnMicDtoList() {
                             @Override
-                            public void callback(final List<Mic> micList) {
+                            public void callback(final List<MicDto> micList) {
                                 executor.execute(new Runnable() {
                                     @Override
                                     public void run() {
-                                        modelDB.saveMicList(micList);
+                                        modelDB.saveMicDtoList(micList);
                                     }
                                 });
                             }
@@ -148,13 +149,13 @@ public class BrowseViewModel extends ViewModel {
                         super.onItemAtEndLoaded(itemAtEnd);
                         // on the base that server page_size is the same with db page_size otherwise need calculation
                         communityShowListPageNum++;
-                        cloudAPI.getMic(TopicTag.SELECTED, "", true, communityShowListPageNum, new IReturnMicList() {
+                        cloudAPI.getMicDto(TopicTag.SELECTED, "", true, communityShowListPageNum, new IReturnMicDtoList() {
                             @Override
-                            public void callback(final List<Mic> micList) {
+                            public void callback(final List<MicDto> micList) {
                                 executor.execute(new Runnable() {
                                     @Override
                                     public void run() {
-                                        modelDB.saveMicList(micList);
+                                        modelDB.saveMicDtoList(micList);
                                     }
                                 });
                             }
@@ -170,13 +171,13 @@ public class BrowseViewModel extends ViewModel {
                     @Override
                     public void onZeroItemsLoaded() {
                         super.onZeroItemsLoaded();
-                        cloudAPI.getMic(TopicTag.LITERAL, "", false, 0, new IReturnMicList() {
+                        cloudAPI.getMicDto(TopicTag.LITERAL, "", false, 0, new IReturnMicDtoList() {
                             @Override
-                            public void callback(final List<Mic> micList) {
+                            public void callback(final List<MicDto> micList) {
                                 executor.execute(new Runnable() {
                                     @Override
                                     public void run() {
-                                        modelDB.saveMicList(micList);
+                                        modelDB.saveMicDtoList(micList);
                                     }
                                 });
                             }
@@ -193,13 +194,13 @@ public class BrowseViewModel extends ViewModel {
                         super.onItemAtEndLoaded(itemAtEnd);
                         // on the base that server page_size is the same with db page_size otherwise need calculation
                         communityTopicListPageNum++;
-                        cloudAPI.getMic(TopicTag.LITERAL, "", false, communityTopicListPageNum, new IReturnMicList() {
+                        cloudAPI.getMicDto(TopicTag.LITERAL, "", false, communityTopicListPageNum, new IReturnMicDtoList() {
                             @Override
-                            public void callback(final List<Mic> micList) {
+                            public void callback(final List<MicDto> micList) {
                                 executor.execute(new Runnable() {
                                     @Override
                                     public void run() {
-                                        modelDB.saveMicList(micList);
+                                        modelDB.saveMicDtoList(micList);
                                     }
                                 });
                             }
@@ -216,13 +217,13 @@ public class BrowseViewModel extends ViewModel {
                     @Override
                     public void onZeroItemsLoaded() {
                         super.onZeroItemsLoaded();
-                        cloudAPI.getMic(TopicTag.SEMINAR, userId, false, 0, new IReturnMicList() {
+                        cloudAPI.getMicDto(TopicTag.SEMINAR, userId, false, 0, new IReturnMicDtoList() {
                             @Override
-                            public void callback(final List<Mic> micList) {
+                            public void callback(final List<MicDto> micList) {
                                 executor.execute(new Runnable() {
                                     @Override
                                     public void run() {
-                                        modelDB.saveMicList(micList);
+                                        modelDB.saveMicDtoList(micList);
                                     }
                                 });
                             }
@@ -239,13 +240,13 @@ public class BrowseViewModel extends ViewModel {
                         super.onItemAtEndLoaded(itemAtEnd);
                         // on the base that server page_size is the same with db page_size otherwise need calculation
                         iAttendedOpenedListPageNum++;
-                        cloudAPI.getMic(TopicTag.SEMINAR, userId, false, iAttendedOpenedListPageNum, new IReturnMicList() {
+                        cloudAPI.getMicDto(TopicTag.SEMINAR, userId, false, iAttendedOpenedListPageNum, new IReturnMicDtoList() {
                             @Override
-                            public void callback(final List<Mic> micList) {
+                            public void callback(final List<MicDto> micList) {
                                 executor.execute(new Runnable() {
                                     @Override
                                     public void run() {
-                                        modelDB.saveMicList(micList);
+                                        modelDB.saveMicDtoList(micList);
                                     }
                                 });
                             }
@@ -262,13 +263,13 @@ public class BrowseViewModel extends ViewModel {
                     @Override
                     public void onZeroItemsLoaded() {
                         super.onZeroItemsLoaded();
-                        cloudAPI.getMic(TopicTag.SEMINAR, userId, true, 0, new IReturnMicList() {
+                        cloudAPI.getMicDto(TopicTag.SEMINAR, userId, true, 0, new IReturnMicDtoList() {
                             @Override
-                            public void callback(final List<Mic> micList) {
+                            public void callback(final List<MicDto> micList) {
                                 executor.execute(new Runnable() {
                                     @Override
                                     public void run() {
-                                        modelDB.saveMicList(micList);
+                                        modelDB.saveMicDtoList(micList);
                                     }
                                 });
                             }
@@ -285,13 +286,13 @@ public class BrowseViewModel extends ViewModel {
                         super.onItemAtEndLoaded(itemAtEnd);
                         // on the base that server page_size is the same with db page_size otherwise need calculation
                         iAttendedClosedListPageNum++;
-                        cloudAPI.getMic(TopicTag.SEMINAR, userId, true, iAttendedClosedListPageNum, new IReturnMicList() {
+                        cloudAPI.getMicDto(TopicTag.SEMINAR, userId, true, iAttendedClosedListPageNum, new IReturnMicDtoList() {
                             @Override
-                            public void callback(final List<Mic> micList) {
+                            public void callback(final List<MicDto> micList) {
                                 executor.execute(new Runnable() {
                                     @Override
                                     public void run() {
-                                        modelDB.saveMicList(micList);
+                                        modelDB.saveMicDtoList(micList);
                                     }
                                 });
                             }
