@@ -61,10 +61,15 @@ public class TopicRepository {
             public void run() {
                 cloudAPI.getMicDto(micId, new IReturnMicDto() { // TODO: 6/17/2019 may get data first
                     @Override
-                    public void callback(MicDto mic) {
-                        modelDB.saveMicDto(mic);
-                        Mic micLocal = modelDB.getMic(micId);
-                        micLiveData.setValue((Mic)micLocal.clone());
+                    public void callback(final MicDto mic) {
+                        executor.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                modelDB.saveMicDto(mic);
+                                Mic micLocal = modelDB.getMic(micId);
+                                micLiveData.postValue((Mic)micLocal.clone());
+                            }
+                        });
                     }
                 });
             }
