@@ -32,8 +32,8 @@ public class TopicViewModel extends ViewModel {
         return topicRepository.createMic();
     }
 
-    public LiveData<Mic> attendTopic(String micId) {
-        return topicRepository.attendMic(micId);
+    public LiveData<Mic> attendTopic(MicTopic micTopic) {
+        return topicRepository.attendMic(micTopic);
     }
 
     public LiveData<Mic> pickUpTopic(MicTopic micTopic) {

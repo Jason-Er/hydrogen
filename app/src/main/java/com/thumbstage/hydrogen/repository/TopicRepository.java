@@ -54,27 +54,15 @@ public class TopicRepository {
         return micLiveData;
     }
 
-    public LiveData<Mic> attendMic(final String micId) {
-        micLiveData.setValue(null);
-        executor.execute(new Runnable() {
+    public LiveData<Mic> attendMic(MicTopic micTopic) {
+        refreshMic(micTopic.getMicId());
+        return Transformations.switchMap(modelDB.getMicLive(micTopic), new Function<Mic, LiveData<Mic>>() {
             @Override
-            public void run() {
-                cloudAPI.getMicDto(micId, new IReturnMicDto() { // TODO: 6/17/2019 may get data first
-                    @Override
-                    public void callback(final MicDto mic) {
-                        executor.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                modelDB.saveMicDto(mic);
-                                Mic micLocal = modelDB.getMic(micId);
-                                micLiveData.postValue((Mic)micLocal.clone());
-                            }
-                        });
-                    }
-                });
+            public LiveData<Mic> apply(Mic input) {
+                micLiveData.setValue(input==null? null:(Mic)input.clone());
+                return micLiveData;
             }
         });
-        return micLiveData;
     }
 
     public LiveData<Mic> pickUpMic(MicTopic micTopic) {

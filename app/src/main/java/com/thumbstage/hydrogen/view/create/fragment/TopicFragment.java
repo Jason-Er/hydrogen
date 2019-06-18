@@ -181,7 +181,7 @@ public class TopicFragment extends Fragment {
                 break;
             case ATTEND:
                 currentRole = roleMap.get(TopicHandleType.ATTEND);
-                topicViewModel.attendTopic(micTopic.getMicId()).observe(this, new Observer<Mic>() {
+                topicViewModel.attendTopic(micTopic).observe(this, new Observer<Mic>() {
                     @Override
                     public void onChanged(@Nullable Mic mic) {
                         if(mic != null) {
