@@ -125,32 +125,6 @@ public class CloudAPI {
         });
     }
 
-    private void createMic(final Topic topic, final ICallBack iCallBack) {
-        String userId = AVUser.getCurrentUser().getObjectId();
-        AVIMClient client = AVIMClient.getInstance(userId);
-        client.createConversation(DataConvertUtil.user2StringId(topic.getMembers()), topic.getName(), null, new AVIMConversationCreatedCallback() {
-            @Override
-            public void done(final AVIMConversation conversation, AVIMException e) {
-                if(e == null) {
-                    Log.i(TAG, "createMic ok");
-                    AVObject avMic = AVObject.createWithoutData(TableName.TABLE_MIC.name, conversation.getConversationId());// 构建对象
-                    AVObject avTopic = AVObject.createWithoutData(TableName.TABLE_TOPIC.name, topic.getId());
-                    avMic.put(FieldName.FIELD_TOPIC.name, avTopic);
-                    avMic.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(AVException e) {
-                            if(e == null) {
-                                iCallBack.callback(conversation.getConversationId());
-                            }
-                        }
-                    });
-                } else {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-
     public void saveFile(File file, final IReturnHyFile iReturnHyFile) {
         final AVFile avFile;
         try {
@@ -247,14 +221,31 @@ public class CloudAPI {
         createTopic(mic.getTopic(), new ICallBack() {
             @Override
             public void callback(final String topicID) {
+                final Topic topic = mic.getTopic();
                 mic.getTopic().setId(topicID);
-                createMic(mic.getTopic(), new ICallBack() {
+                String userId = AVUser.getCurrentUser().getObjectId();
+                AVIMClient client = AVIMClient.getInstance(userId);
+                client.createConversation(DataConvertUtil.user2StringId(topic.getMembers()), topic.getName(), null, new AVIMConversationCreatedCallback() {
                     @Override
-                    public void callback(String micID) {
-                        Log.i(TAG, "createTopic topicID:"+topicID+" micID:"+micID);
-                        mic.setId(micID);
-                        mic.getTopic().setId(topicID);
-                        iCallBack.callback(micID);
+                    public void done(final AVIMConversation conversation, AVIMException e) {
+                        if(e == null) {
+                            Log.i(TAG, "createMic ok");
+                            AVObject avMic = AVObject.createWithoutData(TableName.TABLE_MIC.name, conversation.getConversationId());// 构建对象
+                            AVObject avTopic = AVObject.createWithoutData(TableName.TABLE_TOPIC.name, topic.getId());
+                            avMic.put(FieldName.FIELD_TOPIC.name, avTopic);
+                            avMic.saveInBackground(new SaveCallback() {
+                                @Override
+                                public void done(AVException e) {
+                                    if(e == null) {
+                                        mic.setId(conversation.getConversationId());
+                                        mic.setUpdateAt(conversation.getUpdatedAt());
+                                        iCallBack.callback(mic.getId());
+                                    }
+                                }
+                            });
+                        } else {
+                            e.printStackTrace();
+                        }
                     }
                 });
             }
@@ -422,6 +413,7 @@ public class CloudAPI {
             public void done(AVException e) {
                 if(e == null) {
                     Log.i(TAG, "createTopic ok");
+                    topic.setUpdateAt(avTopic.getUpdatedAt());
                     iCallBack.callback(avTopic.getObjectId());
                 } else {
                     e.printStackTrace();
