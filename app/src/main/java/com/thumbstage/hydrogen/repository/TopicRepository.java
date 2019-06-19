@@ -17,7 +17,6 @@ import com.thumbstage.hydrogen.model.callback.IReturnMicDto;
 import com.thumbstage.hydrogen.model.callback.IReturnTopicDto;
 import com.thumbstage.hydrogen.model.dto.MicDto;
 import com.thumbstage.hydrogen.model.dto.MicHasNew;
-import com.thumbstage.hydrogen.model.dto.MicTopic;
 import com.thumbstage.hydrogen.model.dto.TopicDto;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
@@ -55,9 +54,9 @@ public class TopicRepository {
         return micLiveData;
     }
 
-    public LiveData<Mic> attendMic(MicTopic micTopic) {
-        refreshMic(micTopic.getMicId());
-        return Transformations.switchMap(modelDB.getMicLive(micTopic), new Function<Mic, LiveData<Mic>>() {
+    public LiveData<Mic> attendMic(String micId) {
+        refreshMic(micId);
+        return Transformations.switchMap(modelDB.getMicLive(micId), new Function<Mic, LiveData<Mic>>() {
             @Override
             public LiveData<Mic> apply(Mic input) {
                 micLiveData.setValue(input==null? null:(Mic)input.clone());
@@ -66,9 +65,9 @@ public class TopicRepository {
         });
     }
 
-    public LiveData<Mic> pickUpMic(MicTopic micTopic) {
-        refreshMic(micTopic.getMicId());
-        return Transformations.switchMap(modelDB.getMicLive(micTopic), new Function<Mic, LiveData<Mic>>() {
+    public LiveData<Mic> pickUpMic(String micId) {
+        refreshMic(micId);
+        return Transformations.switchMap(modelDB.getMicLive(micId), new Function<Mic, LiveData<Mic>>() {
             @Override
             public LiveData<Mic> apply(Mic input) {
                 micLiveData.setValue(input);

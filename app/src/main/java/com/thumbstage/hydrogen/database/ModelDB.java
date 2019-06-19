@@ -24,7 +24,6 @@ import com.thumbstage.hydrogen.model.bo.TopicTag;
 import com.thumbstage.hydrogen.model.dto.LineDto;
 import com.thumbstage.hydrogen.model.dto.MicDto;
 import com.thumbstage.hydrogen.model.dto.MicHasNew;
-import com.thumbstage.hydrogen.model.dto.MicTopic;
 import com.thumbstage.hydrogen.model.dto.TopicDto;
 import com.thumbstage.hydrogen.model.dto.UserDto;
 import com.thumbstage.hydrogen.model.vo.Line;
@@ -447,27 +446,27 @@ public class ModelDB {
         mic.setTopic(topic);
         mic.setId(entity.getId());
         mic.setHasNew(entity.getHasNew());
+        mic.setUpdateAt(entity.getUpdateAt());
         return mic;
     }
 
     // for distinct use
-    private MicEntity lastEntity = null;
     private boolean initialized = false;
     private MutableLiveData<Mic> micLiveData = new MutableLiveData<>();
-    public LiveData<Mic> getMicLive(final MicTopic micTopic) {
+    public LiveData<Mic> getMicLive(String micId) {
         micLiveData.setValue(null);
-        return Transformations.switchMap(database.micDao().getLive(micTopic.getMicId()), new Function<MicEntity, LiveData<Mic>>() {
+        return Transformations.switchMap(database.micDao().getLive(micId), new Function<MicEntity, LiveData<Mic>>() {
             @Override
             public LiveData<Mic> apply(final MicEntity input) {
                 executor.execute(new Runnable() {
                     @Override
                     public void run() {
+                        Mic mic = entity2Mic(input);
+                        Mic lastMic = micLiveData.getValue();
                         if( !initialized ) {
                             initialized = true;
-                            lastEntity = input;
                             micLiveData.postValue(entity2Mic(input));
-                        } else if(( input == null && lastEntity != null) || !input.equals(lastEntity) ) {
-                            lastEntity = input;
+                        } else if(( input == null && lastMic != null) || !mic.equals(lastMic) ) {
                             micLiveData.postValue(entity2Mic(input));
                         } else {
                             Log.i("ModelDB", "no need to postValue");

@@ -10,7 +10,6 @@ import com.avos.avoscloud.im.v2.messages.AVIMTextMessage;
 import com.thumbstage.hydrogen.event.IMMessageEvent;
 import com.thumbstage.hydrogen.model.bo.LineType;
 import com.thumbstage.hydrogen.model.dto.IMMessage;
-import com.thumbstage.hydrogen.model.dto.MicTopic;
 import com.thumbstage.hydrogen.repository.FieldName;
 
 import org.greenrobot.eventbus.EventBus;
@@ -24,7 +23,7 @@ public class IMMessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> 
     public void onMessage(AVIMTypedMessage message, AVIMConversation conversation, AVIMClient client) {
         Log.i(TAG, "callBack");
         IMMessage imMessage = new IMMessage();
-        imMessage.setMicTopic(new MicTopic(conversation.getConversationId(), (String) conversation.get(FieldName.FIELD_TOPIC.name)));
+        imMessage.setMicId(conversation.getConversationId());
         imMessage.setWhen(new Date(message.getTimestamp()));
         imMessage.setWhoId(message.getFrom());
         imMessage.setRead(false);

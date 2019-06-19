@@ -1,6 +1,5 @@
 package com.thumbstage.hydrogen.view.show.fragment;
 
-import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
@@ -11,7 +10,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Display;
@@ -39,7 +37,6 @@ import com.thumbstage.hydrogen.event.ShowFragmentEvent;
 import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.model.bo.TopicTag;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
-import com.thumbstage.hydrogen.model.dto.MicTopic;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.Topic;
@@ -343,9 +340,9 @@ public class ShowFragment extends Fragment {
     }
 
     private void configureViewModel() {
-        final MicTopic micTopic = getActivity().getIntent().getParcelableExtra(MicTopic.class.getSimpleName());
+        final String micId = getActivity().getIntent().getStringExtra(Mic.class.getSimpleName());
         topicViewModel = ViewModelProviders.of(this, viewModelFactory).get(TopicViewModel.class);
-        topicViewModel.pickUpTopic(micTopic).observe(this, new Observer<Mic>() {
+        topicViewModel.pickUpTopic(micId).observe(this, new Observer<Mic>() {
             @Override
             public void onChanged(@Nullable Mic micl) {
                 if(micl != null) {
