@@ -447,10 +447,10 @@ public class ModelDB {
         mic.setId(entity.getId());
         mic.setHasNew(entity.getHasNew());
         mic.setUpdateAt(entity.getUpdateAt());
+        mic.setLastRefresh(entity.getLastRefresh());
         return mic;
     }
 
-    // for distinct use
     private MutableLiveData<Mic> micLiveData = new MutableLiveData<>();
     public LiveData<Mic> getMicLive(String micId) {
         micLiveData.setValue(null);
@@ -462,7 +462,7 @@ public class ModelDB {
                     public void run() {
                         Mic mic = entity2Mic(input);
                         Mic lastMic = micLiveData.getValue();
-                        if(!mic.equals(lastMic)) {
+                        if(!mic.customEquals(lastMic)) { // if distinct then postValue
                             micLiveData.postValue(entity2Mic(input));
                         }
                     }
@@ -533,11 +533,11 @@ public class ModelDB {
 
     // region update
     public void updateMicHasNew(MicHasNew micHasNew) {
-        database.micDao().updateHasNew(micHasNew.getMicId(), micHasNew.isHasNew()? 1:0, new Date());
+        database.micDao().updateHasNew(micHasNew.getMicId(), micHasNew.isHasNew()? 1:0);
     }
 
     public void updateMicLastRefresh(String micId) {
-        database.topicDao().updateLastRefresh(micId, new Date());
+        database.micDao().updateLastRefresh(micId, new Date());
     }
     //endregion
 

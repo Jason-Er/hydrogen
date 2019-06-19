@@ -56,10 +56,12 @@ public interface MicDao {
     @Query("UPDATE mic SET topic_id =:topicId, last_refresh =:lastFresh WHERE id =:id")
     void update(String id, String topicId, Date lastFresh);
 
-    @Query("UPDATE mic SET has_new =:hasNew, last_refresh =:lastRefresh WHERE id = :micId")
-    void updateHasNew(String micId, int hasNew, Date lastRefresh);
+    @Query("UPDATE mic SET has_new =:hasNew WHERE id = :micId")
+    void updateHasNew(String micId, int hasNew);
 
     @Query("SELECT * FROM mic WHERE id =:id AND last_refresh > :lastRefreshMax")
     MicEntity hasMic(String id, Date lastRefreshMax);
 
+    @Query("UPDATE mic SET last_refresh =:lastRefresh WHERE id =:micId")
+    void updateLastRefresh(String micId, Date lastRefresh);
 }

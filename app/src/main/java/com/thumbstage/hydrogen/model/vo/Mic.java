@@ -7,6 +7,7 @@ public class Mic implements Cloneable {
     Topic topic;
     boolean hasNew;
     Date updateAt;
+    Date lastRefresh;
 
     public Mic() {
         topic = new Topic();
@@ -45,6 +46,13 @@ public class Mic implements Cloneable {
         this.updateAt = updateAt;
     }
 
+    public Date getLastRefresh() {
+        return lastRefresh;
+    }
+
+    public void setLastRefresh(Date lastRefresh) {
+        this.lastRefresh = lastRefresh;
+    }
     // endregion
 
     @Override
@@ -57,6 +65,19 @@ public class Mic implements Cloneable {
         }
         Mic mic = (Mic) obj;
         boolean status = updateAt.compareTo(mic.updateAt) == 0 ? true : false
+                && id.equals(mic.id);
+        return status;
+    }
+
+    public boolean customEquals(Object obj) {
+        if(obj == this) {
+            return true;
+        }
+        if(!(obj instanceof Mic)) {
+            return false;
+        }
+        Mic mic = (Mic) obj;
+        boolean status = lastRefresh.compareTo(mic.lastRefresh) == 0 ? true : false
                 && id.equals(mic.id);
         return status;
     }
