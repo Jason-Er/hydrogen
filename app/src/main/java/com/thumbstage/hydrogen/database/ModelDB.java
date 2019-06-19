@@ -6,7 +6,6 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.arch.paging.DataSource;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.thumbstage.hydrogen.app.Config;
 import com.thumbstage.hydrogen.database.entity.ContactEntity;
@@ -28,7 +27,6 @@ import com.thumbstage.hydrogen.model.dto.TopicDto;
 import com.thumbstage.hydrogen.model.dto.UserDto;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
-import com.thumbstage.hydrogen.model.vo.Setting;
 import com.thumbstage.hydrogen.model.vo.Topic;
 import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.utils.DataConvertUtil;
@@ -219,9 +217,7 @@ public class ModelDB {
                 entity.setDerive_from(topic.getDerive_from());
                 entity.setSponsor(topic.getSponsor().getId());
                 entity.setFinished(topic.isFinished());
-                if( topic.getSetting()!=null ) {
-                    entity.setSetting_url(topic.getSetting().getUrl());
-                }
+                entity.setSetting_url(topic.getSetting());
                 entity.setUpdateAt(topic.getUpdateAt());
                 entity.setLastRefresh(new Date());
                 database.topicDao().insert(entity);
@@ -288,9 +284,7 @@ public class ModelDB {
                 entity.setDerive_from(topic.getDerive_from());
                 entity.setSponsor(topic.getSponsor().getId());
                 entity.setFinished(topic.isFinished());
-                if( topic.getSetting()!=null ) {
-                    entity.setSetting_url(topic.getSetting().getUrl());
-                }
+                entity.setSetting_url(topic.getSetting());
                 entity.setUpdateAt(topic.getUpdateAt());
                 entity.setLastRefresh(new Date());
                 database.topicDao().insert(entity);
@@ -480,7 +474,7 @@ public class ModelDB {
         topic.setUserCan(getUserCan(id));
         topic.setName(entity.getName());
         topic.setBrief(entity.getName());
-        topic.setSetting(new Setting("", entity.getSetting_url(), true));
+        topic.setSetting(entity.getSetting_url());
         topic.setDerive_from(entity.getDerive_from());
         topic.setDialogue(getLine(entity.getId()));
         topic.setSponsor(getUser(entity.getSponsor()));
@@ -520,7 +514,7 @@ public class ModelDB {
             topic.setId(entity.getId());
             topic.setName(entity.getName());
             topic.setBrief(entity.getName());
-            topic.setSetting(new Setting("", entity.getSetting_url(), true));
+            topic.setSetting(entity.getSetting_url());
             topic.setDerive_from(entity.getDerive_from());
             topic.setDialogue(getLine(entity.getId()));
             topic.setSponsor(getUser(entity.getSponsor()));

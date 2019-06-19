@@ -201,8 +201,6 @@ public class CaseBase implements ITopicFragmentFunction,
     }
 
     private void saveOrUpdate(final Mic mic, final TopicViewModel topicViewModel, final IReturnBool iReturnBool) {
-        // topicAdapter.getMic().setUpdateAt(new Date());
-        // topicAdapter.getMic().getTopic().setUpdateAt(new Date());
         if(TextUtils.isEmpty(mic.getId())) {
             topicViewModel.createTheTopic(iReturnBool);
         } else {

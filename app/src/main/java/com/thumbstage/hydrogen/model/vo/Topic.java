@@ -15,7 +15,7 @@ public class Topic implements Cloneable {
     String id;
     String name;
     String brief;
-    Setting setting;
+    String setting;
     User sponsor;
     String derive_from; // topic id
     List<Line> dialogue;
@@ -58,11 +58,11 @@ public class Topic implements Cloneable {
         this.brief = brief;
     }
 
-    public Setting getSetting() {
+    public String getSetting() {
         return setting;
     }
 
-    public void setSetting(Setting setting) {
+    public void setSetting(String setting) {
         this.setting = setting;
     }
 

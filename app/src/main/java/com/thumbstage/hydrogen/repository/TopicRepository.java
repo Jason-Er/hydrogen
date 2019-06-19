@@ -20,7 +20,6 @@ import com.thumbstage.hydrogen.model.dto.MicHasNew;
 import com.thumbstage.hydrogen.model.dto.TopicDto;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
-import com.thumbstage.hydrogen.model.vo.Setting;
 import com.thumbstage.hydrogen.model.vo.User;
 
 import java.io.File;
@@ -159,12 +158,12 @@ public class TopicRepository {
             @Override
             public void run() {
                 final Mic mic = micLiveData.getValue();
-                if (mic.getTopic().getSetting() != null && !URLUtil.isValidUrl(mic.getTopic().getSetting().getUrl())) { // then is local file
-                    File file = new File(mic.getTopic().getSetting().getUrl());
+                if (mic.getTopic().getSetting() != null && !URLUtil.isValidUrl(mic.getTopic().getSetting())) { // then is local file
+                    File file = new File(mic.getTopic().getSetting());
                     cloudAPI.saveFile(file, new IReturnHyFile() {
                         @Override
                         public void callback(HyFile hyFile) {
-                            mic.getTopic().setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
+                            mic.getTopic().setSetting(hyFile.getUrl());
                             cloudAPI.createMic(mic, new CloudAPI.ICallBack() {
                                 @Override
                                 public void callback(String objectID) {
@@ -240,11 +239,11 @@ public class TopicRepository {
             public void run() {
                 final Mic mic = micLiveData.getValue();
                 if(!TextUtils.isEmpty(mic.getId())) {
-                    File file = new File(mic.getTopic().getSetting().getUrl());
+                    File file = new File(mic.getTopic().getSetting());
                     cloudAPI.saveFile(file, new IReturnHyFile() {
                         @Override
                         public void callback(HyFile hyFile) {
-                            mic.getTopic().setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
+                            mic.getTopic().setSetting(hyFile.getUrl());
                             cloudAPI.updateTopicSetting(mic.getTopic(), new IReturnBool() {
                                 @Override
                                 public void callback(Boolean isOK) {

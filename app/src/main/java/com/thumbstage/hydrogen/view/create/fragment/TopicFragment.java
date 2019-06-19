@@ -184,7 +184,7 @@ public class TopicFragment extends Fragment {
                             topicAdapter.setMic(mic);
                             EventBus.getDefault().post(new TopicFragmentEvent(mic.getTopic().getName(), "title"));
                             if (mic.getTopic().getSetting() != null) {
-                                Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
+                                Glide.with(background).load(mic.getTopic().getSetting()).into(background);
                             }
                             spinner.setVisibility(View.GONE);
                             getActivity().invalidateOptionsMenu();
@@ -203,7 +203,7 @@ public class TopicFragment extends Fragment {
                             EventBus.getDefault().post(new TopicFragmentEvent(mic.getTopic().getName(), "title"));
                             smoothToBottom();
                             if (mic.getTopic().getSetting() != null) {
-                                Glide.with(background).load(mic.getTopic().getSetting().getUrl()).into(background);
+                                Glide.with(background).load(mic.getTopic().getSetting()).into(background);
                             }
                             topicViewModel.micHasNew(new MicHasNew(mic.getId(), false));
                             spinner.setVisibility(View.GONE);

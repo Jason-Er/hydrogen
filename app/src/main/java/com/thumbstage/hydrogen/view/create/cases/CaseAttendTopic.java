@@ -1,7 +1,6 @@
 package com.thumbstage.hydrogen.view.create.cases;
 
 import android.text.TextUtils;
-import android.view.View;
 
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.vo.Line;
@@ -16,17 +15,6 @@ public class CaseAttendTopic extends CaseBase {
                 public void callback(Boolean isOK) {
                     if(isOK) {
                         CaseAttendTopic.super.addLine(line);
-                        /*
-                        line.setWho(user);
-                        topicViewModel.speakLine(line, new IReturnBool() {
-                            @Override
-                            public void callback(Boolean isOK) {
-
-                            }
-                        });
-                        topicAdapter.addLine(line);
-                        recyclerView.smoothScrollToPosition(topicAdapter.getItemCount() - 1);
-                        */
                     }
                 }
             });

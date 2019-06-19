@@ -2,9 +2,6 @@ package com.thumbstage.hydrogen.model.dto;
 
 import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.model.bo.TopicTag;
-import com.thumbstage.hydrogen.model.vo.Line;
-import com.thumbstage.hydrogen.model.vo.Setting;
-import com.thumbstage.hydrogen.model.vo.User;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,7 +15,7 @@ public class TopicDto {
     String id;
     String name;
     String brief;
-    SettingDto setting;
+    String setting;
     UserDto sponsor;
     String derive_from; // topic id
     List<LineDto> dialogue;
@@ -61,11 +58,11 @@ public class TopicDto {
         this.brief = brief;
     }
 
-    public SettingDto getSetting() {
+    public String getSetting() {
         return setting;
     }
 
-    public void setSetting(SettingDto setting) {
+    public void setSetting(String setting) {
         this.setting = setting;
     }
 

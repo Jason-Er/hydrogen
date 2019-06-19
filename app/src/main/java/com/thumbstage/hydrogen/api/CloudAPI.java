@@ -46,12 +46,10 @@ import com.thumbstage.hydrogen.model.callback.IReturnTopicDto;
 import com.thumbstage.hydrogen.model.callback.IReturnUser;
 import com.thumbstage.hydrogen.model.dto.LineDto;
 import com.thumbstage.hydrogen.model.dto.MicDto;
-import com.thumbstage.hydrogen.model.dto.SettingDto;
 import com.thumbstage.hydrogen.model.dto.TopicDto;
 import com.thumbstage.hydrogen.model.dto.UserDto;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
-import com.thumbstage.hydrogen.model.vo.Setting;
 import com.thumbstage.hydrogen.model.vo.Topic;
 import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.repository.FieldName;
@@ -320,8 +318,7 @@ public class CloudAPI {
     public void updateTopicSetting(final Topic topic, final IReturnBool iReturnBool) {
         if(topic.getSetting()!= null) {
             final AVObject avTopic = AVObject.createWithoutData(TableName.TABLE_TOPIC.name, topic.getId());
-            AVObject avObject = AVObject.createWithoutData(TableName.TABLE_FILE.name, topic.getSetting().getId());
-            avTopic.put(FieldName.FIELD_SETTING.name, avObject);
+            avTopic.put(FieldName.FIELD_SETTING.name, topic.getSetting());
             avTopic.saveInBackground(new SaveCallback() {
                 @Override
                 public void done(AVException e) {
@@ -365,13 +362,10 @@ public class CloudAPI {
         avTopic.put(FieldName.FIELD_BRIEF.name, topic.getBrief());
         avTopic.put(FieldName.FIELD_TAG.name, convert2String(topic.getTags()));
         avTopic.put(FieldName.FIELD_SPONSOR.name, AVUser.getCurrentUser());
+        avTopic.put(FieldName.FIELD_SETTING.name, topic.getSetting());
         if( !TextUtils.isEmpty( topic.getDerive_from() ) ) {
             AVObject avDeriveFrom = AVObject.createWithoutData(TableName.TABLE_TOPIC.name, topic.getDerive_from());
             avTopic.put(FieldName.FIELD_DERIVE_FROM.name, avDeriveFrom);
-        }
-        if(topic.getSetting() != null) {
-            AVObject avObject = AVObject.createWithoutData(TableName.TABLE_FILE.name, topic.getSetting().getId());
-            avTopic.put(FieldName.FIELD_SETTING.name, avObject);
         }
         avTopic.put(FieldName.FIELD_MEMBER.name, DataConvertUtil.user2StringId(topic.getMembers()));
         List<Map> list = DataConvertUtil.convert2AVObject(topic.getDialogue());
@@ -400,13 +394,10 @@ public class CloudAPI {
         avTopic.put(FieldName.FIELD_BRIEF.name, topic.getBrief());
         avTopic.put(FieldName.FIELD_TAG.name, convert2String(topic.getTags()));
         avTopic.put(FieldName.FIELD_SPONSOR.name, AVUser.getCurrentUser());
+        avTopic.put(FieldName.FIELD_SETTING.name, topic.getSetting());
         if( !TextUtils.isEmpty( topic.getDerive_from() ) ) {
             AVObject avDeriveFrom = AVObject.createWithoutData(TableName.TABLE_TOPIC.name, topic.getDerive_from());
             avTopic.put(FieldName.FIELD_DERIVE_FROM.name, avDeriveFrom);
-        }
-        if(topic.getSetting() != null) {
-            AVObject avObject = AVObject.createWithoutData(TableName.TABLE_FILE.name, topic.getSetting().getId());
-            avTopic.put(FieldName.FIELD_SETTING.name, avObject);
         }
         avTopic.put(FieldName.FIELD_MEMBER.name, DataConvertUtil.user2StringId(topic.getMembers()));
 
@@ -554,7 +545,7 @@ public class CloudAPI {
         String name = (String) avTopic.get(FieldName.FIELD_NAME.name);
         String brief = (String) avTopic.get(FieldName.FIELD_BRIEF.name);
         AVObject avDeriveFrom = avTopic.getAVObject(FieldName.FIELD_DERIVE_FROM.name);
-        AVFile avFile = avTopic.getAVFile(FieldName.FIELD_SETTING.name);
+        String setting = (String) avTopic.get(FieldName.FIELD_SETTING.name);
         AVObject avUser = avTopic.getAVObject(FieldName.FIELD_SPONSOR.name);
         List<String> tags = avTopic.getList(FieldName.FIELD_TAG.name);
         Date updatedAt = avTopic.getUpdatedAt();
@@ -567,7 +558,7 @@ public class CloudAPI {
         topic.setId(id);
         topic.setName(name);
         topic.setBrief(brief);
-        topic.setSetting(convert2SettingDto(avFile));
+        topic.setSetting(setting);
         topic.setSponsor(convert2UserDto(avUser));
         topic.setDerive_from(avDeriveFrom==null?null:avDeriveFrom.getObjectId());
         topic.setMembers(membersIds);
@@ -601,20 +592,6 @@ public class CloudAPI {
             }
         }
         return userCans;
-    }
-
-    private SettingDto convert2SettingDto(AVFile avFile) {
-        SettingDto setting;
-        if (avFile != null) {
-            boolean isInCloud = false;
-            if(!TextUtils.isEmpty(avFile.getBucket())) {
-                isInCloud = true;
-            }
-            setting = new SettingDto(avFile.getObjectId(), avFile.getUrl(), isInCloud);
-        } else {
-            setting = null;
-        }
-        return setting;
     }
 
     private UserDto convert2UserDto(AVObject avUser) {
