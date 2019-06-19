@@ -451,7 +451,6 @@ public class ModelDB {
     }
 
     // for distinct use
-    private boolean initialized = false;
     private MutableLiveData<Mic> micLiveData = new MutableLiveData<>();
     public LiveData<Mic> getMicLive(String micId) {
         micLiveData.setValue(null);
@@ -463,13 +462,8 @@ public class ModelDB {
                     public void run() {
                         Mic mic = entity2Mic(input);
                         Mic lastMic = micLiveData.getValue();
-                        if( !initialized ) {
-                            initialized = true;
+                        if(!mic.equals(lastMic)) {
                             micLiveData.postValue(entity2Mic(input));
-                        } else if(( input == null && lastMic != null) || !mic.equals(lastMic) ) {
-                            micLiveData.postValue(entity2Mic(input));
-                        } else {
-                            Log.i("ModelDB", "no need to postValue");
                         }
                     }
                 });
