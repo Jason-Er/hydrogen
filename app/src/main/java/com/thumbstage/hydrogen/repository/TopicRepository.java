@@ -357,10 +357,23 @@ public class TopicRepository {
         });
     }
 
-    public void speakLine(Line line, IReturnBool iReturnBool) {
+    public void speakLine(final Line line, final IReturnBool iReturnBool) {
         final Mic mic = micLiveData.getValue();
         if(!TextUtils.isEmpty(mic.getId())) {
-            cloudAPI.sendLine(mic, line, iReturnBool);
+            cloudAPI.sendLine(mic, line, new IReturnBool() {
+                @Override
+                public void callback(Boolean isOK) {
+                    if(isOK) {
+                        executor.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                modelDB.saveLine(line, mic.getTopic().getId());
+                            }
+                        });
+                    }
+                    iReturnBool.callback(isOK);
+                }
+            });
         }
     }
 

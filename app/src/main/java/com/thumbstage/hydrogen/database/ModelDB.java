@@ -189,6 +189,17 @@ public class ModelDB {
     // endregion
 
     // region for UI side
+    public void saveLine(Line line, String topicId) {
+        LineEntity entity = new LineEntity();
+        entity.setWho(line.getWho().getId());
+        entity.setWhen(line.getWhen());
+        entity.setWhat(line.getWhat());
+        entity.setInWhichTopic(topicId);
+        entity.setLine_type(line.getLineType().name());
+        entity.setMessage_type(line.getMessageType().name());
+        database.lineDao().insert(entity);
+    }
+
     public void saveLineList(List<Line> lineList, String topicId) {
         List<LineEntity> lineEntities = new ArrayList<>();
         for(Line line: lineList) {

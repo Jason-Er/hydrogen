@@ -1,5 +1,6 @@
 package com.thumbstage.hydrogen.api;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.avos.avoscloud.im.v2.AVIMClient;
@@ -25,23 +26,25 @@ public class IMConversationHandler extends AVIMConversationEventHandler {
     public void onUnreadMessagesCountUpdated(final AVIMClient client, final AVIMConversation conversation) {
         Log.i(TAG, "onUnreadMessagesCountUpdated ");
         AVIMMessage message = conversation.getLastMessage();
-        IMMessage imMessage = new IMMessage();
-        imMessage.setMicId(conversation.getConversationId());
-        imMessage.setWhen(new Date(message.getTimestamp()));
-        imMessage.setWhoId(message.getFrom());
-        imMessage.setRead(false);
-        if(message instanceof AVIMTextMessage) {
-            imMessage.setWhat(((AVIMTextMessage) message).getText());
-            LineType type = LineType.LT_DIALOGUE;
-            try {
-                 type = LineType.valueOf((String) ((AVIMTextMessage) message).getAttrs().get("type"));
-            } catch (Exception e) {
-                e.printStackTrace();
+        if(!TextUtils.isEmpty(message.getFrom())) {
+            IMMessage imMessage = new IMMessage();
+            imMessage.setMicId(conversation.getConversationId());
+            imMessage.setWhen(new Date(message.getTimestamp()));
+            imMessage.setWhoId(message.getFrom());
+            imMessage.setRead(false);
+            if (message instanceof AVIMTextMessage) {
+                imMessage.setWhat(((AVIMTextMessage) message).getText());
+                LineType type = LineType.LT_DIALOGUE;
+                try {
+                    type = LineType.valueOf((String) ((AVIMTextMessage) message).getAttrs().get("type"));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                imMessage.setLineType(type);
             }
-            imMessage.setLineType(type);
+            IMMicEvent event = new IMMicEvent(imMessage, "onUnreadMessage");
+            EventBus.getDefault().post(event);
         }
-        IMMicEvent event = new IMMicEvent(imMessage, "onUnreadMessage");
-        EventBus.getDefault().post(event);
     }
 
     @Override

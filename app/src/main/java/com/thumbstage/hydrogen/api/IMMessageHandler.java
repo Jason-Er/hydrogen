@@ -1,5 +1,6 @@
 package com.thumbstage.hydrogen.api;
 
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.avos.avoscloud.im.v2.AVIMClient;
@@ -22,18 +23,20 @@ public class IMMessageHandler extends AVIMTypedMessageHandler<AVIMTypedMessage> 
     @Override
     public void onMessage(AVIMTypedMessage message, AVIMConversation conversation, AVIMClient client) {
         Log.i(TAG, "callBack");
-        IMMessage imMessage = new IMMessage();
-        imMessage.setMicId(conversation.getConversationId());
-        imMessage.setWhen(new Date(message.getTimestamp()));
-        imMessage.setWhoId(message.getFrom());
-        imMessage.setRead(false);
-        if(message instanceof AVIMTextMessage) {
-            imMessage.setWhat(((AVIMTextMessage) message).getText());
-            LineType type = LineType.valueOf((String) ((AVIMTextMessage) message).getAttrs().get("type"));
-            imMessage.setLineType(type);
+        if(!TextUtils.isEmpty(message.getFrom())) {
+            IMMessage imMessage = new IMMessage();
+            imMessage.setMicId(conversation.getConversationId());
+            imMessage.setWhen(new Date(message.getTimestamp()));
+            imMessage.setWhoId(message.getFrom());
+            imMessage.setRead(false);
+            if (message instanceof AVIMTextMessage) {
+                imMessage.setWhat(((AVIMTextMessage) message).getText());
+                LineType type = LineType.valueOf((String) ((AVIMTextMessage) message).getAttrs().get("type"));
+                imMessage.setLineType(type);
+            }
+            IMMessageEvent event = new IMMessageEvent(imMessage, "onMessage");
+            EventBus.getDefault().post(event);
         }
-        IMMessageEvent event = new IMMessageEvent(imMessage, "onMessage");
-        EventBus.getDefault().post(event);
     }
 
     @Override
