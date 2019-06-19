@@ -11,11 +11,12 @@ public class CaseAttendTopic extends CaseBase {
     @Override
     protected void addLine(final Line line) {
         if(TextUtils.isEmpty(topicAdapter.getMic().getId())) {
-            spinner.setVisibility(View.VISIBLE);
             copyTopic(new IReturnBool() {
                 @Override
                 public void callback(Boolean isOK) {
                     if(isOK) {
+                        CaseAttendTopic.super.addLine(line);
+                        /*
                         line.setWho(user);
                         topicViewModel.speakLine(line, new IReturnBool() {
                             @Override
@@ -25,10 +26,12 @@ public class CaseAttendTopic extends CaseBase {
                         });
                         topicAdapter.addLine(line);
                         recyclerView.smoothScrollToPosition(topicAdapter.getItemCount() - 1);
+                        */
                     }
-                    spinner.setVisibility(View.GONE);
                 }
             });
+        } else {
+            super.addLine(line);
         }
     }
 }

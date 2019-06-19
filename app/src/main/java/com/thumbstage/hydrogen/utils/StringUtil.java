@@ -16,9 +16,6 @@ public class StringUtil {
     public static String DEFAULT_USERID = "anonymous";
     static DateFormat dateformat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
     static DateFormat topicFormat = new SimpleDateFormat("MM-dd HH:mm");
-    public static boolean isUrl(String url) {
-        return URLUtil.isValidUrl(url);
-    }
 
     public static Date string2Date(String dateStr) {
         Date date = null;

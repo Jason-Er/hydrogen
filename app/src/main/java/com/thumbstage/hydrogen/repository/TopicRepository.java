@@ -6,6 +6,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.text.TextUtils;
 import android.util.Log;
+import android.webkit.URLUtil;
 
 import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.database.ModelDB;
@@ -159,7 +160,7 @@ public class TopicRepository {
             @Override
             public void run() {
                 final Mic mic = micLiveData.getValue();
-                if (mic.getTopic().getSetting() != null) {
+                if (mic.getTopic().getSetting() != null && !URLUtil.isValidUrl(mic.getTopic().getSetting().getUrl())) { // then is local file
                     File file = new File(mic.getTopic().getSetting().getUrl());
                     cloudAPI.saveFile(file, new IReturnHyFile() {
                         @Override

@@ -6,6 +6,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.arch.paging.DataSource;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.thumbstage.hydrogen.app.Config;
 import com.thumbstage.hydrogen.database.entity.ContactEntity;
@@ -449,17 +450,28 @@ public class ModelDB {
         return mic;
     }
 
+    // for distinct use
+    private MicEntity lastEntity = null;
+    private boolean initialized = false;
     private MutableLiveData<Mic> micLiveData = new MutableLiveData<>();
     public LiveData<Mic> getMicLive(final MicTopic micTopic) {
         micLiveData.setValue(null);
-        return Transformations.switchMap(database.topicDao().getLive(micTopic.getTopicId()), new Function<TopicEntity, LiveData<Mic>>() {
+        return Transformations.switchMap(database.micDao().getLive(micTopic.getMicId()), new Function<MicEntity, LiveData<Mic>>() {
             @Override
-            public LiveData<Mic> apply(TopicEntity input) {
+            public LiveData<Mic> apply(final MicEntity input) {
                 executor.execute(new Runnable() {
                     @Override
                     public void run() {
-                        MicEntity entity = database.micDao().get(micTopic.getMicId());
-                        micLiveData.postValue(entity2Mic(entity));
+                        if( !initialized ) {
+                            initialized = true;
+                            lastEntity = input;
+                            micLiveData.postValue(entity2Mic(input));
+                        } else if(( input == null && lastEntity != null) || !input.equals(lastEntity) ) {
+                            lastEntity = input;
+                            micLiveData.postValue(entity2Mic(input));
+                        } else {
+                            Log.i("ModelDB", "no need to postValue");
+                        }
                     }
                 });
                 return micLiveData;
