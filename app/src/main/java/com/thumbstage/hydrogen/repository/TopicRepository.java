@@ -374,6 +374,8 @@ public class TopicRepository {
                     iReturnBool.callback(isOK);
                 }
             });
+        } else {
+            iReturnBool.callback(false);
         }
     }
 

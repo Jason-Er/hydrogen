@@ -22,6 +22,7 @@ import com.linchaolong.android.imagepicker.cropper.CropImage;
 import com.linchaolong.android.imagepicker.cropper.CropImageView;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.TopicFragmentEvent;
+import com.thumbstage.hydrogen.event.TopicInfoFragmentEvent;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.utils.GlideUtil;
@@ -76,7 +77,7 @@ public class TopicInfoFragment extends Fragment implements OnDismiss {
             public void afterTextChanged(Editable s) {
                 basicInfoChanged = true;
                 mic.getTopic().setName(name.getText().toString());
-                EventBus.getDefault().post(new TopicFragmentEvent(mic.getTopic().getName(), "title"));
+                EventBus.getDefault().post(new TopicInfoFragmentEvent(mic.getTopic().getName(), "title"));
             }
         });
 
@@ -152,6 +153,7 @@ public class TopicInfoFragment extends Fragment implements OnDismiss {
                 settingChanged = true;
                 mic.getTopic().setSetting(imageUri.getPath());
                 GlideUtil.inject(getContext(), imageUri.toString(), settingPic);
+                EventBus.getDefault().post(new TopicInfoFragmentEvent(imageUri.toString(), "setting"));
             }
 
             @Override

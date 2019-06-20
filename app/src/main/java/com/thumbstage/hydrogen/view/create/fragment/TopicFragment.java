@@ -29,6 +29,7 @@ import com.thumbstage.hydrogen.event.IMMessageEvent;
 import com.thumbstage.hydrogen.event.PopupMenuEvent;
 import com.thumbstage.hydrogen.event.TopicBottomBarEvent;
 import com.thumbstage.hydrogen.event.TopicFragmentEvent;
+import com.thumbstage.hydrogen.event.TopicInfoFragmentEvent;
 import com.thumbstage.hydrogen.event.TopicItemEvent;
 import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.model.bo.Privilege;
@@ -269,6 +270,18 @@ public class TopicFragment extends Fragment {
     private void smoothToBottom() {
         if( topicAdapter.getItemCount() > 0 ) {
             recyclerView.smoothScrollToPosition(topicAdapter.getItemCount() - 1);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onResponseMessageEvent(final TopicInfoFragmentEvent event) {
+        switch (event.getMessage()) {
+            case "title":
+                EventBus.getDefault().post(new TopicFragmentEvent(event.getData(), event.getMessage()));
+                break;
+            case "setting":
+                Glide.with(background).load(event.getData()).into(background);
+                break;
         }
     }
 

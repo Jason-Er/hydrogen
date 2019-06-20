@@ -12,6 +12,7 @@ import android.support.v7.widget.Toolbar;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.TopicFragmentEvent;
+import com.thumbstage.hydrogen.event.TopicInfoFragmentEvent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -82,4 +83,5 @@ public class CreateActivity extends AppCompatActivity implements HasSupportFragm
             toolbar.setTitle((String)event.getData());
         }
     }
+
 }
