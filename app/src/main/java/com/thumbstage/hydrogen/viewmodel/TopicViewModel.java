@@ -6,7 +6,6 @@ import android.arch.lifecycle.ViewModel;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
 import com.thumbstage.hydrogen.model.dto.MicHasNew;
-import com.thumbstage.hydrogen.model.dto.MicTopic;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.User;
@@ -36,8 +35,8 @@ public class TopicViewModel extends ViewModel {
         return topicRepository.attendMic(micId);
     }
 
-    public LiveData<Mic> pickUpTopic(MicTopic micTopic) {
-        return topicRepository.pickUpMic(micTopic);
+    public LiveData<Mic> pickUpTopic(String micId) {
+        return topicRepository.pickUpMic(micId);
     }
 
     public void refreshTopic(String topicId) {

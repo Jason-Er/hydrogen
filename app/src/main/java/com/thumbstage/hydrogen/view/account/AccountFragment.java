@@ -22,8 +22,6 @@ import com.linchaolong.android.imagepicker.cropper.CropImage;
 import com.linchaolong.android.imagepicker.cropper.CropImageView;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
-import com.thumbstage.hydrogen.model.vo.Setting;
-import com.thumbstage.hydrogen.utils.GlideUtil;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
 
 import javax.inject.Inject;

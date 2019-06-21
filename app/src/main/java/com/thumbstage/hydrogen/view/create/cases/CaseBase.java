@@ -105,8 +105,6 @@ public class CaseBase implements ITopicFragmentFunction,
     public void handleBottomBarEvent(TopicBottomBarEvent event) {
         switch (event.getMessage()) {
             case "text":
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                Log.i(TAG, "handleBottomBarEvent time:"+sdf.format(((Line)event.getData()).getWhen()));
                 addLine((Line) event.getData());
                 break;
             case "audio":
@@ -203,8 +201,6 @@ public class CaseBase implements ITopicFragmentFunction,
     }
 
     private void saveOrUpdate(final Mic mic, final TopicViewModel topicViewModel, final IReturnBool iReturnBool) {
-        topicAdapter.getMic().setUpdateAt(new Date());
-        topicAdapter.getMic().getTopic().setUpdateAt(new Date());
         if(TextUtils.isEmpty(mic.getId())) {
             topicViewModel.createTheTopic(iReturnBool);
         } else {
@@ -214,11 +210,12 @@ public class CaseBase implements ITopicFragmentFunction,
 
     protected void addLine(Line line) {
         line.setWho(user);
+        spinner.setVisibility(View.VISIBLE);
         // speak one line
         topicViewModel.speakLine(line, new IReturnBool() {
             @Override
             public void callback(Boolean isOK) {
-
+                spinner.setVisibility(View.GONE);
             }
         });
         topicAdapter.addLine(line);

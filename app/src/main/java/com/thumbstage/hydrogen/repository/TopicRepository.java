@@ -6,6 +6,7 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Transformations;
 import android.text.TextUtils;
 import android.util.Log;
+import android.webkit.URLUtil;
 
 import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.database.ModelDB;
@@ -16,11 +17,9 @@ import com.thumbstage.hydrogen.model.callback.IReturnMicDto;
 import com.thumbstage.hydrogen.model.callback.IReturnTopicDto;
 import com.thumbstage.hydrogen.model.dto.MicDto;
 import com.thumbstage.hydrogen.model.dto.MicHasNew;
-import com.thumbstage.hydrogen.model.dto.MicTopic;
 import com.thumbstage.hydrogen.model.dto.TopicDto;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
-import com.thumbstage.hydrogen.model.vo.Setting;
 import com.thumbstage.hydrogen.model.vo.User;
 
 import java.io.File;
@@ -54,27 +53,20 @@ public class TopicRepository {
         return micLiveData;
     }
 
-    public LiveData<Mic> attendMic(final String micId) {
-        micLiveData.setValue(null);
-        executor.execute(new Runnable() {
+    public LiveData<Mic> attendMic(String micId) {
+        refreshMic(micId);
+        return Transformations.switchMap(modelDB.getMicLive(micId), new Function<Mic, LiveData<Mic>>() {
             @Override
-            public void run() {
-                cloudAPI.getMicDto(micId, new IReturnMicDto() { // TODO: 6/17/2019 may get data first
-                    @Override
-                    public void callback(MicDto mic) {
-                        modelDB.saveMicDto(mic);
-                        Mic micLocal = modelDB.getMic(micId);
-                        micLiveData.setValue((Mic)micLocal.clone());
-                    }
-                });
+            public LiveData<Mic> apply(Mic input) {
+                micLiveData.setValue(input==null? null:(Mic)input.clone());
+                return micLiveData;
             }
         });
-        return micLiveData;
     }
 
-    public LiveData<Mic> pickUpMic(MicTopic micTopic) {
-        refreshMic(micTopic.getMicId());
-        return Transformations.switchMap(modelDB.getMicLive(micTopic), new Function<Mic, LiveData<Mic>>() {
+    public LiveData<Mic> pickUpMic(String micId) {
+        refreshMic(micId);
+        return Transformations.switchMap(modelDB.getMicLive(micId), new Function<Mic, LiveData<Mic>>() {
             @Override
             public LiveData<Mic> apply(Mic input) {
                 micLiveData.setValue(input);
@@ -166,12 +158,12 @@ public class TopicRepository {
             @Override
             public void run() {
                 final Mic mic = micLiveData.getValue();
-                if (mic.getTopic().getSetting() != null) {
-                    File file = new File(mic.getTopic().getSetting().getUrl());
+                if (mic.getTopic().getSetting() != null && !URLUtil.isValidUrl(mic.getTopic().getSetting())) { // then is local file
+                    File file = new File(mic.getTopic().getSetting());
                     cloudAPI.saveFile(file, new IReturnHyFile() {
                         @Override
                         public void callback(HyFile hyFile) {
-                            mic.getTopic().setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
+                            mic.getTopic().setSetting(hyFile.getUrl());
                             cloudAPI.createMic(mic, new CloudAPI.ICallBack() {
                                 @Override
                                 public void callback(String objectID) {
@@ -247,11 +239,11 @@ public class TopicRepository {
             public void run() {
                 final Mic mic = micLiveData.getValue();
                 if(!TextUtils.isEmpty(mic.getId())) {
-                    File file = new File(mic.getTopic().getSetting().getUrl());
+                    File file = new File(mic.getTopic().getSetting());
                     cloudAPI.saveFile(file, new IReturnHyFile() {
                         @Override
                         public void callback(HyFile hyFile) {
-                            mic.getTopic().setSetting(new Setting(hyFile.getId(), hyFile.getUrl(), hyFile.getInCloud()));
+                            mic.getTopic().setSetting(hyFile.getUrl());
                             cloudAPI.updateTopicSetting(mic.getTopic(), new IReturnBool() {
                                 @Override
                                 public void callback(Boolean isOK) {
@@ -365,10 +357,25 @@ public class TopicRepository {
         });
     }
 
-    public void speakLine(Line line, IReturnBool iReturnBool) {
+    public void speakLine(final Line line, final IReturnBool iReturnBool) {
         final Mic mic = micLiveData.getValue();
         if(!TextUtils.isEmpty(mic.getId())) {
-            cloudAPI.sendLine(mic, line, iReturnBool);
+            cloudAPI.sendLine(mic, line, new IReturnBool() {
+                @Override
+                public void callback(Boolean isOK) {
+                    if(isOK) {
+                        executor.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                modelDB.saveLine(line, mic.getTopic().getId());
+                            }
+                        });
+                    }
+                    iReturnBool.callback(isOK);
+                }
+            });
+        } else {
+            iReturnBool.callback(false);
         }
     }
 

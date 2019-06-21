@@ -73,4 +73,26 @@ public class MicEntity {
     public void setUpdateAt(Date updateAt) {
         this.updateAt = updateAt;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj == this) {
+            return true;
+        }
+        if(!(obj instanceof MicEntity)) {
+            return false;
+        }
+        MicEntity entity = (MicEntity) obj;
+        boolean status = lastRefresh.getTime() == entity.lastRefresh.getTime()
+                && id.equals(entity.id);
+        return status;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        hash = 53 * hash + (this.id != null ? this.id.hashCode() : 0);
+        hash = 53 * hash + this.lastRefresh.hashCode();
+        return hash;
+    }
 }

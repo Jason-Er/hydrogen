@@ -22,9 +22,9 @@ import com.linchaolong.android.imagepicker.cropper.CropImage;
 import com.linchaolong.android.imagepicker.cropper.CropImageView;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.TopicFragmentEvent;
+import com.thumbstage.hydrogen.event.TopicInfoFragmentEvent;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.vo.Mic;
-import com.thumbstage.hydrogen.model.vo.Setting;
 import com.thumbstage.hydrogen.utils.GlideUtil;
 import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
 
@@ -77,7 +77,7 @@ public class TopicInfoFragment extends Fragment implements OnDismiss {
             public void afterTextChanged(Editable s) {
                 basicInfoChanged = true;
                 mic.getTopic().setName(name.getText().toString());
-                EventBus.getDefault().post(new TopicFragmentEvent(mic.getTopic().getName(), "title"));
+                EventBus.getDefault().post(new TopicInfoFragmentEvent(mic.getTopic().getName(), "title"));
             }
         });
 
@@ -134,7 +134,7 @@ public class TopicInfoFragment extends Fragment implements OnDismiss {
                 name.setText(mic.getTopic().getName());
                 brief.setText(mic.getTopic().getBrief());
                 if(mic.getTopic().getSetting() != null) {
-                    GlideUtil.inject(getContext(), mic.getTopic().getSetting().getUrl(), settingPic);
+                    GlideUtil.inject(getContext(), mic.getTopic().getSetting(), settingPic);
                 }
             }
         });
@@ -151,8 +151,9 @@ public class TopicInfoFragment extends Fragment implements OnDismiss {
             @Override
             public void onCropImage(Uri imageUri) {
                 settingChanged = true;
-                mic.getTopic().setSetting(new Setting(null, imageUri.getPath(), false));
+                mic.getTopic().setSetting(imageUri.getPath());
                 GlideUtil.inject(getContext(), imageUri.toString(), settingPic);
+                EventBus.getDefault().post(new TopicInfoFragmentEvent(imageUri.toString(), "setting"));
             }
 
             @Override

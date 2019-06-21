@@ -10,7 +10,7 @@ public class IMMessage {
     String meId;
     Date when;
     LineType lineType;
-    MicTopic micTopic;
+    String micId;
     boolean isRead;
 
     public String getWhoId() {
@@ -45,12 +45,12 @@ public class IMMessage {
         this.lineType = lineType;
     }
 
-    public MicTopic getMicTopic() {
-        return micTopic;
+    public String getMicId() {
+        return micId;
     }
 
-    public void setMicTopic(MicTopic micTopic) {
-        this.micTopic = micTopic;
+    public void setMicId(String micId) {
+        this.micId = micId;
     }
 
     public boolean isRead() {

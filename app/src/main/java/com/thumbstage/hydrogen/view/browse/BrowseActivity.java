@@ -26,7 +26,6 @@ import com.thumbstage.hydrogen.event.IMMicEvent;
 import com.thumbstage.hydrogen.event.NaviViewEvent;
 import com.thumbstage.hydrogen.model.dto.IMMessage;
 import com.thumbstage.hydrogen.model.dto.MicHasNew;
-import com.thumbstage.hydrogen.model.dto.MicTopic;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.utils.NotificationUtils;
@@ -188,7 +187,7 @@ public class BrowseActivity extends AppCompatActivity
     public void onResponseMessageEvent(final BrowseItemEvent event) {
         Mic mic = (Mic) event.getData();
         Intent intent = new Intent();
-        intent.putExtra(MicTopic.class.getSimpleName(), new MicTopic(mic.getId(), mic.getTopic().getId()));
+        intent.putExtra(Mic.class.getSimpleName(), mic.getId());
         switch (event.getMessage()) {
             case "CommunityTopicViewHolder":
                 intent.setClass(this, CreateActivity.class);
@@ -214,15 +213,15 @@ public class BrowseActivity extends AppCompatActivity
     public void onResponseMessageEvent(final IMMicEvent event) {
         if(event.getMessage().equals("onUnreadMessage")) {
             final IMMessage imMessage = (IMMessage) event.getData();
-            browseViewModel.micHasNew(new MicHasNew(imMessage.getMicTopic().getMicId(), true));
+            browseViewModel.micHasNew(new MicHasNew(imMessage.getMicId(), true));
             userViewModel.getUser(imMessage.getWhoId()).observe(this, new Observer<User>() {
                 @Override
                 public void onChanged(@Nullable User user) {
                     Intent intent = new Intent(BrowseActivity.this, CreateActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    intent.putExtra(MicTopic.class.getSimpleName(), imMessage.getMicTopic());
+                    intent.putExtra(Mic.class.getSimpleName(), imMessage.getMicId());
                     intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.CONTINUE.name());
-                    int id = Integer.parseInt(imMessage.getMicTopic().getMicId().replaceAll("[^\\d]", "").substring(0,5));
+                    int id = Integer.parseInt(imMessage.getMicId().replaceAll("[^\\d]", "").substring(0,5));
                     NotificationUtils.showNotification(BrowseActivity.this, user.getName(), imMessage.getWhat(), intent, id);
                 }
             });
@@ -238,9 +237,9 @@ public class BrowseActivity extends AppCompatActivity
                 public void onChanged(@Nullable User user) {
                     Intent intent = new Intent(BrowseActivity.this, CreateActivity.class);
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    intent.putExtra(MicTopic.class.getSimpleName(), imMessage.getMicTopic());
+                    intent.putExtra(Mic.class.getSimpleName(), imMessage.getMicId());
                     intent.putExtra(TopicHandleType.class.getSimpleName(), TopicHandleType.CONTINUE.name());
-                    int id = Integer.parseInt(imMessage.getMicTopic().getMicId().replaceAll("[^\\d]", "").substring(0,5));
+                    int id = Integer.parseInt(imMessage.getMicId().replaceAll("[^\\d]", "").substring(0,5));
                     NotificationUtils.showNotification(BrowseActivity.this, user.getName(), imMessage.getWhat(), intent, id);
                 }
             });
