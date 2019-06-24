@@ -84,6 +84,15 @@ public class CloudAPI {
 
     @Inject
     public CloudAPI(Context context) {
+        // 配置 SDK 储存
+        AVOSCloud.setServer(AVOSCloud.SERVER_TYPE.API, "https://avoscloud.com");
+        // 配置 SDK 云引擎
+        AVOSCloud.setServer(AVOSCloud.SERVER_TYPE.ENGINE, "https://avoscloud.com");
+        // 配置 SDK 推送
+        AVOSCloud.setServer(AVOSCloud.SERVER_TYPE.PUSH, "https://avoscloud.com");
+        // 配置 SDK 即时通讯
+        AVOSCloud.setServer(AVOSCloud.SERVER_TYPE.RTM, "https://router-g0-push.avoscloud.com");
+
         AVOSCloud.initialize(context, APP_ID, APP_KEY);
         AVOSCloud.setDebugLogEnabled(true);
         checkInCurrentUser();
