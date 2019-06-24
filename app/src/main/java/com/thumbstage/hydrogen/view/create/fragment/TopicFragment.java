@@ -108,6 +108,13 @@ public class TopicFragment extends Fragment {
         EventBus.getDefault().register(this);
 
         refreshLayout.setEnabled(false);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                topicViewModel.refreshTheTopic();
+            }
+        });
+
         topicAdapter = new TopicAdapter();
         layoutManager = new LinearLayoutManager( getActivity() );
         recyclerView.setLayoutManager( layoutManager );
@@ -119,13 +126,6 @@ public class TopicFragment extends Fragment {
         popupWindow.setWidth(DensityUtil.dp2px(getContext(),200));
         popupWindow.setHeight(ListPopupWindow.WRAP_CONTENT);
         popupWindow.setModal(true);
-
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                topicViewModel.refreshTheTopic();
-            }
-        });
 
         spinner.setVisibility(View.VISIBLE);
 
