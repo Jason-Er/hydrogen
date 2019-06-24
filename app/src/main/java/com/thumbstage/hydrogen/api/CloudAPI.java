@@ -172,17 +172,7 @@ public class CloudAPI {
     private void checkOutCurrentUser() {
         if(AVUser.getCurrentUser() != null) {
             AVIMClient client = AVIMClient.getInstance(AVUser.getCurrentUser());
-            client.close(new AVIMClientCallback() {
-                @Override
-                public void done(AVIMClient client, AVIMException e) {
-                    if(e == null) {
-
-                    } else {
-                        e.printStackTrace();
-                        throw new IllegalStateException();
-                    }
-                }
-            });
+            client.close(null);
         }
     }
 
@@ -1133,10 +1123,12 @@ public class CloudAPI {
             User user = new User(avObject.getObjectId(), (String) avObject.get(FieldName.FIELD_USERNAME.name), (String) avObject.get(FieldName.FIELD_AVATAR.name));
             List<String> prilist = avObject.getList(FieldName.FIELD_PRIVILEGE.name);
             Set<Privilege> privileges = new LinkedHashSet<>();
-            for(String str: prilist) {
-                privileges.add(Privilege.valueOf(str));
+            if(prilist != null) {
+                for (String str : prilist) {
+                    privileges.add(Privilege.valueOf(str));
+                }
+                user.setPrivileges(privileges);
             }
-            user.setPrivileges(privileges);
             return user;
         } else {
             return null;
