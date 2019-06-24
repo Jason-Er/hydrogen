@@ -39,20 +39,16 @@ public class TopicViewModel extends ViewModel {
         return topicRepository.pickUpMic(micId);
     }
 
-    public void refreshTopic(String topicId) {
-        topicRepository.forceRefreshTopic(topicId);
-    }
-
     public LiveData<Mic> getTheTopic() {
         return topicRepository.getTheMic();
     }
 
-    public void saveFile(File file, IReturnHyFile iReturnHyFile) {
-        topicRepository.saveFile(file, iReturnHyFile);
-    }
-
     public void createTheTopic(IReturnBool iReturnBool) {
         topicRepository.createTheMic(iReturnBool);
+    }
+
+    public void refreshTheTopic() {
+        topicRepository.refreshTheMic();
     }
 
     public void updateTheTopic(IReturnBool iReturnBool) {
