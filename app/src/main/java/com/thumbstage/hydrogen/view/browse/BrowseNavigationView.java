@@ -62,7 +62,6 @@ public class BrowseNavigationView extends NavigationView implements NavigationVi
         // update menu
         Menu menu = getMenu();
         menu.clear();
-        SubMenu subMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, 200, "");
         for(Privilege pr : user.getPrivileges()) {
             switch (pr) {
                 case BROWSE_COMMUNITY_TOPIC:
@@ -74,7 +73,7 @@ public class BrowseNavigationView extends NavigationView implements NavigationVi
                             .setIcon(R.drawable.ic_menu_transcribe_close);
                     break;
                 case BROWSE_I_ATTENDED:
-                    subMenu.add(Menu.NONE, R.id.nav_iAttended, Menu.NONE, getResources().getString(R.string.IAttendedFragment_name))
+                    menu.add(R.id.nav_menu_group, R.id.nav_iAttended, 100, getResources().getString(R.string.IAttendedFragment_name))
                             .setIcon(R.drawable.ic_menu_okay);
                     break;
             }
