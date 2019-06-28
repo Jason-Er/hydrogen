@@ -40,6 +40,7 @@ public class CreateActivity extends AppCompatActivity implements HasSupportFragm
         setContentView(R.layout.activity_create);
         ButterKnife.bind(this);
 
+        toolbar.setTitle(R.string.create_activity_name);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);

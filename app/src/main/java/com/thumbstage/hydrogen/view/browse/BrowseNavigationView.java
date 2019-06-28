@@ -62,19 +62,19 @@ public class BrowseNavigationView extends NavigationView implements NavigationVi
         // update menu
         Menu menu = getMenu();
         menu.clear();
-        SubMenu subMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, 200, "mine");
+        SubMenu subMenu = menu.addSubMenu(Menu.NONE, Menu.NONE, 200, "");
         for(Privilege pr : user.getPrivileges()) {
             switch (pr) {
                 case BROWSE_COMMUNITY_TOPIC:
-                    menu.add(R.id.nav_menu_group, R.id.nav_publishedOpened, 100, "BROWSE_COMMUNITY_TOPIC")
+                    menu.add(R.id.nav_menu_group, R.id.nav_publishedOpened, 100, getResources().getString(R.string.PublishedOpenedFragment_name))
                             .setIcon(R.drawable.ic_menu_publish);
                     break;
                 case BROWSE_COMMUNITY_SHOW:
-                    menu.add(R.id.nav_menu_group, R.id.nav_publishedOpenedClosed, 100, "BROWSE_PUBLISHEDCLOSED")
+                    menu.add(R.id.nav_menu_group, R.id.nav_publishedOpenedClosed, 100, getResources().getString(R.string.PublishedClosedFragment_name))
                             .setIcon(R.drawable.ic_menu_transcribe_close);
                     break;
                 case BROWSE_I_ATTENDED:
-                    subMenu.add(Menu.NONE, R.id.nav_iAttended, Menu.NONE, "BROWSE_IATTENDED")
+                    subMenu.add(Menu.NONE, R.id.nav_iAttended, Menu.NONE, getResources().getString(R.string.IAttendedFragment_name))
                             .setIcon(R.drawable.ic_menu_okay);
                     break;
             }

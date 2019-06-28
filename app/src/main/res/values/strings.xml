@@ -29,14 +29,14 @@
     <string name="sign">sign</string>
 
     <string name="IAttendedFragment_name">I attended topics</string>
-    <string name="IStartedFragment_name">I started mic</string>
+    <string name="IAttended_open">open</string>
+    <string name="IAttended_closed">closed</string>
     <string name="PublishedClosedFragment_name">published closed mic</string>
     <string name="PublishedOpenedFragment_name">published open mic</string>
     <string name="create_activity_name">create</string>
     <string name="action_ok">OK</string>
     <string name="action_publish">publish</string>
     <string name="item_topic_setting">mic setting</string>
-    <string name="AtMeFragment_name">who @ me</string>
     <string name="button_ok">OK</string>
     <string name="dialog_topic_setting_name">Name</string>
     <string name="dialog_topic_setting_brief">Brief</string>
@@ -58,4 +58,13 @@
     <string name="hy_chat_record_button_pleaseSayMore">speak more</string>
     <string name="hy_chat_cancelRecord">cancel recording</string>
     <string name="item_participant">participant</string>
+
+    <string name="menu_item_can_publish">publish</string>
+    <string name="menu_item_can_open">open</string>
+    <string name="menu_item_can_close">close</string>
+    <string name="menu_item_can_delete">delete</string>
+    <string name="menu_item_can_participant">participant</string>
+    <string name="menu_item_can_setupinfo">setupinfo</string>
+    <string name="menu_item_can_update">update</string>
+    <string name="menu_item_can_recommend">recommend</string>
 </resources>
