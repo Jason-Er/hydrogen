@@ -108,6 +108,13 @@ public class TopicFragment extends Fragment {
         EventBus.getDefault().register(this);
 
         refreshLayout.setEnabled(false);
+        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                topicViewModel.refreshTheTopic();
+            }
+        });
+
         topicAdapter = new TopicAdapter();
         layoutManager = new LinearLayoutManager( getActivity() );
         recyclerView.setLayoutManager( layoutManager );
@@ -171,6 +178,7 @@ public class TopicFragment extends Fragment {
                     public void onChanged(@Nullable Mic mic) {
                         topicAdapter.setMic(mic);
                         spinner.setVisibility(View.GONE);
+                        refreshLayout.setRefreshing(false);
                         topicAdapter.getTopic().setUserCan(setupDefaultCanOnTopic(userViewModel.getCurrentUser().getPrivileges()));
                         getActivity().invalidateOptionsMenu();
                     }
@@ -188,6 +196,7 @@ public class TopicFragment extends Fragment {
                                 Glide.with(background).load(mic.getTopic().getSetting()).into(background);
                             }
                             spinner.setVisibility(View.GONE);
+                            refreshLayout.setRefreshing(false);
                             getActivity().invalidateOptionsMenu();
                         }
                     }
@@ -208,12 +217,14 @@ public class TopicFragment extends Fragment {
                             }
                             topicViewModel.micHasNew(new MicHasNew(mic.getId(), false));
                             spinner.setVisibility(View.GONE);
+                            refreshLayout.setRefreshing(false);
                             getActivity().invalidateOptionsMenu();
                         }
                     }
                 });
                 break;
         }
+        refreshLayout.setEnabled(true);
     }
 
     private Map<String, Set<CanOnTopic>> setupDefaultCanOnTopic(Set<Privilege> userPrivileges) {

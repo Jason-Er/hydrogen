@@ -50,7 +50,7 @@ public class IAttendedFragment extends Fragment implements IBrowseCustomize, IAd
         ButterKnife.bind(this, view);
 
         tabLayout.setupWithViewPager(viewPager);
-        pagerAdapter = new IAttendedFragmentPagerAdapter(getChildFragmentManager());
+        pagerAdapter = new IAttendedFragmentPagerAdapter(getChildFragmentManager(), getContext());
         for (String title: pagerAdapter.getTitles() ) {
             tabLayout.addTab(tabLayout.newTab().setText(title));
         }

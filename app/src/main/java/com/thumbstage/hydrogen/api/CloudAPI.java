@@ -84,6 +84,16 @@ public class CloudAPI {
 
     @Inject
     public CloudAPI(Context context) {
+        /*
+        // 配置 SDK 储存
+        AVOSCloud.setServer(AVOSCloud.SERVER_TYPE.API, "https://avoscloud.com");
+        // 配置 SDK 云引擎
+        AVOSCloud.setServer(AVOSCloud.SERVER_TYPE.ENGINE, "https://avoscloud.com");
+        // 配置 SDK 推送
+        AVOSCloud.setServer(AVOSCloud.SERVER_TYPE.PUSH, "https://avoscloud.com");
+        // 配置 SDK 即时通讯
+        AVOSCloud.setServer(AVOSCloud.SERVER_TYPE.RTM, "https://router-g0-push.avoscloud.com");
+        */
         AVOSCloud.initialize(context, APP_ID, APP_KEY);
         AVOSCloud.setDebugLogEnabled(true);
         checkInCurrentUser();
@@ -163,17 +173,7 @@ public class CloudAPI {
     private void checkOutCurrentUser() {
         if(AVUser.getCurrentUser() != null) {
             AVIMClient client = AVIMClient.getInstance(AVUser.getCurrentUser());
-            client.close(new AVIMClientCallback() {
-                @Override
-                public void done(AVIMClient client, AVIMException e) {
-                    if(e == null) {
-
-                    } else {
-                        e.printStackTrace();
-                        throw new IllegalStateException();
-                    }
-                }
-            });
+            client.close(null);
         }
     }
 
@@ -1124,10 +1124,12 @@ public class CloudAPI {
             User user = new User(avObject.getObjectId(), (String) avObject.get(FieldName.FIELD_USERNAME.name), (String) avObject.get(FieldName.FIELD_AVATAR.name));
             List<String> prilist = avObject.getList(FieldName.FIELD_PRIVILEGE.name);
             Set<Privilege> privileges = new LinkedHashSet<>();
-            for(String str: prilist) {
-                privileges.add(Privilege.valueOf(str));
+            if(prilist != null) {
+                for (String str : prilist) {
+                    privileges.add(Privilege.valueOf(str));
+                }
+                user.setPrivileges(privileges);
             }
-            user.setPrivileges(privileges);
             return user;
         } else {
             return null;

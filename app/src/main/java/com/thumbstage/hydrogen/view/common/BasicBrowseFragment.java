@@ -47,6 +47,7 @@ public abstract class BasicBrowseFragment extends Fragment {
         layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),DividerItemDecoration.VERTICAL));
+        refreshLayout.setEnabled(false);
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -63,6 +64,7 @@ public abstract class BasicBrowseFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         AndroidSupportInjection.inject(this);
         viewModel = ViewModelProviders.of(this, viewModelFactory).get(BrowseViewModel.class);
+        refreshLayout.setEnabled(true);
     }
 
     @Override

@@ -79,21 +79,19 @@ public class TopicRepository {
         return micLiveData;
     }
 
-    public void forceRefreshTopic(final String topicId) {
+    public void refreshTheMic() {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                cloudAPI.getTopicDto(topicId, new IReturnTopicDto() {
-                    @Override
-                    public void callback(final TopicDto topic) {
-                        executor.execute(new Runnable() {
-                            @Override
-                            public void run() {
-                                modelDB.saveTopicDto(topic);
-                            }
-                        });
-                    }
-                });
+                Mic mic = micLiveData.getValue();
+                if(mic!=null) {
+                    cloudAPI.getMicDto(mic.getId(), new IReturnMicDto() {
+                        @Override
+                        public void callback(final MicDto mic) {
+                            saveMic2DB(mic);
+                        }
+                    });
+                }
             }
         });
     }
@@ -182,15 +180,6 @@ public class TopicRepository {
                         }
                     });
                 }
-            }
-        });
-    }
-
-    public void saveFile(final File file, final IReturnHyFile iReturnHyFile) {
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                cloudAPI.saveFile(file, iReturnHyFile);
             }
         });
     }

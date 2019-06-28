@@ -10,16 +10,31 @@ import android.widget.TextView;
 
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.HyMenuItemEvent;
+import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.view.common.HyMenuItem;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PopupWindowAdapter extends BaseAdapter {
 
     List<HyMenuItem> itemList = new ArrayList<>();
+    Map<CanOnTopic, Integer> canMap = new HashMap<CanOnTopic, Integer>() {
+        {
+            put(CanOnTopic.PUBLISH, R.string.menu_item_can_publish);
+            put(CanOnTopic.OPEN, R.string.menu_item_can_open);
+            put(CanOnTopic.CLOSE, R.string.menu_item_can_close);
+            put(CanOnTopic.DELETE, R.string.menu_item_can_delete);
+            put(CanOnTopic.PARTICIPANT, R.string.menu_item_can_participant);
+            put(CanOnTopic.SETUPINFO, R.string.menu_item_can_setupinfo);
+            put(CanOnTopic.UPDATE, R.string.menu_item_can_update);
+            put(CanOnTopic.RECOMMEND, R.string.menu_item_can_recommend);
+        }
+    };
 
     @Override
     public int getCount() {
@@ -44,7 +59,8 @@ public class PopupWindowAdapter extends BaseAdapter {
         ImageView icon = view.findViewById(R.id.menu_item_icon);
         TextView command = view.findViewById(R.id.menu_item_command);
         icon.setImageResource(item.getResId());
-        command.setText(item.getCanOnTopic().name());
+        String name = parent.getContext().getResources().getString(canMap.get(item.getCanOnTopic()));
+        command.setText(name);
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
