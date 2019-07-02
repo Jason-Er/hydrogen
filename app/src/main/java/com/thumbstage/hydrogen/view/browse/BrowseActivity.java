@@ -94,6 +94,7 @@ public class BrowseActivity extends AppCompatActivity
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setScrimColor(0x7fffffff);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
