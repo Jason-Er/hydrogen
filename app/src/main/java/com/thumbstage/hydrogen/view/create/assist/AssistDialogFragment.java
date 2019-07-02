@@ -42,6 +42,9 @@ public class AssistDialogFragment extends BottomSheetDialogFragment {
         View contentView = inflater.inflate(R.layout.fragment_dialog_assist, container);
         ButterKnife.bind(this, contentView);
 
+        getDialog().getWindow().getAttributes().dimAmount = 0f;
+        getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(0x7fffffff));
+
         pagerAdapter = new AssistDialogPagerAdapter(getChildFragmentManager());
         viewPager.setAdapter(pagerAdapter);
         Bundle bundle = getArguments();
@@ -63,6 +66,7 @@ public class AssistDialogFragment extends BottomSheetDialogFragment {
         AndroidSupportInjection.inject(this);
     }
 
+    /*
     @Override
     public void onResume() {
         super.onResume();
@@ -71,6 +75,7 @@ public class AssistDialogFragment extends BottomSheetDialogFragment {
         Bitmap bitmapBlur = blurUtils.blur(bitmap, 5); //rsBlurProcessor.blur(bitmap, 3, 3);
         getDialog().getWindow().setBackgroundDrawable(new BitmapDrawable(getResources(), bitmapBlur));
     }
+    */
 
     @Override
     public void onDismiss(DialogInterface dialog) {
