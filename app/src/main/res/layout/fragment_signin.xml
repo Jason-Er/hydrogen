@@ -10,12 +10,12 @@
 
     <ImageView
         android:id="@+id/fragment_signIn_logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="@dimen/sign_logo"
+        android:layout_height="@dimen/sign_logo"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="54dp"
-        app:srcCompat="@android:drawable/sym_def_app_icon" />
+        app:srcCompat="@drawable/ic_sign_messaging" />
 
     <LinearLayout
         android:id="@+id/fragment_signIn_blankInfo"
@@ -60,6 +60,7 @@
     </LinearLayout>
 
     <Button
+        style="@style/Widget.AppCompat.Button.Colored"
         android:id="@+id/fragment_signIn_signIn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -71,14 +72,14 @@
         android:theme="@style/PrimaryButton"/>
 
     <Button
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
         android:id="@+id/fragment_signIn_signUp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/fragment_signIn_signIn"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:text="@string/sign_up"
-        android:theme="@style/PrimaryFlatButton"/>
+        android:text="@string/sign_up" />
 
     <LinearLayout
         android:orientation="horizontal"
@@ -87,17 +88,12 @@
         android:layout_centerHorizontal="true"
         android:layout_below="@id/fragment_signIn_signUp"
         android:layout_margin="10dp">
-        <CheckBox
-            android:id="@+id/fragment_signIn_autoSignIn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Remember me" />
         <Button
+            style="@style/Widget.AppCompat.Button.Borderless.Colored"
             android:id="@+id/fragment_signIn_forgotPwd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Forgot password"
-            android:theme="@style/PrimaryFlatButton" />
+            android:text="Forgot password" />
     </LinearLayout>
 
     <View
