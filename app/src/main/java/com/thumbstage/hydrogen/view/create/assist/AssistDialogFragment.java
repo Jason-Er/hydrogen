@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.thumbstage.hydrogen.R;
+import com.thumbstage.hydrogen.utils.BlurUtils;
 import com.thumbstage.hydrogen.utils.RSBlurProcessor;
 import com.thumbstage.hydrogen.utils.UIUtil;
 import com.thumbstage.hydrogen.view.common.RequestResultCode;
@@ -32,6 +33,8 @@ public class AssistDialogFragment extends BottomSheetDialogFragment {
     AssistDialogPagerAdapter pagerAdapter;
     @Inject
     RSBlurProcessor rsBlurProcessor;
+    @Inject
+    BlurUtils blurUtils;
 
     @Nullable
     @Override
@@ -65,7 +68,7 @@ public class AssistDialogFragment extends BottomSheetDialogFragment {
         super.onResume();
         View view = getActivity().getWindow().getDecorView().getRootView();
         Bitmap bitmap = UIUtil.getBitmapFromView(view);
-        Bitmap bitmapBlur = rsBlurProcessor.blur(bitmap, 10, 3);
+        Bitmap bitmapBlur = blurUtils.blur(bitmap, 5); //rsBlurProcessor.blur(bitmap, 3, 3);
         getDialog().getWindow().setBackgroundDrawable(new BitmapDrawable(getResources(), bitmapBlur));
     }
 
