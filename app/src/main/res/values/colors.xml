@@ -7,6 +7,8 @@
     <color name="textColorPrimary">#1b1b2b</color>
 
     <color name="hy_fab">#ff1b43</color>
+    <color name="hy_colorAccent_dark">#000fba</color>
+    <color name="hy_colorAccent_light">#81d4fa</color>
 
     <color name="divider">#90909090</color>
 

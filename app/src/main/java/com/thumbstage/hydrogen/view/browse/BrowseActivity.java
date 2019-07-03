@@ -127,12 +127,7 @@ public class BrowseActivity extends AppCompatActivity
 
             @Override
             public void onPageSelected(int position) {
-                if ( pagerAdapter.getItem(position) instanceof IBrowseCustomize) {
-                    ((IBrowseCustomize) pagerAdapter.getItem(position)).customizeToolbar(toolbar);
-                    ((IBrowseCustomize) pagerAdapter.getItem(position)).customizeFab(fab);
-                } else {
-                    // default function
-                }
+                customizeUIs(pagerAdapter, position);
             }
 
             @Override
@@ -172,6 +167,13 @@ public class BrowseActivity extends AppCompatActivity
                 intent.putExtra(AccountActivity.Type.class.getSimpleName(), AccountActivity.Type.CONTACT.name());
                 startActivity(intent);
                 break;
+        }
+    }
+
+    private void customizeUIs(BrowseFragmentPagerAdapter pagerAdapter, int position) {
+        if ( pagerAdapter.getItem(position) instanceof IBrowseCustomize) {
+            ((IBrowseCustomize) pagerAdapter.getItem(position)).customizeToolbar(toolbar);
+            ((IBrowseCustomize) pagerAdapter.getItem(position)).customizeFab(fab);
         }
     }
 
@@ -266,6 +268,7 @@ public class BrowseActivity extends AppCompatActivity
         browseViewModel.refreshObserveList();
         pagerAdapter.updateFragmentsBy(userViewModel.getCurrentUser().getPrivileges());
         navigationView.updateStateBy(userViewModel.getCurrentUser(), viewPager, drawer);
+        customizeUIs(pagerAdapter, viewPager.getCurrentItem());
     }
 
 

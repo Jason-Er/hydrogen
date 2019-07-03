@@ -1,9 +1,6 @@
 package com.thumbstage.hydrogen.view.create.assist;
 
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,7 +14,6 @@ import android.view.ViewGroup;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.utils.BlurUtils;
 import com.thumbstage.hydrogen.utils.RSBlurProcessor;
-import com.thumbstage.hydrogen.utils.UIUtil;
 import com.thumbstage.hydrogen.view.common.RequestResultCode;
 
 import javax.inject.Inject;
@@ -65,17 +61,6 @@ public class AssistDialogFragment extends BottomSheetDialogFragment {
         super.onActivityCreated(savedInstanceState);
         AndroidSupportInjection.inject(this);
     }
-
-    /*
-    @Override
-    public void onResume() {
-        super.onResume();
-        View view = getActivity().getWindow().getDecorView().getRootView();
-        Bitmap bitmap = UIUtil.getBitmapFromView(view);
-        Bitmap bitmapBlur = blurUtils.blur(bitmap, 5); //rsBlurProcessor.blur(bitmap, 3, 3);
-        getDialog().getWindow().setBackgroundDrawable(new BitmapDrawable(getResources(), bitmapBlur));
-    }
-    */
 
     @Override
     public void onDismiss(DialogInterface dialog) {
