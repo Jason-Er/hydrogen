@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
 import com.thumbstage.hydrogen.R;
 
@@ -26,6 +27,8 @@ public class AccountActivity extends AppCompatActivity implements HasSupportFrag
     @Inject
     DispatchingAndroidInjector<Fragment> dispatchingAndroidInjector;
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     @BindView(R.id.account_content)
     ViewPager viewPager;
 
@@ -38,10 +41,10 @@ public class AccountActivity extends AppCompatActivity implements HasSupportFrag
         configureDagger();
         ButterKnife.bind(this);
 
+        setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(getResources().getString(R.string.profile));
+        actionBar.setTitle("");
 
         pagerAdapter = new AccountPagerAdapter(getSupportFragmentManager());
         viewPager.setAdapter(pagerAdapter);
