@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.TopicMemberEvent;
 import com.thumbstage.hydrogen.model.vo.User;
+import com.thumbstage.hydrogen.utils.GlideUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -43,7 +44,8 @@ public class TopicMemberAddedViewHolder extends RecyclerView.ViewHolder {
     public void setUser(User user) {
         this.user = user;
         if(user != null) {
-            Glide.with(avatar).load(user.getAvatar()).into(avatar);
+            GlideUtil.inject(avatar.getContext(), user.getAvatar(), avatar);
+            // Glide.with(avatar).load(user.getAvatar()).into(avatar);
         }
     }
 

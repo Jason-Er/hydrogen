@@ -12,6 +12,7 @@ import com.thumbstage.hydrogen.event.BrowseItemEvent;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.Topic;
 import com.thumbstage.hydrogen.model.vo.User;
+import com.thumbstage.hydrogen.utils.GlideUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -52,7 +53,8 @@ public class IAttendedOpenedViewHolder extends RecyclerView.ViewHolder {
         }
         User user = topic.getSponsor();
         if(user != null) {
-            Glide.with(badge).load(user.getAvatar()).into(badge);
+            GlideUtil.inject(badge.getContext(), user.getAvatar(), badge);
+            // Glide.with(badge).load(user.getAvatar()).into(badge);
         }
     }
 

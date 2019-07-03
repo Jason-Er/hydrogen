@@ -39,6 +39,7 @@ import com.thumbstage.hydrogen.model.dto.MicHasNew;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.utils.DensityUtil;
+import com.thumbstage.hydrogen.utils.GlideUtil;
 import com.thumbstage.hydrogen.view.create.cases.CaseAttendTopic;
 import com.thumbstage.hydrogen.view.create.cases.CaseBase;
 import com.thumbstage.hydrogen.view.create.feature.ICanAddMember;
@@ -193,7 +194,8 @@ public class TopicFragment extends Fragment {
                             topicAdapter.setMic(mic);
                             EventBus.getDefault().post(new TopicFragmentEvent(mic.getTopic().getName(), "title"));
                             if (mic.getTopic().getSetting() != null) {
-                                Glide.with(background).load(mic.getTopic().getSetting()).into(background);
+                                GlideUtil.inject(background.getContext(), mic.getTopic().getSetting(), background);
+                                // Glide.with(background).load(mic.getTopic().getSetting()).into(background);
                             }
                             spinner.setVisibility(View.GONE);
                             refreshLayout.setRefreshing(false);
@@ -213,7 +215,8 @@ public class TopicFragment extends Fragment {
                             EventBus.getDefault().post(new TopicFragmentEvent(mic.getTopic().getName(), "title"));
                             smoothToBottom();
                             if (mic.getTopic().getSetting() != null) {
-                                Glide.with(background).load(mic.getTopic().getSetting()).into(background);
+                                GlideUtil.inject(background.getContext(), mic.getTopic().getSetting(), background);
+                                // Glide.with(background).load(mic.getTopic().getSetting()).into(background);
                             }
                             topicViewModel.micHasNew(new MicHasNew(mic.getId(), false));
                             spinner.setVisibility(View.GONE);
@@ -291,7 +294,8 @@ public class TopicFragment extends Fragment {
                 EventBus.getDefault().post(new TopicFragmentEvent(event.getData(), event.getMessage()));
                 break;
             case "setting":
-                Glide.with(background).load(event.getData()).into(background);
+                GlideUtil.inject(background.getContext(), (String) event.getData(), background);
+                // Glide.with(background).load(event.getData()).into(background);
                 break;
         }
     }

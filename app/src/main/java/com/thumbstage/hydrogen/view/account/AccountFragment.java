@@ -22,6 +22,7 @@ import com.linchaolong.android.imagepicker.cropper.CropImage;
 import com.linchaolong.android.imagepicker.cropper.CropImageView;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
+import com.thumbstage.hydrogen.utils.GlideUtil;
 import com.thumbstage.hydrogen.viewmodel.UserViewModel;
 
 import javax.inject.Inject;
@@ -65,7 +66,8 @@ public class AccountFragment extends Fragment {
         AndroidSupportInjection.inject(this);
         userViewModel = ViewModelProviders.of(this, viewModelFactory).get(UserViewModel.class);
         name.setText(userViewModel.getCurrentUser().getName());
-        Glide.with(avatar).load(userViewModel.getCurrentUser().getAvatar()).into(avatar);
+        GlideUtil.inject(avatar.getContext(), userViewModel.getCurrentUser().getAvatar(), avatar);
+        // Glide.with(avatar).load(userViewModel.getCurrentUser().getAvatar()).into(avatar);
 
     }
 
@@ -105,7 +107,8 @@ public class AccountFragment extends Fragment {
                         spinner.setVisibility(View.GONE);
                     }
                 });
-                Glide.with(avatar).load(imageUri.toString()).into(avatar);
+                GlideUtil.inject(avatar.getContext(), imageUri.toString(), avatar);
+                // Glide.with(avatar).load(imageUri.toString()).into(avatar);
             }
 
             @Override
