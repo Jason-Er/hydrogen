@@ -14,7 +14,7 @@
         android:layout_height="@dimen/sign_logo"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="54dp"
+        android:layout_marginTop="5dp"
         app:srcCompat="@drawable/ic_sign_messaging" />
 
     <LinearLayout
