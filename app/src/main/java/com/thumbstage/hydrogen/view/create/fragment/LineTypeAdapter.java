@@ -48,10 +48,10 @@ public class LineTypeAdapter extends RecyclerView.Adapter{
         void setLineType(LineType lineType) {
             switch (lineType){
                 case LT_DIRECTION:
-                    Glide.with(imageView).load(R.drawable.ic_center_chat).into(imageView);
+                    Glide.with(imageView).load(R.drawable.ic_circle).into(imageView);
                     break;
                 case LT_DIALOGUE:
-                    Glide.with(imageView).load(R.drawable.ic_left_chat).into(imageView);
+                    Glide.with(imageView).load(R.drawable.ic_triangle).into(imageView);
                     break;
             }
 
