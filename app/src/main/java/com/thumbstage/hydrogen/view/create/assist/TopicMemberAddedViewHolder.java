@@ -45,7 +45,6 @@ public class TopicMemberAddedViewHolder extends RecyclerView.ViewHolder {
         this.user = user;
         if(user != null) {
             GlideUtil.inject(avatar.getContext(), user.getAvatar(), avatar);
-            // Glide.with(avatar).load(user.getAvatar()).into(avatar);
         }
     }
 

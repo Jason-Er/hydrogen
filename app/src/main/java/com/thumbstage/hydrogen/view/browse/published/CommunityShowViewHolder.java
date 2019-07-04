@@ -49,7 +49,6 @@ public class CommunityShowViewHolder extends RecyclerView.ViewHolder {
         User user = topic.getSponsor();
         if(user != null) {
             GlideUtil.inject(badge.getContext(), user.getAvatar(), badge);
-            // Glide.with(badge).load(user.getAvatar()).into(badge);
         }
     }
 

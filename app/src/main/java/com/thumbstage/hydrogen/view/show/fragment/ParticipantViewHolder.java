@@ -28,7 +28,6 @@ public class ParticipantViewHolder extends RecyclerView.ViewHolder {
     public void setParticipant(User user) {
         this.user = user;
         GlideUtil.inject(itemView.getContext(), user.getAvatar(), avatar);
-        // Glide.with(itemView.getContext()).load(user.getAvatar()).into(avatar);
     }
 
     public User getUser() {

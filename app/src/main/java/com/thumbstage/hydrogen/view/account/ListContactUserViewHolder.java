@@ -39,7 +39,6 @@ public class ListContactUserViewHolder extends RecyclerView.ViewHolder {
         name.setText(user.getName());
         if(user != null) {
             GlideUtil.inject(avatar.getContext(), user.getAvatar(), avatar);
-            // Glide.with(avatar).load(user.getAvatar()).into(avatar);
         }
     }
 

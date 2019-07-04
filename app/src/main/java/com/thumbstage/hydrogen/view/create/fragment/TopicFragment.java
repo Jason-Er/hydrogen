@@ -194,7 +194,6 @@ public class TopicFragment extends Fragment {
                             EventBus.getDefault().post(new TopicFragmentEvent(mic.getTopic().getName(), "title"));
                             if (mic.getTopic().getSetting() != null) {
                                 GlideUtil.inject(background.getContext(), mic.getTopic().getSetting(), background);
-                                // Glide.with(background).load(mic.getTopic().getSetting()).into(background);
                             }
                             spinner.setVisibility(View.GONE);
                             refreshLayout.setRefreshing(false);
@@ -215,7 +214,6 @@ public class TopicFragment extends Fragment {
                             smoothToBottom();
                             if (mic.getTopic().getSetting() != null) {
                                 GlideUtil.inject(background.getContext(), mic.getTopic().getSetting(), background);
-                                // Glide.with(background).load(mic.getTopic().getSetting()).into(background);
                             }
                             topicViewModel.micHasNew(new MicHasNew(mic.getId(), false));
                             spinner.setVisibility(View.GONE);
@@ -294,7 +292,6 @@ public class TopicFragment extends Fragment {
                 break;
             case "setting":
                 GlideUtil.inject(background.getContext(), (String) event.getData(), background);
-                // Glide.with(background).load(event.getData()).into(background);
                 break;
         }
     }

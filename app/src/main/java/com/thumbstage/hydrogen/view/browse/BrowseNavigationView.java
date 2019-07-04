@@ -47,7 +47,6 @@ public class BrowseNavigationView extends NavigationView implements NavigationVi
         TextView userName = headerView.findViewById(R.id.nav_account_name);
         ImageView contact = headerView.findViewById(R.id.nav_account_contact);
         GlideUtil.inject(userAvatar.getContext(), user.getAvatar(), userAvatar);
-        // Glide.with(userAvatar).load(user.getAvatar()).into(userAvatar);
         userName.setText(user.getName());
         userAvatar.setOnClickListener(new OnClickListener() {
             @Override

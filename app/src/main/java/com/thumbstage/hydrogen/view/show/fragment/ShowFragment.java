@@ -361,7 +361,6 @@ public class ShowFragment extends Fragment {
                     mic = micl;
                     if (mic.getTopic().getSetting() != null) {
                         GlideUtil.inject(background.getContext(), mic.getTopic().getSetting(), background);
-                        // Glide.with(background).load(mic.getTopic().getSetting()).into(background);
                     }
                     EventBus.getDefault().post(new ShowFragmentEvent(mic.getTopic().getName(), "title"));
                     showAdapter.setMic(mic);

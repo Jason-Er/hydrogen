@@ -67,8 +67,6 @@ public class AccountFragment extends Fragment {
         userViewModel = ViewModelProviders.of(this, viewModelFactory).get(UserViewModel.class);
         name.setText(userViewModel.getCurrentUser().getName());
         GlideUtil.inject(avatar.getContext(), userViewModel.getCurrentUser().getAvatar(), avatar);
-        // Glide.with(avatar).load(userViewModel.getCurrentUser().getAvatar()).into(avatar);
-
     }
 
     @OnClick(R.id.activity_account_signOut)
@@ -108,7 +106,6 @@ public class AccountFragment extends Fragment {
                     }
                 });
                 GlideUtil.inject(avatar.getContext(), imageUri.toString(), avatar);
-                // Glide.with(avatar).load(imageUri.toString()).into(avatar);
             }
 
             @Override
