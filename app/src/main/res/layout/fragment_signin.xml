@@ -57,7 +57,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="@android:color/transparent"
-                android:src="@drawable/ic_button_eyeoff"/>
+                android:src="@drawable/ic_img_eye_off"/>
         </LinearLayout>
     </LinearLayout>
 

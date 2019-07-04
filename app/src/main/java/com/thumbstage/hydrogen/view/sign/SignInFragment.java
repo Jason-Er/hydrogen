@@ -104,12 +104,12 @@ public class SignInFragment extends Fragment {
         if(view.getTag() == null || !(Boolean) view.getTag()) {
             password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
             password.setSelection(password.getText().length());
-            ((ImageButton)view).setImageResource(R.drawable.ic_button_eyeon);
+            ((ImageButton)view).setImageResource(R.drawable.ic_img_eye_on);
             view.setTag(true);
         } else {
             password.setTransformationMethod(PasswordTransformationMethod.getInstance());
             password.setSelection(password.getText().length());
-            ((ImageButton)view).setImageResource(R.drawable.ic_button_eyeoff);
+            ((ImageButton)view).setImageResource(R.drawable.ic_img_eye_off);
             view.setTag(false);
         }
     }

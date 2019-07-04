@@ -125,14 +125,14 @@ public class SignUpFragment extends Fragment {
             password.setSelection(password.getText().length());
             password2.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
             password2.setSelection(password2.getText().length());
-            ((ImageButton)view).setImageResource(R.drawable.ic_button_eyeon);
+            ((ImageButton)view).setImageResource(R.drawable.ic_img_eye_on);
             view.setTag(true);
         } else {
             password.setTransformationMethod(PasswordTransformationMethod.getInstance());
             password.setSelection(password.getText().length());
             password2.setTransformationMethod(PasswordTransformationMethod.getInstance());
             password2.setSelection(password2.getText().length());
-            ((ImageButton)view).setImageResource(R.drawable.ic_button_eyeoff);
+            ((ImageButton)view).setImageResource(R.drawable.ic_img_eye_off);
             view.setTag(false);
         }
     }
