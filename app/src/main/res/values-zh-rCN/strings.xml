@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Line</string>
+    <string name="app_name">hydrogen</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="nav_header_title">Android Studio</string>
@@ -67,4 +67,8 @@
     <string name="menu_item_can_setupinfo">信息设置</string>
     <string name="menu_item_can_update">更新</string>
     <string name="menu_item_can_recommend">推荐</string>
+    <string name="Warning">警告</string>
+    <string name="PermissionNotGrant">权限没有设置</string>
+    <string name="OK">OK</string>
+    <string name="Cancel">Cancel</string>
 </resources>
