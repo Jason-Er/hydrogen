@@ -131,7 +131,7 @@ public class ShowFragment extends Fragment {
         });
 
         popupWindow = new ListPopupWindow(getContext());
-        popupWindowAdapter = new PopupWindowAdapter();
+        popupWindowAdapter = new PopupWindowAdapter(getContext());
         popupWindow.setAdapter(popupWindowAdapter);
         popupWindow.setWidth(DensityUtil.dp2px(getContext(),200));
         popupWindow.setHeight(ListPopupWindow.WRAP_CONTENT);

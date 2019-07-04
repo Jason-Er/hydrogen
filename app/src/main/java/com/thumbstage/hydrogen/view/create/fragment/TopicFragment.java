@@ -22,7 +22,6 @@ import android.widget.ImageView;
 import android.widget.ListPopupWindow;
 import android.widget.ProgressBar;
 
-import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.HyMenuItemEvent;
 import com.thumbstage.hydrogen.event.IMMessageEvent;
@@ -122,9 +121,9 @@ public class TopicFragment extends Fragment {
         recyclerView.setAdapter(topicAdapter);
 
         popupWindow = new ListPopupWindow(getContext());
-        popupWindowAdapter = new PopupWindowAdapter();
+        popupWindowAdapter = new PopupWindowAdapter(getContext());
         popupWindow.setAdapter(popupWindowAdapter);
-        popupWindow.setWidth(DensityUtil.dp2px(getContext(),200));
+        popupWindow.setWidth(DensityUtil.dp2px(getContext(),150));
         popupWindow.setHeight(ListPopupWindow.WRAP_CONTENT);
         popupWindow.setModal(true);
 
