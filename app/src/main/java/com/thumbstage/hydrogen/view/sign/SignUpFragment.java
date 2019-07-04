@@ -8,10 +8,13 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -113,5 +116,24 @@ public class SignUpFragment extends Fragment {
             }
         });
 
+    }
+
+    @OnClick(R.id.fragment_signUp_eyeShow)
+    public void showPassword(View view) {
+        if(view.getTag() == null || !(Boolean) view.getTag()) {
+            password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            password.setSelection(password.getText().length());
+            password2.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            password2.setSelection(password2.getText().length());
+            ((ImageButton)view).setImageResource(R.drawable.ic_button_eyeon);
+            view.setTag(true);
+        } else {
+            password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            password.setSelection(password.getText().length());
+            password2.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            password2.setSelection(password2.getText().length());
+            ((ImageButton)view).setImageResource(R.drawable.ic_button_eyeoff);
+            view.setTag(false);
+        }
     }
 }
