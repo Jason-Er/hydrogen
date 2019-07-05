@@ -67,4 +67,8 @@
     <string name="menu_item_can_setupinfo">setupinfo</string>
     <string name="menu_item_can_update">update</string>
     <string name="menu_item_can_recommend">recommend</string>
+    <string name="Warning">Wanning</string>
+    <string name="PermissionNotGrant">Not grant</string>
+    <string name="OK">OK</string>
+    <string name="Cancel">Cancel</string>
 </resources>

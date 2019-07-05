@@ -12,14 +12,14 @@
     <string name="sign_out">退出</string>
     <string name="phone_number">电话号码</string>
     <string name="password">密码</string>
-    <string name="name">name</string>
+    <string name="name">名字</string>
     <string name="phone_authCode">authenticate code</string>
     <string name="action_sign">sign</string>
     <string name="attention_empty_name">名字不能为空</string>
-    <string name="attention_empty_password">password is empty</string>
-    <string name="attention_consistency_password">password not consistency</string>
-    <string name="attention_empty_email">attention email is empty</string>
-    <string name="email">email</string>
+    <string name="attention_empty_password">密码不能为空</string>
+    <string name="attention_consistency_password">密码不一致</string>
+    <string name="attention_empty_email">邮箱不能为空</string>
+    <string name="email">E-mail</string>
     <string name="attention_name_exist">attention name exist</string>
     <string name="attention_email_exist">attention email exist</string>
     <string name="attention_phone_exist">attention phone number exist</string>
@@ -67,4 +67,8 @@
     <string name="menu_item_can_setupinfo">信息设置</string>
     <string name="menu_item_can_update">更新</string>
     <string name="menu_item_can_recommend">推荐</string>
+    <string name="Warning">警告</string>
+    <string name="PermissionNotGrant">权限没有设置</string>
+    <string name="OK">OK</string>
+    <string name="Cancel">Cancel</string>
 </resources>

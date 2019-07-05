@@ -54,7 +54,7 @@ public class CaseBase implements ITopicFragmentFunction,
     PopupWindowAdapter popupWindowAdapter;
     ProgressBar spinner;
 
-    HyMenuItem settingItem = new HyMenuItem(R.drawable.ic_menu_setting_g, CanOnTopic.SETUPINFO);
+    HyMenuItem settingItem = new HyMenuItem(R.drawable.ic_menu_setting, CanOnTopic.SETUPINFO);
     HyMenuItem membersItem = new HyMenuItem(R.drawable.ic_menu_account_plus, CanOnTopic.PARTICIPANT);
     HyMenuItem openItem = new HyMenuItem(R.drawable.ic_menu_start_g, CanOnTopic.OPEN);
     HyMenuItem publishItem = new HyMenuItem(R.drawable.ic_menu_publish_g, CanOnTopic.PUBLISH);

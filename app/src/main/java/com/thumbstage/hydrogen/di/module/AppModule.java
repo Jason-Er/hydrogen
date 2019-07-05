@@ -3,6 +3,7 @@ package com.thumbstage.hydrogen.di.module;
 import android.app.Application;
 import android.arch.persistence.room.Room;
 import android.content.Context;
+import android.renderscript.RenderScript;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -46,5 +47,10 @@ public class AppModule {
 
     @Provides
     Gson provideGson() { return new GsonBuilder().create(); }
+
+    @Provides
+    RenderScript provideRenderScript(Context context) {
+        return RenderScript.create(context);
+    }
 
 }

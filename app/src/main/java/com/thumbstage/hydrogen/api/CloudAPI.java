@@ -56,6 +56,7 @@ import com.thumbstage.hydrogen.repository.FieldName;
 import com.thumbstage.hydrogen.repository.TableName;
 import com.thumbstage.hydrogen.utils.DataConvertUtil;
 import com.thumbstage.hydrogen.utils.StringUtil;
+import com.thumbstage.hydrogen.utils.SysUtils;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -95,7 +96,9 @@ public class CloudAPI {
         AVOSCloud.setServer(AVOSCloud.SERVER_TYPE.RTM, "https://router-g0-push.avoscloud.com");
         */
         AVOSCloud.initialize(context, APP_ID, APP_KEY);
-        AVOSCloud.setDebugLogEnabled(true);
+        if( SysUtils.isApkInDebug(context) ) {
+            AVOSCloud.setDebugLogEnabled(true);
+        }
         checkInCurrentUser();
     }
 

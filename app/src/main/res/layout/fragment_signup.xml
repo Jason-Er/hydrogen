@@ -14,7 +14,7 @@
         android:layout_height="@dimen/sign_logo"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="54dp"
+        android:layout_marginTop="5dp"
         app:srcCompat="@drawable/ic_sign_messaging" />
 
     <LinearLayout
@@ -57,7 +57,7 @@
                 android:id="@+id/fragment_signUp_eyeShow"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_button_eyeoff"
+                android:src="@drawable/ic_img_eye_off"
                 android:layout_marginLeft="-24dp"
                 android:background="@android:color/transparent"/>
         </LinearLayout>

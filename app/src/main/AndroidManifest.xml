@@ -31,12 +31,14 @@
         <activity
             android:name="com.thumbstage.hydrogen.view.sign.SignActivity"
             android:label="SignActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan"
             >
         </activity>
         <activity
             android:name="com.thumbstage.hydrogen.view.account.AccountActivity"
             android:label="AccountActivity"
+            android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan"
             >
         </activity>

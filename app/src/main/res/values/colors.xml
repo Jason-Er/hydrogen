@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimary">#ffffff</color>
+    <color name="colorPrimaryDark">#ffffff</color>
+    <color name="colorAccent">#3d3bee</color>
+    <color name="windowBackground">#ffffff</color>
+    <color name="textColorPrimary">#1b1b2b</color>
+
+    <color name="hy_fab">#ff1b43</color>
+    <color name="hy_colorAccent_dark">#000fba</color>
+    <color name="hy_colorAccent_light">#81d4fa</color>
 
     <color name="divider">#90909090</color>
 
     <color name="hy_common_blue">#2c97e8</color>
-    <color name="hy_common_gray">#898989</color>
+    <color name="hy_common_gray">#88889C</color>
     <color name="hy_commom_read">#ff0000</color>
 
     <color name="hy_bottom_bar_text_black">#3e3e39</color>

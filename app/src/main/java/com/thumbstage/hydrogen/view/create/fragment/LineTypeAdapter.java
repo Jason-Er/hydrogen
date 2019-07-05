@@ -5,8 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.LineTypeEvent;
 import com.thumbstage.hydrogen.model.bo.LineType;
@@ -30,7 +32,7 @@ public class LineTypeAdapter extends RecyclerView.Adapter{
     class ItemViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.item_line_type)
-        TextView textView;
+        ImageView imageView;
 
         ItemViewHolder(View itemView) {
             super(itemView);
@@ -44,7 +46,15 @@ public class LineTypeAdapter extends RecyclerView.Adapter{
         }
 
         void setLineType(LineType lineType) {
-            // textView.setText(lineType.name());
+            switch (lineType){
+                case LT_DIRECTION:
+                    Glide.with(imageView).load(R.drawable.ic_circle).into(imageView);
+                    break;
+                case LT_DIALOGUE:
+                    Glide.with(imageView).load(R.drawable.ic_triangle).into(imageView);
+                    break;
+            }
+
         }
     }
 
@@ -52,7 +62,7 @@ public class LineTypeAdapter extends RecyclerView.Adapter{
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_cardview_linetype, parent, false);
+                .inflate(R.layout.item_linetype, parent, false);
         return new ItemViewHolder(view);
     }
 
