@@ -215,6 +215,7 @@ public class TopicFragment extends Fragment {
                             if (mic.getTopic().getSetting() != null) {
                                 GlideUtil.inject(background.getContext(), mic.getTopic().getSetting(), background);
                             }
+                            topicViewModel.micHasRead();
                             topicViewModel.micHasNew(new MicHasNew(mic.getId(), false));
                             spinner.setVisibility(View.GONE);
                             refreshLayout.setRefreshing(false);
