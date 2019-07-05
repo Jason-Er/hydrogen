@@ -43,6 +43,7 @@ import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.Topic;
 import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.utils.DensityUtil;
+import com.thumbstage.hydrogen.utils.GlideUtil;
 import com.thumbstage.hydrogen.view.common.HyMenuItem;
 import com.thumbstage.hydrogen.view.create.fragment.PopupWindowAdapter;
 import com.thumbstage.hydrogen.viewmodel.TopicViewModel;
@@ -130,7 +131,7 @@ public class ShowFragment extends Fragment {
         });
 
         popupWindow = new ListPopupWindow(getContext());
-        popupWindowAdapter = new PopupWindowAdapter();
+        popupWindowAdapter = new PopupWindowAdapter(getContext());
         popupWindow.setAdapter(popupWindowAdapter);
         popupWindow.setWidth(DensityUtil.dp2px(getContext(),200));
         popupWindow.setHeight(ListPopupWindow.WRAP_CONTENT);
@@ -359,7 +360,7 @@ public class ShowFragment extends Fragment {
                 if(micl != null) {
                     mic = micl;
                     if (mic.getTopic().getSetting() != null) {
-                        Glide.with(background).load(mic.getTopic().getSetting()).into(background);
+                        GlideUtil.inject(background.getContext(), mic.getTopic().getSetting(), background);
                     }
                     EventBus.getDefault().post(new ShowFragmentEvent(mic.getTopic().getName(), "title"));
                     showAdapter.setMic(mic);

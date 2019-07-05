@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="8dp"
-        android:background="#bef9b81b"
+        android:background="#beffffff"
         android:drawableLeft="@drawable/search_bar_icon_normal"
         android:hint="请输入关键字"
         android:maxLines="1"

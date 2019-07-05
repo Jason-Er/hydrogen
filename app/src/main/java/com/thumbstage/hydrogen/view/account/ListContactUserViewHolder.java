@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.model.vo.User;
+import com.thumbstage.hydrogen.utils.GlideUtil;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,7 +38,7 @@ public class ListContactUserViewHolder extends RecyclerView.ViewHolder {
         this.user = user;
         name.setText(user.getName());
         if(user != null) {
-            Glide.with(avatar).load(user.getAvatar()).into(avatar);
+            GlideUtil.inject(avatar.getContext(), user.getAvatar(), avatar);
         }
     }
 

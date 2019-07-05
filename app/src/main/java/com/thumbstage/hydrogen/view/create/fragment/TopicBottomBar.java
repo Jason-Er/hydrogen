@@ -2,6 +2,7 @@ package com.thumbstage.hydrogen.view.create.fragment;
 
 import android.content.Context;
 import android.os.Handler;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -48,7 +49,7 @@ public class TopicBottomBar extends LinearLayout {
     RecyclerView recyclerView;
 
     LineTypeAdapter lineTypeAdapter;
-    SliderLayoutManager layoutManager;
+    LinearLayoutManager layoutManager;
     /**
      * 最小间隔时间为 1 秒，避免多次点击
      */
@@ -65,7 +66,8 @@ public class TopicBottomBar extends LinearLayout {
         super.onFinishInflate();
         ButterKnife.bind(this);
 
-        layoutManager = new SliderLayoutManager(getContext());
+        layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setOrientation(HORIZONTAL);
         recyclerView.setLayoutManager(layoutManager);
         lineTypeAdapter = new LineTypeAdapter();
         recyclerView.setAdapter(lineTypeAdapter);

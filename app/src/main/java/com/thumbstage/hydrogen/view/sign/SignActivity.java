@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
 import com.thumbstage.hydrogen.R;
 
@@ -18,6 +19,8 @@ import dagger.android.support.HasSupportFragmentInjector;
 
 public class SignActivity extends AppCompatActivity implements HasSupportFragmentInjector {
 
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
     @BindView(R.id.activity_sign)
     ViewPager viewPager;
 
@@ -31,10 +34,10 @@ public class SignActivity extends AppCompatActivity implements HasSupportFragmen
         configureDagger();
         ButterKnife.bind(this);
 
+        setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setHomeButtonEnabled(true);
         actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(getResources().getString(R.string.sign));
+        actionBar.setTitle("");
 
         viewPager.setAdapter(new SignFragmentPagerAdapter(getSupportFragmentManager()));
     }

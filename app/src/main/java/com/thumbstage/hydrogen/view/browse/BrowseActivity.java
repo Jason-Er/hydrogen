@@ -1,10 +1,12 @@
 package com.thumbstage.hydrogen.view.browse;
 
+import android.Manifest;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -32,6 +34,7 @@ import com.thumbstage.hydrogen.utils.NotificationUtils;
 import com.thumbstage.hydrogen.utils.StringUtil;
 import com.thumbstage.hydrogen.view.account.AccountActivity;
 import com.thumbstage.hydrogen.view.common.Navigation;
+import com.thumbstage.hydrogen.view.common.PermissionChecker;
 import com.thumbstage.hydrogen.view.create.CreateActivity;
 import com.thumbstage.hydrogen.view.create.fragment.TopicHandleType;
 import com.thumbstage.hydrogen.view.show.ShowActivity;
@@ -80,6 +83,7 @@ public class BrowseActivity extends AppCompatActivity
     @BindView(R.id.fab)
     FloatingActionButton fab;
 
+    PermissionChecker permissionChecker;
     User preUser;
 
     @Override
@@ -87,14 +91,41 @@ public class BrowseActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_browse);
 
+        permissionChecker = new PermissionChecker();
+        permissionChecker.setActivity(this)
+                .setDefaultDialog(true)
+                .setPermissions(new String[]{
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.RECORD_AUDIO})
+                .setCallback(new PermissionChecker.PermissionCheckCallback() {
+                    @Override
+                    public void onRequest() {
+
+                    }
+
+                    @Override
+                    public void onGranted() {
+
+                    }
+
+                    @Override
+                    public void onGrantSuccess() {
+
+                    }
+
+                    @Override
+                    public void onGrantFail() {
+
+                    }
+                }).checkPermission();
 
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
         fab.hide();
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setScrimColor(0x7fffffff);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
@@ -127,12 +158,7 @@ public class BrowseActivity extends AppCompatActivity
 
             @Override
             public void onPageSelected(int position) {
-                if ( pagerAdapter.getItem(position) instanceof IBrowseCustomize) {
-                    ((IBrowseCustomize) pagerAdapter.getItem(position)).customizeToolbar(toolbar);
-                    ((IBrowseCustomize) pagerAdapter.getItem(position)).customizeFab(fab);
-                } else {
-                    // default function
-                }
+                customizeUIs(pagerAdapter, position);
             }
 
             @Override
@@ -172,6 +198,13 @@ public class BrowseActivity extends AppCompatActivity
                 intent.putExtra(AccountActivity.Type.class.getSimpleName(), AccountActivity.Type.CONTACT.name());
                 startActivity(intent);
                 break;
+        }
+    }
+
+    private void customizeUIs(BrowseFragmentPagerAdapter pagerAdapter, int position) {
+        if ( pagerAdapter.getItem(position) instanceof IBrowseCustomize) {
+            ((IBrowseCustomize) pagerAdapter.getItem(position)).customizeToolbar(toolbar);
+            ((IBrowseCustomize) pagerAdapter.getItem(position)).customizeFab(fab);
         }
     }
 
@@ -253,7 +286,6 @@ public class BrowseActivity extends AppCompatActivity
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -267,6 +299,7 @@ public class BrowseActivity extends AppCompatActivity
         browseViewModel.refreshObserveList();
         pagerAdapter.updateFragmentsBy(userViewModel.getCurrentUser().getPrivileges());
         navigationView.updateStateBy(userViewModel.getCurrentUser(), viewPager, drawer);
+        customizeUIs(pagerAdapter, viewPager.getCurrentItem());
     }
 
 
@@ -293,5 +326,8 @@ public class BrowseActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        permissionChecker.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 }

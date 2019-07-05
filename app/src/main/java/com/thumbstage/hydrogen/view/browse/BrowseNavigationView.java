@@ -19,6 +19,7 @@ import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.NaviViewEvent;
 import com.thumbstage.hydrogen.model.bo.Privilege;
 import com.thumbstage.hydrogen.model.vo.User;
+import com.thumbstage.hydrogen.utils.GlideUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -44,8 +45,8 @@ public class BrowseNavigationView extends NavigationView implements NavigationVi
         View headerView = getHeaderView(0);
         ImageView userAvatar = headerView.findViewById(R.id.nav_account_avatar);
         TextView userName = headerView.findViewById(R.id.nav_account_name);
-        ImageView contact = headerView.findViewById(R.id.nav_account_contact);
-        Glide.with(userAvatar).load(user.getAvatar()).into(userAvatar);
+        // ImageView contact = headerView.findViewById(R.id.nav_account_contact);
+        GlideUtil.inject(userAvatar.getContext(), user.getAvatar(), userAvatar);
         userName.setText(user.getName());
         userAvatar.setOnClickListener(new OnClickListener() {
             @Override
@@ -53,12 +54,14 @@ public class BrowseNavigationView extends NavigationView implements NavigationVi
                 EventBus.getDefault().post(new NaviViewEvent("userAvatar"));
             }
         });
+        /*
         contact.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 EventBus.getDefault().post(new NaviViewEvent("userContact"));
             }
         });
+        */
         // update menu
         Menu menu = getMenu();
         menu.clear();

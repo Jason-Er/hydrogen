@@ -22,7 +22,6 @@ import android.widget.ImageView;
 import android.widget.ListPopupWindow;
 import android.widget.ProgressBar;
 
-import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
 import com.thumbstage.hydrogen.event.HyMenuItemEvent;
 import com.thumbstage.hydrogen.event.IMMessageEvent;
@@ -39,6 +38,7 @@ import com.thumbstage.hydrogen.model.dto.MicHasNew;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.User;
 import com.thumbstage.hydrogen.utils.DensityUtil;
+import com.thumbstage.hydrogen.utils.GlideUtil;
 import com.thumbstage.hydrogen.view.create.cases.CaseAttendTopic;
 import com.thumbstage.hydrogen.view.create.cases.CaseBase;
 import com.thumbstage.hydrogen.view.create.feature.ICanAddMember;
@@ -121,9 +121,9 @@ public class TopicFragment extends Fragment {
         recyclerView.setAdapter(topicAdapter);
 
         popupWindow = new ListPopupWindow(getContext());
-        popupWindowAdapter = new PopupWindowAdapter();
+        popupWindowAdapter = new PopupWindowAdapter(getContext());
         popupWindow.setAdapter(popupWindowAdapter);
-        popupWindow.setWidth(DensityUtil.dp2px(getContext(),200));
+        popupWindow.setWidth(DensityUtil.dp2px(getContext(),150));
         popupWindow.setHeight(ListPopupWindow.WRAP_CONTENT);
         popupWindow.setModal(true);
 
@@ -193,7 +193,7 @@ public class TopicFragment extends Fragment {
                             topicAdapter.setMic(mic);
                             EventBus.getDefault().post(new TopicFragmentEvent(mic.getTopic().getName(), "title"));
                             if (mic.getTopic().getSetting() != null) {
-                                Glide.with(background).load(mic.getTopic().getSetting()).into(background);
+                                GlideUtil.inject(background.getContext(), mic.getTopic().getSetting(), background);
                             }
                             spinner.setVisibility(View.GONE);
                             refreshLayout.setRefreshing(false);
@@ -213,7 +213,7 @@ public class TopicFragment extends Fragment {
                             EventBus.getDefault().post(new TopicFragmentEvent(mic.getTopic().getName(), "title"));
                             smoothToBottom();
                             if (mic.getTopic().getSetting() != null) {
-                                Glide.with(background).load(mic.getTopic().getSetting()).into(background);
+                                GlideUtil.inject(background.getContext(), mic.getTopic().getSetting(), background);
                             }
                             topicViewModel.micHasNew(new MicHasNew(mic.getId(), false));
                             spinner.setVisibility(View.GONE);
@@ -291,7 +291,7 @@ public class TopicFragment extends Fragment {
                 EventBus.getDefault().post(new TopicFragmentEvent(event.getData(), event.getMessage()));
                 break;
             case "setting":
-                Glide.with(background).load(event.getData()).into(background);
+                GlideUtil.inject(background.getContext(), (String) event.getData(), background);
                 break;
         }
     }

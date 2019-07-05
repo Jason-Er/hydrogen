@@ -1,6 +1,7 @@
 package com.thumbstage.hydrogen.view.create.fragment;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,7 @@ import java.util.Map;
 
 public class PopupWindowAdapter extends BaseAdapter {
 
+    private Context context;
     List<HyMenuItem> itemList = new ArrayList<>();
     Map<CanOnTopic, Integer> canMap = new HashMap<CanOnTopic, Integer>() {
         {
@@ -35,6 +37,10 @@ public class PopupWindowAdapter extends BaseAdapter {
             put(CanOnTopic.RECOMMEND, R.string.menu_item_can_recommend);
         }
     };
+
+    public PopupWindowAdapter(@NonNull Context context) {
+        this.context = context;
+    }
 
     @Override
     public int getCount() {
@@ -54,8 +60,8 @@ public class PopupWindowAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         final HyMenuItem item = itemList.get(position);
-        LayoutInflater inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(R.layout.layout_menu_item, null);
+        LayoutInflater inflater = LayoutInflater.from(context);
+        View view = inflater.inflate(R.layout.layout_menu_item, parent, false);
         ImageView icon = view.findViewById(R.id.menu_item_icon);
         TextView command = view.findViewById(R.id.menu_item_command);
         icon.setImageResource(item.getResId());

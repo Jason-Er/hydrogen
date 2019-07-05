@@ -11,8 +11,8 @@ public class GlideUtil {
 
     public static void inject(Context context, String url, ImageView view) {
         RequestOptions requestOptions = new RequestOptions();
-        requestOptions.placeholder(R.drawable.ic_item_placeholder);
-        requestOptions.error(R.drawable.ic_item_error);
+        requestOptions.placeholder(R.drawable.ic_sign_messaging);
+        requestOptions.error(R.drawable.ic_sign_messaging);
         Glide.with(context)
                 .setDefaultRequestOptions(requestOptions)
                 .load(url).into(view);
