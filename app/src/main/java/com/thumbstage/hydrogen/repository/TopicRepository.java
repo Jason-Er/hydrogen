@@ -14,10 +14,8 @@ import com.thumbstage.hydrogen.model.bo.HyFile;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
 import com.thumbstage.hydrogen.model.callback.IReturnMicDto;
-import com.thumbstage.hydrogen.model.callback.IReturnTopicDto;
 import com.thumbstage.hydrogen.model.dto.MicDto;
 import com.thumbstage.hydrogen.model.dto.MicHasNew;
-import com.thumbstage.hydrogen.model.dto.TopicDto;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.User;
@@ -375,6 +373,13 @@ public class TopicRepository {
                 modelDB.updateMicHasNew(hasNew);
             }
         });
+    }
+
+    public void micHasRead() {
+        Mic mic = micLiveData.getValue();
+        if(!TextUtils.isEmpty(mic.getId())) {
+            cloudAPI.haveReadMic(mic.getId());
+        }
     }
 
 }

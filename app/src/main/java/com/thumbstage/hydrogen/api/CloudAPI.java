@@ -200,6 +200,12 @@ public class CloudAPI {
         });
     }
 
+    public void haveReadMic(String micId) {
+        AVIMClient client = AVIMClient.getInstance(AVUser.getCurrentUser());
+        AVIMConversation avMic = client.getConversation(micId);
+        avMic.read();
+    }
+
     public void updateMic(final Mic mic, final ICallBack iCallBack) {
         updateTopic(mic.getTopic(), new ICallBack() {
             @Override

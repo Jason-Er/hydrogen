@@ -364,6 +364,7 @@ public class ShowFragment extends Fragment {
                     }
                     EventBus.getDefault().post(new ShowFragmentEvent(mic.getTopic().getName(), "title"));
                     showAdapter.setMic(mic);
+                    topicViewModel.micHasRead();
                     spinner.setVisibility(View.GONE);
                     refreshLayout.setRefreshing(false);
                 }

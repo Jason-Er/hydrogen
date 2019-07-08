@@ -83,4 +83,8 @@ public class TopicViewModel extends ViewModel {
         topicRepository.micHasNew(hasNew);
     }
 
+    public void micHasRead() {
+        topicRepository.micHasRead();
+    }
+
 }
