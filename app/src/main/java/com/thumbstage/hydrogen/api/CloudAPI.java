@@ -188,11 +188,7 @@ public class CloudAPI {
             @Override
             public void done(AVIMException e) {
                 if(e == null) {
-                    // TODO: 5/13/2019 addTopicOneLine may remove to server sometime
-                    if(msg instanceof AVIMAudioMessage) {
-                        line.setWhat(((AVIMAudioMessage) msg).getFileUrl());
-                    }
-                    addTopicOneLine(mic.getTopic(), line, iReturnBool);
+                    iReturnBool.callback(true);
                 } else {
                     iReturnBool.callback(false);
                 }
@@ -652,7 +648,7 @@ public class CloudAPI {
             if (map.size() != 0) {
                 LineDto line = new LineDto();
                 line.setWho((String) map.get("who"));
-                line.setWhen(StringUtil.string2Date((String) map.get("when")));
+                line.setWhen(new Date((long) map.get("when")));
                 line.setWhat((String) map.get("what"));
                 line.setLineType((LineType.valueOf((String) map.get("type"))));
                 line.setMessageType((MessageType.valueOf((String) map.get("message"))));
