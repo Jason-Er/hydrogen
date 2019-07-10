@@ -484,7 +484,7 @@ public class ModelDB {
         topic.setTags(getTags(id));
         topic.setUserCan(getUserCan(id));
         topic.setName(entity.getName());
-        topic.setBrief(entity.getName());
+        topic.setBrief(entity.getBrief());
         topic.setSetting(entity.getSetting_url());
         topic.setDerive_from(entity.getDerive_from());
         topic.setDialogue(getLine(entity.getId()));
