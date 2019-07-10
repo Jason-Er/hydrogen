@@ -71,4 +71,5 @@
     <string name="PermissionNotGrant">Not grant</string>
     <string name="OK">OK</string>
     <string name="Cancel">Cancel</string>
+    <string name="action_like">like</string>
 </resources>

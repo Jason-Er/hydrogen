@@ -41,8 +41,10 @@ import com.thumbstage.hydrogen.utils.DensityUtil;
 import com.thumbstage.hydrogen.utils.GlideUtil;
 import com.thumbstage.hydrogen.view.create.cases.CaseAttendTopic;
 import com.thumbstage.hydrogen.view.create.cases.CaseBase;
+import com.thumbstage.hydrogen.view.create.cases.CaseCreateTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanAddMember;
 import com.thumbstage.hydrogen.view.create.feature.ICanCloseTopic;
+import com.thumbstage.hydrogen.view.create.feature.ICanCreateOptionsMenu;
 import com.thumbstage.hydrogen.view.create.feature.ICanOpenTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanPopupMenu;
 import com.thumbstage.hydrogen.view.create.feature.ICanPublishTopic;
@@ -89,7 +91,7 @@ public class TopicFragment extends Fragment {
 
     Map<TopicHandleType, CaseBase> roleMap = new HashMap<TopicHandleType, CaseBase>(){
         {
-            put(TopicHandleType.CREATE, new CaseBase());
+            put(TopicHandleType.CREATE, new CaseCreateTopic());
             put(TopicHandleType.ATTEND, new CaseAttendTopic());
             put(TopicHandleType.CONTINUE, new CaseBase());
         }
@@ -385,7 +387,9 @@ public class TopicFragment extends Fragment {
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         MenuItem menuItemSetup = menu.findItem(R.id.menu_item_setup);
-        menuItemSetup.setVisible(false);
+        if(menuItemSetup != null) {
+            menuItemSetup.setVisible(false);
+        }
         if(topicAdapter.getTopic()!=null) {
             Map<String, Set<CanOnTopic>> userCan = topicAdapter.getTopic().getUserCan();
             if(userCan != null && userCan.containsKey(userViewModel.getCurrentUser().getId())) {
@@ -401,7 +405,11 @@ public class TopicFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_create_default, menu);
+        if( currentRole instanceof ICanCreateOptionsMenu) {
+            ((ICanCreateOptionsMenu) currentRole).createOptionsMenu(menu, inflater);
+        } else {
+            inflater.inflate(R.menu.menu_create_default, menu);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
