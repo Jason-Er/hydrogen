@@ -10,10 +10,13 @@ import android.webkit.URLUtil;
 
 import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.database.ModelDB;
+import com.thumbstage.hydrogen.database.dao.LikeDao;
+import com.thumbstage.hydrogen.database.dao.LikeDao_Impl;
 import com.thumbstage.hydrogen.model.bo.HyFile;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
 import com.thumbstage.hydrogen.model.callback.IReturnMicDto;
+import com.thumbstage.hydrogen.model.dto.LikeDto;
 import com.thumbstage.hydrogen.model.dto.MicDto;
 import com.thumbstage.hydrogen.model.dto.MicHasNew;
 import com.thumbstage.hydrogen.model.vo.Line;
@@ -200,6 +203,37 @@ public class TopicRepository {
                 });
             }
         });
+    }
+
+    public void likeTheMic(final IReturnBool iReturnBool) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                final Mic mic = micLiveData.getValue();
+                final String userId = cloudAPI.getCurrentUser().getId();
+                final String topicId = mic.getTopic().getId();
+                final LikeDto likeDto = new LikeDto(userId, topicId);
+                if(!modelDB.isLikeExist(likeDto)) {
+                    cloudAPI.likeTopic(topicId, new IReturnBool() {
+                        @Override
+                        public void callback(Boolean isOK) {
+                            if (isOK) {
+                                executor.execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        modelDB.saveLike(likeDto);
+                                    }
+                                });
+                                iReturnBool.callback(true);
+                            } else {
+                                iReturnBool.callback(false);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
     }
 
     private void saveMic2DB(final Mic mic) { // from UI side

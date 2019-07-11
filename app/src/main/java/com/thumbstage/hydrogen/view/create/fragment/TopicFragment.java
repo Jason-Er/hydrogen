@@ -327,7 +327,6 @@ public class TopicFragment extends Fragment {
                 if( currentRole instanceof ICanSetSetting) {
                     ((ICanSetSetting) currentRole).setSetting(this);
                 }
-                popupWindow.dismiss();
                 break;
             case OPEN:
                 if( currentRole instanceof ICanOpenTopic) {
@@ -338,7 +337,6 @@ public class TopicFragment extends Fragment {
                         }
                     });
                 }
-                popupWindow.dismiss();
                 break;
             case PUBLISH:
                 if( currentRole instanceof ICanPublishTopic) {
@@ -349,7 +347,6 @@ public class TopicFragment extends Fragment {
                         }
                     });
                 }
-                popupWindow.dismiss();
                 break;
             case CLOSE:
                 if(currentRole instanceof ICanCloseTopic) {
@@ -360,13 +357,11 @@ public class TopicFragment extends Fragment {
                         }
                     });
                 }
-                popupWindow.dismiss();
                 break;
             case PARTICIPANT:
                 if(currentRole instanceof ICanAddMember) {
                     ((ICanAddMember) currentRole).addMember(this);
                 }
-                popupWindow.dismiss();
                 break;
             case UPDATE:
                 if(currentRole instanceof ICanUpdateTopic) {
@@ -377,9 +372,9 @@ public class TopicFragment extends Fragment {
                         }
                     });
                 }
-                popupWindow.dismiss();
                 break;
         }
+        popupWindow.dismiss();
     }
 
 
@@ -416,6 +411,14 @@ public class TopicFragment extends Fragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.menu_item_like:
+                topicViewModel.likeTheTopic(new IReturnBool() {
+                    @Override
+                    public void callback(Boolean isOK) {
+
+                    }
+                });
+                break;
             case R.id.menu_item_setup:
                 Log.i(TAG, "menu_item_setup");
                 View anchor = getActivity().findViewById(R.id.menu_item_setup);

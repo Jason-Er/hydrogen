@@ -294,6 +294,24 @@ public class CloudAPI {
         });
     }
 
+    public void likeTopic(String topicId, final IReturnBool iReturnBool) {
+        AVObject avTopic = AVObject.createWithoutData(TableName.TABLE_TOPIC.name, topicId);
+        AVObject avUser = AVObject.createWithoutData(TableName.TABLE_USER.name, AVUser.getCurrentUser().getObjectId());
+        AVObject avLike = new AVObject(TableName.TABLE_LIKE.name);
+        avLike.put(FieldName.FIELD_USER.name, avUser);
+        avLike.put(FieldName.FIELD_TOPIC.name, avTopic);
+        avLike.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(AVException e) {
+                if(e==null) {
+                    iReturnBool.callback(true);
+                } else {
+                    iReturnBool.callback(false);
+                }
+            }
+        });
+
+    }
     /*
     private void updateTopicType(final Topic topic, final ICallBack iCallBack) {
         AVObject avTopic = AVObject.createWithoutData(TableName.TABLE_TOPIC.name, topic.getId());
