@@ -17,6 +17,8 @@ public class TopicDto {
     String brief;
     String setting;
     UserDto sponsor;
+    long likes; // number of like
+    long comments; // number of comment
     String derive_from; // topic id
     List<LineDto> dialogue;
     List<String> members;
@@ -130,4 +132,19 @@ public class TopicDto {
         this.updateAt = updateAt;
     }
 
+    public long getLikes() {
+        return likes;
+    }
+
+    public void setLikes(long likes) {
+        this.likes = likes;
+    }
+
+    public long getComments() {
+        return comments;
+    }
+
+    public void setComments(long comments) {
+        this.comments = comments;
+    }
 }

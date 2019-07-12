@@ -236,6 +236,8 @@ public class ModelDB {
                 entity.setFinished(topic.isFinished());
                 entity.setSetting_url(topic.getSetting());
                 entity.setUpdateAt(topic.getUpdateAt());
+                entity.setLikes(topic.getLikes());
+                entity.setComments(topic.getComments());
                 entity.setLastRefresh(new Date());
                 database.topicDao().insert(entity);
                 saveTag(topic.getId(), topic.getTags());
@@ -308,6 +310,9 @@ public class ModelDB {
                 entity.setSetting_url(topic.getSetting());
                 entity.setUpdateAt(topic.getUpdateAt());
                 entity.setLastRefresh(new Date());
+                entity.setComments(topic.getComments());
+                entity.setLikes(topic.getLikes());
+
                 database.topicDao().insert(entity);
                 saveTag(topic.getId(), topic.getTags());
                 saveUserCan(topic.getId(),topic.getUserCan());
@@ -500,6 +505,8 @@ public class ModelDB {
         topic.setDialogue(getLine(entity.getId()));
         topic.setSponsor(getUser(entity.getSponsor()));
         topic.setMembers(getMembers(entity.getId()));
+        topic.setLikes(entity.getLikes());
+        topic.setComments(entity.getComments());
         return topic;
     }
 

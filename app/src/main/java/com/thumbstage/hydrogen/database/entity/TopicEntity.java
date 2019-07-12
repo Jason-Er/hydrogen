@@ -32,6 +32,9 @@ public class TopicEntity {
     @ColumnInfo(name = "sponsor")
     private String sponsor;
 
+    long likes;
+    long comments;
+
     @ColumnInfo(name = "is_finished")
     private Boolean isFinished = false;
 
@@ -116,4 +119,19 @@ public class TopicEntity {
         this.updateAt = updateAt;
     }
 
+    public long getLikes() {
+        return likes;
+    }
+
+    public void setLikes(long likes) {
+        this.likes = likes;
+    }
+
+    public long getComments() {
+        return comments;
+    }
+
+    public void setComments(long comments) {
+        this.comments = comments;
+    }
 }

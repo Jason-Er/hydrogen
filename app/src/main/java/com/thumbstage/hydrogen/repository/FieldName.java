@@ -22,6 +22,8 @@ public enum FieldName {
     FIELD_WHO("who"),
     FIELD_USER("user"),
     FIELD_MIC("mic"),
+    FIELD_LIKES("likes"),
+    FIELD_COMMENTS("comments"),
     FIELD_TAG("tag");
 
 

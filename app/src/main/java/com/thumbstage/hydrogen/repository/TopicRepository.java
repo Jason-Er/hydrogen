@@ -10,8 +10,6 @@ import android.webkit.URLUtil;
 
 import com.thumbstage.hydrogen.api.CloudAPI;
 import com.thumbstage.hydrogen.database.ModelDB;
-import com.thumbstage.hydrogen.database.dao.LikeDao;
-import com.thumbstage.hydrogen.database.dao.LikeDao_Impl;
 import com.thumbstage.hydrogen.model.bo.HyFile;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
@@ -89,7 +87,7 @@ public class TopicRepository {
                     cloudAPI.getMicDto(mic.getId(), new IReturnMicDto() {
                         @Override
                         public void callback(final MicDto mic) {
-                            saveMic2DB(mic);
+                            saveMicDto2DB(mic);
                         }
                     });
                 }
@@ -106,7 +104,7 @@ public class TopicRepository {
                         @Override
                         public void callback(final MicDto mic) {
                             Log.i("TopicRepository", "refreshMic getMicDto");
-                            saveMic2DB(mic);
+                            saveMicDto2DB(mic);
                         }
                     });
                 } else {
@@ -245,7 +243,7 @@ public class TopicRepository {
         });
     }
 
-    private void saveMic2DB(final MicDto mic) { // for CloudAPI
+    private void saveMicDto2DB(final MicDto mic) { // for CloudAPI
         executor.execute(new Runnable() {
             @Override
             public void run() {

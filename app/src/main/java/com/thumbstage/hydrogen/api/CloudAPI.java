@@ -525,6 +525,10 @@ public class CloudAPI {
         AVObject avUser = avTopic.getAVObject(FieldName.FIELD_SPONSOR.name);
         List<String> tags = avTopic.getList(FieldName.FIELD_TAG.name);
         Date updatedAt = avTopic.getUpdatedAt();
+        Number tmp = (Number) avTopic.get(FieldName.FIELD_LIKES.name);
+        long likes = tmp.longValue();
+        tmp = (Number) avTopic.get(FieldName.FIELD_COMMENTS.name);
+        long comments = tmp.longValue();
         List<String> membersIds = avTopic.getList(FieldName.FIELD_MEMBER.name);
         List<Map> mapList = avTopic.getList(FieldName.FIELD_DIALOGUE.name);
         Map userCanMap = avTopic.getMap(FieldName.FIELD_PRIVILEGE.name);
@@ -543,6 +547,8 @@ public class CloudAPI {
         topic.setUserCan(convert2UserCan(userCanMap));
         topic.setUpdateAt(updatedAt);
         topic.setFinished(isFinished);
+        topic.setLikes(likes);
+        topic.setComments(comments);
 
         return topic;
     }
