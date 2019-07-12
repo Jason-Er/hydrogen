@@ -49,7 +49,7 @@ public class DataConvertUtil {
         for(Line line:lines) {
             Map map = new HashMap();
             map.put("who", line.getWho().getId());
-            map.put("when", StringUtil.date2String(line.getWhen()));
+            map.put("when", line.getWhen().getTime());
             map.put("what", line.getWhat());
             map.put("type", line.getLineType().name());
             map.put("message", line.getMessageType().name());
@@ -61,7 +61,7 @@ public class DataConvertUtil {
     public static Map convert2AVObject(Line line) {
         Map map = new HashMap();
         map.put("who", line.getWho().getId());
-        map.put("when", StringUtil.date2String(line.getWhen()));
+        map.put("when", line.getWhen().getTime());
         map.put("what", line.getWhat());
         map.put("type", line.getLineType().name());
         map.put("message", line.getMessageType().name());

@@ -37,8 +37,7 @@ public class UserDto {
             return false;
         }
         UserDto user = (UserDto) obj;
-        boolean status = name.equals(user.name)
-                && id.equals(user.id);
+        boolean status = id.equals(user.id);
         return status;
     }
 

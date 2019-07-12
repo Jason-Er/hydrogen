@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.thumbstage.hydrogen.R;
@@ -51,7 +50,7 @@ public class LineTypeAdapter extends RecyclerView.Adapter{
                     Glide.with(imageView).load(R.drawable.ic_circle).into(imageView);
                     break;
                 case LT_DIALOGUE:
-                    Glide.with(imageView).load(R.drawable.ic_triangle).into(imageView);
+                    Glide.with(imageView).load(R.drawable.ic_img_triangle).into(imageView);
                     break;
             }
 

@@ -41,8 +41,10 @@ import com.thumbstage.hydrogen.utils.DensityUtil;
 import com.thumbstage.hydrogen.utils.GlideUtil;
 import com.thumbstage.hydrogen.view.create.cases.CaseAttendTopic;
 import com.thumbstage.hydrogen.view.create.cases.CaseBase;
+import com.thumbstage.hydrogen.view.create.cases.CaseCreateTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanAddMember;
 import com.thumbstage.hydrogen.view.create.feature.ICanCloseTopic;
+import com.thumbstage.hydrogen.view.create.feature.ICanCreateOptionsMenu;
 import com.thumbstage.hydrogen.view.create.feature.ICanOpenTopic;
 import com.thumbstage.hydrogen.view.create.feature.ICanPopupMenu;
 import com.thumbstage.hydrogen.view.create.feature.ICanPublishTopic;
@@ -89,7 +91,7 @@ public class TopicFragment extends Fragment {
 
     Map<TopicHandleType, CaseBase> roleMap = new HashMap<TopicHandleType, CaseBase>(){
         {
-            put(TopicHandleType.CREATE, new CaseBase());
+            put(TopicHandleType.CREATE, new CaseCreateTopic());
             put(TopicHandleType.ATTEND, new CaseAttendTopic());
             put(TopicHandleType.CONTINUE, new CaseBase());
         }
@@ -215,6 +217,7 @@ public class TopicFragment extends Fragment {
                             if (mic.getTopic().getSetting() != null) {
                                 GlideUtil.inject(background.getContext(), mic.getTopic().getSetting(), background);
                             }
+                            topicViewModel.micHasRead();
                             topicViewModel.micHasNew(new MicHasNew(mic.getId(), false));
                             spinner.setVisibility(View.GONE);
                             refreshLayout.setRefreshing(false);
@@ -324,7 +327,6 @@ public class TopicFragment extends Fragment {
                 if( currentRole instanceof ICanSetSetting) {
                     ((ICanSetSetting) currentRole).setSetting(this);
                 }
-                popupWindow.dismiss();
                 break;
             case OPEN:
                 if( currentRole instanceof ICanOpenTopic) {
@@ -335,7 +337,6 @@ public class TopicFragment extends Fragment {
                         }
                     });
                 }
-                popupWindow.dismiss();
                 break;
             case PUBLISH:
                 if( currentRole instanceof ICanPublishTopic) {
@@ -346,7 +347,6 @@ public class TopicFragment extends Fragment {
                         }
                     });
                 }
-                popupWindow.dismiss();
                 break;
             case CLOSE:
                 if(currentRole instanceof ICanCloseTopic) {
@@ -357,13 +357,11 @@ public class TopicFragment extends Fragment {
                         }
                     });
                 }
-                popupWindow.dismiss();
                 break;
             case PARTICIPANT:
                 if(currentRole instanceof ICanAddMember) {
                     ((ICanAddMember) currentRole).addMember(this);
                 }
-                popupWindow.dismiss();
                 break;
             case UPDATE:
                 if(currentRole instanceof ICanUpdateTopic) {
@@ -374,9 +372,9 @@ public class TopicFragment extends Fragment {
                         }
                     });
                 }
-                popupWindow.dismiss();
                 break;
         }
+        popupWindow.dismiss();
     }
 
 
@@ -384,7 +382,9 @@ public class TopicFragment extends Fragment {
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         MenuItem menuItemSetup = menu.findItem(R.id.menu_item_setup);
-        menuItemSetup.setVisible(false);
+        if(menuItemSetup != null) {
+            menuItemSetup.setVisible(false);
+        }
         if(topicAdapter.getTopic()!=null) {
             Map<String, Set<CanOnTopic>> userCan = topicAdapter.getTopic().getUserCan();
             if(userCan != null && userCan.containsKey(userViewModel.getCurrentUser().getId())) {
@@ -400,13 +400,25 @@ public class TopicFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_create_default, menu);
+        if( currentRole instanceof ICanCreateOptionsMenu) {
+            ((ICanCreateOptionsMenu) currentRole).createOptionsMenu(menu, inflater);
+        } else {
+            inflater.inflate(R.menu.menu_create_default, menu);
+        }
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.menu_item_like:
+                topicViewModel.likeTheTopic(new IReturnBool() {
+                    @Override
+                    public void callback(Boolean isOK) {
+
+                    }
+                });
+                break;
             case R.id.menu_item_setup:
                 Log.i(TAG, "menu_item_setup");
                 View anchor = getActivity().findViewById(R.id.menu_item_setup);

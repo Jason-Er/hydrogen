@@ -1,0 +1,18 @@
+<vector android:height="24dp" android:viewportHeight="32"
+    android:viewportWidth="32" android:width="24dp" xmlns:android="http://schemas.android.com/apk/res/android">
+    <path android:fillColor="#00000000"
+        android:pathData="M16,16m-7,0a7,7 0,1 1,14 0a7,7 0,1 1,-14 0"
+        android:strokeColor="@color/colorAccent" android:strokeLineCap="round"
+        android:strokeLineJoin="round" android:strokeWidth="2"/>
+    <path android:fillColor="@color/colorAccent" android:pathData="M14,9V6a1,1 0,0 1,1 -1h2a1,1 0,0 1,1 1V9"/>
+    <path android:fillColor="@color/colorAccent" android:pathData="M18,23v3a1,1 0,0 1,-1 1H15a1,1 0,0 1,-1 -1V23"/>
+    <path android:fillColor="@color/colorAccent" android:pathData="M9.64,12.46 L7.51,10.34a1,1 0,0 1,0 -1.41L8.93,7.51a1,1 0,0 1,1.41 0l2.12,2.12"/>
+    <path android:fillColor="@color/colorAccent" android:pathData="M22.36,19.54l2.12,2.12a1,1 0,0 1,0 1.41l-1.41,1.41a1,1 0,0 1,-1.41 0l-2.12,-2.12"/>
+    <path android:fillColor="@color/colorAccent" android:pathData="M9,18H6a1,1 0,0 1,-1 -1V15a1,1 0,0 1,1 -1H9"/>
+    <path android:fillColor="@color/colorAccent" android:pathData="M23,14h3a1,1 0,0 1,1 1v2a1,1 0,0 1,-1 1H23"/>
+    <path android:fillColor="@color/colorAccent" android:pathData="M12.46,22.36l-2.12,2.12a1,1 0,0 1,-1.41 0L7.51,23.07a1,1 0,0 1,0 -1.41l2.12,-2.12"/>
+    <path android:fillColor="@color/colorAccent" android:pathData="M19.54,9.64l2.12,-2.12a1,1 0,0 1,1.41 0l1.41,1.41a1,1 0,0 1,0 1.41l-2.12,2.12"/>
+    <path android:fillColor="#00000000"
+        android:pathData="M20.5,11L20.5,21"
+        android:strokeColor="@color/colorAccent" android:strokeWidth="1"/>
+</vector>

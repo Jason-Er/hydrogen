@@ -14,10 +14,9 @@ import com.thumbstage.hydrogen.model.bo.HyFile;
 import com.thumbstage.hydrogen.model.callback.IReturnBool;
 import com.thumbstage.hydrogen.model.callback.IReturnHyFile;
 import com.thumbstage.hydrogen.model.callback.IReturnMicDto;
-import com.thumbstage.hydrogen.model.callback.IReturnTopicDto;
+import com.thumbstage.hydrogen.model.dto.LikeDto;
 import com.thumbstage.hydrogen.model.dto.MicDto;
 import com.thumbstage.hydrogen.model.dto.MicHasNew;
-import com.thumbstage.hydrogen.model.dto.TopicDto;
 import com.thumbstage.hydrogen.model.vo.Line;
 import com.thumbstage.hydrogen.model.vo.Mic;
 import com.thumbstage.hydrogen.model.vo.User;
@@ -88,7 +87,7 @@ public class TopicRepository {
                     cloudAPI.getMicDto(mic.getId(), new IReturnMicDto() {
                         @Override
                         public void callback(final MicDto mic) {
-                            saveMic2DB(mic);
+                            saveMicDto2DB(mic);
                         }
                     });
                 }
@@ -105,7 +104,7 @@ public class TopicRepository {
                         @Override
                         public void callback(final MicDto mic) {
                             Log.i("TopicRepository", "refreshMic getMicDto");
-                            saveMic2DB(mic);
+                            saveMicDto2DB(mic);
                         }
                     });
                 } else {
@@ -204,6 +203,37 @@ public class TopicRepository {
         });
     }
 
+    public void likeTheMic(final IReturnBool iReturnBool) {
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                final Mic mic = micLiveData.getValue();
+                final String userId = cloudAPI.getCurrentUser().getId();
+                final String topicId = mic.getTopic().getId();
+                final LikeDto likeDto = new LikeDto(userId, topicId);
+                if(!modelDB.isLikeExist(likeDto)) {
+                    cloudAPI.likeTopic(topicId, new IReturnBool() {
+                        @Override
+                        public void callback(Boolean isOK) {
+                            if (isOK) {
+                                executor.execute(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        modelDB.saveLike(likeDto);
+                                    }
+                                });
+                                iReturnBool.callback(true);
+                            } else {
+                                iReturnBool.callback(false);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+
+    }
+
     private void saveMic2DB(final Mic mic) { // from UI side
         executor.execute(new Runnable() {
             @Override
@@ -213,7 +243,7 @@ public class TopicRepository {
         });
     }
 
-    private void saveMic2DB(final MicDto mic) { // for CloudAPI
+    private void saveMicDto2DB(final MicDto mic) { // for CloudAPI
         executor.execute(new Runnable() {
             @Override
             public void run() {
@@ -375,6 +405,13 @@ public class TopicRepository {
                 modelDB.updateMicHasNew(hasNew);
             }
         });
+    }
+
+    public void micHasRead() {
+        Mic mic = micLiveData.getValue();
+        if(!TextUtils.isEmpty(mic.getId())) {
+            cloudAPI.haveReadMic(mic.getId());
+        }
     }
 
 }

@@ -47,6 +47,10 @@ public class TopicViewModel extends ViewModel {
         topicRepository.createTheMic(iReturnBool);
     }
 
+    public void likeTheTopic(IReturnBool iReturnBool) {
+        topicRepository.likeTheMic(iReturnBool);
+    }
+
     public void refreshTheTopic() {
         topicRepository.refreshTheMic();
     }
@@ -81,6 +85,10 @@ public class TopicViewModel extends ViewModel {
 
     public void micHasNew(MicHasNew hasNew) {
         topicRepository.micHasNew(hasNew);
+    }
+
+    public void micHasRead() {
+        topicRepository.micHasRead();
     }
 
 }

@@ -17,6 +17,8 @@ public class Topic implements Cloneable {
     String brief;
     String setting;
     User sponsor;
+    long likes; // number of like
+    long comments; // number of comment
     String derive_from; // topic id
     List<Line> dialogue;
     List<User> members;
@@ -128,6 +130,22 @@ public class Topic implements Cloneable {
 
     public void setUpdateAt(Date updateAt) {
         this.updateAt = updateAt;
+    }
+
+    public long getLikes() {
+        return likes;
+    }
+
+    public void setLikes(long likes) {
+        this.likes = likes;
+    }
+
+    public long getComments() {
+        return comments;
+    }
+
+    public void setComments(long comments) {
+        this.comments = comments;
     }
 
     @Override

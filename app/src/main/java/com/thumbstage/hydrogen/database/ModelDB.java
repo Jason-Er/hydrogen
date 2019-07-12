@@ -9,6 +9,7 @@ import android.text.TextUtils;
 
 import com.thumbstage.hydrogen.app.Config;
 import com.thumbstage.hydrogen.database.entity.ContactEntity;
+import com.thumbstage.hydrogen.database.entity.LikeEntity;
 import com.thumbstage.hydrogen.database.entity.LineEntity;
 import com.thumbstage.hydrogen.database.entity.MicEntity;
 import com.thumbstage.hydrogen.database.entity.TopicEntity;
@@ -20,6 +21,7 @@ import com.thumbstage.hydrogen.model.bo.CanOnTopic;
 import com.thumbstage.hydrogen.model.bo.LineType;
 import com.thumbstage.hydrogen.model.bo.MessageType;
 import com.thumbstage.hydrogen.model.bo.TopicTag;
+import com.thumbstage.hydrogen.model.dto.LikeDto;
 import com.thumbstage.hydrogen.model.dto.LineDto;
 import com.thumbstage.hydrogen.model.dto.MicDto;
 import com.thumbstage.hydrogen.model.dto.MicHasNew;
@@ -78,6 +80,10 @@ public class ModelDB {
 
     public boolean isUserNeedFresh(String userId) {
         return database.userDao().hasUser(userId, getMaxRefreshTime(new Date())) == null;
+    }
+
+    public boolean isLikeExist(LikeDto likeDto) {
+        return database.likeDao().get(likeDto.getUserId(), likeDto.getTopicId()) != null;
     }
 
     public List<String> getNeedFreshMicMembers(String id) {
@@ -230,6 +236,8 @@ public class ModelDB {
                 entity.setFinished(topic.isFinished());
                 entity.setSetting_url(topic.getSetting());
                 entity.setUpdateAt(topic.getUpdateAt());
+                entity.setLikes(topic.getLikes());
+                entity.setComments(topic.getComments());
                 entity.setLastRefresh(new Date());
                 database.topicDao().insert(entity);
                 saveTag(topic.getId(), topic.getTags());
@@ -263,6 +271,10 @@ public class ModelDB {
                 }
             }
         });
+    }
+
+    public void saveLike(LikeDto likeDto) {
+        database.likeDao().insert(likeDto);
     }
     // endregion
 
@@ -298,6 +310,9 @@ public class ModelDB {
                 entity.setSetting_url(topic.getSetting());
                 entity.setUpdateAt(topic.getUpdateAt());
                 entity.setLastRefresh(new Date());
+                entity.setComments(topic.getComments());
+                entity.setLikes(topic.getLikes());
+
                 database.topicDao().insert(entity);
                 saveTag(topic.getId(), topic.getTags());
                 saveUserCan(topic.getId(),topic.getUserCan());
@@ -484,12 +499,14 @@ public class ModelDB {
         topic.setTags(getTags(id));
         topic.setUserCan(getUserCan(id));
         topic.setName(entity.getName());
-        topic.setBrief(entity.getName());
+        topic.setBrief(entity.getBrief());
         topic.setSetting(entity.getSetting_url());
         topic.setDerive_from(entity.getDerive_from());
         topic.setDialogue(getLine(entity.getId()));
         topic.setSponsor(getUser(entity.getSponsor()));
         topic.setMembers(getMembers(entity.getId()));
+        topic.setLikes(entity.getLikes());
+        topic.setComments(entity.getComments());
         return topic;
     }
 

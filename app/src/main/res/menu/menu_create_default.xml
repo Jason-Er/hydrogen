@@ -5,8 +5,22 @@
     tools:context="com.example.actionbartest.MainActivity" >
 
     <item
+        android:id="@+id/menu_item_like"
+        android:icon="@drawable/ic_img_like"
+        android:name="@string/action_like"
+        android:title="@string/action_like"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_item_comment"
+        android:icon="@drawable/ic_img_comment"
+        android:name="@string/action_settings"
+        android:title="@string/action_settings"
+        app:showAsAction="always" />
+
+    <item
         android:id="@+id/menu_item_setup"
-        android:icon="@drawable/ic_menu_setting"
+        android:icon="@drawable/ic_img_setting"
         android:name="@string/action_settings"
         android:title="@string/action_settings"
         app:showAsAction="always" />
